@@ -23,3 +23,7 @@ I'm going to recap all the learnings from the previous [ARC24 challenge](https:/
 ## Transduction and induction
 
 https://arxiv.org/abs/2411.02272
+
+## Other
+
+[CodeIt: Self-Improving Language Models with Prioritized Hindsight Replay](https://arxiv.org/abs/2402.04858)

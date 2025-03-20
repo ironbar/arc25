@@ -4,6 +4,13 @@
 
 I'm going to recap all the learnings from the previous [ARC24 challenge](https://www.kaggle.com/competitions/arc-prize-2024).
 
+## Summary of all the learnings
+
+- Reasoning models trained with RL like o3 can solve ARC, but they need a lot of compute. That is around [x40000 times](https://x.com/guille_bar/status/1870479630383329472) the compute allowed in the competition ($8 vs $320k). 
+- Test-time training is crucial to improve the accuracy of transduction models. In my case the score improves from 11 to 33.
+- Frontier LLMs can generate code that solves more than half of the semi-private ARC set.
+- Induction and transduction are complementary approaches. It would have sense to first try with induction (which has higher guarantees) and use transduction only when induction fails.
+
 ## [OpenAI solved the ARC challenge with a tuned version of o3](https://arcprize.org/blog/oai-o3-pub-breakthrough)
 
 ![o3 performance](res/2025-03-18-13-59-03.png)
@@ -49,10 +56,30 @@ for the training samples. The main differences between this methods is how the m
 - [Jeremy Berman](https://jeremyberman.substack.com/p/how-i-got-a-record-536-on-arc-agi) uses an approach similar to [FunSearch](https://deepmind.google/discover/blog/funsearch-making-new-discoveries-in-mathematical-sciences-using-large-language-models/)
 - [Ryan Greenblatt](https://redwoodresearch.substack.com/p/getting-50-sota-on-arc-agi-with-gpt) was the first to show that this approach could work and how it scaled with the number of predictions.
 
-## Transduction and induction
+## [Transduction and induction](https://arxiv.org/abs/2411.02272)
 
-https://arxiv.org/abs/2411.02272
+This paper defined the terms transduction (generating the output grid directly) and induction (writing code to solve the tasks) and showed they were complimentary. Additionally they generated 400k new tasks using LLMs, showing that is possible to augment the data.
+
+The [code](https://github.com/xu3kev/BARC) is open-source and I should take a look at it, it could serve as inspiration for creating the DSL.
 
 ## Other
 
-[CodeIt: Self-Improving Language Models with Prioritized Hindsight Replay](https://arxiv.org/abs/2402.04858)
+### [CodeIt: Self-Improving Language Models with Prioritized Hindsight Replay](https://arxiv.org/abs/2402.04858)
+
+This is a very interesting paper that uses code and hindsight experience replay. They use [Hodel's DSL](https://github.com/michaelhodel/re-arc) as a start point but they apply mutation to augment the tasks.
+
+This paper shows that it's possible to learn from the test set using hindsight replay. How can we improve it?
+
+- Using a bigger and better model, they use a small 220M LLM, we could be using a 7B parameter model
+- Fine-tune the model individually for each task
+- Do the search first on the training tasks to generate more training data
+- More data augmentation
+- Use a more simple and minimal DSL
+
+### [Searching Latent Program Spaces](https://arxiv.org/abs/2411.08706)
+
+They use an autoencoder to learn the space of programs. At inference the encoder gives a good starting point, but the gradient is used to find a better task representation. The idea is interesting but the performance is very weak, will have to wait if they are able to make it work at [Ndea](https://ndea.com/).
+
+### [A 2D nGPT Model for Arc Prize](https://github.com/jfpuget/ARC-AGI-Challenge-2024/blob/main/arc.pdf)
+
+Interesting because it uses a 2d transformer, not 1d as most of the other solutions.

@@ -8,6 +8,10 @@ Many modeling techniques make specific assumptions about the data—for example,
 that all attributes have uniform distributions, no missing values allowed,
 class attribute must be symbolic, etc. Record any such assumptions made. --->
 
+### RL-ARC
+
+The responsability of the human is to create a minimalistic but complete DSL that the model will learn to use.
+
 ## Generate experimentation design
 
 <!---Describe the intended plan for training, testing, and evaluating the models.

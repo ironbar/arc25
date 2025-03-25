@@ -42,3 +42,16 @@ That way we only have to learn the policy and we have guarantees that the other 
 ## RL-ARC
 
 The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to learn as efficiently as possible. It is like playing a game, but instead of hitting the buttons we have to write code.
+The code generates an output that is evaluated against the ground truth and returns an score.
+
+The challenge is how to create a very efficient system to do this: how to design the DSL, how to pre-train the model, how to do split the compute between inference and test-time training... There is a huge number of possibilities that we need to explore
+to find the winning system.
+
+The DSL is perhaps one of the most critic parts of the system. Without a DSL the system will have to write
+very long programs to solve the task, making the exploration of the solution space much harder and requiring
+more compute (generating more tokens requires more compute). We have to design a complete yet minimal DSL. Probably the best way to do it is to use an iterative method, growing the DSL when noticing that certain tasks cannot be solved without new primitives.
+
+## Tricks
+
+- Teach how to use the DSL. It is important to create examples of how to use each function in the DSL
+- Upsampling as data augmentation

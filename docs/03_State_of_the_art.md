@@ -10,7 +10,7 @@ I'm going to recap all the learnings from the previous [ARC24 challenge](https:/
 - Test-time training is crucial to improve the accuracy of transduction models. In my case the score improves from 11 to 33.
 - Frontier LLMs can generate code that solves more than half of the semi-private ARC set.
 - Induction and transduction are complementary approaches. It would have sense to first try with induction (which has higher guarantees) and use transduction only if induction fails.
-- LLMs struggle with tasks that have big grids
+- LLMs struggle with tasks that have big grids, however the fact that `o3` can solve ARC it might hint that a 2d representation for the grid is not needed.
 
 ## [OpenAI solved the ARC challenge with a tuned version of `o3`](https://arcprize.org/blog/oai-o3-pub-breakthrough)
 

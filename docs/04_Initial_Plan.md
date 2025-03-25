@@ -35,7 +35,7 @@ Focusing on efficiency the best configuration for ARC would be the following:
 
 - Policy: model
 - World model: python interpreter
-- Jugdment: metric function
+- Judgement: metric function
 
 That way we only have to learn the policy and we have guarantees that the other modules will be perfect.
 

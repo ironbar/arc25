@@ -17,6 +17,8 @@ Using code is a more promising approach because:
 
 My hypothesis is that we can use [hindsight experience replay (HER)](https://arxiv.org/abs/1707.01495) at test time to update the beliefs of the model and find the right solution more efficiently. Instead of sampling thousands of programs, sample a few and learn from the mistakes. **That is the way to combine induction and test-time training.**
 
+We can treat the failed code attempts that run as new tasks, and train the model on those tasks. Those tasks will be in the neighborhood of the task that we want to solve.
+
 We already know that HER enables faster learning, specially in very sparse reward environments.
 
 ![](res/2025-03-25-16-38-36.png)
@@ -46,6 +48,8 @@ That way we only have to learn the policy and we have guarantees that the other 
 The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to learn as efficiently as possible. It is like playing a game, but instead of hitting the buttons we have to write code.
 The code generates an output that is evaluated against the ground truth and returns an score.
 
+Finding the right program is equivalent to finding the right trajectory to solve a game. Instead of actions we write code, but the problem is exactly the same. When we want to solve a new task in ARC is the same as wanting to solve a new game. We can frame the problem as a Reinforcement learning game, with a very sparse reward.
+
 The challenge is how to create a very efficient system to do this: how to design the DSL, how to pre-train the model, how to do split the compute between inference and test-time training... There is a huge number of possibilities that we need to explore
 to find the winning system.
 
@@ -58,3 +62,5 @@ more compute (generating more tokens requires more compute). We have to design a
 - Teach how to use the DSL. It is important to create examples of how to use each function in the DSL
 - Upsampling as data augmentation
 - I can remove words from the tokenizer of a model to simplify grid representation.
+- I could teach the model to draw. Given some painting generate code to create the painting. That might help the model to learn the 2d structure of the grids.
+- Focus on an end to end approach. On ARC24 I lost the focus and mostly worked on pre-training. I should always evaluate the end to end system, although it requires more compute is the right way to do it.

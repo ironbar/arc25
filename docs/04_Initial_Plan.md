@@ -27,9 +27,9 @@ We already know that HER enables faster learning, specially in very sparse rewar
 
 When humans try to solve ARC tasks we draw some hypothesis and test it in our heads, if it is not correct we refine the hypothesis. To do this we use 3 modules:
 
-- Policy. What action do I have to do to achieve the goal? Learned with hindsight
-- World model. What happens if do this action? Learned with past experiences
-- Judgment. Is the solution correct? Learned with human feedback or by comparison
+- **Policy.** What action do I have to do to achieve the goal? Learned with hindsight
+- **World model.** What happens if do this action? Learned with past experiences
+- **Judgment.** Is the solution correct? Learned with human feedback or by comparison
 
 Reasoning is iterative, we do it step by step combining the 3 modules above. 
 
@@ -45,7 +45,7 @@ That way we only have to learn the policy and we have guarantees that the other 
 
 ## RL-ARC
 
-The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to learn as efficiently as possible. It is like playing a game, but instead of hitting the buttons we have to write code.
+The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to learn it as efficiently as possible. It is like playing a game, but instead of hitting the buttons we have to write code.
 The code generates an output that is evaluated against the ground truth and returns an score.
 
 Finding the right program is equivalent to finding the right trajectory to solve a game. Instead of actions we write code, but the problem is exactly the same. When we want to solve a new task in ARC is the same as wanting to solve a new game. We can frame the problem as a Reinforcement learning game, with a very sparse reward.
@@ -56,6 +56,16 @@ to find the winning system.
 The DSL is perhaps one of the most critic parts of the system. Without a DSL the system will have to write
 very long programs to solve the task, making the exploration of the solution space much harder and requiring
 more compute (generating more tokens requires more compute). We have to design a complete yet minimal DSL. Probably the best way to do it is to use an iterative method, growing the DSL when noticing that certain tasks cannot be solved without new primitives.
+
+### Algorithm
+
+While solution is not found:
+
+1. Generate `n` python functions given input-output pairs. 
+2. Do `r` steps of iterative function refinement
+3. Test-time training. The model has generated `m` python functions that are not correct, but they run and hopefully they are in the right direction. We can treat those functions as new tasks and do test-time training on them (we know the inputs, outputs and code)
+
+The model will be given all the task inputs and the available outputs, and will have to write python code that implements the task. By giving all the inputs we force the model to create python code to generalize to inputs that do not have output.
 
 ## Tricks
 

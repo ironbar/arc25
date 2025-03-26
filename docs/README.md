@@ -4,6 +4,8 @@ Solution for ARC25 challenge
 
 https://arcprize.org/arc
 
+![](res/2025-03-26-15-33-54.png)
+
 ## Docs
 
 [https://ironbar.github.io/arc25](https://ironbar.github.io/arc25)

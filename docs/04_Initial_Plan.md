@@ -4,6 +4,8 @@ Since the end of ARC24 competition I have been thinking of how to better approac
 
 I have identified two possible paths that converge on the same approach.
 
+**It's all about efficiency!**
+
 ## Path 1. Combine the best approaches: Induction and Test-time Training
 
 Last year's competition showed that test-time training allowed the models to adapt to the novel tasks. At the same time in the semi-private dataset we saw that frontier models could generate code to solve more than half of the tasks.
@@ -29,7 +31,7 @@ When humans try to solve ARC tasks we draw some hypothesis and test it in our he
 
 Reasoning is iterative, we do it step by step combining the 3 modules above. 
 
-My intuition is that o3 success in ARC-AGI-1 is likely due to an improved policy and better judgment. Vanilla LLMs are not good at judgment, but reasoning models need to be able to know if some answer is correct or wrong. By training with reinforcement learning the model improves its policy, it learns which strategies are good and which are bad to solve the ARC tasks.
+My intuition is that o3 success in ARC-AGI-1 is likely due to an improved policy and better judgment. Vanilla LLMs are not good at judgment, but reasoning models need to be able to know if some answer is correct or wrong. By training with reinforcement learning the model improves its policy, it learns which strategies are good and which are bad to solve the ARC tasks. o3 very likely describes the task with natural language, generates the output grid and checks if the output looks correct. It might try different approaches, refine the description and when it is certain returns the response.
 
 Focusing on efficiency the best configuration for ARC would be the following:
 
@@ -55,3 +57,4 @@ more compute (generating more tokens requires more compute). We have to design a
 
 - Teach how to use the DSL. It is important to create examples of how to use each function in the DSL
 - Upsampling as data augmentation
+- I can remove words from the tokenizer of a model to simplify grid representation.

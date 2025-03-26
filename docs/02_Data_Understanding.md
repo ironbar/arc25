@@ -30,6 +30,15 @@ the quantity of data (for example, the number of records and fields in each tabl
 the identities of the fields, and any other surface features which have been
 discovered. Evaluate whether the data acquired satisfies the relevant requirements. --->
 
+### [ARC-AGI-2](https://github.com/arcprize/ARC-AGI-2)
+
+- Addressing Flaws: Removed task that were susceptible to brute force search from the evaluation and test set (50% of the test tasks could be solved with an ensemble from 2020), also removed tasks with contamination from training tasks.
+- Compositional Tasks: ARC-v2 features compositional tasks with multiple interacting rules, making it harder for brute-force methods. 
+- Solvability: All the tasks are solved at least but 2 persons out of a maximum of 10, and the average solving rate is 60%.
+- Human Calibration Study: A formal human calibration study was conducted to assess how humans perform on the tasks. All the evaluation and tests sets should have a similar difficulty.
+- The new training dataset has 1000 tasks, and I believe it has all the previous ARC-AGI-1 tasks. I should verify it just in case.
+- Not adversarial with ARC24 models. Although we see a huge drop in accuracy compared to ARC-AGI-1, this is 
+
 ## Explore data
 
 <!---This task addresses data mining questions using querying, visualization,

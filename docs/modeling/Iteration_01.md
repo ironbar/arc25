@@ -20,7 +20,7 @@ Moreover I would like to know better the Architects' solution.
 
 I have created my own [notebook](https://www.kaggle.com/code/ironbar/the-architects-baseline-with-4-gpus) that modifies the original solution to work with 4 GPUs.
 
-### Speeding-up inference
+### Hyperparameter tuning
 
 #### min_prob
 
@@ -53,6 +53,30 @@ unsloth_4bit [35, 147, 195, 309]
 unsloth_8bit [33, 151, 194, 335]
 ```
 
+#### max_seq_length_train
+
+By default it is set to `4224` but we could increase it to `8192` without having memory issues (60% VRAM). This will make training slower for the longest tasks.
+
+#### Gradient checkpointing
+
+I didn't see any significative change in training speed after disabling it.
+
+### Better sorting algorithm
+
+I have tried creating a better algorithm for sorting tasks between GPUs but at the end runtime was worse than the original algorithm. I have seen that training time is proportional to the training tokens, but inference time is not easy to predict. This might be explained by not knowing the output tokens and the depth first search algorithm used at inference.
+
+### 2 inference runs per GPU
+
+![](res/2025-04-04-13-56-14.png)
+
+Looking at the GPU usage I noticed that when training GPU usage was 100%, but on inference many times it was below 50% (And memory usage was always below 50%). This opens the door for running two inference process on the same GPU.
+
+On experiments I have seen a reduction of 30% of inference time (670s to 470s).
+
+After the change GPU usage is almost 100%.
+
+![](res/2025-04-04-13-59-23.png)
+
 ## Results
 
 ## Conclusion
@@ -63,4 +87,5 @@ unsloth_8bit [33, 151, 194, 335]
 
 ## TODO
 
-- [ ]
+- [ ] Create a more recent environment to see if we can speedup training and/or inference
+- [ ] Is it helpful to increase `max_seq_length_train`?

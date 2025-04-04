@@ -61,6 +61,14 @@ By default it is set to `4224` but we could increase it to `8192` without having
 
 I didn't see any significative change in training speed after disabling it.
 
+#### Batch size
+
+By default `batch_size=2, gradient_accumulation_steps=2` is used, I have seen that it is possible to use `batch_size=4, gradient_accumulation_steps=1` without having memory problems. It does not speedup training, but
+the calculation of gradients is probably better because there is a warning message about faulty gradient accumulation.
+
+TODO: can I use batch_size=4 and max_seq_len=8192?
+https://www.kaggle.com/code/ironbar/the-architects-baseline-with-4-gpus?scriptVersionId=231810119
+
 ### Better sorting algorithm
 
 I have tried creating a better algorithm for sorting tasks between GPUs but at the end runtime was worse than the original algorithm. I have seen that training time is proportional to the training tokens, but inference time is not easy to predict. This might be explained by not knowing the output tokens and the depth first search algorithm used at inference.

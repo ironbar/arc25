@@ -66,8 +66,7 @@ I didn't see any significative change in training speed after disabling it.
 By default `batch_size=2, gradient_accumulation_steps=2` is used, I have seen that it is possible to use `batch_size=4, gradient_accumulation_steps=1` without having memory problems. It does not speedup training, but
 the calculation of gradients is probably better because there is a warning message about faulty gradient accumulation.
 
-TODO: can I use batch_size=4 and max_seq_len=8192?
-https://www.kaggle.com/code/ironbar/the-architects-baseline-with-4-gpus?scriptVersionId=231810119
+On this [notebook run](https://www.kaggle.com/code/ironbar/the-architects-baseline-with-4-gpus?scriptVersionId=231810119) I have verified with the longest evaluation tasks that even when using `max_seq_len=8192` I can use `batch_size=4` without memory problems (86% VRAM usage in the worst case.)
 
 ### Better sorting algorithm
 
@@ -86,6 +85,7 @@ After the change GPU usage is almost 100%.
 ![](res/2025-04-04-13-59-23.png)
 
 ## Results
+
 
 [Gsheet with results](https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&range=A1)
 

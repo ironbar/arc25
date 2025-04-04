@@ -79,13 +79,19 @@ After the change GPU usage is almost 100%.
 
 ## Results
 
+[Gsheet with results](https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&range=A1)
+
+According to the official [ARC](https://arcprize.org/leaderboard) documentation the solution from the Architects should score around 2.5%, but my first successful submission scored 7%. I guess the improvement comes from splitting the data in 4 folds and using 4 gpus (instead of 2 folds on 2 gpus).
+
 ## Conclusion
 
 ## Next steps
 
+- Probably the easiest way to keep improving the baseline is to split the data in more folds. Using 8 folds would naturally fit with using 8 processes at inference. I would have to see how to coordinate the training runs.
 - Everyday we are allowed to make submissions with a compute cost of 50$. Over 7 months that will be around 10k$. That is a lot of money, maybe I should use the private test set as my development set and use the evaluation set as the test set (to decide the final submission).
 
 ## TODO
 
 - [ ] Create a more recent environment to see if we can speedup training and/or inference
+- [ ] Is it helpful to train for longer?
 - [ ] Is it helpful to increase `max_seq_length_train`?

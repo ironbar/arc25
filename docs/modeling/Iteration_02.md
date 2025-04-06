@@ -15,6 +15,24 @@ It might be enough to be the first team to break the barrier of 10% on the ARC-A
 
 ## Development
 
+### ARC24 vs ARC25 parameters
+
+On ARC24 there were 100 training tasks, they were split in two folds and they train for 4 epochs.
+The effective batch size was 4, thus if I take data augmentation into account this means it trained for 400 steps (`100/2*8*4/4`). They warmup the learning rate for 100 steps, so 25% of the training time.
+
+Now I want to use 8 folds, if I keep the number of epochs constant that means I will train for just 120 steps (`120/8*8*4/4`). On each fold there would be just 15 tasks.
+
+Maybe the easiest solution is to use the `warmup_ratio` instead of `warmup_steps` and set it to a value such as 10%.
+
+### Initial leaderboard score is very low
+
+My first submission scores just 3.33 vs 7.08 that scored the submission with 4 folds. I have compared the code of the two submissions and I don't see anything wrong. What could be the cause of this drop in score?
+
+- Maybe my first submission was just lucky
+- The biggest change is that trainings are now shorter. Maybe I have to reduce the lora rank and/or increase the training epochs. 
+
+After halving the lora rank to 32 and increasing the number of epochs from 4 to 6 the score improved to 6.67, still worse than the first submission but very close. However the submission time was very close to 12 hours. My guess is that there is an interplay between model training and inference, because the 2 additional epochs will likely take around 2000 seconds, and I saw an increase in submission time of around 10800 seconds.
+
 ## Results
 
 ## Conclusion
@@ -23,4 +41,6 @@ It might be enough to be the first team to break the barrier of 10% on the ARC-A
 
 ## TODO
 
-- [ ]
+- [ ] Try to understand low score of 3.33 -> Are there any errors? Compare with the best submission.
+- [ ] Does it help to reduce the lora rank?
+- [ ] n=1 with smaller min_prob?

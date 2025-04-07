@@ -21,6 +21,13 @@ I don't believe ARC can be solved using last year ARC24 solution, but being able
 
 The unknown is how to load and unload the PEFT model efficiently. Every delay associated with changing the PEFT will be multiplied by 15 or 30 (depending if I use 8 or 4 processes.) So loading the model from disk, compiling... I need to find a way to do it really fast or even better don't have to do it.
 
+### Time per task
+
+We have 12 hours to solve 120 tasks. If we parallelize the system with 4 runs, that means we have 24 minutes per task.
+So if doing inference for each task introduces an overhead of 1 minute per task, that still leaves 23 minutes per task.
+So even a non efficient solution that wastes 1 minute to load and compile the model per task will have most of the time
+for compute.
+
 ## Results
 
 ## Conclusion

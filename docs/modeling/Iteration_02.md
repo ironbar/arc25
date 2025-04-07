@@ -44,3 +44,4 @@ After halving the lora rank to 32 and increasing the number of epochs from 4 to 
 - [ ] Try to understand low score of 3.33 -> Are there any errors? Compare with the best submission.
 - [ ] Does it help to reduce the lora rank?
 - [ ] n=1 with smaller min_prob?
+- [ ] How long does it take to train on the private test set?

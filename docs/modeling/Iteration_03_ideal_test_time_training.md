@@ -28,6 +28,12 @@ So if doing inference for each task introduces an overhead of 1 minute per task,
 So even a non efficient solution that wastes 1 minute to load and compile the model per task will have most of the time
 for compute.
 
+### Implementation
+
+In this [notebook](https://www.kaggle.com/code/ironbar/the-architects-single-task-ttt) I have prepared an implementation that uses locks to select the GPU and the task.
+
+Loading the model for training could take around 20s, for inference it is around 14s. So in total we could see a delay of around 30s per task, so aroun 15 minutes in total for a submission time of 12h hours, we can afford that.
+
 ### Base model in `dev/shm`
 
 I have tried copying the model to `dev/shm` but did not observed any speedup. Probably when I read the model for the first
@@ -56,3 +62,9 @@ In my solution I could do 320 training steps for each task on ARC24 challenge. I
 
 - [x] How GPU usage looks when using batch size 1?
 - [x] What if I copy the base model to `dev/shm`
+- [ ] Tune the submission hyperparameters
+  - [ ] Lora rank
+  - [ ] Number of training epochs
+  - [ ] Inference parameters (n and min_prob)
+  - [ ] Learning rate
+  - [ ] My intuition is that I should train as long as possible, and make just 8 predictions per task.

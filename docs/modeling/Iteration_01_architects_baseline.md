@@ -86,12 +86,15 @@ After the change GPU usage is almost 100%.
 
 ## Results
 
-
 [Gsheet with results](https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&range=A1)
 
 According to the official [ARC](https://arcprize.org/leaderboard) documentation the solution from the Architects should score around 2.5%, but my first successful submission scored 7%. I guess the improvement comes from splitting the data in 4 folds and using 4 gpus (instead of 2 folds on 2 gpus).
 
+I have made more submissions with different hyperparameters values but none scored higher, notice that half of the submissions gave timeout error.
+
 ## Conclusion
+
+The architects solution can score 7% on the new ARC-AGI-2 public test set. On the following iterations I'm going to try to push it further.
 
 ## Next steps
 

@@ -23,6 +23,8 @@ the data analysis goal and project plan
 * other projects. May I have other more interesting projects in the horizon?
  --->
 
+Resources: 50$ a day, I should use it but at the same time might prevent creating a team.
+
 ## Terminology
 
 <!--- Sometimes the field of the challenge has specific terms, if that is the

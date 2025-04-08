@@ -33,11 +33,24 @@ My first submission scores just 3.33 vs 7.08 that scored the submission with 4 f
 
 After halving the lora rank to 32 and increasing the number of epochs from 4 to 6 the score improved to 6.67, still worse than the first submission but very close. However the submission time was very close to 12 hours. My guess is that there is an interplay between model training and inference, because the 2 additional epochs will likely take around 2000 seconds, and I saw an increase in submission time of around 10800 seconds.
 
+### Training and inference times
+
+Training is taking around 4 hours for 6 epochs, so that is around 40 minutes per epoch. Training time should be constant.
+Inference time can change depending on the training, for 6 epochs of training it takes 4 hours to do 8 predictions per task.
+
 ## Results
+
+I have not improved over my first submission of 7 but I was close (6.67). [Google Sheet with results](https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&range=A12)
+
+A submission doing 8 predictions per task instead of 16 scored almost the same (6.25 vs 6.67).
 
 ## Conclusion
 
+I have not improved over my first submission of 7 but I was close (6.67). I believe I should push this further and train on each task individually.
+
 ## Next steps
+
+Create a notebook that allows to do training and inference on each task independently.
 
 ## TODO
 

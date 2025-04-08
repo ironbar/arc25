@@ -29,24 +29,9 @@ the data analysis goal and project plan
 * other projects. May I have other more interesting projects in the horizon?
  --->
 
-The challenge ends on 4-11-2025, so we have 7 months to try new ideas. The grand prize is 700k$, whereas the progress prize would be 75k$ in the best case scenario (25k$ first prize and 50k$ best paper). So the prizes are designed to encourage the development of new and bold approaches.
+The challenge ends on 4-11-2025, so we have 7 months to try new ideas. The grand prize is 700k$, whereas the progress prize would be 75k$ in the best case scenario (25k$ first prize and 50k$ best paper). So the prizes are designed to encourage the development of new and bold approaches. I should mainly work on novel and promising ideas.
 
 At Veridas I can devote half of the time to the ARC challenge, and use the compute resources from the cluster. I could also use up to 15k$ in cloud computing if needed.
 
 We can make one submission a day that it is worth 50$ in compute, that would be around 10k$ for all the competition. I believe I should use it as much as possible to gain information. Maybe I could use the development set as my test set and the public test set as my validation set.
 However be aware that making a lot of submissions could prevent joining other people later in the competition.
-
-## Terminology
-
-<!--- Sometimes the field of the challenge has specific terms, if that is the
-case write them here, otherwise delete this section.--->
-
-## Questions
-
-<!--- Write here any question that arises when reading about the challenge --->
-
-## Project Plan
-
-<!--- Write initial ideas for the project. This is just initial thoughts,
-during the challenge I will have a better understanding of the project and
-with better information I could decide other actions not considered here.--->

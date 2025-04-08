@@ -28,6 +28,24 @@ So if doing inference for each task introduces an overhead of 1 minute per task,
 So even a non efficient solution that wastes 1 minute to load and compile the model per task will have most of the time
 for compute.
 
+### Base model in `dev/shm`
+
+I have tried copying the model to `dev/shm` but did not observed any speedup. Probably when I read the model for the first
+time it is cached. The model is slightly less than 4GB. [Notebook with experiments](https://www.kaggle.com/code/ironbar/the-architects-debug)
+
+### Batch size and training speed
+
+| experiment                 | batch_size=1 | batch_size=2 | batch_size=4 |
+|----------------------------|--------------|--------------|--------------|
+| 2 shortest tasks, 4 epochs | 72s          | 63s          | 58s          |
+| 2 longest tasks, 1 epoch   | 125s         | 122s         | 136s         |
+
+Clearly it pays to use a batch size of 1 if the gradient has enough information, that will allow to update the model more times.
+
+### Comparison with my solution for ARC24 challenge
+
+In my solution I could do 320 training steps for each task on ARC24 challenge. I was using a model of just 0.5B parameters versus the current 7B parameters. Now if I use 6 epochs that would be just 48 training steps, so training is 10 times shorter.
+
 ## Results
 
 ## Conclusion
@@ -36,5 +54,5 @@ for compute.
 
 ## TODO
 
-- [ ] How GPU usage looks when using batch size 1?
-- [ ] What if I copy the base model to `dev/shm`
+- [x] How GPU usage looks when using batch size 1?
+- [x] What if I copy the base model to `dev/shm`

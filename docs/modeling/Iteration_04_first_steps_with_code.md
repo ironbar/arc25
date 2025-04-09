@@ -30,7 +30,15 @@ More information:
 ![qwen models benchmark vs sizes](res/2025-04-09-12-46-56.png)
 
 - Bigger models score higher in the benchmarks as expected, it resembles a typical log-linear relation.
-- One weird thing is that the 3B model has the Qwen-research license instead of Apache 2.0 license.
+- One weird thing is that the 3B model has the Qwen-research license instead of Apache 2.0 license. The Qwen-research license does not allow for commercial use but I could probably use it for the ARC challenge.
+
+### The right tool for each job
+
+- [VLLM](https://blog.runpod.io/introduction-to-vllm-and-how-to-run-vllm-on-runpod-serverless/) seems to be the fasts option for inference. On my [ARC24 solution](https://www.kaggle.com/code/ironbar/single-task-test-time-fine-tuning-for-arc24?scriptVersionId=199282752) I was able to make 96 predictions per task, and I believe the time used for inference was around 2 hours. Probably the architects didn't use VLLM because they created their own depth first. [Dynamically serving LoRA Adapters](https://docs.vllm.ai/en/stable/features/lora.html#dynamically-serving-lora-adapters) 
+- unsloth enables memory efficient and faster fine-tuning on a single gpu
+- I could create some server to run the generated code on CPU
+
+One interesting implementation would be to have independent services for: inference, fine-tuning and running code. And a master process would call this services, this master process would be very light because all the heavy work will be handed to the services.
 
 ## Results
 
@@ -42,4 +50,4 @@ More information:
 
 ## TODO
 
-- [ ] Is the model license important? https://gemini.google.com/app/c849d289d357a788
+- Does VLLM support new loras on the fly?

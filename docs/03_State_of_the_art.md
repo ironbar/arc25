@@ -6,11 +6,11 @@ I'm going to recap all the learnings from the previous [ARC24 challenge](https:/
 
 ## Summary of all the learnings
 
-- Reasoning models trained with RL like `o3` can solve ARC, but they need a lot of compute. That is around [x40000 times](https://x.com/guille_bar/status/1870479630383329472) the compute allowed in the competition ($8 vs $340k). 
+- Reasoning models trained with RL like `o3` can solve ARC-AGI-1, but they need a lot of compute. That is around [x40000 times](https://x.com/guille_bar/status/1870479630383329472) the compute allowed in the competition ($8 vs $340k). However on ARC-AGI-2 they seem to be scoring below 5%.
 - Test-time training is crucial to improve the accuracy of transduction models. In my case the score improves from 11 to 33.
 - Frontier LLMs can generate code that solves more than half of the semi-private ARC set.
 - Induction and transduction are complementary approaches. It would have sense to first try with induction (which has higher guarantees) and use transduction only if induction fails.
-- LLMs struggle with tasks that have big grids, however the fact that `o3` can solve ARC it might hint that a 2d representation for the grid is not needed.
+- LLMs struggle with tasks that have big grids, however the fact that `o3` can solve ARC might hint that a 2d representation for the grid is not needed.
 
 ## [OpenAI solved the ARC challenge with a tuned version of `o3`](https://arcprize.org/blog/oai-o3-pub-breakthrough)
 

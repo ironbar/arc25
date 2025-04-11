@@ -63,6 +63,14 @@ This paper defined the terms transduction (generating the output grid directly) 
 
 The [code](https://github.com/xu3kev/BARC) is open-source and I should take a look at it, it could serve as inspiration for creating the DSL.
 
+## [ARC-AGI without pretraining](https://iliao2345.github.io/blog_posts/arc_agi_without_pretraining/arc_agi_without_pretraining.html)
+
+This novel approach does not use any training data! Scores 4.17 on ARC-AGI-2.
+
+> We propose that lossless information compression can serve as an effective framework for solving ARC-AGI puzzles. A more efficient (i.e., lower-bit) compression of a puzzle correlates with a more accurate solution.
+
+I don't understand the method well but it seems to be trying to create a compressed representation of the task, that is used to generate the output for the test sample.
+
 ## Other
 
 ### [CodeIt: Self-Improving Language Models with Prioritized Hindsight Replay](https://arxiv.org/abs/2402.04858)

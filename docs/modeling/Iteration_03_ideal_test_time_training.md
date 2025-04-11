@@ -54,6 +54,14 @@ In my solution I could do 320 training steps for each task on ARC24 challenge. I
 
 ## Results
 
+### Evaluation vs test set
+
+On this [notebook](https://www.kaggle.com/code/ironbar/the-architects-single-task-ttt/notebook) I have run the exact same setup that has scored 10.17 on the leaderboard and took 9 hours to run. 
+
+If I run the exact same configuration on the evaluation set it only takes 4 hours and scores 10.6 (I'm not sure what the architects prints mean because on them the score is 8.7).
+
+So there is a big difference in runtime speed. Maybe the test set is longer.
+
 ## Conclusion
 
 ## Next steps
@@ -68,3 +76,5 @@ In my solution I could do 320 training steps for each task on ARC24 challenge. I
   - [ ] Inference parameters (n and min_prob)
   - [ ] Learning rate
   - [ ] My intuition is that I should train as long as possible, and make just 8 predictions per task.
+- [x] Check the evaluation prints of the architects. They are different to normal scoring
+- [ ] Make more evaluations on the evaluation set and compare to test set. I want to see a correlation of runtime and score.

@@ -16,7 +16,7 @@ I'm going to recap all the learnings from the previous [ARC24 challenge](https:/
 
 ![o3 performance](res/2025-03-18-13-59-03.png)
 
-It is not public, but it is very likely that `o3` is trained just with reinforcement learning like `r1`. When [o1 was announced](https://openai.com/index/learning-to-reason-with-llms/) they said:
+Details are not public, but it is very likely that `o3` is trained just with reinforcement learning like `r1`. When [o1 was announced](https://openai.com/index/learning-to-reason-with-llms/) they said:
 
 > Our large-scale reinforcement learning algorithm teaches the model how to think productively using its chain of thought in a highly data-efficient training process.
 
@@ -42,10 +42,11 @@ Interestingly in the [results](https://arcprize.org/blog/r1-zero-r1-results-anal
 
 ## Test-time training (TTT)
 
-Test-time training was arguably the biggest discovery of ARC24 challenge. In retrospective it is clear that if intelligence is all about adaptation to novelty, then we should not use frozen models but let them adapt to do new tasks. The MindsAI team found this approach but they decided not to make their solution public.
+Test-time training was arguably the biggest discovery of ARC24 challenge. In retrospective it is clear that if intelligence is all about adaptation to novelty, then we should not keep the models frozen but let them adapt to do new tasks. The MindsAI team found this approach but they decided not to make their solution public.
 
 Probably the best implementation and description was done by [the Architects](https://arxiv.org/abs/2411.07279). There is also a paper named [The Surprising Effectiveness of Test-Time Training for Abstract Reasoning](https://arxiv.org/abs/2411.07279) and my own [solution](https://ironbar.github.io/arc24/05_Solution_Summary/) also used TTT.
 
+Update: The MindsAI team has published [a paper](https://github.com/MohamedOsman1998/deep-learning-for-arc/blob/main/deep_learning_for_arc.pdf) describing their approach.
 
 ## Code generation
 

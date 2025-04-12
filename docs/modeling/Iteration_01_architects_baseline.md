@@ -24,7 +24,7 @@ I have created my own [notebook](https://www.kaggle.com/code/ironbar/the-archite
 
 #### min_prob
 
-I have seen that increasing the value of min_prob results on faster inference, but at the same time I believe that less correct predictions are made. If I use `min_prob=None` all the predictions are correct, probably that uses a greedy approach whereas in the other case it only creates a prediction if the probability is higher than the parameter value.
+I have seen that increasing the value of min_prob results on faster inference, but at the same time I believe that less valid predictions are made. If I use `min_prob=None` all the predictions are valid, probably that uses a greedy approach whereas in the other case it only creates a prediction if the probability is higher than the parameter value.
 
 ```
 # parameter values and inference times
@@ -99,7 +99,7 @@ The architects solution can score 7% on the new ARC-AGI-2 public test set. On th
 ## Next steps
 
 - Probably the easiest way to keep improving the baseline is to split the data in more folds. Using 8 folds would naturally fit with using 8 processes at inference. I would have to see how to coordinate the training runs.
-- Everyday we are allowed to make submissions with a compute cost of 50$. Over 7 months that will be around 10k$. That is a lot of money, maybe I should use the private test set as my development set and use the evaluation set as the test set (to decide the final submission).
+- Everyday we are allowed to make submissions with a compute cost of \$50. Over 7 months that will be around \$10k. That is a lot of money, maybe I should use the private test set as my development set and use the evaluation set as the test set (to decide the final submission).
 
 ## TODO
 

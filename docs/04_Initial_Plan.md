@@ -23,6 +23,9 @@ We already know that HER enables faster learning, specially in very sparse rewar
 
 ![](res/2025-03-25-16-38-36.png)
 
+Additionally we could define a continuous metric such as the number of correct pixels and use it with reinforcement learning to modify the model towards solutions
+that score higher.
+
 ## Path 2. Human inspired approach
 
 When humans try to solve ARC tasks we draw some hypothesis and test it in our heads, if it is not correct we refine the hypothesis. To do this we use 3 modules:
@@ -35,7 +38,7 @@ Reasoning is iterative, we do it step by step combining the 3 modules above.
 
 My intuition is that o3 success in ARC-AGI-1 is likely due to an improved policy and better judgment. Vanilla LLMs are not good at judgment, but reasoning models need to be able to know if some answer is correct or wrong. By training with reinforcement learning the model improves its policy, it learns which strategies are good and which are bad to solve the ARC tasks. o3 very likely describes the task with natural language, generates the output grid and checks if the output looks correct. It might try different approaches, refine the description and when it is certain returns the response.
 
-Focusing on efficiency the best configuration for ARC would be the following:
+Focusing on efficiency the best configuration for ARC might be the following:
 
 - Policy: model
 - World model: python interpreter
@@ -61,15 +64,15 @@ more compute (generating more tokens requires more compute). We have to design a
 
 While solution is not found:
 
-1. Generate `n` python functions given input-output pairs. 
+1. Generate `n` python functions given input-output pairs. `n=8` might be a good parametrization if we apply rotations and transpose to the original task.
 2. Do `r` steps of iterative function refinement
-3. Test-time training. The model has generated `m` python functions that are not correct, but they run and hopefully they are in the right direction. We can treat those functions as new tasks and do test-time training on them (we know the inputs, outputs and code)
+3. Test-time training. The model has generated `m` python functions that are not correct, but they run and hopefully they are in the right direction. We can treat those functions as new tasks and do test-time training on them (we know the inputs, outputs and code). We could also apply RL techniques such as [GRPO](https://arxiv.org/abs/2402.03300).
 
 The model will be given all the task inputs and the available outputs, and will have to write python code that implements the task. By giving all the inputs we force the model to create python code to generalize to inputs that do not have output.
 
 ## Tricks
 
-- Teach how to use the DSL. It is important to create examples of how to use each function in the DSL
+- Teach how to use the DSL. It is important to create examples of how to use each function in the DSL. Also learning to combine the primitive functions might be important for ARC-AGI-2 because there is an emphasis on compositionality.
 - Upsampling as data augmentation
 - I can remove words from the tokenizer of a model to simplify grid representation.
 - I could teach the model to draw. Given some painting generate code to create the painting. That might help the model to learn the 2d structure of the grids.

@@ -47,6 +47,7 @@ One interesting implementation would be to have independent services for: infere
 ## Next steps
 
 - Base or Instruct model? On Qwen they recommend the base model if we are going to fine-tune.
+- [lmdeploy](https://github.com/InternLM/lmdeploy) seems to be a faster alternative to VLLM
 
 ## TODO
 

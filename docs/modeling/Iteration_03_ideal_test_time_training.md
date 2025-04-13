@@ -8,7 +8,7 @@ Update the architects' code to be able to make training and inference for each t
 
 ## Motivation
 
-ARC tasks are independent, thus when doing test-time training is better to focus on each task instead of training on all the tasks at the same time.
+ARC tasks are independent, thus when doing test-time training is better to focus on each task instead of training on all the tasks at the same time. Knowledge transfer between the different tasks should be very small, so fine-tuning a custom model for each task should be the best strategy.
 
 I don't believe ARC can be solved using last year ARC24 solution, but being able to do test-time training for each task efficiently is very likely a part of this year solution.
 
@@ -52,6 +52,22 @@ Clearly it pays to use a batch size of 1 if the gradient has enough information,
 
 In my solution I could do 320 training steps for each task on ARC24 challenge. I was using a model of just 0.5B parameters versus the current 7B parameters. Now if I use 6 epochs that would be just 48 training steps, so training is 10 times shorter.
 
+### Increasing GPU usage
+
+After looking at the plots of GPU usage I have noticed that I could increase the number of slots per GPU both on training and inference.
+
+| train GPU slots | inf GPU slots | mean GPU usage | max VRAM | training time (s) | inference time (s) |
+|-----------------|---------------|----------------|----------|-------------------|--------------------|
+| 1               | 2             | 89.5%          | 51.4%    | 7087              | 7360               |
+| 2               | 2             | 93.9%          | 50.2%    | 6864              | 6748               |
+| 2               | 3             | 95.0%          | 76.6%    | 6962              | 6902               |
+
+The most reliable metric is mean GPU usage. Inference time we already know that it is not reliable and there is
+some variability on training times due to the random assignment of the tasks. Using 2 slots per GPU for training and
+3 for inference should give a speedup of around 6%, which is 43 minutes for the 12 hour run. Not game changing but very welcome.
+
+[Link to full results](https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&range=A42)
+
 ## Results
 
 ### Evaluation vs test set
@@ -78,3 +94,4 @@ So there is a big difference in runtime speed. Maybe the test set is longer.
   - [ ] My intuition is that I should train as long as possible, and make just 8 predictions per task.
 - [x] Check the evaluation prints of the architects. They are different to normal scoring
 - [ ] Make more evaluations on the evaluation set and compare to test set. I want to see a correlation of runtime and score.
+- [ ] What if I use 2 GPU slots for training? Currently just 40% of GPU memory is used.

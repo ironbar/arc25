@@ -77,3 +77,4 @@ The model will be given all the task inputs and the available outputs, and will 
 - I can remove words from the tokenizer of a model to simplify grid representation.
 - I could teach the model to draw. Given some painting generate code to create the painting. That might help the model to learn the 2d structure of the grids.
 - Focus on an end to end approach. On ARC24 I lost the focus and mostly worked on pre-training. I should always evaluate the end to end system, although it requires more compute is the right way to do it.
+- Being able to create embeddings with 2d information could be a boost for the model. That needs to be done when pre-training the model.

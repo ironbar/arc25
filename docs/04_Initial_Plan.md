@@ -28,23 +28,40 @@ that score higher.
 
 ## Path 2. Human inspired approach
 
-When humans try to solve ARC tasks we draw some hypothesis and test it in our heads, if it is not correct we refine the hypothesis. To do this we use 3 modules:
+![](res/how-humans-solve-arc.png)
+
+When humans try to solve ARC tasks we draw some hypothesis and test it in our heads, if it is not correct we update our beliefs and refine the hypothesis. What modules are needed to do this process?
 
 - **Policy.** What action do I have to do to achieve the goal? Learned with hindsight
 - **World model.** What happens if do this action? Learned with past experiences
 - **Judgment.** Is the solution correct? Learned with human feedback or by comparison
+- **Learning.** In difficult problems we are able to learn from our errors and modify our initial beliefs about the problem.
 
-Reasoning is iterative, we do it step by step combining the 3 modules above. 
+Reasoning is an iterative process, as shown in the loop diagram in the image.
 
-My intuition is that o3 success in ARC-AGI-1 is likely due to an improved policy and better judgment. Vanilla LLMs are not good at judgment, but reasoning models need to be able to know if some answer is correct or wrong. By training with reinforcement learning the model improves its policy, it learns which strategies are good and which are bad to solve the ARC tasks. o3 very likely describes the task with natural language, generates the output grid and checks if the output looks correct. It might try different approaches, refine the description and when it is certain returns the response.
+### How o3 solved ARC-AGI-1?
+
+My intuition is that o3 success in ARC-AGI-1 is likely due to an improved policy and better judgment. Vanilla LLMs are not good at judgment, but reasoning models need to learn to know if some answer is correct or wrong. By training with reinforcement learning the model improves its policy, it learns which strategies are good and which are bad to solve the ARC tasks. o3 very likely describes the task with natural language, generates the output grid and checks if the output looks correct. It might try different approaches, refine the description and when it is certain returns the response.
+
+The main problems of o3 are:
+
+- It generates 55k tokens per run, we probably cannot afford with the compute budget given in Kaggle.
+- Does not seem to generalize well to more complex tasks with interacting rules such as ARC-AGI-2
+
+### How AI might solve ARC?
+
+We can reuse the diagram of how humans solve ARC and replace the elements.
+
+![](res/how-ai-might-solve-arc.png)
 
 Focusing on efficiency the best configuration for ARC might be the following:
 
-- Policy: model
-- World model: python interpreter
-- Judgement: metric function
+- **Policy**: model, a Large Reasoning Model.
+- **World model**: python interpreter
+- **Judgment**: metric function
+- **Learning**: reinforcement learning and hindsight experience replay
 
-That way we only have to learn the policy and we have guarantees that the other modules will be perfect.
+That way we only have to learn the policy and parametrize the learning, all the other modules are guaranteed to work perfectly.
 
 ## RL-ARC
 
@@ -78,3 +95,4 @@ The model will be given all the task inputs and the available outputs, and will 
 - I could teach the model to draw. Given some painting generate code to create the painting. That might help the model to learn the 2d structure of the grids.
 - Focus on an end to end approach. On ARC24 I lost the focus and mostly worked on pre-training. I should always evaluate the end to end system, although it requires more compute is the right way to do it.
 - Being able to create embeddings with 2d information could be a boost for the model. That needs to be done when pre-training the model.
+- Deepseek-R1 paper describes that for small LLMs it is better to use distillation from bigger models than to use RL.

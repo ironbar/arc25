@@ -114,6 +114,18 @@ If we only trained the model in the latest response I'm not sure if it will need
 
 On an online RL setup we would reward all CoT that generates the correct answer. We could shape the reward to give higher score to shorter answers, favouring efficiency. On an offline setup maybe curriculum learning could help by training first on the longer conversations and finally on the shorter ones.
 
+### Soft metric
+
+Current ARC metric is binary, maybe using a continuous and softer metric could help learning on some tasks.
+
+```python
+def soft_arc_metric(y_true, y_pred):
+    if y_true.shape == y_pred.shape:
+        return np.mean(y_true == y_pred) # ∈ [0, 1]
+    else:
+        return -np.mean(np.abs(np.array(y_true.shape) - np.array(y_pred.shape))/29) # ∈ [-1, 0)
+```
+
 ## Tricks
 
 - Teach how to use the DSL. It is important to create examples of how to use each function in the DSL. Also learning to combine the primitive functions might be important for ARC-AGI-2 because there is an emphasis on compositionality.

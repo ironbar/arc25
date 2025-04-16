@@ -114,6 +114,23 @@ If we only trained the model in the latest response I'm not sure if it will need
 
 On an online RL setup we would reward all CoT that generates the correct answer. We could shape the reward to give higher score to shorter answers, favouring efficiency. On an offline setup maybe curriculum learning could help by training first on the longer conversations and finally on the shorter ones.
 
+### Global diagram
+
+![](res/global-arc-schema.png)
+
+My responsibilities are:
+
+- Define a complete yet minimal domain specific language (DSL)
+- Create training data to learn to use the DSL
+- Define all the training hyperparameters: base model, loss, training data...
+- Define the hyperparameters of test
+
+I should not solve the tasks by writing code, the model should be able to solve the tasks given its training and the test setup.
+
+This is an iterative process, hopefully a virtuous cycle where improvements in one side of the diagram cause improvements in the other side and vice versa. If this is true I could expect slow progress at the beginning and fast progress at the end.
+
+On a first step I have to define a start DSL, create training data and train a first model to start to spin up the wheel.
+
 ### Soft metric
 
 Current ARC metric is binary, maybe using a continuous and softer metric could help learning on some tasks.

@@ -72,7 +72,7 @@ This novel approach does not use any training data! Scores 4.17 on ARC-AGI-2.
 
 I don't understand the method well but it seems to be trying to create a compressed representation of the task, that is used to generate the output for the test sample.
 
-## Other
+## Reasoning, code and RL
 
 ### [CodeIt: Self-Improving Language Models with Prioritized Hindsight Replay](https://arxiv.org/abs/2402.04858)
 
@@ -85,6 +85,25 @@ This paper shows that it's possible to learn from the test set using hindsight r
 - Do the search first on the training tasks to generate more training data
 - More data augmentation
 - Use a more simple and minimal DSL
+
+### [RLEF: Grounding Code LLMs in Execution Feedback with Reinforcement Learning](https://arxiv.org/abs/2410.02089)
+
+In this paper they train the models to use effectively the feedback from code execution by using reinforcement learning. 
+
+- They train on 13k problems, an order of magnitude higher than ARC. The model is updated 12k times, each update is done with a batch size of 256. 
+- The model is given 3 attempts to solve the tasks. 
+- Only the final response is considered to compute the reward
+- Trained took 5700 A100 GPU hours (20*288), that is around $10k. If I can work an order of magnitude below I would be fine. 
+- The 70B model roughly doubles the performance of the 8B model. 
+- Their implementation of SFT does not match the results from RL (This contradicts the R1 paper)
+
+### [DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning](https://arxiv.org/abs/2501.12948)
+
+They show that the model can develop capabilities such as self-verification, reflection  just with RL, without the need of SFT.
+
+One interesting finding is that the reasoning patterns of larger models can be distilled into smaller models, resulting in better performance compared to the reasoning patterns discovered through RL on small models.
+
+## Other
 
 ### [Searching Latent Program Spaces](https://arxiv.org/abs/2411.08706)
 

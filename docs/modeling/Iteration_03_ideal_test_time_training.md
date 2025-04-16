@@ -88,10 +88,11 @@ So there is a big difference in runtime speed. Maybe the test set is longer.
 - [x] What if I copy the base model to `dev/shm`
 - [ ] Tune the submission hyperparameters
   - [ ] Lora rank
-  - [ ] Number of training epochs
+  - [ ] Number of training epochs (better change epochs than learning rate when possible)
   - [ ] Inference parameters (n and min_prob)
   - [ ] Learning rate
   - [ ] My intuition is that I should train as long as possible, and make just 8 predictions per task.
+  - [ ] Uncertainty on the results (what if I change the random seed?)
 - [x] Check the evaluation prints of the architects. They are different to normal scoring
 - [ ] Make more evaluations on the evaluation set and compare to test set. I want to see a correlation of runtime and score.
 - [ ] What if I use 2 GPU slots for training? Currently just 40% of GPU memory is used.

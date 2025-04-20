@@ -93,6 +93,7 @@ So there is a big difference in runtime speed. Maybe the test set is longer.
   - [ ] Learning rate
   - [ ] My intuition is that I should train as long as possible, and make just 8 predictions per task.
   - [ ] Uncertainty on the results (what if I change the random seed?)
+  - [ ] Are the training samples correctly sorted? Maybe they are not optimal for single task training
 - [x] Check the evaluation prints of the architects. They are different to normal scoring
 - [ ] Make more evaluations on the evaluation set and compare to test set. I want to see a correlation of runtime and score.
 - [ ] What if I use 2 GPU slots for training? Currently just 40% of GPU memory is used.

@@ -103,6 +103,14 @@ They show that the model can develop capabilities such as self-verification, ref
 
 One interesting finding is that the reasoning patterns of larger models can be distilled into smaller models, resulting in better performance compared to the reasoning patterns discovered through RL on small models.
 
+### [Improving Multi-Turn Tool Use with Reinforcement Learning](https://www.bespokelabs.ai/blog/improving-multi-turn-tool-use-with-reinforcement-learning)
+
+TODO:
+
+### [ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](https://arxiv.org/abs/2504.11536)
+
+TODO:
+
 ## Other
 
 ### [Searching Latent Program Spaces](https://arxiv.org/abs/2411.08706)

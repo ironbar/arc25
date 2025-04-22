@@ -111,6 +111,14 @@ Bespoke Labs employed Group Relative Policy Optimization (GRPO) to train Qwen2.5
 
 TODO:
 
+### [Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?](https://natolambert.substack.com/p/does-reinforcement-learning-really)
+
+This paper shows that if we look at `pass@k` metric the base model outperform RL fine-tuned models when we use big `k` values. This shows that the base model has higher variance than the fine-tuned one, so if we sample long enough we will eventually get some correct answer.
+
+The advantage of RL is that it increases the `pass@1` metric, which is arguably much more important than the `pass@256` metric. If we don't have a reliable method to select the correct answer there is no value in generating a correct answer among a lot of incorrect ones.
+
+It is likely that in the future better exploration methods during RL might change these results. Otherwise the models will be constrained by the goodness of the base model.
+
 ## Other
 
 ### [Searching Latent Program Spaces](https://arxiv.org/abs/2411.08706)

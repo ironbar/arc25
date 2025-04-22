@@ -109,7 +109,7 @@ Bespoke Labs employed Group Relative Policy Optimization (GRPO) to train Qwen2.5
 
 ### [ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](https://arxiv.org/abs/2504.11536)
 
-TODO:
+**ReTool** is a reinforcement learning framework that equips LLMs with the ability to strategically invoke tools through multi-turn code execution during reasoning. By integrating real-time code execution into the learning loop, ReTool not only improves performance on complex tasks like the AIME math benchmark but also achieves significantly more efficient training compared to text-only RL methods. The model autonomously learns when and how to use code, resulting in concise, accurate reasoning and emergent behaviors such as code self-correction.
 
 ### [Does Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs Beyond the Base Model?](https://natolambert.substack.com/p/does-reinforcement-learning-really)
 

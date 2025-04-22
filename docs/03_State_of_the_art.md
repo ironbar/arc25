@@ -105,7 +105,7 @@ One interesting finding is that the reasoning patterns of larger models can be d
 
 ### [Improving Multi-Turn Tool Use with Reinforcement Learning](https://www.bespokelabs.ai/blog/improving-multi-turn-tool-use-with-reinforcement-learning)
 
-TODO:
+Bespoke Labs employed Group Relative Policy Optimization (GRPO) to train Qwen2.5-7B-Instruct on just 100 examples from the BFCL benchmark, enhancing multi-turn tool use performance by 23% without relying on human or teacher demonstrations. This approach enabled the agent to learn complex tool orchestration—such as sequencing API calls for tasks like flight booking—through reinforcement learning guided solely by outcome-based rewards.
 
 ### [ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](https://arxiv.org/abs/2504.11536)
 

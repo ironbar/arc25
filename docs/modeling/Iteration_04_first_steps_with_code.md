@@ -44,7 +44,7 @@ One interesting implementation would be to have independent services for: infere
 - The training samples should have different levels of complexity. There should be very simple examples with just
 one primitive function, and more complex examples with multiple primitive functions. I might need some criteria to validate training samples, for example I could test what would happen if removing lines of code and if the output does not change it means those lines are not necessary.
 - LLMs could be helpful to generate new training samples (This was done in the [Transduction and induction](https://arxiv.org/abs/2411.02272) paper).
-- I could use my own [DSL](https://github.com/ironbar/omni-arc/blob/main/omniarc/dsl.py) from ARC24 as a start point.
+- I could use my own [DSL](https://github.com/ironbar/omni-arc/blob/main/omniarc/dsl.py) from ARC24 as a start point, I could also have a look at this other [DSL from BARC](https://github.com/xu3kev/BARC/blob/master/seeds/common.py)
 
 The idea is to define a first version of the DSL, train a first model on it and see how it performs on inference.
 

@@ -48,6 +48,12 @@ one primitive function, and more complex examples with multiple primitive functi
 
 The idea is to define a first version of the DSL, train a first model on it and see how it performs on inference.
 
+The development of the DSL would follow these steps:
+
+1. Write the DSL function
+2. Add tests and verify they run with `make test`
+3. Add examples of how to use the function and visualize them in a jupyter notebook
+
 ## Results
 
 ## Conclusion

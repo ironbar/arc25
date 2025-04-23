@@ -1,11 +1,6 @@
 # Iteration 4. First steps with code
 
-_start date_
-
-<!---
-The work is done using short iterations. Each iteration needs to have a very
-clear goal. This allows to gain greater knowledge of the problem on each iteration.
---->
+_23-04-2025_
 
 ## Goal
 
@@ -40,6 +35,19 @@ More information:
 
 One interesting implementation would be to have independent services for: inference, fine-tuning and running code. And a master process would call this services, this master process would be very light because all the heavy work will be handed to the services.
 
+### DSL definition
+
+- There needs to be a document that describes the DSL, it might be a docstring in the python module.
+- Polymorphism (functions that receive different data types) will make for a more simple DSL
+- All primitive functions need tests
+- All primitive functions need training samples of how to use them, we will use them to fine-tune the LLM.
+- The training samples should have different levels of complexity. There should be very simple examples with just
+one primitive function, and more complex examples with multiple primitive functions. I might need some criteria to validate training samples, for example I could test what would happen if removing lines of code and if the output does not change it means those lines are not necessary.
+- LLMs could be helpful to generate new training samples (This was done in the [Transduction and induction](https://arxiv.org/abs/2411.02272) paper).
+- I could use my own [DSL](https://github.com/ironbar/omni-arc/blob/main/omniarc/dsl.py) from ARC24 as a start point.
+
+The idea is to define a first version of the DSL, train a first model on it and see how it performs on inference.
+
 ## Results
 
 ## Conclusion
@@ -50,5 +58,3 @@ One interesting implementation would be to have independent services for: infere
 - [lmdeploy](https://github.com/InternLM/lmdeploy) seems to be a faster alternative to VLLM
 
 ## TODO
-
-- Does VLLM support new loras on the fly?

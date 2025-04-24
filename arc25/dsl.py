@@ -8,6 +8,12 @@ This are the objects that can be used in the DSL.
 
 - grid: np.ndarray
 - object:
+- bounding_box: np.ndarray
 - point: np.ndarray
 - number: int
+
+
+## Drawing functions
+
+create grid, line, rectangle, fill
 """

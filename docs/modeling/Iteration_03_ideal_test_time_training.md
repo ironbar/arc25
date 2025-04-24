@@ -78,6 +78,12 @@ If I run the exact same configuration on the evaluation set it only takes 4 hour
 
 So there is a big difference in runtime speed. Maybe the test set is longer.
 
+### Training epochs
+
+![alt text](res/1745469291160_image.png)
+
+It seems that a small number of training epochs (6) is bad, but also once we reach a certain number of epochs (8-10) increasing the training length is not beneficial. Maybe I have to lower the learning rate when using a bigger number of epochs?
+
 ## Conclusion
 
 ## Next steps
@@ -88,7 +94,7 @@ So there is a big difference in runtime speed. Maybe the test set is longer.
 - [x] What if I copy the base model to `dev/shm`
 - [ ] Tune the submission hyperparameters
   - [ ] Lora rank
-  - [ ] Number of training epochs (better change epochs than learning rate when possible)
+  - [x] Number of training epochs (better change epochs than learning rate when possible)
   - [ ] Inference parameters (n and min_prob)
   - [ ] Learning rate
   - [ ] My intuition is that I should train as long as possible, and make just 8 predictions per task.

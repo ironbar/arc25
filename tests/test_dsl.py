@@ -28,3 +28,16 @@ def test_create_img(shape, color):
 def test_draw_line(input_img, point1, point2, color, output_img):
     img = draw_line(input_img, point1, point2, color)
     assert np.array_equal(img, output_img)
+
+
+@pytest.mark.parametrize("input_img, point1, point2, color, output_img", [
+    [create_img((3, 3), 0), (0, 0), (1, 1), 1, Img([[1, 1, 0],
+                                                    [1, 1, 0],
+                                                    [0, 0, 0]]),],
+    [create_img((3, 3), 0), (1, 1), (2, 2), 2, Img([[0, 0, 0],
+                                                    [0, 2, 2],
+                                                    [0, 2, 2]]),],
+])
+def test_draw_rectangle(input_img, point1, point2, color, output_img):
+    img = draw_rectangle(input_img, point1, point2, color)
+    assert np.array_equal(img, output_img)

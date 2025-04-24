@@ -10,3 +10,21 @@ def test_create_img(shape, color):
     assert np.all(img.shape == shape)
     assert np.all(img == color)
 
+
+@pytest.mark.parametrize("input_img, point1, point2, color, output_img", [
+    [create_img((3, 3), 0), (0, 0), (2, 2), 1, Img([[1, 0, 0],
+                                                    [0, 1, 0],
+                                                    [0, 0, 1]]),],
+    [create_img((3, 3), 0), (0, 0), (0, 2), 1, Img([[1, 1, 1],
+                                                    [0, 0, 0],
+                                                    [0, 0, 0]]),],
+    [create_img((3, 3), 0), (0, 0), (2, 0), 1, Img([[1, 0, 0],
+                                                    [1, 0, 0],
+                                                    [1, 0, 0]]),],
+    [create_img((3, 3), 0), (0, 0), (2, 0), 2, Img([[2, 0, 0],
+                                                    [2, 0, 0],
+                                                    [2, 0, 0]]),],
+])
+def test_draw_line(input_img, point1, point2, color, output_img):
+    img = draw_line(input_img, point1, point2, color)
+    assert np.array_equal(img, output_img)

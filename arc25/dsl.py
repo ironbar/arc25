@@ -24,7 +24,12 @@ This are the objects that can be used in the DSL.
 create grid, line, rectangle, fill
 """
 import numpy as np
+import skimage
+from typing import Tuple, Union
 
+#############################
+# Objects
+#############################
 
 class Img(np.ndarray):
     """
@@ -43,6 +48,34 @@ class Img(np.ndarray):
     def shape(self, value):
         super(Img, self.__class__).shape.fset(self, tuple(value))
 
+    def __repr__(self):
+        return '\n'.join(''.join(str(int(v)) for v in row) for row in self)
+    
+    def __str__(self):
+        return self.__repr__()
 
-def create_img(shape, color):
+#############################
+# Drawing functions
+#############################
+
+
+def create_img(shape: Tuple[int], color: int = 0) -> Img:
     return Img(np.ones(shape, dtype=np.int8) * color)
+
+
+def draw_line(img: Img, point1: Tuple[int], point2: Tuple[int], color: int = 1) -> Img:
+    row1, col1 = point1
+    row2, col2 = point2
+    # Use Bresenham's line algorithm from skimage to get the coordinates
+    rr, cc = skimage.draw.line(row1, col1, row2, col2)
+    rr, cc = _filter_points_outside_the_image(rr, cc, img)
+    img[rr, cc] = color
+    return img
+
+
+def _filter_points_outside_the_image(rows, cols, img):
+    valid_points = np.logical_and(np.logical_and(rows >= 0, rows < img.shape[0]),
+                                  np.logical_and(cols >= 0, cols < img.shape[1]))
+    rows = rows[valid_points]
+    cols = cols[valid_points]
+    return rows, cols

@@ -54,6 +54,8 @@ The development of the DSL would follow these steps:
 2. Add tests and verify they run with `make test`
 3. Add examples of how to use the function and visualize them in a jupyter notebook
 
+I'm going to use python 3.10 because it's the same version as the Kaggle notebook.
+
 ## Results
 
 ## Conclusion

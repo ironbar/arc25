@@ -41,3 +41,22 @@ def test_draw_line(input_img, point1, point2, color, output_img):
 def test_draw_rectangle(input_img, point1, point2, color, output_img):
     img = draw_rectangle(input_img, point1, point2, color)
     assert np.array_equal(img, output_img)
+
+
+@pytest.mark.parametrize("point, color, connectivity, input_img, output_img", [
+    [(0, 0), 2, 4, Img([[0, 1, 0],
+                        [1, 0, 0],
+                        [0, 0, 0]]), 
+                    Img([[2, 1, 0],
+                         [1, 0, 0],
+                         [0, 0, 0]]),],
+    [(0, 0), 2, 8, Img([[0, 1, 0],
+                        [1, 0, 0],
+                        [0, 0, 0]]), 
+                    Img([[2, 1, 2],
+                         [1, 2, 2],
+                         [2, 2, 2]]),],
+])
+def test_flood_fill(point, color, connectivity, input_img, output_img):
+    img = flood_fill(input_img, point, color, connectivity)
+    assert np.array_equal(img, output_img)

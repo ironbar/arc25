@@ -21,7 +21,7 @@ This are the objects that can be used in the DSL.
 
 ## Drawing functions
 
-create grid, line, rectangle, fill
+create_img, draw_line, draw_rectangle, flood_fill
 """
 import numpy as np
 import skimage
@@ -83,3 +83,17 @@ def _filter_points_outside_the_image(rows, cols, img):
     rows = rows[valid_points]
     cols = cols[valid_points]
     return rows, cols
+
+
+def flood_fill(img: Img, point: Tuple[int], color: int, connectivity: int) -> Img:
+    """
+    Fill the area of the image with the given color starting from the given point.
+
+    Parameters
+    ----------
+    connectivity : int
+        The connectivity of the area to be filled. 4 for 4-connectivity, 8 for 8-connectivity.
+    """
+    mask = skimage.segmentation.flood(img, seed_point=point, connectivity=connectivity//4)
+    img[mask] = color
+    return img

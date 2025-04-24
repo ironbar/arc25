@@ -76,13 +76,31 @@ On this [notebook](https://www.kaggle.com/code/ironbar/the-architects-single-tas
 
 If I run the exact same configuration on the evaluation set it only takes 4 hours and scores 10.6 (I'm not sure what the architects prints mean because on them the score is 8.7).
 
-So there is a big difference in runtime speed. Maybe the test set is longer.
+The difference in speed is caused because when we are doing the submission the system is evaluated against both partitions of the test set, so that is 240 tasks instead of 120. So I don't have to worry about my system doing timeout on the private test set because the system has already done predictions for it.
 
 ### Training epochs
 
 ![alt text](res/1745469291160_image.png)
 
 It seems that a small number of training epochs (6) is bad, but also once we reach a certain number of epochs (8-10) increasing the training length is not beneficial. Maybe I have to lower the learning rate when using a bigger number of epochs?
+
+### Train Max Sequence Length
+
+![alt text](res/1745469708409_image.png)
+
+The tendency is not very clear, but the best results are obtained when using 8192 which is the maximum training sequence length available for the current model.
+
+Submission time increases slightly.
+
+### Lora rank
+
+![alt text](res/1745469940269_image.png)
+
+It might seem that using a bigger lora rank is beneficial.
+
+### Uncertainty on the LB results
+
+Let's submit the same configuration, just changing the random seed.
 
 ## Conclusion
 
@@ -93,7 +111,7 @@ It seems that a small number of training epochs (6) is bad, but also once we rea
 - [x] How GPU usage looks when using batch size 1?
 - [x] What if I copy the base model to `dev/shm`
 - [ ] Tune the submission hyperparameters
-  - [ ] Lora rank
+  - [x] Lora rank
   - [x] Number of training epochs (better change epochs than learning rate when possible)
   - [ ] Inference parameters (n and min_prob)
   - [ ] Learning rate

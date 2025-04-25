@@ -21,7 +21,7 @@ This are the objects that can be used in the DSL.
 
 ## Drawing functions
 
-create_img, draw_line, draw_rectangle, flood_fill
+create_img, draw_line, draw_rectangle, flood_fill, draw_horizontal_line, draw_vertical_line, draw_pixel
 """
 import numpy as np
 import skimage
@@ -96,4 +96,20 @@ def flood_fill(img: Img, point: Tuple[int], color: int, connectivity: int) -> Im
     """
     mask = skimage.segmentation.flood(img, seed_point=point, connectivity=connectivity//4)
     img[mask] = color
+    return img
+
+
+def draw_horizontal_line(img: Img, y: int, color: int) -> Img:
+    img[y, :] = color
+    return img
+
+
+def draw_vertical_line(img: Img, x: int, color: int) -> Img:
+    img[:, x] = color
+    return img
+
+
+def draw_pixel(img: Img, point: Tuple[int], color: int) -> Img:
+    if 0 <= point[0] < img.shape[0] and 0 <= point[1] < img.shape[1]:
+        img[point[0], point[1]] = color
     return img

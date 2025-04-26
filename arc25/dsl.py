@@ -63,14 +63,14 @@ def create_img(shape: Tuple[int], color: int = 0) -> Img:
     return Img(np.ones(shape, dtype=np.int8) * color)
 
 
-def draw_line(img: Img, point1: Tuple[int], point2: Tuple[int], color: int = 1) -> Img:
+def draw_line(img: Img, point1: Tuple[int], point2: Tuple[int], color: int) -> Img:
     rr, cc = skimage.draw.line(*point1, *point2)
     rr, cc = _filter_points_outside_the_image(rr, cc, img)
     img[rr, cc] = color
     return img
 
 
-def draw_rectangle(img: Img, point1: Tuple[int], point2: Tuple[int], color: int = 1) -> Img:
+def draw_rectangle(img: Img, point1: Tuple[int], point2: Tuple[int], color: int) -> Img:
     rr, cc = skimage.draw.rectangle(point1, point2)
     rr, cc = _filter_points_outside_the_image(rr, cc, img)
     img[rr, cc] = color

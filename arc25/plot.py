@@ -4,6 +4,7 @@ from matplotlib import colors
 
 from arc25.training_tasks import Task
 
+
 def plot_grids_with_shape(grids, suptitle=None, facecolor='white'):
     plt.figure(facecolor=facecolor)
     for plot_idx, grid in enumerate(grids):
@@ -35,8 +36,6 @@ def plot_task(task):
         plot_grids_with_shape(task.outputs, suptitle='Outputs')
     
     
-
-
 def plot_grid(grid, write_numbers=False):
     grid = np.array(grid)
     cmap = colors.ListedColormap(

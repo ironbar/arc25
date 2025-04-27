@@ -17,6 +17,7 @@ def random_draw_line_parameters(img: Img):
             if point2 != point1:
                 break
     elif line_type == "diagonal_decreasing":
+        # TODO: there could be infinite loops here
         while True:
             offset = random.randint(-min(point1), min(img.shape[0] - point1[0] - 1, img.shape[1] - point1[1] -1))
             point2 = (point1[0] + offset, point1[1] + offset)

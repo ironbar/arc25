@@ -1,11 +1,22 @@
-from arc25.dsl import *
 import random
+import logging
+
+from arc25.dsl import *
+
+logger = logging.getLogger(__name__)
 
 
 def random_draw_line_parameters(img: Img):
     point1 = (random.randint(0, img.shape[0] - 1), random.randint(0, img.shape[1] - 1))
     line_type = random.choice(["horizontal", "vertical", "diagonal_decreasing", "diagonal_increasing"])
-    # print(f"line_type: {line_type}")
+
+    # avoid infinite loops for diagonal lines
+    if line_type == 'diagonal_increasing' and point1 == (0, 0) or point1 == (img.shape[0] - 1, img.shape[1] - 1):
+        line_type = random.choice(["horizontal", "vertical", "diagonal_decreasing"])
+    elif line_type == 'diagonal_decreasing' and point1 == (0, img.shape[1] - 1) or point1 == (img.shape[0] - 1, 0):
+        line_type = random.choice(["horizontal", "vertical", "diagonal_increasing"])
+
+    logging.debug(f"line_type: {line_type}")
     if line_type == "horizontal":
         while True:
             point2 = (point1[0], random.randint(0, img.shape[1] - 1))
@@ -17,7 +28,6 @@ def random_draw_line_parameters(img: Img):
             if point2 != point1:
                 break
     elif line_type == "diagonal_decreasing":
-        # TODO: there could be infinite loops here
         while True:
             offset = random.randint(-min(point1), min(img.shape[0] - point1[0] - 1, img.shape[1] - point1[1] -1))
             point2 = (point1[0] + offset, point1[1] + offset)

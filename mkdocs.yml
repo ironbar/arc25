@@ -20,9 +20,8 @@ theme:
     - navigation.expand
     - navigation.indexes
     - navigation.top
-  # TODO: update this logos
-  # logo: res/brain-20-256.png
-  # favicon: res/brain-20-256.png
+  logo: res/arc_icon.jpg
+  favicon: res/arc_icon.jpg
 
 markdown_extensions:
   - admonition

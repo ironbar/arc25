@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from arc25.dsl import *
 from arc25.input_generation import *
-
+from arc25.code_execution import safe_code_execution, validate_code, wrap_code_in_function
 
 Task = namedtuple("Task", ["inputs", "outputs", "code"])
 
@@ -20,7 +20,7 @@ class TrainingTask(ABC):
         inputs = self.create_inputs()
         code = self.create_code(inputs)
         code = validate_code(code, inputs)
-        outputs = apply_code(code, inputs)
+        outputs = safe_code_execution(code, inputs)
         return Task(inputs=inputs, outputs=outputs, code=code)
 
     @abstractmethod
@@ -45,9 +45,6 @@ class RandomDrawingTask(TrainingTask):
             random_draw_vertical_line_parameters,
             random_draw_pixel_parameters
         ]
-        parameter_functions = [
-            random_draw_line_parameters,
-        ]
         code = ''
         for _ in range(n_draws):
             parameter_function = random.choice(parameter_functions)
@@ -58,24 +55,3 @@ class RandomDrawingTask(TrainingTask):
         return code
     
 
-def wrap_code_in_function(code):
-    function_code = "def task(img):\n"
-    indent="    "
-    for line in code.splitlines():
-        function_code += f"{indent}{line}\n"
-    function_code += f"{indent}return img"
-    function_code += "\n"
-    return function_code
-
-
-def validate_code(code, inputs):
-    # This function should validate the code and return a valid code
-    # For now, we will just return the code as is
-    return code
-
-def apply_code(code, inputs):
-    # This function should apply the code to the inputs and return the outputs
-    # For now, we will just return the inputs as is
-    # img = inputs[0]
-    # exec(code)
-    return inputs

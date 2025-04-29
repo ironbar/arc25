@@ -38,11 +38,19 @@ class TrainingTask(ABC):
 
 
 class RandomDrawingTask(TrainingTask):
+    n_inputs = 1
+    min_draws = 1
+    max_draws = 5
+    min_side = 3
+    max_side = 10
+
     def create_inputs(self):
-        return [create_img(np.random.randint(3, 10, 2), color=random.randint(0, 9))]
+        shape = np.random.randint(self.min_side, self.max_side + 1, 2)
+        colors = random.sample(range(10), self.n_inputs)
+        return [create_img(shape, color=color) for color in colors]
     
     def create_code(self, inputs):
-        n_draws = random.randint(1, 5)
+        n_draws = random.randint(self.min_draws, self.max_draws)
         parameter_functions = [
             random_draw_line_parameters,
             random_draw_rectangle_parameters,

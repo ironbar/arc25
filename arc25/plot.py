@@ -32,8 +32,17 @@ def plot_task(task):
                 plot_grid(sample['output'])
             plt.tight_layout()
     if isinstance(task, Task):
-        plot_grids_with_shape(task.inputs, suptitle='Inputs')
-        plot_grids_with_shape(task.outputs, suptitle='Outputs')
+        plt.figure(facecolor='white')
+        for plot_idx, grid in enumerate(task.inputs):
+            plt.subplot(2, len(task.inputs), plot_idx + 1)
+            plot_grid(grid)
+            plt.title(f'{len(grid)}x{len(grid[0])}')
+        for plot_idx, grid in enumerate(task.outputs):
+            plt.subplot(2, len(task.inputs), plot_idx + 1 + len(task.inputs))
+            plot_grid(grid)
+            plt.title(f'{len(grid)}x{len(grid[0])}')
+        plt.tight_layout()
+        plt.show()
     
     
 def plot_grid(grid, write_numbers=False):

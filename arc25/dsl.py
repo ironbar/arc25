@@ -58,7 +58,6 @@ class Img(np.ndarray):
 # Drawing functions
 #############################
 
-
 def create_img(shape: Tuple[int], color: int = 0) -> Img:
     return Img(np.ones(shape, dtype=np.int8) * color)
 
@@ -94,6 +93,7 @@ def flood_fill(img: Img, point: Tuple[int], color: int, connectivity: int) -> Im
     connectivity : int
         The connectivity of the area to be filled. 4 for 4-connectivity, 8 for 8-connectivity.
     """
+    # TODO: do I really need this function? I believe I could do the same with object detection and changing the color
     mask = skimage.segmentation.flood(img, seed_point=point, connectivity=connectivity//4)
     img[mask] = color
     return img

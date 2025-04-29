@@ -41,6 +41,7 @@ def random_draw_line_parameters(img: Img):
             if point2 != point1:
                 break
 
+    point1, point2 = sorted([point1, point2])
     color = random.randint(0, 9)
     return dict(point1=point1, point2=point2, color=color)
 

@@ -15,10 +15,38 @@ def wrap_code_in_function(code):
 
 
 def validate_code(code, inputs):
-    # This function should validate the code and return a valid code
-    # For now, we will just return the code as is
-    # TODO: implement
-    return code
+    """
+    Validate that the code modifies the input, generates a valid output and removes all irrelevant lines.
+    """
+    outputs =  safe_code_execution(code, inputs)
+    any_output_is_different = any(not np.all(input == output) for input, output in zip(inputs, outputs))
+    if not any_output_is_different:
+        raise InvalidCode("The code did not modify the input.")
+    all_outputs_are_valid = all(_is_valid_output(output) for output in outputs)
+    if not all_outputs_are_valid:
+        raise InvalidCode("The code did not produce valid outputs.")
+    lines = code.strip().split('\n')
+    relevant_lines = []
+    for idx, line in enumerate(lines):
+        if idx == 0 or idx == len(lines) - 1:
+            # Skip the first and last lines (function definition and return statement)
+            relevant_lines.append(line)
+            continue
+        code_without_line = '\n'.join(lines[:idx] + lines[idx+1:])
+        temp_outputs = safe_code_execution(code_without_line, inputs)
+        is_relevant_line = any(not np.all(temp_output == output) for temp_output, output in zip(temp_outputs, outputs))
+        if is_relevant_line:
+            relevant_lines.append(line)
+    validated_code = '\n'.join(relevant_lines)
+    return validated_code
+
+
+class InvalidCode(Exception):
+    pass
+
+
+def _is_valid_output(output):
+    return np.min(output.shape) >= 1 and np.max(output.shape) <= 30
 
 
 def safe_code_execution(code, inputs, func_name='task', timeout_duration=1):

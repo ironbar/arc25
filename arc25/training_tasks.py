@@ -10,16 +10,21 @@ from abc import ABC, abstractmethod
 from collections import namedtuple
 from arc25.dsl import *
 from arc25.input_generation import *
-from arc25.code_execution import safe_code_execution, validate_code, wrap_code_in_function
+from arc25.code_execution import safe_code_execution, validate_code, wrap_code_in_function, InvalidCode
 
 Task = namedtuple("Task", ["inputs", "outputs", "code"])
 
 
 class TrainingTask(ABC):
-    def sample(self):
+    def sample(self, n_tries=3):
         inputs = self.create_inputs()
-        code = self.create_code(inputs)
-        code = validate_code(code, inputs)
+        for _ in range(n_tries):
+            try:
+                code = self.create_code(inputs)
+                code = validate_code(code, inputs)
+                break
+            except InvalidCode:
+                pass
         outputs = safe_code_execution(code, inputs)
         return Task(inputs=inputs, outputs=outputs, code=code)
 

@@ -12,7 +12,7 @@ from arc25.dsl import *
 from arc25.input_generation import *
 from arc25.code_execution import safe_code_execution, validate_code, wrap_code_in_function, InvalidCode
 
-Task = namedtuple("Task", ["inputs", "outputs", "code"])
+Task = namedtuple("Task", ["inputs", "outputs", "code", 'name'])
 
 
 class TrainingTask(ABC):
@@ -20,13 +20,14 @@ class TrainingTask(ABC):
         inputs = self.create_inputs()
         for _ in range(n_tries):
             try:
+                # TODO: better handling, what happens if we reach n_tries?
                 code = self.create_code(inputs)
                 code = validate_code(code, inputs)
                 break
             except InvalidCode:
                 pass
         outputs = safe_code_execution(code, inputs)
-        return Task(inputs=inputs, outputs=outputs, code=code)
+        return Task(inputs=inputs, outputs=outputs, code=code, name=self.__class__.__name__)
 
     @abstractmethod
     def create_inputs(self):
@@ -67,4 +68,3 @@ class RandomDrawingTask(TrainingTask):
         code = wrap_code_in_function(code)
         return code
     
-

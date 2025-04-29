@@ -69,10 +69,18 @@ class RandomDrawingTaskOnEmptyImg(TrainingTask):
         return code
     
 
-class RandomDrawingTaskOnRandomImg(RandomDrawingTaskOnEmptyImg):
+class RandomDrawingTaskOnEmptyImgs(RandomDrawingTaskOnEmptyImg):
+    n_inputs = 2
+
+
+class RandomDrawingTaskOnRandomImgs(RandomDrawingTaskOnEmptyImg):
+    n_inputs = 3
+
     def create_inputs(self):
         shape = np.random.randint(self.min_side, self.max_side + 1, 2)
         return [Img(np.random.randint(0, 10, size=shape)) for _ in range(self.n_inputs)]
 
 
 #TODO: RandomDrawingTaskOnStructuredImg
+#TODO: shape dependent drawings. Use references to the shape of the image to create the drawings
+#TODO: a generator that samples from all the tasks

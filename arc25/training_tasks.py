@@ -38,7 +38,7 @@ class TrainingTask(ABC):
         pass
 
 
-class RandomDrawingTask(TrainingTask):
+class RandomDrawingTaskOnEmptyImg(TrainingTask):
     n_inputs = 1
     min_draws = 1
     max_draws = 5
@@ -68,3 +68,11 @@ class RandomDrawingTask(TrainingTask):
         code = wrap_code_in_function(code)
         return code
     
+
+class RandomDrawingTaskOnRandomImg(RandomDrawingTaskOnEmptyImg):
+    def create_inputs(self):
+        shape = np.random.randint(self.min_side, self.max_side + 1, 2)
+        return [Img(np.random.randint(0, 10, size=shape)) for _ in range(self.n_inputs)]
+
+
+#TODO: RandomDrawingTaskOnStructuredImg

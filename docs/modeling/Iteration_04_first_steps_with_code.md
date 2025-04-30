@@ -58,6 +58,10 @@ I'm going to use python 3.10 because it's the same version as the Kaggle noteboo
 
 I have been researching and it seems that the way to do [dynamic code generation](https://dev.to/bshadmehr/empowering-python-development-with-dynamic-code-generation-50p4) is to generate code in string and use `exec` to run the code. We can use `inspect.get_source` to get the code from a function but it is not that flexible.
 
+### Training script
+
+I'm going to create a first training script that will use the arc24 script as a start point. However I'm going to change how I handled the configuration, I'm going to try the library [tyro](https://github.com/brentyi/tyro) that seems to have the functionality I want: define a configuration object that can be later modified through arguments.
+
 ## Results
 
 ## Conclusion

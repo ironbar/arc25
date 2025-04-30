@@ -3,7 +3,7 @@ import tyro
 
 @dataclass
 class Config:
-    foo: int # The answer to life, the universe, and everything
+    foo: int # this message will be shown in the help message
     bar: str = "default"
 
 

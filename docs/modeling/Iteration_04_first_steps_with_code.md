@@ -68,3 +68,8 @@ I have been researching and it seems that the way to do [dynamic code generation
 - [lmdeploy](https://github.com/InternLM/lmdeploy) seems to be a faster alternative to VLLM
 
 ## TODO
+
+- [ ] Create a first training script, using arc24 as a start point
+- [ ] Fine-tune a first model to learn to draw
+- [ ] Evaluate how good the model is on new tasks
+- [ ] Is this approach promising?

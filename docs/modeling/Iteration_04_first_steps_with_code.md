@@ -6,6 +6,7 @@ _23-04-2025_
 
 ## Motivation
 
+I want to start working towards my idea of solving ARC using code and reinforcement learning.
 
 ## Development
 
@@ -77,3 +78,4 @@ I'm going to create a first training script that will use the arc24 script as a 
 - [ ] Fine-tune a first model to learn to draw
 - [ ] Evaluate how good the model is on new tasks
 - [ ] Is this approach promising?
+- [ ] Qwen3 has been released, but there aren't benchmarks about the smaller models.

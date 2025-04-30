@@ -111,16 +111,16 @@ def fine_tuning_main():
     # val_dataset = create_validation_dataset(*cfg.val_dataset, **dataset_kwargs)
     val_dataset = None
 
-    # training_arguments = get_training_arguments(cfg)
-    # trainer = SFTTrainer(
-    #     model=model,
-    #     tokenizer=tokenizer,
-    #     train_dataset=train_dataset,
-    #     eval_dataset=val_dataset,
-    #     data_collator=get_data_collator(tokenizer),
-    #     args=training_arguments,
-    # )
-    # trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
+    training_arguments = get_training_arguments(cfg)
+    trainer = SFTTrainer(
+        model=model,
+        tokenizer=tokenizer,
+        train_dataset=train_dataset,
+        eval_dataset=val_dataset,
+        data_collator=get_data_collator(tokenizer),
+        args=training_arguments,
+    )
+    trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
 
 
 def save_train_conf(cfg):
@@ -200,6 +200,7 @@ def print_gpu_memory():
 
 
 def get_tokenizer(model_path, model, pad_token='<|pad|>'):
+    #TODO: delete numbers from vocabulary if necessary
     logger.info('Loading tokenizer...')
     tokenizer = AutoTokenizer.from_pretrained(
         model_path,
@@ -260,7 +261,7 @@ def get_lora_model(model, adapter_path, r, use_rslora, use_dora, weight_initaliz
 # Data
 ############################################################################
 
-def random_prompt_generator(grid_encoder, tokenizer):
+def random_prompt_generator(grid_encoder, tokenizer, print_first_prompt=True):
     #TODO: this is a very basic and preliminar version
     task_generator = RandomDrawingTaskOnEmptyImg()
     while True:
@@ -268,7 +269,111 @@ def random_prompt_generator(grid_encoder, tokenizer):
         prompt_version = 'code-from-examples-v3'
         prompt = create_prompt_from_task(
             task, prompt_version=prompt_version, grid_encoder=grid_encoder, tokenizer=tokenizer)
+        if print_first_prompt:
+            pretty_print_prompt(prompt)
+            print_first_prompt = False
         yield {'text': prompt}
+
+############################################################################
+# Training
+############################################################################
+
+def get_training_arguments(cfg):
+    gradient_accumulation_steps = get_gradient_accumulation_steps(
+        cfg.batch_size, cfg.per_device_train_batch_size, cfg.n_gpus, cfg.device_map)
+    batch_size_kwargs = dict(
+        # 4-16 batch size should be fine for lora.
+        per_device_train_batch_size=cfg.per_device_train_batch_size,
+        gradient_accumulation_steps=gradient_accumulation_steps,
+        per_device_eval_batch_size=cfg.per_device_eval_batch_size,
+    )
+    scheduler_type = cfg.lr_scheduler_type
+    if scheduler_type == 'cyclic':
+        logger.info('Using cyclic learning rate scheduler (renaming to linear because it will be hacked later)')
+        scheduler_type = 'linear'
+
+    lr_scheduler_kwargs = {}
+    if cfg.lr_scheduler_type == 'cosine_with_restarts':
+        lr_scheduler_kwargs['num_cycles'] = cfg.lr_num_cycles
+    training_arguments = SFTConfig(
+            output_dir=cfg.output_dir,
+            save_total_limit=3, # I'm only interested in the last checkpoint, I will be saving 3 to avoid corruption problems (2 will be enough for this)
+            num_train_epochs=cfg.epochs,
+            max_steps=cfg.max_steps,
+            warmup_ratio=cfg.warmup_ratio,
+            learning_rate=cfg.learning_rate,
+            lr_scheduler_type=scheduler_type, #constant_with_warmup, cosine, cosine_with_restarts
+            lr_scheduler_kwargs=lr_scheduler_kwargs,
+            gradient_checkpointing=cfg.gradient_checkpointing,
+            optim=cfg.optim,
+            max_grad_norm=cfg.max_grad_norm,
+
+            dataset_text_field="text",
+            max_seq_length=cfg.max_seq_len,
+
+            do_eval=True,
+            eval_strategy="steps",
+            save_steps=cfg.save_steps or cfg.eval_steps,
+            logging_steps=cfg.logging_steps, #50,
+            eval_steps=cfg.eval_steps,
+            log_level="info",
+            report_to='wandb' if cfg.log_to_wandb else 'tensorboard',
+
+            # parameters added to make the code work with accelerate
+            dispatch_batches=False,
+            # https://huggingface.co/transformers/v4.9.1/main_classes/trainer.html#trainingarguments
+            ddp_find_unused_parameters=False, # only used with accelerate, got a warning saying that it slows down if True
+
+            ignore_data_skip=True, # otherwise it takes too long to start training when resuming from checkpoint
+
+            **batch_size_kwargs
+    )
+    return training_arguments
+
+
+def get_gradient_accumulation_steps(batch_size, per_device_train_batch_size, n_gpus, device_map):
+    if n_gpus > 1 and device_map == 'None': # multi-gpu accelerate training
+        accumulation_steps = batch_size//per_device_train_batch_size//n_gpus
+    else:
+        accumulation_steps = batch_size//per_device_train_batch_size
+    logger.info(f'Using {accumulation_steps} gradient accumulation steps')
+    return accumulation_steps
+
+
+def get_data_collator(tokenizer):
+    if '<|start_header_id|>' in tokenizer.chat_template and '<|end_header_id|>' in tokenizer.chat_template:
+        logger.info('Using llama template for collator')
+        data_collator = DataCollatorForCompletionOnlyLM(
+            tokenizer=tokenizer,
+            instruction_template='<|start_header_id|>user<|end_header_id|>',
+            response_template='<|start_header_id|>assistant<|end_header_id|>',
+        )
+    elif '<|im_start|>' in tokenizer.chat_template:
+        logger.info('Using SmolLM\Qwen template for collator')
+        data_collator = DataCollatorForCompletionOnlyLM(
+            tokenizer=tokenizer,
+            instruction_template='<|im_start|>user',
+            response_template='<|im_start|>assistant',
+        )
+    elif '<|user|>' in tokenizer.chat_template and '<|assistant|>' in tokenizer.chat_template:
+        logger.info('Using Phi-3 template for collator')
+        data_collator = DataCollatorForCompletionOnlyLM(
+            tokenizer=tokenizer,
+            instruction_template='<|user|>',
+            response_template='<|assistant|>'
+        )
+    else:
+        raise NotImplementedError(f'Tokenizer chat template not recognized: {tokenizer.chat_template}')
+    return data_collator
+
+
+def is_checkpoint_available(output_dir):
+    is_checkpoint_available = len(glob.glob(os.path.join(output_dir, 'checkpoint-*'))) > 0
+    if is_checkpoint_available:
+        logger.info('Checkpoint found, resuming training')
+    else:
+        logger.info('No checkpoint found, starting training from scratch')
+    return is_checkpoint_available
 
 
 if __name__ == '__main__':

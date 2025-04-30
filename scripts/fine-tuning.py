@@ -83,7 +83,7 @@ def fine_tuning_main():
     configure_logging()
     save_train_conf(cfg)
     if cfg.log_to_wandb:
-        accelerator = Accelerator(log_with=cfg.report_to)
+        accelerator = Accelerator(log_with='wandb')
         accelerator.init_trackers(
             project_name=os.path.basename(os.path.dirname(cfg.output_dir)),
             config=cfg,
@@ -107,7 +107,7 @@ def fine_tuning_main():
     dataset_kwargs = {'grid_encoder': grid_encoder, 'tokenizer': tokenizer}
     train_dataset = IterableDataset.from_generator(
         # for some weird reason, it does not work correctly with lists and I have to use partial with the lists
-        partial(random_prompt_generator, **dataset_kwargs))
+        partial(random_prompt_generator, **dataset_kwargs, random_seed=cfg.random_seed))
     # val_dataset = create_validation_dataset(*cfg.val_dataset, **dataset_kwargs)
     val_dataset = None
 
@@ -261,9 +261,10 @@ def get_lora_model(model, adapter_path, r, use_rslora, use_dora, weight_initaliz
 # Data
 ############################################################################
 
-def random_prompt_generator(grid_encoder, tokenizer, print_first_prompt=True):
+def random_prompt_generator(grid_encoder, tokenizer, random_seed, print_first_prompt=True):
     #TODO: this is a very basic and preliminar version
     task_generator = RandomDrawingTaskOnEmptyImg()
+    set_random_seed(random_seed)
     while True:
         task = task_generator.sample()
         prompt_version = 'code-from-examples-v3'
@@ -273,6 +274,10 @@ def random_prompt_generator(grid_encoder, tokenizer, print_first_prompt=True):
             pretty_print_prompt(prompt)
             print_first_prompt = False
         yield {'text': prompt}
+
+def set_random_seed(random_seed):
+    random.seed(random_seed)
+    np.random.seed(random_seed)
 
 ############################################################################
 # Training

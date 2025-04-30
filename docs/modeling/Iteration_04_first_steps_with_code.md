@@ -63,6 +63,10 @@ I have been researching and it seems that the way to do [dynamic code generation
 
 I'm going to create a first training script that will use the arc24 script as a start point. However I'm going to change how I handled the configuration, I'm going to try the library [tyro](https://github.com/brentyi/tyro) that seems to have the functionality I want: define a configuration object that can be later modified through arguments.
 
+```bash
+python fine-tuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/debug --no-log-to-wandb --device-map balanced
+```
+
 ## Results
 
 ## Conclusion

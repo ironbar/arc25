@@ -18,7 +18,7 @@ from peft import LoraConfig, PeftModel, prepare_model_for_kbit_training, get_pef
 from trl import SFTTrainer, DataCollatorForCompletionOnlyLM, SFTConfig
 from datasets import Dataset, IterableDataset
 
-# from arc24.encoders import create_grid_encoder
+from arc25.encoders import create_grid_encoder
 # from arc24.data_augmentation import (
 #     random_augment_task,
 #     set_random_seed,
@@ -101,6 +101,38 @@ def fine_tuning_main():
     model = get_model(cfg.model_path, torch_dtype=cfg.torch_dtype,
                       use_4bit_quantization=cfg.use_4bit_quantization, device_map=cfg.device_map)
     tokenizer = get_tokenizer(cfg.model_path, model)
+    if cfg.use_lora:
+        model = get_lora_model(model, cfg.adapter_path, cfg.lora_r, cfg.use_rslora,
+                               cfg.use_dora, cfg.lora_weight_initialization)
+    else:
+        logger.info('Not using LoRA, full model will be fine-tuned')
+
+    grid_encoder = create_grid_encoder(cfg.grid_encoder)
+    dataset_kwargs = {'grid_encoder': grid_encoder, 'tokenizer': tokenizer, 'max_seq_len': cfg.max_seq_len, 'verbose': cfg.verbose}
+    # train_dataset = IterableDataset.from_generator(
+    #     # for some weird reason, it does not work correctly with lists and I have to use partial with the lists
+    #     partial(random_prompt_generator, train_datasets=cfg.train_datasets,
+    #             compose_new_task_weights=cfg.compose_new_task_weights,
+    #             random_seed=cfg.random_seed, **dataset_kwargs,
+    #             remove_train_samples_to_fit_max_seq_len=cfg.remove_train_samples_to_fit_max_seq_len,
+    #             subsample_tasks_ratio=cfg.subsample_train_tasks_ratio,
+    #             compose_new_task_probability=cfg.compose_new_task_probability,
+    #             verify_correct_output_probability=cfg.verify_correct_output_probability))
+    # val_dataset = create_validation_dataset(*cfg.val_dataset, **dataset_kwargs)
+
+    # training_arguments = get_training_arguments(cfg)
+    # trainer = SFTTrainer(
+    #     model=model,
+    #     tokenizer=tokenizer,
+    #     train_dataset=train_dataset,
+    #     eval_dataset=val_dataset,
+    #     data_collator=get_data_collator(tokenizer),
+    #     args=training_arguments,
+    # )
+    # if cfg.lr_scheduler_type == 'cyclic':
+    #     replace_trainer_lr_scheduler_with_cyclic_lr(
+    #         trainer, cfg.warmup_ratio, cfg.learning_rate, cfg.lr_num_cycles)
+    # trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
 
 
 def save_train_conf(cfg):
@@ -108,7 +140,9 @@ def save_train_conf(cfg):
     with open(os.path.join(cfg.output_dir, 'cfg.json'), 'w') as f:
         json.dump({key:value for key, value in cfg.__dict__.items() if not key.startswith('__')}, f, indent=4)
 
-
+###########################################################################
+# Model and tokenizer loading
+###########################################################################
 def get_model(model_path, torch_dtype, device_map, use_4bit_quantization=False):
     logger.info('Loading model...')
     if use_4bit_quantization:
@@ -210,6 +244,30 @@ def get_tokenizer(model_path, model, pad_token='<|pad|>'):
     return tokenizer
 
 
+def get_lora_model(model, adapter_path, r, use_rslora, use_dora, weight_initalization):
+    if adapter_path is None:
+        if weight_initalization == 'default': weight_initalization = True
+        peft_config = LoraConfig(
+            # lora_alpha: LoRA scaling factor.
+            lora_alpha=64, #64,
+            lora_dropout=0.1, # 0.1, althought Vaca suggested to use 0.05 for big models
+            # r: the rank of the update matrices, expressed in int. Lower rank results in smaller update matrices with fewer trainable parameters.
+            r=r, #16
+            bias="none",
+            task_type="CAUSAL_LM",
+            # target_modules: The modules (for example, attention blocks) to apply the LoRA update matrices.
+            target_modules= ['k_proj', 'q_proj', 'v_proj', 'o_proj'],
+            use_rslora=use_rslora,
+            use_dora=use_dora,
+            init_lora_weights=weight_initalization # bool | Literal['gaussian', 'olora', 'pissa', 'pissa_niter_[number of iters]', 'loftq'] = True,
+        )
+        logger.info(f'Creating LoRA with the following config: {peft_config}')
+        model = get_peft_model(model, peft_config)
+    else:
+        logger.info(f'Loading adapter from {adapter_path}')
+        model = PeftModel.from_pretrained(model, adapter_path, is_trainable=True)
+    return model
+
+
 if __name__ == '__main__':
     fine_tuning_main()
-    

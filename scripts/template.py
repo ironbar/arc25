@@ -3,7 +3,7 @@ import tyro
 
 @dataclass
 class Config:
-    foo: int # this message will be shown in the help message
+    foo: int # this comment will be shown in the help message
     bar: str = "default"
 
 

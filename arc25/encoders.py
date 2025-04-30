@@ -105,7 +105,7 @@ class RowNumberEncoder(GridEncoder):
         text = self.encoder.to_text(grid)
         text_with_row_numbers = ''
         for idx, line in enumerate(text.splitlines()):
-            text_with_row_numbers += f'{idx+1} {line}\n'
+            text_with_row_numbers += f'{idx} {line}\n'
         return text_with_row_numbers.strip()
 
     def to_grid(self, text):

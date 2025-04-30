@@ -19,14 +19,10 @@ from trl import SFTTrainer, DataCollatorForCompletionOnlyLM, SFTConfig
 from datasets import Dataset, IterableDataset
 
 from arc25.encoders import create_grid_encoder
-# from arc24.data_augmentation import (
-#     random_augment_task,
-#     set_random_seed,
-#     random_compose_new_task_by_adding_additional_transformation
-# )
-# from arc24.prompting import create_prompts_from_task, print_smallest_prompt, pretty_print_prompt
+from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 # from arc24.data import load_arc_data_with_solutions, BarcDataset
 from arc25.logging import log_execution_time, configure_logging
+from arc25.training_tasks import RandomDrawingTaskOnEmptyImg
 
 from accelerate.logging import get_logger
 from accelerate import Accelerator
@@ -108,17 +104,12 @@ def fine_tuning_main():
         logger.info('Not using LoRA, full model will be fine-tuned')
 
     grid_encoder = create_grid_encoder(cfg.grid_encoder)
-    dataset_kwargs = {'grid_encoder': grid_encoder, 'tokenizer': tokenizer, 'max_seq_len': cfg.max_seq_len, 'verbose': cfg.verbose}
-    # train_dataset = IterableDataset.from_generator(
-    #     # for some weird reason, it does not work correctly with lists and I have to use partial with the lists
-    #     partial(random_prompt_generator, train_datasets=cfg.train_datasets,
-    #             compose_new_task_weights=cfg.compose_new_task_weights,
-    #             random_seed=cfg.random_seed, **dataset_kwargs,
-    #             remove_train_samples_to_fit_max_seq_len=cfg.remove_train_samples_to_fit_max_seq_len,
-    #             subsample_tasks_ratio=cfg.subsample_train_tasks_ratio,
-    #             compose_new_task_probability=cfg.compose_new_task_probability,
-    #             verify_correct_output_probability=cfg.verify_correct_output_probability))
+    dataset_kwargs = {'grid_encoder': grid_encoder, 'tokenizer': tokenizer}
+    train_dataset = IterableDataset.from_generator(
+        # for some weird reason, it does not work correctly with lists and I have to use partial with the lists
+        partial(random_prompt_generator, **dataset_kwargs))
     # val_dataset = create_validation_dataset(*cfg.val_dataset, **dataset_kwargs)
+    val_dataset = None
 
     # training_arguments = get_training_arguments(cfg)
     # trainer = SFTTrainer(
@@ -129,9 +120,6 @@ def fine_tuning_main():
     #     data_collator=get_data_collator(tokenizer),
     #     args=training_arguments,
     # )
-    # if cfg.lr_scheduler_type == 'cyclic':
-    #     replace_trainer_lr_scheduler_with_cyclic_lr(
-    #         trainer, cfg.warmup_ratio, cfg.learning_rate, cfg.lr_num_cycles)
     # trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
 
 
@@ -267,6 +255,20 @@ def get_lora_model(model, adapter_path, r, use_rslora, use_dora, weight_initaliz
         logger.info(f'Loading adapter from {adapter_path}')
         model = PeftModel.from_pretrained(model, adapter_path, is_trainable=True)
     return model
+
+############################################################################
+# Data
+############################################################################
+
+def random_prompt_generator(grid_encoder, tokenizer):
+    #TODO: this is a very basic and preliminar version
+    task_generator = RandomDrawingTaskOnEmptyImg()
+    while True:
+        task = task_generator.sample()
+        prompt_version = 'code-from-examples-v3'
+        prompt = create_prompt_from_task(
+            task, prompt_version=prompt_version, grid_encoder=grid_encoder, tokenizer=tokenizer)
+        yield {'text': prompt}
 
 
 if __name__ == '__main__':

@@ -107,6 +107,8 @@ One interesting finding is that the reasoning patterns of larger models can be d
 
 Bespoke Labs employed Group Relative Policy Optimization (GRPO) to train Qwen2.5-7B-Instruct on just 100 examples from the BFCL benchmark, enhancing multi-turn tool use performance by 23% without relying on human or teacher demonstrations. This approach enabled the agent to learn complex tool orchestration—such as sequencing API calls for tasks like flight booking—through reinforcement learning guided solely by outcome-based rewards.
 
+They trained for around 15 hours on 4xH200s. [source](https://x.com/RichardZ412/status/1917621469871251943)
+
 ### [ReTool: Reinforcement Learning for Strategic Tool Use in LLMs](https://arxiv.org/abs/2504.11536)
 
 **ReTool** is a reinforcement learning framework that equips LLMs with the ability to strategically invoke tools through multi-turn code execution during reasoning. By integrating real-time code execution into the learning loop, ReTool not only improves performance on complex tasks like the AIME math benchmark but also achieves significantly more efficient training compared to text-only RL methods. The model autonomously learns when and how to use code, resulting in concise, accurate reasoning and emergent behaviors such as code self-correction.

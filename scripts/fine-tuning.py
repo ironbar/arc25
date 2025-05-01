@@ -67,8 +67,8 @@ class Config:
     # LoRA
     use_lora: bool = True
     use_rslora = True,
-    use_dora = True,
-    lora_r: int = 32
+    use_dora = False, # Currently it is not supported by VLLM
+    lora_r: int = 16
     lora_weight_initialization: str = 'default' # 'gaussian', 'olora', 'pissa', 'pissa_niter_[number of iters]', 'loftq', 'default'
     # Data augmentation
     compose_new_task_probability: float = 0.0
@@ -114,7 +114,7 @@ def fine_tuning_main():
     training_arguments = get_training_arguments(cfg)
     trainer = SFTTrainer(
         model=model,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
         data_collator=get_data_collator(tokenizer),
@@ -317,7 +317,7 @@ def get_training_arguments(cfg):
             max_seq_length=cfg.max_seq_len,
 
             do_eval=True,
-            eval_strategy="steps",
+            eval_strategy="no", #TODO: previously it was steps
             save_steps=cfg.save_steps or cfg.eval_steps,
             logging_steps=cfg.logging_steps, #50,
             eval_steps=cfg.eval_steps,
@@ -325,7 +325,7 @@ def get_training_arguments(cfg):
             report_to='wandb' if cfg.log_to_wandb else 'tensorboard',
 
             # parameters added to make the code work with accelerate
-            dispatch_batches=False,
+            # dispatch_batches=False,
             # https://huggingface.co/transformers/v4.9.1/main_classes/trainer.html#trainingarguments
             ddp_find_unused_parameters=False, # only used with accelerate, got a warning saying that it slows down if True
 

@@ -66,6 +66,10 @@ I'm going to create a first training script that will use the arc24 script as a 
 ```bash
 python fine-tuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/debug --no-log-to-wandb --device-map balanced --random-seed 7 --max-steps 31
 python fine-tuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250430_first_trainings/random_seed_7 --device-map balanced --random-seed 7 --max-steps 200
+
+python fine-tuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250430_first_trainings/random_seed_6 --device-map balanced --random-seed 6 --max-steps 200
+
+python fine-tuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250430_first_trainings/random_seed_5_no_dora --device-map balanced --random-seed 5 --max-steps 200
 ```
 
 ### Inference with VLLM

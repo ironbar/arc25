@@ -68,6 +68,16 @@ python fine-tuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/debug --no-l
 python fine-tuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250430_first_trainings/random_seed_7 --device-map balanced --random-seed 7 --max-steps 200
 ```
 
+### Inference with VLLM
+
+(arc) gbarbadillo@africanus:/mnt/hdd0/MEGA/AI/22_Kaggle/arc25$ conda list | grep vllm
+vllm                      0.5.5                    pypi_0    pypi
+vllm-flash-attn           2.6.1                    pypi_0    pypi
+
+(arc) gbarbadillo@africanus:/mnt/hdd0/MEGA/AI/22_Kaggle/arc25$ conda list | grep vllm
+vllm                      0.8.5                    pypi_0    pypi
+vllm-flash-attn           2.6.2                    pypi_0    pypi
+
 ## Results
 
 ## Conclusion

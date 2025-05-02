@@ -122,9 +122,11 @@ The model has been trained with tasks with 1-5 drawings and an image size betwee
 
 #### Number of drawing functions
 
-![number of drawings](res/1746192870383_image.png)
+![number of drawings](res/1746196996841_image.png)
 
 #### Image size
+
+![image size](res/1746193758598_image.png)
 
 #### Image content
 

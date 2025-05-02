@@ -143,6 +143,7 @@ of the input image.
 
 - Base or Instruct model? On Qwen they recommend the base model if we are going to fine-tune.
 - [lmdeploy](https://github.com/InternLM/lmdeploy) seems to be a faster alternative to VLLM
+- Work to solve the OOD samples, that could validate my ideas of hindsight experience replay and RL
 
 ## TODO
 

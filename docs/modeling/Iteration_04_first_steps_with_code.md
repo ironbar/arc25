@@ -96,7 +96,11 @@ vllm-flash-attn           2.6.2                    pypi_0    pypi
 - [x] Create a first training script, using arc24 as a start point
   - [ ] Check the tokenizer does not merge numbers
 - [x] Fine-tune a first model to learn to draw
-- [ ] Evaluate how good the model is on new tasks
+- [ ] Evaluate how good the model is on new tasks (in and out of distribution)
+  - [ ] pass@n, acc@n, correct_pixels
+  - [ ] Temperature?
+  - [ ] Number of training steps?
+  - [ ] Robustness to bad code
 - [ ] Is this approach promising?
 - [ ] Qwen3 has been released, but there aren't benchmarks about the smaller models.
 - [ ] Install flash-attn (`USE_FLASH_ATTENTION=1`), seems to need the cuda toolkit installed.

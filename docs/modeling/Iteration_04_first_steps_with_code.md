@@ -112,6 +112,22 @@ The longest training used 1e5 samples and took around 4 hours. I'm pretty sure i
 
 Maybe we need around 1e6 samples to do the task with close to 100% accuracy.
 
+### Out of distribution results
+
+Let's now focus on the out of distribution results, that require higher generalization. These are the
+most important ones because they are the focus of the ARC challenge.
+
+We can think of 3 different dimensions to study the behaviour of the model with out of distribution tasks.
+The model has been trained with tasks with 1-5 drawings and an image size between 3 and 10.
+
+#### Number of drawing functions
+
+![number of drawings](res/1746192870383_image.png)
+
+#### Image size
+
+#### Image content
+
 ## Conclusion
 
 ## Next steps

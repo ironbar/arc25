@@ -7,6 +7,7 @@ Each training task should teach a specific concept, and the name of the task sho
 """
 import random
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from collections import namedtuple
 from arc25.dsl import *
 from arc25.input_generation import *
@@ -38,18 +39,19 @@ class TrainingTask(ABC):
         pass
 
 
+@dataclass
 class RandomDrawingTaskOnEmptyImg(TrainingTask):
-    n_inputs = 1
-    min_draws = 1
-    max_draws = 5
-    min_side = 3
-    max_side = 10
+    n_inputs: int = 1
+    min_draws: int = 1
+    max_draws: int = 5
+    min_side: int = 3
+    max_side: int = 10
 
     def create_inputs(self):
         shape = np.random.randint(self.min_side, self.max_side + 1, 2)
         colors = random.sample(range(10), self.n_inputs)
         return [create_img(shape, color=color) for color in colors]
-    
+
     def create_code(self, inputs):
         n_draws = random.randint(self.min_draws, self.max_draws)
         parameter_functions = [
@@ -63,11 +65,11 @@ class RandomDrawingTaskOnEmptyImg(TrainingTask):
         for _ in range(n_draws):
             parameter_function = random.choice(parameter_functions)
             parameters = parameter_function(inputs[0])
-            function_name = parameter_function.__name__.replace("random_", "").replace("_parameters", "") 
+            function_name = parameter_function.__name__.replace("random_", "").replace("_parameters", "")
             code += f"{function_name}(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
         code = wrap_code_in_function(code)
         return code
-    
+
 
 class RandomDrawingTaskOnEmptyImgs(RandomDrawingTaskOnEmptyImg):
     n_inputs = 2

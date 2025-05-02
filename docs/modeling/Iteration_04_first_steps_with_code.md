@@ -99,3 +99,4 @@ vllm-flash-attn           2.6.2                    pypi_0    pypi
 - [ ] Evaluate how good the model is on new tasks
 - [ ] Is this approach promising?
 - [ ] Qwen3 has been released, but there aren't benchmarks about the smaller models.
+- [ ] Install flash-attn (`USE_FLASH_ATTENTION=1`), seems to need the cuda toolkit installed.

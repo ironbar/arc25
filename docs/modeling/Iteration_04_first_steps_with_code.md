@@ -103,6 +103,15 @@ We see a nice improvement in pass rate when increasing the number of predictions
 
 Let's see the effect that the number of training steps has on the accuracy.
 
+![training steps](res/1746190431829_image.png)
+
+We see a very good trend when increasing the number of training samples. This is expected because
+we are using in distribution samples for evaluation.
+
+The longest training used 1e5 samples and took around 4 hours. I'm pretty sure it can be done much faster because GPU usage was low.
+
+Maybe we need around 1e6 samples to do the task with close to 100% accuracy.
+
 ## Conclusion
 
 ## Next steps
@@ -118,8 +127,9 @@ Let's see the effect that the number of training steps has on the accuracy.
 - [ ] Evaluate how good the model is on new tasks (in and out of distribution)
   - [x] pass@n, acc@n, correct_pixels
   - [x] Temperature?
-  - [ ] Number of training steps?
-  - [ ] Robustness to bad code
+  - [x] Number of training steps?
+  - [x] Robustness to bad code
+  - [ ] Out of distribution evaluation
 - [ ] Is this approach promising?
 - [ ] Qwen3 has been released, but there aren't benchmarks about the smaller models.
 - [ ] Install flash-attn (`USE_FLASH_ATTENTION=1`), seems to need the cuda toolkit installed.

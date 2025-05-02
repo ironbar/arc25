@@ -61,9 +61,13 @@ def safe_code_execution(code, inputs, func_name='task', timeout_duration=1):
         raise ValueError(f"The code did not define the expected '{func_name}' function.")
 
     func = restricted_locals[func_name]
-    result = _generate_outputs(inputs, func)
-    signal.alarm(0)
-    return result
+    try:
+        result = _generate_outputs(inputs, func)
+        signal.alarm(0)
+        return result
+    except Exception as e:
+        signal.alarm(0)
+        raise e
 
 
 def _generate_outputs(inputs, func):

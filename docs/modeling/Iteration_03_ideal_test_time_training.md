@@ -100,11 +100,11 @@ It might seem that using a bigger lora rank is beneficial.
 
 ### Uncertainty on the LB results
 
-Let's submit the same configuration, just changing the random seed.
+Let's submit the same configuration 5 times, just changing the random seed.
 
 ![uncertainty](res/2025-05-02-07-40-01.png)
 
-This was very surprising because I wasn't expecting this variability. We can see a variation up to 3.5
+This was very surprising because I wasn't expecting this level of variability. We can see a variation up to 3.5
 points within the same submission just by changing the random seed.
 
 This probably invalidates all the previous conclusions, because the difference in scores between
@@ -120,7 +120,8 @@ TODO:
 
 I have done a few experiments with the number of predictions (`n`) and the `min_prob` without conclusive results.
 
-This experiment was done with an earlier notebook that used 8 folds for splitting the data.
+This experiment was done with an earlier notebook that used 8 folds for splitting the data, I changed the
+number of predictions from 8 to 16 with very small variation in score.
 
 | train epochs | n | min_prob | lora_rank | LB score |
 |--------------|---|----------|-----------|----------|
@@ -154,13 +155,12 @@ Finally I have also done a sweep over `min_prob` when evaluating the evaluation 
 
 - [x] How GPU usage looks when using batch size 1?
 - [x] What if I copy the base model to `dev/shm`
-- [ ] Tune the submission hyperparameters
+- [ ] Tune the submission hyperparameters. My intuition is that I should train as long as possible, and make just 8 predictions per task.
   - [x] Lora rank
   - [x] Number of training epochs (better change epochs than learning rate when possible)
   - [x] Inference parameters (n and min_prob)
   - [ ] Learning rate
-  - [ ] My intuition is that I should train as long as possible, and make just 8 predictions per task.
-  - [ ] Uncertainty on the results (what if I change the random seed?)
+  - [x] Uncertainty on the results (what if I change the random seed?)
   - [x] Are the training samples correctly sorted? Maybe they are not optimal for single task training. The order is random.
 - [x] Check the evaluation prints of the architects. They are different to normal scoring
 - [ ] Make more evaluations on the evaluation set and compare to test set. I want to see a correlation of runtime and score.

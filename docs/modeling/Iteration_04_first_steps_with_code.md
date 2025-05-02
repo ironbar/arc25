@@ -84,6 +84,25 @@ vllm-flash-attn           2.6.2                    pypi_0    pypi
 
 ## Results
 
+### Accuracy on the train distribution
+
+![alt text](res/1746187051862_image.png)
+
+This plot shows that when sampling multiple responses is better to use a temperature around 0.5.
+The model is able to solve around 97% of the tasks when doing 8 predictions per task.
+
+The evaluation is very fast, doing around 44 predictions per second.
+
+### Effect of the number of predictions
+
+![](res/2025-05-02-14-25-45.png)
+
+We see a nice improvement in pass rate when increasing the number of predictions, as expected.
+
+### Number of training steps
+
+Let's see the effect that the number of training steps has on the accuracy.
+
 ## Conclusion
 
 ## Next steps
@@ -97,8 +116,8 @@ vllm-flash-attn           2.6.2                    pypi_0    pypi
   - [ ] Check the tokenizer does not merge numbers
 - [x] Fine-tune a first model to learn to draw
 - [ ] Evaluate how good the model is on new tasks (in and out of distribution)
-  - [ ] pass@n, acc@n, correct_pixels
-  - [ ] Temperature?
+  - [x] pass@n, acc@n, correct_pixels
+  - [x] Temperature?
   - [ ] Number of training steps?
   - [ ] Robustness to bad code
 - [ ] Is this approach promising?

@@ -102,13 +102,49 @@ It might seem that using a bigger lora rank is beneficial.
 
 Let's submit the same configuration, just changing the random seed.
 
-TODO:
+![uncertainty](res/2025-05-02-07-40-01.png)
+
+This was very surprising because I wasn't expecting this variability. We can see a variation up to 3.5
+points within the same submission just by changing the random seed.
+
+This probably invalidates all the previous conclusions, because the difference in scores between
+experiments was not that high to be conclusive.
 
 ### Learning rate
 
 I might get better results with a lower learning rate and longer training?
 
 TODO:
+
+### Inference parameters
+
+I have done a few experiments with the number of predictions (`n`) and the `min_prob` without conclusive results.
+
+This experiment was done with an earlier notebook that used 8 folds for splitting the data.
+
+| train epochs | n | min_prob | lora_rank | LB score |
+|--------------|---|----------|-----------|----------|
+| 6            | 2 | 0.17     | 32        | 6.67     |
+| 6            | 1 | 0.17     | 32        | 6.25     |
+
+This other experiment was done with the single task fine-tuning setup. We modify the `min_prob` but the effect is unclear.
+
+| train epochs | n | min_prob | lora_rank | LB score |
+|--------------|---|----------|-----------|----------|
+| 10           | 1 | 0.17     | 16        | 11.94    |
+| 10           | 1 | 0.13     | 16        | 7.92     |
+| 10           | 1 | 0.17     | 32        | 11.1     |
+| 10           | 1 | 0.13     | 32        | 11.1     |
+
+Finally I have also done a sweep over `min_prob` when evaluating the evaluation set.
+
+| min_prob | eval score | runtime (h) |
+|----------|------------|-------------|
+| None     | 11.4       | 5.5         |
+| 0.35     | 10.1       | 3.33        |
+| 0.25     | 9.3        | 3.66        |
+| 0.17     | 10.1       | 4.1         |
+| 0.10     | 10.7       | 5.5         |
 
 ## Conclusion
 
@@ -121,7 +157,7 @@ TODO:
 - [ ] Tune the submission hyperparameters
   - [x] Lora rank
   - [x] Number of training epochs (better change epochs than learning rate when possible)
-  - [ ] Inference parameters (n and min_prob)
+  - [x] Inference parameters (n and min_prob)
   - [ ] Learning rate
   - [ ] My intuition is that I should train as long as possible, and make just 8 predictions per task.
   - [ ] Uncertainty on the results (what if I change the random seed?)

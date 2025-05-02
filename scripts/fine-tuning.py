@@ -23,6 +23,7 @@ from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 # from arc24.data import load_arc_data_with_solutions, BarcDataset
 from arc25.logging import log_execution_time, configure_logging
 from arc25.training_tasks import RandomDrawingTaskOnEmptyImg
+from arc25.utils import set_random_seed
 
 from accelerate.logging import get_logger
 from accelerate import Accelerator
@@ -274,10 +275,6 @@ def random_prompt_generator(grid_encoder, tokenizer, random_seed, print_first_pr
             pretty_print_prompt(prompt)
             print_first_prompt = False
         yield {'text': prompt}
-
-def set_random_seed(random_seed):
-    random.seed(random_seed)
-    np.random.seed(random_seed)
 
 ############################################################################
 # Training

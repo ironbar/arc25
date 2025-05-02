@@ -71,10 +71,12 @@ class RandomDrawingTaskOnEmptyImg(TrainingTask):
         return code
 
 
+@dataclass
 class RandomDrawingTaskOnEmptyImgs(RandomDrawingTaskOnEmptyImg):
     n_inputs = 2
 
 
+@dataclass
 class RandomDrawingTaskOnRandomImgs(RandomDrawingTaskOnEmptyImg):
     n_inputs = 3
 

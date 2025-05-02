@@ -120,6 +120,8 @@ most important ones because they are the focus of the ARC challenge.
 We can think of 3 different dimensions to study the behaviour of the model with out of distribution tasks.
 The model has been trained with tasks with 1-5 drawings and an image size between 3 and 10.
 
+The following plots show a clear degradation of accuracy when we got farther from the training distribution.
+
 #### Number of drawing functions
 
 ![number of drawings](res/1746196996841_image.png)
@@ -129,6 +131,11 @@ The model has been trained with tasks with 1-5 drawings and an image size betwee
 ![image size](res/1746193758598_image.png)
 
 #### Image content
+
+![img content](res/1746197484806_image.png)
+
+It seems that the model is not comparing the input and output image pixels, it only needs to know the color
+of the input image.
 
 ## Conclusion
 
@@ -147,7 +154,7 @@ The model has been trained with tasks with 1-5 drawings and an image size betwee
   - [x] Temperature?
   - [x] Number of training steps?
   - [x] Robustness to bad code
-  - [ ] Out of distribution evaluation
+  - [x] Out of distribution evaluation
 - [ ] Is this approach promising?
 - [ ] Qwen3 has been released, but there aren't benchmarks about the smaller models.
 - [ ] Install flash-attn (`USE_FLASH_ATTENTION=1`), seems to need the cuda toolkit installed.

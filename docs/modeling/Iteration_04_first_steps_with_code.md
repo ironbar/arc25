@@ -4,6 +4,8 @@ _23-04-2025_
 
 ## Goal
 
+Can I teach a model to draw?
+
 ## Motivation
 
 I want to start working towards my idea of solving ARC using code and reinforcement learning.
@@ -74,6 +76,9 @@ python fine-tuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250430_fir
 
 ### Inference with VLLM
 
+I had problems trying to use LoRAs with VLLM, I updated the version but without too much success. I ended up merging the LoRA with the base model to do predictions with VLLM.
+
+```bash
 (arc) gbarbadillo@africanus:/mnt/hdd0/MEGA/AI/22_Kaggle/arc25$ conda list | grep vllm
 vllm                      0.5.5                    pypi_0    pypi
 vllm-flash-attn           2.6.1                    pypi_0    pypi
@@ -81,10 +86,19 @@ vllm-flash-attn           2.6.1                    pypi_0    pypi
 (arc) gbarbadillo@africanus:/mnt/hdd0/MEGA/AI/22_Kaggle/arc25$ conda list | grep vllm
 vllm                      0.8.5                    pypi_0    pypi
 vllm-flash-attn           2.6.2                    pypi_0    pypi
+```
 
 ## Results
 
+I have trained a model to learn to draw up to 5 elements in a small image (side up to 10 pixels).
+
+![alt text](res/1746256464651_image.png)
+
+![alt text](res/1746256565439_image.png)
+
 ### Accuracy on the train distribution
+
+#### Effect of sampling temperature
 
 ![alt text](res/1746187051862_image.png)
 
@@ -93,13 +107,13 @@ The model is able to solve around 97% of the tasks when doing 8 predictions per 
 
 The evaluation is very fast, doing around 44 predictions per second.
 
-### Effect of the number of predictions
+#### Effect of the number of predictions
 
 ![](res/2025-05-02-14-25-45.png)
 
 We see a nice improvement in pass rate when increasing the number of predictions, as expected.
 
-### Number of training steps
+#### Number of training steps
 
 Let's see the effect that the number of training steps has on the accuracy.
 
@@ -139,6 +153,8 @@ of the input image.
 
 ## Conclusion
 
+We probed that 
+
 ## Next steps
 
 - Base or Instruct model? On Qwen they recommend the base model if we are going to fine-tune.
@@ -150,7 +166,7 @@ of the input image.
 - [x] Create a first training script, using arc24 as a start point
   - [ ] Check the tokenizer does not merge numbers
 - [x] Fine-tune a first model to learn to draw
-- [ ] Evaluate how good the model is on new tasks (in and out of distribution)
+- [x] Evaluate how good the model is on new tasks (in and out of distribution)
   - [x] pass@n, acc@n, correct_pixels
   - [x] Temperature?
   - [x] Number of training steps?

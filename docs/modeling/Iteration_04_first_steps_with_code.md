@@ -102,7 +102,7 @@ I have trained a model to learn to draw up to 5 elements in a small image (side 
 
 ![alt text](res/1746187051862_image.png)
 
-This plot shows that when sampling multiple responses is better to use a temperature around 0.5.
+This plot shows that when sampling multiple responses is better to use a temperature around 0.5 because it improves the pass rate.
 The model is able to solve around 97% of the tasks when doing 8 predictions per task.
 
 The evaluation is very fast, doing around 44 predictions per second.
@@ -153,13 +153,16 @@ of the input image.
 
 ## Conclusion
 
-We probed that 
+We have trained a model on around 1e5 random drawings and it reached a pass rate above 98%. Training for longer will likely improve the results. Using a sampling temperature around 0.5 improves the pass rate due to higher variability.
+
+We have observed that the model struggles to generalize to out of distribution data.
 
 ## Next steps
 
 - Base or Instruct model? On Qwen they recommend the base model if we are going to fine-tune.
 - [lmdeploy](https://github.com/InternLM/lmdeploy) seems to be a faster alternative to VLLM
 - Work to solve the OOD samples, that could validate my ideas of hindsight experience replay and RL
+- [Qwen3](https://qwenlm.github.io/blog/qwen3/) has been released, but there aren't benchmarks about the smaller models.
 
 ## TODO
 
@@ -172,6 +175,5 @@ We probed that
   - [x] Number of training steps?
   - [x] Robustness to bad code
   - [x] Out of distribution evaluation
-- [ ] Is this approach promising?
-- [ ] Qwen3 has been released, but there aren't benchmarks about the smaller models.
+- [x] Is this approach promising?
 - [ ] Install flash-attn (`USE_FLASH_ATTENTION=1`), seems to need the cuda toolkit installed.

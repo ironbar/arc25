@@ -231,7 +231,23 @@ def get_tokenizer(model_path, model, pad_token='<|pad|>'):
     #     # tokenizer.pad_token = '<|endoftext|>'
     assert tokenizer.pad_token != tokenizer.eos_token
     assert tokenizer.pad_token_id != tokenizer.eos_token_id
+    check_tokenizer_has_unique_words_for_numbers(tokenizer)
     return tokenizer
+
+
+def check_tokenizer_has_unique_words_for_numbers(tokenizer):
+    for i in range(10):
+        words = get_words_with_symbol(str(i), tokenizer.get_vocab())
+        if len(words) != 1:
+            raise ValueError(f'Found {len(words)} words with symbol {i} in tokenizer vocabulary: {words}')
+    logger.info('Tokenizer is valid, each number has a unique word in the vocabulary')
+
+
+def get_words_with_symbol(symbol, vocab, skip_special_tokens=True):
+    words = [word for word in vocab if symbol in word]
+    if skip_special_tokens:
+        words = [word for word in words if not word.startswith('<')]
+    return words
 
 
 def get_lora_model(model, adapter_path, r, use_rslora, use_dora, weight_initalization):

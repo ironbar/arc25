@@ -173,6 +173,7 @@ We have observed that the model struggles to generalize to out of distribution d
 - [lmdeploy](https://github.com/InternLM/lmdeploy) seems to be a faster alternative to VLLM
 - Work to solve the OOD samples, that could validate my ideas of hindsight experience replay and RL
 - [Qwen3](https://qwenlm.github.io/blog/qwen3/) has been released, but there aren't benchmarks about the smaller models.
+- Optimize hardware utilization during training
 
 ## TODO
 

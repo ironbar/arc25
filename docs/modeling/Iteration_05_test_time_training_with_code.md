@@ -30,4 +30,7 @@ if any of my ideas allows the model to solve.
 
 ## TODO
 
-- [ ]
+- [ ] Find a simple task that the model is not able to solve
+- [ ] Does Hindsight experience replay helps to learn to do the task?
+- [ ] Does RL helps?
+- [ ] Is data augmentation helpful?

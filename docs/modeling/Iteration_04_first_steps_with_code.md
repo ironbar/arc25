@@ -88,6 +88,16 @@ vllm                      0.8.5                    pypi_0    pypi
 vllm-flash-attn           2.6.2                    pypi_0    pypi
 ```
 
+#### Environment creation
+
+```bash
+conda create --name arc25 python=3.10
+conda activate arc25
+pip install -r requirements.txt
+pip install flash-attn==2.6.3 --no-build-isolation
+make develop
+```
+
 ## Results
 
 I have trained a model to learn to draw up to 5 elements in a small image (side up to 10 pixels).
@@ -167,7 +177,7 @@ We have observed that the model struggles to generalize to out of distribution d
 ## TODO
 
 - [x] Create a first training script, using arc24 as a start point
-  - [ ] Check the tokenizer does not merge numbers
+  - [x] Check the tokenizer does not merge numbers
 - [x] Fine-tune a first model to learn to draw
 - [x] Evaluate how good the model is on new tasks (in and out of distribution)
   - [x] pass@n, acc@n, correct_pixels
@@ -176,4 +186,7 @@ We have observed that the model struggles to generalize to out of distribution d
   - [x] Robustness to bad code
   - [x] Out of distribution evaluation
 - [x] Is this approach promising?
-- [ ] Install flash-attn (`USE_FLASH_ATTENTION=1`), seems to need the cuda toolkit installed.
+- [x] Install flash-attn 
+  - [x] (`USE_FLASH_ATTENTION=1`), seems to need the cuda toolkit installed.
+  - [x] https://discuss.pytorch.org/t/is-cuda-installed-automatically-when-following-pytorch-instlalation-directions/215493
+  - [x] `pip install flash-attn==2.6.3 --no-build-isolation` This works!

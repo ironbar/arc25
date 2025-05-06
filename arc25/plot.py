@@ -42,9 +42,8 @@ def plot_task(task):
             plot_grid(grid)
             plt.title(f'{len(grid)}x{len(grid[0])}')
         plt.tight_layout()
-        plt.show()
-    
-    
+
+
 def plot_grid(grid, write_numbers=False):
     grid = np.array(grid)
     cmap = colors.ListedColormap(

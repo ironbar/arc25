@@ -60,3 +60,4 @@ The last one might be difficult due to the overlapping squares.
 - [ ] Does Hindsight experience replay helps to learn to do the task?
 - [ ] Does RL helps?
 - [ ] Is data augmentation helpful?
+- [x] Colab pro: https://www.kaggle.com/docs/notebooks#increase-gpu-compute-with-colab-pro, Now I have 45 hours per week at Kaggle!

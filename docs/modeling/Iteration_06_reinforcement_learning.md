@@ -16,6 +16,8 @@ I would also like to see how it compares with HER in terms of efficiency.
 
 ## Development
 
+https://huggingface.co/docs/trl/main/en/grpo_trainer
+
 ## Results
 
 ## Conclusion

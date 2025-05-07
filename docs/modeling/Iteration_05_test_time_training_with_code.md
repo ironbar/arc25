@@ -1,4 +1,4 @@
-# Iteration 5. Test-time training with code
+# Iteration 5. Test-time training with code. Hindsight Experience Replay (HER)
 
 _04-05-2025_
 
@@ -9,16 +9,11 @@ clear goal. This allows to gain greater knowledge of the problem on each iterati
 
 ## Goal
 
-Explore if test-time training is helpful when generating code:
-
-- Hindsight experience replay
-- Reinforcement learning
-- Data augmentation
+Explore if Hindsight Experience Replay (HER) can help to solve new tasks with code.
 
 ## Motivation
 
-My idea is to pick a simple case that the model is not able to solve, all vertical lines with all the colors. I first have to verify that the model is unable to solve it. Then check
-if any of my ideas allows the model to solve.
+My idea is to pick a simple case that the model is not able to solve, for example: all vertical lines with all the colors. I first have to verify that the model is unable to solve it. Then check if using HER helps to solve the task.
 
 ## Development
 
@@ -49,6 +44,21 @@ The last one might be difficult due to the overlapping squares.
 ¿Could test-time training allow the model to solve this tasks?
 
 ## Results
+
+### HER allows to solve tasks with 25 squares
+
+HER allows to solve tasks with 25 squares for a model that was trained with just up to 5 objects.
+
+![best prediction evolution](res/1746622789551_image.png)
+
+![distribution evolution](res/2025-05-07-15-01-52.png)
+
+The model starts with a maximum accuracy of less than 50% and in 6 epochs is able to achieve perfect accuracy.
+
+### Weaker models
+
+If we use weaker models (models trained for a smaller number of iterations) they can still benefit from HER.
+Their start point is worse, and they cannot solve new tasks as complex as the stronger models but nonetheless HER allows adaptation to novel tasks.
 
 ## Conclusion
 

@@ -99,7 +99,7 @@ with the goal to avoid catastrophical forgetting on the best predictions.
 If we shuffle the tasks it would mean that we are no longer using rewards for learning. That would be a quite
 interesting algorithm.
 
-I have verified that the algorithm is able to solve tasks with 20 squares without using any reward information.
+I have verified that the algorithm is able to solve tasks with 20 and 25 squares without using any reward information.
 
 ## Conclusion
 

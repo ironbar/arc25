@@ -1,7 +1,10 @@
 import signal
 import numpy as np
+import logging
 
 from arc25.dsl import *
+
+logger = logging.getLogger(__name__)
 
 
 def wrap_code_in_function(code):
@@ -50,24 +53,40 @@ def _is_valid_output(output):
 
 
 def safe_code_execution(code, inputs, func_name='task', timeout_duration=1):
-    signal.signal(signal.SIGALRM, timeout_handler)
-    signal.alarm(timeout_duration)
+    _set_timeout_alarm(timeout_duration)
     restricted_locals = {}
     restricted_globals = globals() # TODO: restrict the globals
 
     # Dynamically define the function to be executed
-    exec(code, restricted_globals, restricted_locals)
+    try:
+        exec(code, restricted_globals, restricted_locals)
+    except Exception as e:
+        logger.debug(f"Error during code execution: {e}")
+        _disable_timeout_alarm()
+        raise e
+    # Check if the function is defined in the restricted locals
     if func_name not in restricted_locals:
         raise ValueError(f"The code did not define the expected '{func_name}' function.")
 
     func = restricted_locals[func_name]
     try:
+        logger.debug(f"Executing code with function '{func_name}'")
         result = _generate_outputs(inputs, func)
-        signal.alarm(0)
+        _disable_timeout_alarm()
         return result
     except Exception as e:
-        signal.alarm(0)
+        logger.debug(f"Error during function execution: {e}")
+        _disable_timeout_alarm()
         raise e
+
+
+def _set_timeout_alarm(timeout_duration):
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(timeout_duration)
+
+
+def _disable_timeout_alarm():
+    signal.alarm(0)
 
 
 def _generate_outputs(inputs, func):

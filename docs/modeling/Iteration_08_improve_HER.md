@@ -16,6 +16,8 @@ The idea is to optimize the algorithm and the parameters so it is able to draw t
 
 ## Development
 
+I will be working on this notebook [006_HER_v2](../../notebooks/006_HER_v2.ipynb)
+
 ## Results
 
 ## Conclusion

@@ -51,4 +51,5 @@ Either GRPO is less sample efficient than HER or I haven't found the right confi
 
 ## Next steps
 
-I might revisit GRPO in the future. When reading papers that use GRPO, check the parametrization.
+- I might revisit GRPO in the future. When reading papers that use GRPO, check the parametrization.
+- Using VLLM would speedup the algorithm

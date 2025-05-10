@@ -23,6 +23,14 @@ linked Google Colab Plus to Kaggle and now I have 22 hours per week. This means 
 
 ## Results
 
+### Lora rank and learning rate
+
+[Google sheet](https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&range=A113)
+
+TODO: create a plot that shows accuracy vs learning rate. There are different curves, each for a different lora rank
+
+¿What seems to be the best combination of lora rank and learning rate?
+
 ## Conclusion
 
 ## Next steps

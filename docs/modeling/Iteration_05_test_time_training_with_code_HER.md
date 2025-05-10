@@ -61,6 +61,8 @@ This shows that the batch size is very important when using the transformers lib
 
 ### Algorithm
 
+Experiments were done on the notebook [003_test_time_training_exploration_HER](../../notebooks/003_test_time_training_exploration_HER.ipynb)
+
 1. Given the inputs and outputs the model generates 256 code predictions with a temperature of 0.5
 2. The predictions are run to generate outputs images.
 3. Keep only one prediction per output

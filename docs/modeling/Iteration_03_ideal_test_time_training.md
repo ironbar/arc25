@@ -23,8 +23,8 @@ The unknown is how to load and unload the PEFT model efficiently. Every delay as
 
 ### Time per task
 
-We have 12 hours to solve 120 tasks. If we parallelize the system with 4 runs, that means we have 24 minutes per task.
-So if doing inference for each task introduces an overhead of 1 minute per task, that still leaves 23 minutes per task.
+We have 12 hours to solve 240 tasks (submission evaluates both test sets). If we parallelize the system with 4 runs, that means we have 12 minutes per task.
+So if doing inference for each task introduces an overhead of 1 minute per task, that still leaves 11 minutes per task.
 So even a non efficient solution that wastes 1 minute to load and compile the model per task will have most of the time
 for compute.
 
@@ -32,7 +32,7 @@ for compute.
 
 In this [notebook](https://www.kaggle.com/code/ironbar/the-architects-single-task-ttt) I have prepared an implementation that uses locks to select the GPU and the task.
 
-Loading the model for training could take around 20s, for inference it is around 14s. So in total we could see a delay of around 30s per task, so aroun 15 minutes in total for a submission time of 12h hours, we can afford that.
+Loading the model for training could take around 20s, for inference it is around 14s. So in total we could see a delay of around 30s per task, so around 30 minutes in total for a submission time of 12h hours, we can afford that.
 
 ### Base model in `dev/shm`
 
@@ -151,6 +151,10 @@ Finally I have also done a sweep over `min_prob` when evaluating the evaluation 
 | 0.10     | 10.7       | 5.5         |
 
 ## Conclusion
+
+On this iteration I have been able to improve the LB score to 11.94, and I was the first team to beat
+the 10% barrier. However I have noticed that LB scores have a variability of up to 3.5 between submissions of the same configuration. Thus I believe I should stop making submissions and only return when I have made progress
+on the evaluation set.
 
 ## Next steps
 

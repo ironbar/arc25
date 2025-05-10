@@ -21,3 +21,4 @@ scikit-learn
 scikit-image
 ipywidgets
 tensorboard
+nvidia-ml-py3

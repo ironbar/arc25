@@ -2,13 +2,13 @@ import logging
 import time
 from functools import wraps
 
+logger = logging.getLogger(__name__)
+
 
 def configure_logging(level=logging.INFO):
     logging.basicConfig(level=level,
                         format='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s',
                         force=True)
-
-logger = logging.getLogger(__name__)
 
 
 def log_execution_time(func):

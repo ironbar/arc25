@@ -114,7 +114,10 @@ experiments was not that high to be conclusive.
 
 I might get better results with a lower learning rate and longer training?
 
-TODO:
+![learning rate](res/1746863646439_image.png)
+
+Clearly the learning rate has great influence on the score, I believe I should do a deeper study on a
+following iteration.
 
 ### Inference parameters
 
@@ -155,13 +158,13 @@ Finally I have also done a sweep over `min_prob` when evaluating the evaluation 
 
 - [x] How GPU usage looks when using batch size 1?
 - [x] What if I copy the base model to `dev/shm`
-- [ ] Tune the submission hyperparameters. My intuition is that I should train as long as possible, and make just 8 predictions per task.
+- [x] Tune the submission hyperparameters. My intuition is that I should train as long as possible, and make just 8 predictions per task.
   - [x] Lora rank
   - [x] Number of training epochs (better change epochs than learning rate when possible)
   - [x] Inference parameters (n and min_prob)
-  - [ ] Learning rate
+  - [x] Learning rate
   - [x] Uncertainty on the results (what if I change the random seed?)
   - [x] Are the training samples correctly sorted? Maybe they are not optimal for single task training. The order is random.
 - [x] Check the evaluation prints of the architects. They are different to normal scoring
-- [ ] Make more evaluations on the evaluation set and compare to test set. I want to see a correlation of runtime and score.
+- [x] Make more evaluations on the evaluation set and compare to test set. I want to see a correlation of runtime and score.
 - [x] What if I use 2 GPU slots for training? Currently just 40% of GPU memory is used.

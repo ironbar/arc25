@@ -67,8 +67,8 @@ class Config:
     torch_dtype: str = "bfloat16" # "bfloat16" or "float16", float16 causes divergence when training on my PC, but it is 4x faster on Kaggle
     # LoRA
     use_lora: bool = True
-    use_rslora = True,
-    use_dora = False, # Currently it is not supported by VLLM
+    use_rslora: bool = True
+    use_dora: bool = False # Currently it is not supported by VLLM
     lora_r: int = 16
     lora_weight_initialization: str = 'default' # 'gaussian', 'olora', 'pissa', 'pissa_niter_[number of iters]', 'loftq', 'default'
     # Data augmentation
@@ -284,6 +284,7 @@ def get_lora_model(model, adapter_path, r, use_rslora, use_dora, weight_initaliz
 
 def random_prompt_generator(grid_encoder, tokenizer, random_seed, print_first_prompt=True):
     #TODO: this is a very basic and preliminar version
+    logger.info('Initializing random prompt generator')
     task_generator = RandomDrawingTaskOnEmptyImg()
     set_random_seed(random_seed)
     while True:

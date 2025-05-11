@@ -27,9 +27,9 @@ linked Google Colab Plus to Kaggle and now I have 22 hours per week. This means 
 
 [Google sheet](https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&range=A113)
 
-TODO: create a plot that shows accuracy vs learning rate. There are different curves, each for a different lora rank
+![alt text](res/1746951618396_image.png)
 
-¿What seems to be the best combination of lora rank and learning rate?
+The best learning rate seems to be around 2e-4, there is no evidence that lora 32 is better.
 
 ## Conclusion
 

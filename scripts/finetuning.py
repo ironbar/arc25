@@ -38,10 +38,10 @@ class Config:
     model_path: str = '/home/gbarbadillo/models/Qwen2.5-Coder-0.5B-Instruct/'
     adapter_path: Optional[str] = None
     use_4bit_quantization: bool = False
-    train_datasets: List[List[str]] = field(default_factory=lambda: [['/mnt/hdd0/Kaggle/arc24/data/new_partitions/train_rs7.json', 'output-from-examples-v0']])
-    remove_train_samples_to_fit_max_seq_len: bool = False
-    subsample_train_tasks_ratio: Optional[float] = None
-    val_dataset: List[str] = field(default_factory=lambda: ['/mnt/hdd0/Kaggle/arc24/data/new_partitions/val_rs7.json', 'output-from-examples-v0'])
+    # train_datasets: List[List[str]] = field(default_factory=lambda: [['/mnt/hdd0/Kaggle/arc24/data/new_partitions/train_rs7.json', 'output-from-examples-v0']])
+    # remove_train_samples_to_fit_max_seq_len: bool = False
+    # subsample_train_tasks_ratio: Optional[float] = None
+    # val_dataset: List[str] = field(default_factory=lambda: ['/mnt/hdd0/Kaggle/arc24/data/new_partitions/val_rs7.json', 'output-from-examples-v0'])
     n_gpus: int = 2
     device_map: str = 'None' # 'custom', 'balanced', 'auto', 'None'
     max_seq_len: int = 4096
@@ -72,10 +72,10 @@ class Config:
     lora_r: int = 16
     lora_weight_initialization: str = 'default' # 'gaussian', 'olora', 'pissa', 'pissa_niter_[number of iters]', 'loftq', 'default'
     # Data augmentation
-    compose_new_task_probability: float = 0.0
-    compose_new_task_weights: Optional[List[float]] = None
+    # compose_new_task_probability: float = 0.0
+    # compose_new_task_weights: Optional[List[float]] = None
     # Verify
-    verify_correct_output_probability: float = 0.5
+    # verify_correct_output_probability: float = 0.5
 
 
 @log_execution_time
@@ -232,6 +232,10 @@ def get_tokenizer(model_path, model, pad_token='<|pad|>'):
     assert tokenizer.pad_token != tokenizer.eos_token
     assert tokenizer.pad_token_id != tokenizer.eos_token_id
     check_tokenizer_has_unique_words_for_numbers(tokenizer)
+
+    # ValueError: You are attempting to perform batched generation with padding_side='right' this may lead to unexpected behaviour for Flash Attention version of Qwen2. Make sure to  call `tokenizer.padding_side  = 'left'` before tokenizing the input. 
+    # TODO: could this have an effect on inference?
+    tokenizer.padding_side = 'left'
     return tokenizer
 
 
@@ -338,7 +342,7 @@ def get_training_arguments(cfg):
             report_to='wandb' if cfg.log_to_wandb else 'tensorboard',
 
             # parameters added to make the code work with accelerate
-            # dispatch_batches=False,
+            # dispatch_batches=False, #TypeError: SFTConfig.__init__() got an unexpected keyword argument 'dispatch_batches'
             # https://huggingface.co/transformers/v4.9.1/main_classes/trainer.html#trainingarguments
             ddp_find_unused_parameters=False, # only used with accelerate, got a warning saying that it slows down if True
 

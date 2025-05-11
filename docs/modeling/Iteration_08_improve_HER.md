@@ -70,6 +70,17 @@ python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250511_long
 
 ## Results
 
+The updated implementation is able to solve consistently all the tasks of [iteration 5](Iteration_05_test_time_training_with_code_HER.md). For example solves the 25-squares task in 10-12 minutes whereas that took 15 minutes in the previous implementation and I believe it was not as consistent.
+
+Moreover I have been able to solve the chick task, but not consistently. I believe that I might need a better
+model to solve the task consistently, because it does not require more lines of code, but higher precision.
+
+### Using a model trained for 32k steps
+
+Can a model trained for 32k steps (instead of 6k steps) solve the chick task consistently?
+
+TODO:
+
 ## Conclusion
 
 ## Next steps

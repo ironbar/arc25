@@ -79,7 +79,42 @@ model to solve the task consistently, because it does not require more lines of 
 
 Can a model trained for 32k steps (instead of 6k steps) solve the chick task consistently?
 
-TODO:
+The table below shows the number of epochs needed to solve each task.
+
+| task             | 6k steps model | 32k steps model |
+|------------------|----------------|-----------------|
+| 9-vertical-lines | 2              | 2               |
+| 12-squares       | 4              | 2               |
+| 16-squares       | 7              | 4               |
+| 20-squares       | 7              | 7               |
+| 25-squares       | 10             | 11              |
+
+In general it seems that the model trained for longer solves the task earlier as expected.
+
+However it does not solve the chick task consistently. After inspecting the best predictions for each
+epoch I see that it had all the details right but never on the same epoch.
+
+### Exploration and exploitation
+
+Maybe I have to use both high temperature for exploration and low temperature for exploitation.
+
+```python
+inference_params=[
+    InferenceParams(num_return_sequences=8, temperature=0.1),
+    InferenceParams(num_return_sequences=128, temperature=0.9),
+]
+```
+
+When using just high temperature the success rate of the chick task was 2/9, after combining exploration and exploitation
+it increased to 4/5.
+
+Thus we could say that we have achieved the goal of solving consistently the chick task.
+
+### Number of generations
+
+It might be better to use even smaller number of generations, because that would make the policy
+to change more smoothly. My current implementation is not efficient for small batch sizes, but a future
+implementation might be.
 
 ## Conclusion
 

@@ -20,6 +20,18 @@ I would also like to see how it compares with HER in terms of efficiency.
 
 I will be doing the experiments on the notebook [005_GRPO_exploration](../../notebooks/005_GRPO_exploration.ipynb)
 
+### Reference GRPO parametrization
+
+#### [Reinforcement Learning for Reasoning in Large Language Models with One Training Example](https://arxiv.org/abs/2504.20571)
+
+- Qwen2.5-Math-1.5B
+- 8 responses per prompt
+- mini-batch size 128
+- Batch size is 128 (number of prompts per step), they repeat the same prompt 128 times.
+- learning rate: 1e-6
+- temperature: 0.6
+- Train for 2000 steps
+
 ## Results
 
 After solving the problem with timeouts I'm going to set the maximum number of tokens to 768, solving the task with 25 squares needed less than 600 tokens. That will enforce the model to keep the functions short.

@@ -116,6 +116,20 @@ It might be better to use even smaller number of generations, because that would
 to change more smoothly. My current implementation is not efficient for small batch sizes, but a future
 implementation might be.
 
+![number of generations](res/2025-05-13-15-22-29.png)
+
+The optimal number of generations per epoch depends on the complexity of the task. It might seem that 16 could be a good choice because works well in all the cases. It requires between 2 and 5 less generation than generating 128 predictions per epoch.
+
+We could thought that the best option was to do a single prediction and generation per epoch, but that does not seem to be the case considering that 4 generations per epoch needs more generations than 16 generations per epoch. Or maybe is a problem with my implementation.
+
+The problem is that with my current implementation using large batch sizes is much more efficient, so despite this plots it is faster to make 128 generation per epoch.
+
+### Visualization of solving the chick task
+
+![solving the chick task](res/1747143038868_image.png)
+
+![alt text](res/1747143056873_image.png)
+
 ## Conclusion
 
 ## Next steps

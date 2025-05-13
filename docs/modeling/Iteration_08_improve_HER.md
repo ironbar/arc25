@@ -4,23 +4,24 @@ _10-05-2025_
 
 ## Goal
 
-Can I optimize HER to draw a chick?
+Can I optimize Hindsight Experience Replay (HER) to draw a chick?
 
 ![alt text](res/1746868384328_image.png)
 
 ## Motivation
 
-I have already probed that HER can solve a task with 25 squares, but can it solve arbitrary images?
+I have already probed that HER enables a model trained to solve tasks with up to 5 objects to solve a task with 25 squares, but can it solve arbitrary images?
 
-The idea is to optimize the algorithm and the parameters so it is able to draw the chick of the image above. If I can do that I will be confident to the next step that will be extend the DSL.
+The idea is to optimize the algorithm and the parameters so it is able to draw the chick of the image above. If I can do that I will be confident to the next step that will be extend the DSL. So far I have been unable
+to solve the chick task, an accuracy of around 97-98% is reached but perfect accuracy is eluding.
 
 ## Development
 
-I will be working on this notebook [006_HER_v2](../../notebooks/006_HER_v2.ipynb)
+I will be working on this notebook [006_HER_v2](../../notebooks/006_HER_v2.ipynb).
 
 ### Train a more powerful base model
 
-#### Debug gpu usage
+#### Improve gpu usage
 
 I believe I can speedup the training just by using a bigger batch size per device.
 
@@ -68,9 +69,15 @@ python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250511_long
 --use-rslora
 ```
 
+### Improvements to the algorithm
+
+- When multiple new tasks share the same output, choose the task with the shortest code
+- Do not train multiple times on the same tasks
+- Add wanbd with images for logging
+
 ## Results
 
-The updated implementation is able to solve consistently all the tasks of [iteration 5](Iteration_05_test_time_training_with_code_HER.md). For example solves the 25-squares task in 10-12 minutes whereas that took 15 minutes in the previous implementation and I believe it was not as consistent.
+The updated implementation is able to solve consistently all the tasks from [iteration 5](Iteration_05_test_time_training_with_code_HER.md). For example it solves the 25-squares task in 10-12 minutes whereas that took 15 minutes in the previous implementation and I believe it was not as consistent.
 
 Moreover I have been able to solve the chick task, but not consistently. I believe that I might need a better
 model to solve the task consistently, because it does not require more lines of code, but higher precision.
@@ -132,9 +139,11 @@ The problem is that with my current implementation using large batch sizes is mu
 
 ## Conclusion
 
+On this iteration I have improved the HER algorithm and solved consistently the chick task. I have seen
+that combining low and high temperature when sampling is helpful to be consistent, that is the old exploration-exploitation dilemma.
+
 ## Next steps
 
-## TODO
-
-- [ ] Make the script work with accelerate
-- [ ] There might be a problem with the train dataset, the function is called 4-5 times. This might require to set random seed to None.
+- Start working with ARC tasks
+- Make the script work with accelerate
+- There might be a problem with the train dataset, the generator function is called 4-5 times. This might require to set random seed to None.

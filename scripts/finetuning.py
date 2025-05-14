@@ -104,11 +104,19 @@ def fine_tuning_main():
     else:
         logger.info('Not using LoRA, full model will be fine-tuned')
 
+
+    if cfg.random_seed is not None:
+        current_process_seed = cfg.random_seed + accelerator.process_index
+        set_random_seed(current_process_seed)
+        logger.info(f"Process {accelerator.process_index}: Global random seed set to {current_process_seed}")
+    else:
+        logger.info(f"Process {accelerator.process_index}: No global random seed set, relying on default random state.")
+
     grid_encoder = create_grid_encoder(cfg.grid_encoder)
     dataset_kwargs = {'grid_encoder': grid_encoder, 'tokenizer': tokenizer}
     train_dataset = IterableDataset.from_generator(
         # for some weird reason, it does not work correctly with lists and I have to use partial with the lists
-        partial(random_prompt_generator, **dataset_kwargs, random_seed=cfg.random_seed))
+        partial(random_prompt_generator, **dataset_kwargs))
     # val_dataset = create_validation_dataset(*cfg.val_dataset, **dataset_kwargs)
     val_dataset = None
 
@@ -282,19 +290,15 @@ def get_lora_model(model, adapter_path, r, use_rslora, use_dora, weight_initaliz
 # Data
 ############################################################################
 
-def random_prompt_generator(grid_encoder, tokenizer, random_seed, print_first_prompt=True):
+def random_prompt_generator(grid_encoder, tokenizer):
     #TODO: this is a very basic and preliminar version
     logger.info('Initializing random prompt generator')
     task_generator = RandomDrawingTaskOnEmptyImg()
-    set_random_seed(random_seed)
     while True:
         task = task_generator.sample()
         prompt_version = 'code-from-examples-v3'
         prompt = create_prompt_from_task(
             task, prompt_version=prompt_version, grid_encoder=grid_encoder, tokenizer=tokenizer)
-        if print_first_prompt:
-            pretty_print_prompt(prompt)
-            print_first_prompt = False
         yield {'text': prompt}
 
 ############################################################################

@@ -25,6 +25,9 @@ python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/debu
 - [IterableDataset](https://huggingface.co/docs/datasets/v3.6.0/en/package_reference/main_classes#datasets.IterableDataset)
 - [SFTTrainer](https://huggingface.co/docs/trl/en/sft_trainer#trl.SFTTrainer)
 
+It seems that it is the expected behaviour, however I have modified the generator to just yield samples.
+The setting of the random seed and printing the first sample is now outside.
+
 ### Make the script work with accelerate
 
 ```bash
@@ -59,7 +62,7 @@ per-device-batch train_samples/s
 
 ## TODO
 
-- [ ] Fix the problem with repeated calls to the train dataset generator
+- [x] Fix the problem with repeated calls to the train dataset generator
 - [ ] Make the script work with accelerate
 - [ ] Measure training speed vs input size
 - [ ] Enable multi-task training, currently only trains on a single task

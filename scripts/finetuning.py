@@ -120,6 +120,10 @@ def fine_tuning_main():
     # val_dataset = create_validation_dataset(*cfg.val_dataset, **dataset_kwargs)
     val_dataset = None
 
+    if accelerator.is_main_process: # Ensure printing only happens once in multi-GPU setups
+        logger.info("Sampling one element from the training dataset:")
+        pretty_print_prompt(next(iter(train_dataset))['text'])
+
     training_arguments = get_training_arguments(cfg)
     trainer = SFTTrainer(
         model=model,
@@ -292,7 +296,6 @@ def get_lora_model(model, adapter_path, r, use_rslora, use_dora, weight_initaliz
 
 def random_prompt_generator(grid_encoder, tokenizer):
     #TODO: this is a very basic and preliminar version
-    logger.info('Initializing random prompt generator')
     task_generator = RandomDrawingTaskOnEmptyImg()
     while True:
         task = task_generator.sample()

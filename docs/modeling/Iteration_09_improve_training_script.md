@@ -41,7 +41,9 @@ had a `dispatch_batches=False` parameter that now is missing.
 - https://huggingface.co/docs/accelerate/en/package_reference/accelerator
 - https://huggingface.co/docs/accelerate/v1.6.0/en/package_reference/utilities#accelerate.DataLoaderConfiguration
 - https://github.com/huggingface/transformers/issues/34699
-- 
+- https://huggingface.co/docs/transformers/v4.51.3/en/main_classes/trainer#transformers.TrainingArguments
+
+The solution was easy, but difficult to find: `accelerator_config=dict(dispatch_batches=False`
 
 ## Results
 

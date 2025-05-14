@@ -350,7 +350,7 @@ def get_training_arguments(cfg):
             report_to='wandb' if cfg.log_to_wandb else 'tensorboard',
 
             # parameters added to make the code work with accelerate
-            # dispatch_batches=False, #TypeError: SFTConfig.__init__() got an unexpected keyword argument 'dispatch_batches'
+            accelerator_config=dict(dispatch_batches=False), # previously it was outside of the config, simply dispatch_batches=False
             # https://huggingface.co/transformers/v4.9.1/main_classes/trainer.html#trainingarguments
             ddp_find_unused_parameters=False, # only used with accelerate, got a warning saying that it slows down if True
 

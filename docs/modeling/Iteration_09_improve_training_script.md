@@ -31,26 +31,17 @@ The setting of the random seed and printing the first sample is now outside.
 ### Make the script work with accelerate
 
 ```bash
-python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250511_optimize_GPU_sage/random_seed_5_no_dora --device-map auto --random-seed 5 --max-steps 50 --n-gpus 1 --per-device-train-batch-size 1 --batch-size 16 --max-seq-len 4096
-python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250511_optimize_GPU_sage/per-device-batch-size-8 --device-map auto --random-seed 5 --max-steps 20 --n-gpus 1 --per-device-train-batch-size 8 --batch-size 16 --max-seq-len 4096
-
-python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250511_optimize_GPU_sage/per-device-batch-size-4_2gpus --device-map auto --random-seed 5 --max-steps 20 --n-gpus 2 --per-device-train-batch-size 8 --batch-size 16 --max-seq-len 4096
-
-# https://ironbar.github.io/arc24/modeling/Iteration_50_last_trainings/#steps-to-train-the-model
-
 accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
-finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250511_optimize_GPU_sage/per-device-batch-size-8_2gpus_accelerate --device-map None --random-seed 5 --max-steps 40 --n-gpus 2 --per-device-train-batch-size 8 --batch-size 16 --max-seq-len 512
-
-
-# one gpu
-per-device-batch train_samples/s
-1 6.15
-2 10.1
-4 16
-8 17
-
-# two gpus (not working yet)
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/debug_accelerate --device-map None --random-seed 5 --max-steps 40 --n-gpus 2 --per-device-train-batch-size 8 --batch-size 16 --max-seq-len 512 --no-log-to-wandb --no-resume-from-checkpoint
 ```
+
+I'm using the latest version of accelerate: `1.6.0`, the thing is that previously the `SFTConfig` class
+had a `dispatch_batches=False` parameter that now is missing.
+
+- https://huggingface.co/docs/accelerate/en/package_reference/accelerator
+- https://huggingface.co/docs/accelerate/v1.6.0/en/package_reference/utilities#accelerate.DataLoaderConfiguration
+- https://github.com/huggingface/transformers/issues/34699
+- 
 
 ## Results
 

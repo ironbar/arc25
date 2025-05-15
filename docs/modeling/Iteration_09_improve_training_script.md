@@ -127,7 +127,36 @@ changes in training speed that we are observing when using a longer output.
 
 ### Mixed-sizes training
 
-Let's see how the speed is affected when we mix different input sizes.
+Let's see how the speed is affected when we mix different input sizes. I will be using a single sample and 5 draws for this experiment. I will only change the side of the image.
+
+```bash
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 25 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 4096 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 30, 'train_samples_per_second': 8.809
+# 5-30, 'train_samples_per_second': 13.018
+# 5, 'train_samples_per_second': 22.967
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 25 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 3072 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# Packing
+# I should probably test this longer and check the loss
+# 5-30, packing=True, 'train_samples_per_second': 6.87
+# 5-30, packing=False, train_samples_per_second': 12.626
+# liger-kernel
+# 5-30, use_liger_kernel=True, 'train_samples_per_second': 9.95, 46% VRAM
+# 5-30, use_liger_kernel=False, 'train_samples_per_second': 13.069, 86% VRAM
+# 5-30, use_liger_kernel=True, x2 batch size, 'train_samples_per_second': 12.786, 63% VRAM
+# 5-30, use_liger_kernel=True, x4 batch size, 'train_samples_per_second': 13.883, 80% VRAM
+```
+
+These initial experiments show that when training with mixed sizes the training is faster. On this 3090 GPU liger kernels do not seem to add speed, although they reduce GPU memory usage and that is something interesting.
+
+I believe I need to do additional experiments with packing because in the [documentation](https://huggingface.co/docs/trl/en/sft_trainer#packing-dataset) says:
+
+> Note that if you use a packed dataset and if you pass max_steps in the training arguments you will probably train your models for more than few epochs, depending on the way you have configured the packed dataset and the training protocol.
+
+So maybe packing is slower but it is training with more data.
+
+#### Packing experiment
 
 ## Results
 

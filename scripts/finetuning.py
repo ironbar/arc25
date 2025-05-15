@@ -65,6 +65,8 @@ class Config:
     max_grad_norm: float = 1.0
     optim: str = "paged_adamw_8bit" # "paged_adamw_8bit"
     torch_dtype: str = "bfloat16" # "bfloat16" or "float16", float16 causes divergence when training on my PC, but it is 4x faster on Kaggle
+    packing: bool = False # multiple short examples are packed in the same input sequence to increase training efficiency
+    use_liger_kernel: bool = False # reduces memory usage by 60% and in theory increase speed by 20%
     # LoRA
     use_lora: bool = True
     use_rslora: bool = True
@@ -355,6 +357,8 @@ def get_training_arguments(cfg):
             ddp_find_unused_parameters=False, # only used with accelerate, got a warning saying that it slows down if True
 
             ignore_data_skip=True, # otherwise it takes too long to start training when resuming from checkpoint
+            packing=cfg.packing,
+            use_liger_kernel=cfg.use_liger_kernel,
 
             **batch_size_kwargs
     )

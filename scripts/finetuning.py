@@ -126,6 +126,8 @@ def fine_tuning_main():
         logger.info("Sampling one element from the training dataset:")
         pretty_print_prompt(next(iter(train_dataset))['text'])
 
+    # train_dataset = Dataset.from_dict({'text': [next(iter(train_dataset))['text'] for _ in range(16*200)]})
+
     training_arguments = get_training_arguments(cfg)
     trainer = SFTTrainer(
         model=model,
@@ -360,6 +362,9 @@ def get_training_arguments(cfg):
             packing=cfg.packing,
             use_liger_kernel=cfg.use_liger_kernel,
 
+            dataloader_num_workers=1, # Number of subprocesses to use for data loading
+            dataloader_pin_memory=True, # Whether you want to pin memory in data loaders or not. Will default to True.
+            dataloader_prefetch_factor=4, # Number of batches loaded in advance by each worker
             **batch_size_kwargs
     )
     return training_arguments

@@ -354,7 +354,8 @@ def get_training_arguments(cfg):
             report_to='wandb' if cfg.log_to_wandb else 'tensorboard',
 
             # parameters added to make the code work with accelerate
-            accelerator_config=dict(dispatch_batches=False), # previously it was outside of the config, simply dispatch_batches=False
+            accelerator_config=dict(
+                dispatch_batches=False), # If set to True, the dataloader prepared by the Accelerator is only iterated through on the main process and then the batches are split and broadcast to each process.
             # https://huggingface.co/transformers/v4.9.1/main_classes/trainer.html#trainingarguments
             ddp_find_unused_parameters=False, # only used with accelerate, got a warning saying that it slows down if True
 

@@ -67,6 +67,7 @@ class Config:
     torch_dtype: str = "bfloat16" # "bfloat16" or "float16", float16 causes divergence when training on my PC, but it is 4x faster on Kaggle
     packing: bool = False # multiple short examples are packed in the same input sequence to increase training efficiency
     use_liger_kernel: bool = False # reduces memory usage by 60% and in theory increase speed by 20%
+    dataloader_num_workers: int = 4 # Number of subprocesses to use for data loading
     # LoRA
     use_lora: bool = True
     use_rslora: bool = True
@@ -109,16 +110,14 @@ def fine_tuning_main():
 
     if cfg.random_seed is not None:
         current_process_seed = cfg.random_seed + accelerator.process_index
-        set_random_seed(current_process_seed)
-        logger.info(f"Process {accelerator.process_index}: Global random seed set to {current_process_seed}")
     else:
-        logger.info(f"Process {accelerator.process_index}: No global random seed set, relying on default random state.")
+        current_process_seed = random.randint(0, 2**32 - 1)
 
     grid_encoder = create_grid_encoder(cfg.grid_encoder)
     dataset_kwargs = {'grid_encoder': grid_encoder, 'tokenizer': tokenizer}
     train_dataset = IterableDataset.from_generator(
-        # for some weird reason, it does not work correctly with lists and I have to use partial with the lists
-        partial(random_prompt_generator, **dataset_kwargs))
+        partial(random_prompt_generator, **dataset_kwargs),
+        gen_kwargs={"shards": [current_process_seed + i for i in range(cfg.dataloader_num_workers)]})
     # val_dataset = create_validation_dataset(*cfg.val_dataset, **dataset_kwargs)
     val_dataset = None
 
@@ -138,6 +137,7 @@ def fine_tuning_main():
         args=training_arguments,
     )
     trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
+    torch.distributed.destroy_process_group()
 
 
 def save_train_conf(cfg):
@@ -298,8 +298,10 @@ def get_lora_model(model, adapter_path, r, use_rslora, use_dora, weight_initaliz
 # Data
 ############################################################################
 
-def random_prompt_generator(grid_encoder, tokenizer):
+def random_prompt_generator(grid_encoder, tokenizer, shards):
     #TODO: this is a very basic and preliminar version
+    logger.info(f'Starting random prompt generator with shards: {shards}')
+    set_random_seed(shards[0])
     task_generator = RandomDrawingTaskOnEmptyImg()
     while True:
         task = task_generator.sample()
@@ -363,7 +365,7 @@ def get_training_arguments(cfg):
             packing=cfg.packing,
             use_liger_kernel=cfg.use_liger_kernel,
 
-            dataloader_num_workers=1, # Number of subprocesses to use for data loading
+            dataloader_num_workers=cfg.dataloader_num_workers, # Number of subprocesses to use for data loading
             dataloader_pin_memory=True, # Whether you want to pin memory in data loaders or not. Will default to True.
             dataloader_prefetch_factor=4, # Number of batches loaded in advance by each worker
             **batch_size_kwargs

@@ -9,6 +9,7 @@ from typing import Optional, List
 import argparse
 import traceback
 from functools import partial
+from itertools import islice
 from dataclasses import dataclass, asdict, field
 import tyro
 
@@ -84,6 +85,7 @@ class Config:
 @log_execution_time
 def fine_tuning_main():
     cfg = tyro.cli(Config)
+    os.environ['TOKENIZERS_PARALLELISM'] = 'false' # to avoid warnings, so far I haven't seen any slowdown
     configure_logging()
     save_train_conf(cfg)
     if cfg.log_to_wandb:
@@ -118,8 +120,8 @@ def fine_tuning_main():
     train_dataset = IterableDataset.from_generator(
         partial(random_prompt_generator, **dataset_kwargs),
         gen_kwargs={"shards": [current_process_seed + i for i in range(cfg.dataloader_num_workers)]})
-    # val_dataset = create_validation_dataset(*cfg.val_dataset, **dataset_kwargs)
-    val_dataset = None
+    val_generator = random_prompt_generator(grid_encoder, tokenizer, [current_process_seed + cfg.dataloader_num_workers])
+    val_dataset = Dataset.from_dict({'text': [x['text'] for x in islice(val_generator, 100)]})
 
     if accelerator.is_main_process: # Ensure printing only happens once in multi-GPU setups
         logger.info("Sampling one element from the training dataset:")
@@ -348,7 +350,7 @@ def get_training_arguments(cfg):
             max_seq_length=cfg.max_seq_len,
 
             do_eval=True,
-            eval_strategy="no", #TODO: previously it was steps
+            eval_strategy='steps', # 'epoch', 'steps', 'no'
             save_steps=cfg.save_steps or cfg.eval_steps,
             logging_steps=cfg.logging_steps, #50,
             eval_steps=cfg.eval_steps,

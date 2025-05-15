@@ -127,6 +127,8 @@ changes in training speed that we are observing when using a longer output.
 
 ### Mixed-sizes training
 
+#### First experiments
+
 Let's see how the speed is affected when we mix different input sizes. I will be using a single sample and 5 draws for this experiment. I will only change the side of the image.
 
 ```bash
@@ -158,6 +160,49 @@ So maybe packing is slower but it is training with more data.
 
 #### Packing experiment
 
+```bash
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 25 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 3072 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100 --no-packing --epochs 1
+# 25 steps, 
+# {'train_runtime': 24.6856, 'train_samples_per_second': 16.204, 'train_steps_per_second': 1.013, 'train_loss': 0.5946265602111817, 'num_tokens': 420352.0, 'mean_token_accuracy': 0.8707410991191864, 'epoch': 1.0}
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 25 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 3072 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100 --packing --epochs 1
+# 9 steps, there is an error on one sample, the training does not end
+# 20.54s
+```
+
+The training is not ending, the speedup is not that large and it seems to be doing weird thing with the examples, so I won't recommend using packing.
+
+### Shards in iterable dataset
+
+To be able to use multiple workers, I have to add shards to the IterableDataset.
+
+```bash
+# Dataset
+{'train_runtime': 198.5722, 'train_samples_per_second': 16.115, 'train_steps_per_second': 1.007, 'train_loss': 0.3144468629360199, 'epoch': 1.0}
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████| 200/200 [03:18<00:00,  1.01it/s]
+2025-05-15 15:54:47,738 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 218.9584 seconds
+2025-05-15 15:54:47,739 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 219.0947 seconds
+
+# IterableDataset
+{'train_runtime': 219.8297, 'train_samples_per_second': 14.557, 'train_steps_per_second': 0.91, 'train_loss': 0.3229031562805176, 'epoch': 1.0}
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 200/200 [03:39<00:00,  1.10s/it]
+2025-05-15 15:48:18,818 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 222.6067 seconds
+2025-05-15 15:48:18,818 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 222.9027 seconds
+
+# With workers
+{'train_runtime': 216.0631, 'train_samples_per_second': 14.81, 'train_steps_per_second': 0.926, 'train_loss': 0.31195030570030213, 'epoch': 1.0}
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 200/200 [03:35<00:00,  1.08s/it]
+2025-05-15 16:06:55,624 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 218.7438 seconds
+2025-05-15 16:06:55,626 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 218.7610 seconds
+
+# With shards and 4 workers
+{'train_runtime': 203.6106, 'train_samples_per_second': 15.716, 'train_steps_per_second': 0.982, 'train_loss': 0.31994509100914004, 'epoch': 1.0}
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 200/200 [03:23<00:00,  1.02s/it]
+2025-05-15 17:30:28,515 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 206.2465 seconds
+2025-05-15 17:30:28,526 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 206.3744 seconds
+```
+
 ## Results
 
 ## Conclusion
@@ -171,7 +216,8 @@ So maybe packing is slower but it is training with more data.
 - [x] Fix the problem with repeated calls to the train dataset generator
 - [x] Make the script work with accelerate
 - [x] Measure training speed vs batch size and number of gpus
-- [ ] Measure training speed vs input size
+- [x] Measure training speed vs input size
+- [x] Does it have sense to use packing?
+- [x] Measure data sampling speed to verify is fast enough
 - [ ] Enable multi-task training, currently only trains on a single task
-- [ ] Measure data sampling speed to verify is fast enough
 - [ ] Add validation

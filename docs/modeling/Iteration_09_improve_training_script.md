@@ -203,6 +203,37 @@ To be able to use multiple workers, I have to add shards to the IterableDataset.
 2025-05-15 17:30:28,526 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 206.3744 seconds
 ```
 
+### Add validation dataset
+
+I will simply sample from the same training distribution, but do it once at the start of the training and with a different random seed.
+
+```bash
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/add_validation --device-map None --random-seed 5 --max-steps 500 --n-gpus 2 --per-device-train-batch-size 2 --per-device-eval-batch-size 4 --batch-size 16 --max-seq-len 3072 --no-resume-from-checkpoint --save-steps 200 --no-packing --eval-steps 50 --no-log-to-wandb
+```
+
+### Train a model on multiple tasks
+
+```bash
+export K_STEPS=1
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu finetuning.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250515_baseline_painter/${K_STEPS}k_steps \
+--random-seed 5 \
+--device-map None \
+--max-steps ${K_STEPS}000 \
+--n-gpus 2 \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 16 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora
+```
+
 ## Results
 
 ## Conclusion
@@ -219,5 +250,6 @@ To be able to use multiple workers, I have to add shards to the IterableDataset.
 - [x] Measure training speed vs input size
 - [x] Does it have sense to use packing?
 - [x] Measure data sampling speed to verify is fast enough
-- [ ] Enable multi-task training, currently only trains on a single task
-- [ ] Add validation
+- [x] Add validation
+- [x] Enable multi-task training, currently only trains on a single task
+- [ ] Bonus: Now that I have trained a model on bigger images, can it solve tasks with more than 25 squares?

@@ -75,6 +75,60 @@ python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/debu
 # {'train_runtime': 180.7981, 'train_samples_per_second': 8.85, 'train_steps_per_second': 0.553, 'train_loss': 0.29323326468467714, 'epoch': 1.0}
 ```
 
+### Training speed vs input size
+
+![training speed](res/1747310963772_image.png)
+
+Even after changing the per device batch size between experiments we can see a clear linear relation
+between the input tokens and the training speed.
+
+```bash
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 100 --n-gpus 2 --per-device-train-batch-size 8 --batch-size 16 --max-seq-len 512 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 1x10x10 5 draws, 'train_samples_per_second': 43.004,
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 50 --n-gpus 2 --per-device-train-batch-size 4 --batch-size 16 --max-seq-len 1024 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 2x10x10 5 draws, 'train_samples_per_second': 23.6
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 50 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 2048 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 4x10x10 5 draws, 'train_samples_per_second': 13.6
+# 1x20x20 5 draws, 'train_samples_per_second': 16.0
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 25 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 4096 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 1x30x30 5 draws, 'train_samples_per_second': 9.607
+# 2x20x20 5 draws, 'train_samples_per_second': 9.815
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 20 --n-gpus 2 --per-device-train-batch-size 1 --batch-size 16 --max-seq-len 8192 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 3x20x20 5 draws,  'train_samples_per_second': 6.323
+# 4x20x20 5 draws, 'train_samples_per_second': 5.014
+# 2x30x30 5 draws, 'train_samples_per_second': 5.178
+# 3x30x30 5 draws, 'train_samples_per_second': 3.234
+# 5x20x20 5 draws, 'train_samples_per_second': 4.045
+# 6x20x20 5 draws, 'train_samples_per_second': 3.293
+# 4x30x30 5 draws, OOM
+# 4x27x27 5 draws, OOM
+# 4x26x26 5 draws, 'train_samples_per_second': 3.101
+```
+
+### Training speed vs output size
+
+```bash
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 20 --n-gpus 2 --per-device-train-batch-size 1 --batch-size 16 --max-seq-len 8192 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 3x20x20 1 draws, 'train_samples_per_second': 7.024
+# 3x20x20 5 draws,  'train_samples_per_second': 6.323
+# 3x20x20 10 draws,  'train_samples_per_second': 5.503
+# 3x20x20 20 draws,  'train_samples_per_second': 3.885
+```
+
+A function with 20 drawings is around 400 tokens, so the same as a single 20x20 image. ChatGPT says
+that the backpropagation step is 2-3 more expensive than the forward step, and that could explain the
+changes in training speed that we are observing when using a longer output.
+
+### Mixed-sizes training
+
+Let's see how the speed is affected when we mix different input sizes.
+
 ## Results
 
 ## Conclusion

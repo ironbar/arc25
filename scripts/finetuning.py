@@ -23,7 +23,7 @@ from arc25.encoders import create_grid_encoder
 from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 # from arc24.data import load_arc_data_with_solutions, BarcDataset
 from arc25.logging import log_execution_time, configure_logging
-from arc25.training_tasks import RandomDrawingTaskOnEmptyImg
+from arc25.training_tasks import *
 from arc25.utils import set_random_seed
 
 from accelerate.logging import get_logger
@@ -46,7 +46,6 @@ class Config:
     n_gpus: int = 2
     device_map: str = 'None' # 'custom', 'balanced', 'auto', 'None'
     max_seq_len: int = 4096
-    epochs = 0
     max_steps : Optional[int] =  6000
     logging_steps: int = 10 #10a
     eval_steps: int = 50 #50
@@ -58,7 +57,7 @@ class Config:
     grid_encoder: str = 'GridShapeEncoder(RowNumberEncoder(MinimalGridEncoder()))'
     # SmolLM-135M-Instruct: (4, 4); Qwen/Qwen2-0.5B-Instruct: (1, 2)
     per_device_train_batch_size: int = 1
-    per_device_eval_batch_size = 1 # if using 2 the validation loss is not correctly computed
+    per_device_eval_batch_size: int = 1 # if using 2 the validation loss is not correctly computed
     gradient_checkpointing: bool = False
     learning_rate: float = 1e-4
     lr_scheduler_type: str = "linear" #linear, constant_with_warmup, cosine, cosine_with_restarts
@@ -304,13 +303,19 @@ def random_prompt_generator(grid_encoder, tokenizer, shards):
     #TODO: this is a very basic and preliminar version
     logger.info(f'Starting random prompt generator with shards: {shards}')
     set_random_seed(shards[0])
-    task_generator = RandomDrawingTaskOnEmptyImg()
+    task_generators = [
+        RandomDrawingTaskOnEmptyImg(max_side=30),
+        RandomDrawingTaskOnRandomImgs(n_inputs=1, max_side=30),
+        RandomDrawingTaskOnEmptyImgs(),
+        RandomDrawingTaskOnRandomImgs(),
+    ]
     while True:
-        task = task_generator.sample()
-        prompt_version = 'code-from-examples-v3'
-        prompt = create_prompt_from_task(
-            task, prompt_version=prompt_version, grid_encoder=grid_encoder, tokenizer=tokenizer)
-        yield {'text': prompt}
+        for task_generator in task_generators:
+            task = task_generator.sample()
+            prompt_version = 'code-from-examples-v3'
+            prompt = create_prompt_from_task(
+                task, prompt_version=prompt_version, grid_encoder=grid_encoder, tokenizer=tokenizer)
+            yield {'text': prompt}
 
 ############################################################################
 # Training
@@ -336,7 +341,7 @@ def get_training_arguments(cfg):
     training_arguments = SFTConfig(
             output_dir=cfg.output_dir,
             save_total_limit=3, # I'm only interested in the last checkpoint, I will be saving 3 to avoid corruption problems (2 will be enough for this)
-            num_train_epochs=cfg.epochs,
+            num_train_epochs=0,
             max_steps=cfg.max_steps,
             warmup_ratio=cfg.warmup_ratio,
             learning_rate=cfg.learning_rate,

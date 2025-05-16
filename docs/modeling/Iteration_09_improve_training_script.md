@@ -215,7 +215,7 @@ finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/add_validat
 ### Train a model on multiple tasks
 
 ```bash
-export K_STEPS=1
+export K_STEPS=32
 accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu finetuning.py \
 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250515_baseline_painter/${K_STEPS}k_steps \
 --random-seed 5 \
@@ -236,6 +236,20 @@ accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --mu
 
 ## Results
 
+I have trained a new model on a few drawing task for 32k steps (512k samples) in around 9 hours. This model
+has been trained on images up to 30x30 pixels, the previous models were trained on up to 10x10 pixels.
+This opens the door to test tasks with a larger number of elements.
+
+Although the model has been trained with up to 5 drawings, with Hindsight Experience Replay (HER) it has
+been able to solve task up to 49 drawings.
+
+| number of squares | epochs | solution lines | solution tokens |
+|-------------------|--------|----------------|-----------------|
+| 16                | 5      | 15             | 382             |
+| 25                | 8      | 23             | 528             |
+| 36                | 11     | 29             | 732             |
+| 49                | 14     | 43             | 1082            |
+
 ## Conclusion
 
 ## Next steps
@@ -253,3 +267,4 @@ accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --mu
 - [x] Add validation
 - [x] Enable multi-task training, currently only trains on a single task
 - [ ] Bonus: Now that I have trained a model on bigger images, can it solve tasks with more than 25 squares?
+- [ ] Train on the cluster

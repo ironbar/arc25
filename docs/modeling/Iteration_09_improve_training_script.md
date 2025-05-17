@@ -241,7 +241,7 @@ has been trained on images up to 30x30 pixels, the previous models were trained 
 This opens the door to test tasks with a larger number of elements.
 
 Although the model has been trained with up to 5 drawings, with Hindsight Experience Replay (HER) it has
-been able to solve task up to 49 drawings.
+been able to solve task up to 100 drawings.
 
 | number of squares | epochs | solution lines | solution tokens |
 |-------------------|--------|----------------|-----------------|
@@ -249,6 +249,13 @@ been able to solve task up to 49 drawings.
 | 25                | 8      | 23             | 528             |
 | 36                | 11     | 29             | 732             |
 | 49                | 14     | 43             | 1082            |
+| 64                | 21     | 55             | 1382            |
+| 81                | 19     | 70             | 1757            |
+| 100               | 28     | 81             | 2032            |
+
+![score evolution](res/1747462545247_image.png)
+
+![best prediction evolution](res/1747462564462_image.png)
 
 ## Conclusion
 

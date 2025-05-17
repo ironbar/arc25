@@ -273,5 +273,5 @@ been able to solve task up to 100 drawings.
 - [x] Measure data sampling speed to verify is fast enough
 - [x] Add validation
 - [x] Enable multi-task training, currently only trains on a single task
-- [ ] Bonus: Now that I have trained a model on bigger images, can it solve tasks with more than 25 squares?
+- [x] Bonus: Now that I have trained a model on bigger images, can it solve tasks with more than 25 squares?
 - [ ] Train on the cluster

@@ -31,6 +31,10 @@ linked Google Colab Plus to Kaggle and now I have 22 hours per week. This means 
 
 The best learning rate seems to be around 2e-4, there is no evidence that lora 32 is better.
 
+### Number of predictions
+
+Let's study if increasing the number of predictions has a significative effect on the accuracy.
+
 ## Conclusion
 
 ## Next steps

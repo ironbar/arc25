@@ -236,7 +236,54 @@ accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --mu
 
 ### Train on the cluster
 
-I'm going to use the code from [ARC24](https://github.com/ironbar/arc24/tree/main/docker) as a start point.
+I'm going to use the code from ARC24 as a start point.
+
+References:
+
+- <https://ironbar.github.io/arc24/modeling/Iteration_08_code_improvements/#scale-compute>
+- <https://github.com/ironbar/arc24/tree/main/docker>
+
+```
+# relevant packages
+# Name                    Version                   Build  Channel
+cupy-cuda12x              13.4.1                   pypi_0    pypi
+flash-attn                2.6.3                    pypi_0    pypi
+liger-kernel              0.5.9                    pypi_0    pypi
+llguidance                0.7.19                   pypi_0    pypi
+llvmlite                  0.44.0                   pypi_0    pypi
+numba                     0.61.2                   pypi_0    pypi
+numpy                     2.2.5                    pypi_0    pypi
+nvidia-cublas-cu12        12.4.5.8                 pypi_0    pypi
+nvidia-cuda-cupti-cu12    12.4.127                 pypi_0    pypi
+nvidia-cuda-nvrtc-cu12    12.4.127                 pypi_0    pypi
+nvidia-cuda-runtime-cu12  12.4.127                 pypi_0    pypi
+nvidia-cudnn-cu12         9.1.0.70                 pypi_0    pypi
+nvidia-cufft-cu12         11.2.1.3                 pypi_0    pypi
+nvidia-curand-cu12        10.3.5.147               pypi_0    pypi
+nvidia-cusolver-cu12      11.6.1.9                 pypi_0    pypi
+nvidia-cusparse-cu12      12.3.1.170               pypi_0    pypi
+nvidia-cusparselt-cu12    0.6.2                    pypi_0    pypi
+nvidia-ml-py3             7.352.0                  pypi_0    pypi
+nvidia-nccl-cu12          2.21.5                   pypi_0    pypi
+nvidia-nvjitlink-cu12     12.4.127                 pypi_0    pypi
+nvidia-nvtx-cu12          12.4.127                 pypi_0    pypi
+python                    3.10.16              he870216_1  
+torch                     2.6.0                    pypi_0    pypi
+torchaudio                2.6.0                    pypi_0    pypi
+torchvision               0.21.0                   pypi_0    pypi
+transformers              4.51.3                   pypi_0    pypi
+triton                    3.2.0                    pypi_0    pypi
+trl                       0.18.0.dev0              pypi_0    pypi
+vllm                      0.8.5                    pypi_0    pypi
+xformers                  0.0.29.post2             pypi_0    pypi
+```
+
+```bash
+cd docker
+docker build -t cuda-python:python3.10-cuda14.1 .
+docker tag cuda-python:python3.10-cuda14.1 gbarbadillo/cuda-python:python3.10-cuda14.1
+docker push gbarbadillo/cuda-python:python3.10-cuda14.1
+```
 
 ## Results
 

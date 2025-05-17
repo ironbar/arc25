@@ -234,6 +234,10 @@ accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --mu
 --use-rslora
 ```
 
+### Train on the cluster
+
+I'm going to use the code from [ARC24](https://github.com/ironbar/arc24/tree/main/docker) as a start point.
+
 ## Results
 
 I have trained a new model on a few drawing task for 32k steps (512k samples) in around 9 hours. This model
@@ -256,6 +260,10 @@ been able to solve task up to 100 drawings.
 ![score evolution](res/1747462545247_image.png)
 
 ![best prediction evolution](res/1747462564462_image.png)
+
+It seems that there is no ceiling, and as long as predictions can get closer to the
+result the model could be able to solve the task. We only need with a model with an
+initial intuition of how to do the task and which functions to call.
 
 ## Conclusion
 

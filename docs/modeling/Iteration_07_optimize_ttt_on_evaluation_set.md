@@ -35,6 +35,10 @@ The best learning rate seems to be around 2e-4, there is no evidence that lora 3
 
 Let's study if increasing the number of predictions has a significative effect on the accuracy.
 
+![number of predictions](res/1747546354753_image.png)
+
+There is no evidence suggesting that a bigger number of predictions improves the score.
+
 ## Conclusion
 
 ## Next steps

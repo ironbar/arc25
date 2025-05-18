@@ -121,6 +121,18 @@ The advantage of RL is that it increases the `pass@1` metric, which is arguably 
 
 It is likely that in the future better exploration methods during RL might change these results. Otherwise the models will be constrained by the goodness of the base model.
 
+### [Absolute Zero Reinforced Self-play Reasoning with Zero Data](https://arxiv.org/abs/2505.03335)
+
+This paper shows that it is possible to train with reinforcement learning a model to both propose and solve tasks if we have access to an external verifier such a python interpreter.
+The goal of the proposer is to generate tasks that are neither too easy or too hard, maximizing learnability.
+One interesting thing is that they have triplets of inputs, outputs and program, and they teach the model to predict any of the elements of the triplet, in a very similar way to my omni-arc approach. So they do induction (program), deduction (output) and abduction (inputs).
+
+Although they train for 500 steps, it seems that the biggest improvement is due to the first 100 steps.
+
+Bigger models benefit more from this technique. Probably they can generate more diverse training samples. This agrees with the findings in the DeepSeek R1 paper: use RL on a big model and distill to smaller models.
+
+They check for program safety and determinism, I should also do that.
+
 ## Other
 
 ### [Searching Latent Program Spaces](https://arxiv.org/abs/2411.08706)

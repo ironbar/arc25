@@ -32,6 +32,11 @@ I will be doing the experiments on the notebook [005_GRPO_exploration](../../not
 - temperature: 0.6
 - Train for 2000 steps
 
+#### [LLMs for Engineering: Teaching Models to Design High Powered Rockets](https://arxiv.org/abs/2504.19394)
+
+- Batch size 64
+- Qwen 2.5 7B
+
 ## Results
 
 After solving the problem with timeouts I'm going to set the maximum number of tokens to 768, solving the task with 25 squares needed less than 600 tokens. That will enforce the model to keep the functions short.

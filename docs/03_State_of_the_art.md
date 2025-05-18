@@ -133,6 +133,14 @@ Bigger models benefit more from this technique. Probably they can generate more 
 
 They check for program safety and determinism, I should also do that.
 
+### [LLMs for Engineering: Teaching Models to Design High Powered Rockets](https://arxiv.org/abs/2504.19394)
+
+Very cool paper that shows how test-time RL can help an LLM to optimize rocket designs given access to a simulation environment and a continuous reward.
+
+Similar to AlphaEvolve in spirit, but using a much smaller LLM that evolves over time.
+
+Is there room for a platform that helps users do this kind of things?
+
 ## Other
 
 ### [Searching Latent Program Spaces](https://arxiv.org/abs/2411.08706)

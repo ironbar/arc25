@@ -308,6 +308,37 @@ accelerate launch --num_processes 1 --num_machines 1 --mixed_precision bf16 --mu
 --use-rslora"
 ```
 
+- I'm getting this error when running the training
+
+```
+ERROR: Can not perform a '--user' install. User site-packages are not visible in this virtualenv.
+```
+
+- Weirdly I have tried with last year's script and gives the same error
+- Trying to create the environment inside the docker, but does not work.
+- It seems that the --user flag is being used, I don't understand why.
+
+pip3 install --prefix /var/lib/condor/execute/dir_3923075/env_0e2f4ccafe90753fee65767dd90c38f0 --upgrade pip
+ERROR: Can not combine '--user' and '--prefix' as they imply different installation locations
+
+
+Maybe it is related to write permissions? https://stackoverflow.com/questions/79608713/getting-could-not-install-packages-due-to-an-oserror-when-installing-python-pa
+
+Unexpected --user behavior since version 23.1: https://github.com/pypa/pip/issues/11982
+
+```
+docker run -ti -u 1000:1000 gbarbadillo/cuda-python:python3.10-cuda14.1
+python3 -m venv debug
+source debug/bin/activate
+pip3 install --upgrade pip --user
+ERROR: Can not perform a '--user' install. User site-packages are not visible in this virtualenv.
+
+[notice] A new release of pip is available: 23.0.1 -> 25.1.1
+[notice] To update, run: pip install --upgrade pip
+# this works
+pip3 install --upgrade pip
+```
+
 ## Results
 
 I have trained a new model on a few drawing task for 32k steps (512k samples) in around 9 hours. This model

@@ -1,0 +1,31 @@
+# Fine-tune a model for arc25
+# Examples of usage
+# condor_submit train.condor command="python3 /mnt/scratch/users/gbarbadillo/arc24/scripts/fine-tuning.py --lora_r=64 --output_dir=/mnt/scratch/users/gbarbadillo/arc24/models/20240820_new_partition/03_new-train-lora-r_Qwen2-0.5B-Instruct_lr1e-4_r64_6e3steps"
+# To modify the default parameters use: -append request_cpus=4
+
+batch_name              = arc25 fine-tuning $(command)
+universe                = docker
+docker_image 		= gbarbadillo/cuda-python:python3.10-cuda14.1
+
+should_transfer_files   = NO
+request_memory          = 16G
+request_cpus            = 4
+request_gpus            = 1
+request_disk            = 10G
+
+executable              = /mnt/scratch/users/gbarbadillo/arc25/run_condor_job.sh
+python_requirements     = /mnt/scratch/users/gbarbadillo/arc25/arc25/requirements.txt
+arguments               = $(python_requirements) $(command)
+
+output                  = logs/out.$(Cluster).$(Process)
+error                   = logs/err.$(Cluster).$(Process)
+log                     = logs/log.$(Cluster).$(Process)
+
+getenv                  = True
+
+environment = "PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25"
+requirements = TARGET.Machine=="calculon20.das-nano.com"  || TARGET.Machine=="calculon19.das-nano.com"
+#requirements = TARGET.Machine=="calculon20.das-nano.com"
+#requirements = TARGET.Machine=="calculon19.das-nano.com"
+
+queue 1

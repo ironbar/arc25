@@ -288,6 +288,27 @@ docker push gbarbadillo/cuda-python:python3.10-cuda14.1
 ```bash
 export BATCH_SIZE=2
 condor_submit train.condor command="
+accelerate launch --num_processes 1 --num_machines 1 --mixed_precision bf16 \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-0.5B-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-20-batch-size/batch-size-${BATCH_SIZE} \
+--random-seed 5 \
+--device-map None \
+--max-steps 1000 \
+--n-gpus 1 \
+--per-device-train-batch-size ${BATCH_SIZE} \
+--per-device-eval-batch-size 4 \
+--batch-size 16 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora"
+
+export BATCH_SIZE=2
+condor_submit train.condor command="
 accelerate launch --num_processes 1 --num_machines 1 --mixed_precision bf16 --multi_gpu \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-0.5B-Instruct/ \
@@ -338,6 +359,10 @@ ERROR: Can not perform a '--user' install. User site-packages are not visible in
 # this works
 pip3 install --upgrade pip
 ```
+
+After deleting `rm -r /mnt/scratch/users/gbarbadillo/.config/pip` problems with pip where solved.
+
+It seems that it requires more than 16GB to create the environment and install flash-attn.
 
 ## Results
 

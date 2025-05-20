@@ -22,3 +22,6 @@ scikit-image
 ipywidgets
 tensorboard
 nvidia-ml-py3
+wheel
+setuptools
+cmake

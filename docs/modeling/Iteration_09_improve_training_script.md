@@ -362,7 +362,13 @@ pip3 install --upgrade pip
 
 After deleting `rm -r /mnt/scratch/users/gbarbadillo/.config/pip` problems with pip where solved.
 
-It seems that it requires more than 16GB to create the environment and install flash-attn.
+It seems that it requires more than 64GB to create the environment and install flash-attn. The problem seems to be related to flash-attn installation. I'm trying to reproduce myself the problem locally.
+
+I'm seeing that it takes around one hourto install flash-attn on my PC inside the docker and requires 60% of the CPU (20 cores) and between 20 and 30 GB of RAM. So it might be possible that in a more powerful machine in the cluster uses more threads and even more RAM.
+
+> If your machine has less than 96GB of RAM and lots of CPU cores, ninja might run too many parallel compilation jobs that could exhaust the amount of RAM.
+
+https://github.com/Dao-AILab/flash-attention
 
 ## Results
 

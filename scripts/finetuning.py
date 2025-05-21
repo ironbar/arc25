@@ -339,6 +339,7 @@ def get_training_arguments(cfg):
     if cfg.lr_scheduler_type == 'cosine_with_restarts':
         lr_scheduler_kwargs['num_cycles'] = cfg.lr_num_cycles
     training_arguments = SFTConfig(
+            # https://huggingface.co/docs/transformers/en/main_classes/trainer#transformers.TrainingArguments
             output_dir=cfg.output_dir,
             save_total_limit=3, # I'm only interested in the last checkpoint, I will be saving 3 to avoid corruption problems (2 will be enough for this)
             num_train_epochs=0,
@@ -375,6 +376,11 @@ def get_training_arguments(cfg):
             dataloader_num_workers=cfg.dataloader_num_workers, # Number of subprocesses to use for data loading
             dataloader_pin_memory=True, # Whether you want to pin memory in data loaders or not. Will default to True.
             dataloader_prefetch_factor=4, # Number of batches loaded in advance by each worker
+
+            # required by deepspeed
+            bf16=True, 
+            bf16_full_eval=True,
+
             **batch_size_kwargs
     )
     return training_arguments

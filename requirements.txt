@@ -25,3 +25,5 @@ nvidia-ml-py3
 wheel
 setuptools
 cmake
+deepspeed
+pynvml

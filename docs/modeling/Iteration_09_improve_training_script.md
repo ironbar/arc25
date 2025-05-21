@@ -433,6 +433,29 @@ I have set `MAX_JOBS=2` on the cluster, and installation took around 5 hours. Se
 
 [o4-mini-high suggestions](https://chatgpt.com/share/682d7223-1ce4-8012-8b2f-e1144c3fbab2)
 
+```bash
+export N_GPUS=2
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --use_deepspeed \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-0.5B-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-accelerate/A6000-GPUS${N_GPUS}-deepspeed \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 4 \
+--per-device-eval-batch-size 8 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS}
+```
+
 ## Results
 
 I have trained a new model on a few drawing task for 32k steps (512k samples) in around 9 hours. This model

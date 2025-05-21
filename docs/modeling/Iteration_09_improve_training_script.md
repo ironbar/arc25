@@ -370,6 +370,20 @@ I'm seeing that it takes around one hourto install flash-attn on my PC inside th
 
 https://github.com/Dao-AILab/flash-attention
 
+```bash
+docker run -ti -u 1000:1000 gbarbadillo/cuda-python:python3.10-cuda14.1
+python3 -m venv debug
+source debug/bin/activate
+pip3 install --upgrade pip
+cat > requirements.txt <<EOF
+...
+EOF
+pip3 install -r requirements.txt
+MAX_JOBS=40 pip install flash-attn==2.6.3 --no-build-isolation
+```
+
+This required more than 128GB of RAM.
+
 ## Results
 
 I have trained a new model on a few drawing task for 32k steps (512k samples) in around 9 hours. This model

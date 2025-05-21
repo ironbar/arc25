@@ -435,6 +435,7 @@ I have set `MAX_JOBS=2` on the cluster, and installation took around 5 hours. Se
 
 ```bash
 export N_GPUS=2
+# deepspeed
 condor_submit train.condor command="
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --use_deepspeed \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
@@ -453,8 +454,144 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --save-steps 1000 \
 --lora-r 32 \
 --use-dora \
---use-rslora" -append request_gpus=${N_GPUS}
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+# baseline
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-0.5B-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-accelerate/A6000-GPUS${N_GPUS}-baseline \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 4 \
+--per-device-eval-batch-size 8 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+# config
+export N_GPUS=2
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --use_deepspeed \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-0.5B-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-accelerate/A6000-GPUS${N_GPUS}-deepspeed-config \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 4 \
+--per-device-eval-batch-size 8 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
 ```
+
+I have tried running `accelerate config default` and it only has created a file `/mnt/scratch/users/gbarbadillo/.cache/huggingface/accelerate/default_config.yaml` with this information:
+
+```
+{
+  "compute_environment": "LOCAL_MACHINE",
+  "debug": false,
+  "distributed_type": "MULTI_GPU",
+  "downcast_bf16": false,
+  "enable_cpu_affinity": false,
+  "machine_rank": 0,
+  "main_training_function": "main",
+  "mixed_precision": "no",
+  "num_machines": 1,
+  "num_processes": 2,
+  "rdzv_backend": "static",
+  "same_network": false,
+  "tpu_use_cluster": false,
+  "tpu_use_sudo": false,
+  "use_cpu": false
+}
+```
+
+TODO: `accelerate config` -> termios.error: (25, 'Inappropriate ioctl for device')
+
+#### Bigger models
+
+```bash
+export N_GPUS=8
+export PARAMETERS=0.5B
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-model-size/A6000-GPUS${N_GPUS}-${PARAMETERS} \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 4 \
+--per-device-eval-batch-size 8 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+export PARAMETERS=3B
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-model-size/A6000-GPUS${N_GPUS}-${PARAMETERS} \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+export PARAMETERS=7B
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-model-size/A6000-GPUS${N_GPUS}-${PARAMETERS} \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+```
+
 
 ## Results
 

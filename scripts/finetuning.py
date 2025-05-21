@@ -355,8 +355,8 @@ def get_training_arguments(cfg):
             dataset_text_field="text",
             max_seq_length=cfg.max_seq_len,
 
-            do_eval=True,
-            eval_strategy='steps', # 'epoch', 'steps', 'no'
+            do_eval=True if cfg.eval_steps else False,
+            eval_strategy='steps' if cfg.eval_steps else 'no', # 'epoch', 'steps', 'no'
             save_steps=cfg.save_steps or cfg.eval_steps,
             logging_steps=cfg.logging_steps, #50,
             eval_steps=cfg.eval_steps,

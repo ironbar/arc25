@@ -19,15 +19,29 @@ def wrap_code_in_function(code):
 
 def validate_code(code, inputs):
     """
-    Validate that the code modifies the input, generates a valid output and removes all irrelevant lines.
+    1. Validates that the code is safe and deterministic
+    2. Verifies that the task is meaningful and valid
+    3. Removes irrelevant lines from the code
     """
+    check_code_is_safe(code)
+    check_code_is_deterministic(code)
     outputs =  safe_code_execution(code, inputs)
     check_at_least_one_output_is_different_to_input(inputs, outputs)
     check_all_outputs_are_valid(outputs)
-    check_code_is_safe(code)
-    check_code_is_deterministic(code)
     validated_code = remove_irrelevant_lines(code, inputs, outputs)
     return validated_code
+
+
+class UnsafeCode(Exception):
+    pass
+
+
+class NonDeterministicCode(Exception):
+    pass
+
+
+class InvalidCode(Exception):
+    pass
 
 
 def check_at_least_one_output_is_different_to_input(inputs, outputs):
@@ -64,14 +78,6 @@ def remove_irrelevant_lines(code, inputs, outputs):
     return validated_code
 
 
-class UnsafeCode(Exception):
-    pass
-
-
-class NonDeterministicCode(Exception):
-    pass
-
-
 def check_code_is_safe(code):
     forbidden_modules = ['logging', 'threading', 'bcrypt', 'datetime', 'os.sys', 'multiprocessing', 'time',
                          'os.path', 'pebble', 'hashlib', 'sys.exit', 'subprocess', 'calendar', 'os.environ',]
@@ -86,10 +92,6 @@ def check_code_is_deterministic(code):
         if module in code:
             raise NonDeterministicCode(f"The code uses a forbidden module: {module}\nCode: {code}")
     # TODO: a more thorough check for non-deterministic code, running the code multiple times and checking if the output is the same
-
-
-class InvalidCode(Exception):
-    pass
 
 
 def _is_valid_output(output):

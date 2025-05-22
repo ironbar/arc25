@@ -24,8 +24,9 @@ This are the objects that can be used in the DSL.
 create_img, draw_line, draw_rectangle, flood_fill, draw_horizontal_line, draw_vertical_line, draw_pixel
 """
 import numpy as np
-import skimage
 from typing import Tuple, Union
+import skimage
+from scipy import stats
 
 #############################
 # Objects
@@ -50,7 +51,7 @@ class Img(np.ndarray):
 
     def __repr__(self):
         return '\n'.join(''.join(str(int(v)) for v in row) for row in self)
-    
+
     def __str__(self):
         return self.__repr__()
 
@@ -113,3 +114,45 @@ def draw_pixel(img: Img, point: Tuple[int], color: int) -> Img:
     if 0 <= point[0] < img.shape[0] and 0 <= point[1] < img.shape[1]:
         img[point[0], point[1]] = color
     return img
+
+#############################
+# Geometric transformations
+#############################
+
+def upscale(img: Img, scale: tuple[int, int]) -> Img:
+    img = np.repeat(img, scale[0], axis=0)
+    img = np.repeat(img, scale[1], axis=1)
+    return img
+
+
+def downscale(img: Img, scale: tuple[int, int]) -> Img:
+    output = np.zeros((img.shape[0] // scale[0], img.shape[1] // scale[1]), dtype=img.dtype)
+    for r in range(output.shape[0]):
+        for c in range(output.shape[1]):
+            # TODO: maybe allow for other aggregation functions
+            mode_result = mode(img[r*scale[0]:(r+1)*scale[0], c*scale[1]:(c+1)*scale[1]])
+            output[r, c] = mode_result
+    return output
+
+
+def pad(img, width: int, color: int):
+    return np.pad(img, width, mode='constant', constant_values=color)
+
+
+def trim(img, width: int):
+    return img[width:-width, width:-width]
+
+
+def rotate_90(img, n_rot90):
+    return np.rot90(img, k=n_rot90)
+
+
+def flip(img, axis):
+    return np.flip(img, axis=axis)
+
+#############################
+# Math
+#############################
+
+def mode(x):
+    return stats.mode(x, axis=None).mode

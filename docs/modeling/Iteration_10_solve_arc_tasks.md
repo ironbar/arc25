@@ -16,6 +16,11 @@ path is to review those transformations add them and modify if needed.
 
 ## Development
 
+### Add safety and determinism checks
+
+Inspired by [Absolute Zero Reinforced Self-play Reasoning with Zero Data](https://arxiv.org/abs/2505.03335) I'm going
+add safety and determinism checks.
+
 ## Results
 
 ## Conclusion

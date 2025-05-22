@@ -44,6 +44,30 @@ def validate_code(code, inputs):
     return validated_code
 
 
+class UnsafeCode(Exception):
+    pass
+
+
+class NonDeterministicCode(Exception):
+    pass
+
+
+def check_code_is_safe(code):
+    forbidden_modules = ['logging', 'threading', 'bcrypt', 'datetime', 'os.sys', 'multiprocessing', 'time',
+                         'os.path', 'pebble', 'hashlib', 'sys.exit', 'subprocess', 'calendar', 'os.environ',]
+    for module in forbidden_modules:
+        if module in code:
+            raise UnsafeCode(f"The code uses a forbidden module: {module}\nCode: {code}")
+
+
+def check_code_is_deterministic(code):
+    forbidden_modules = ['random']
+    for module in forbidden_modules:
+        if module in code:
+            raise NonDeterministicCode(f"The code uses a forbidden module: {module}\nCode: {code}")
+    # TODO: a more thorough check for non-deterministic code, running the code multiple times and checking if the output is the same
+
+
 class InvalidCode(Exception):
     pass
 

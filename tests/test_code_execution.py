@@ -1,6 +1,12 @@
 import pytest
 
-from arc25.code_execution import validate_code, InvalidCode
+from arc25.code_execution import (
+    validate_code,
+    check_code_is_safe,
+    check_code_is_deterministic,
+    InvalidCode,
+    NonDeterministicCode,
+    UnsafeCode,)
 from arc25.dsl import create_img
 
 @pytest.mark.parametrize("inputs, input_code, output_code", [
@@ -66,3 +72,20 @@ def test_validate_code_returns_validated_code(inputs, input_code, output_code):
 def test_validate_code_raises_exception_if_code_is_not_valid(inputs, input_code):
     with pytest.raises(InvalidCode):
         validate_code(input_code, inputs)
+
+
+@pytest.mark.parametrize("unsafe_code", [
+    "import multiprocessing",
+])
+def test_check_code_is_safe_raises_exception_if_code_is_unsafe(unsafe_code):
+    with pytest.raises(UnsafeCode):
+        check_code_is_safe(unsafe_code)
+
+
+@pytest.mark.parametrize("non_deterministic_code", [
+    "import random",
+    "np.random.randint(0, 10)",
+])
+def test_check_code_is_deterministic_raises_exception_if_code_is_non_deterministic(non_deterministic_code):
+    with pytest.raises(NonDeterministicCode):
+        check_code_is_deterministic(non_deterministic_code)

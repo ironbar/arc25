@@ -22,12 +22,32 @@ def validate_code(code, inputs):
     Validate that the code modifies the input, generates a valid output and removes all irrelevant lines.
     """
     outputs =  safe_code_execution(code, inputs)
+    check_at_least_one_output_is_different_to_input(inputs, outputs)
+    check_all_outputs_are_valid(outputs)
+    check_code_is_safe(code)
+    check_code_is_deterministic(code)
+    validated_code = remove_irrelevant_lines(code, inputs, outputs)
+    return validated_code
+
+
+def check_at_least_one_output_is_different_to_input(inputs, outputs):
     any_output_is_different = any(not np.all(input == output) for input, output in zip(inputs, outputs))
     if not any_output_is_different:
         raise InvalidCode("The code did not modify the input.")
+
+
+def check_all_outputs_are_valid(outputs):
     all_outputs_are_valid = all(_is_valid_output(output) for output in outputs)
     if not all_outputs_are_valid:
         raise InvalidCode("The code did not produce valid outputs.")
+
+
+def remove_irrelevant_lines(code, inputs, outputs):
+    """
+    Remove irrelevant lines from the code.
+
+    TODO: could be dangerous to run when there are loops in the code.
+    """
     lines = code.strip().split('\n')
     relevant_lines = []
     for idx, line in enumerate(lines):

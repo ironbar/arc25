@@ -433,6 +433,15 @@ I have set `MAX_JOBS=2` on the cluster, and installation took around 5 hours. Se
 
 [o4-mini-high suggestions](https://chatgpt.com/share/682d7223-1ce4-8012-8b2f-e1144c3fbab2)
 
+| n GPUs | baseline training time (m) | deepspeed training time (m) | speedup |
+|--------|----------------------------|-----------------------------|---------|
+| 2      | 17.4                       | 15.3                        | 14%     |
+| 4      | 13.6                       | 11.7                        | 16%     |
+| 8      | 8                          | 6.5                         | 23%     |
+
+Using deepspeed improves the training speed, but the improvement is small. I have not been able
+to find a configuration for deepspeed or accelerate that is better.
+
 ```bash
 export N_GPUS=2
 # deepspeed
@@ -502,7 +511,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 
 I have tried running `accelerate config default` and it only has created a file `/mnt/scratch/users/gbarbadillo/.cache/huggingface/accelerate/default_config.yaml` with this information:
 
-```
+```json
 {
   "compute_environment": "LOCAL_MACHINE",
   "debug": false,
@@ -522,7 +531,7 @@ I have tried running `accelerate config default` and it only has created a file 
 }
 ```
 
-TODO: `accelerate config` -> termios.error: (25, 'Inappropriate ioctl for device')
+I cannot run  `accelerate config` inside the job because I get `termios.error: (25, 'Inappropriate ioctl for device')`
 
 #### Bigger models
 
@@ -623,6 +632,8 @@ result the model could be able to solve the task. We only need with a model with
 initial intuition of how to do the task and which functions to call.
 
 ## Conclusion
+
+I have been able to train with multiple GPUs and on the cluster. Probably for small models such as 0.5B parameters it does not have sense to a lot of GPUs because speedup is not perfect.
 
 ## Next steps
 

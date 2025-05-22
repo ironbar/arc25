@@ -651,4 +651,4 @@ I have been able to train with multiple GPUs and on the cluster. Probably for sm
 - [x] Add validation
 - [x] Enable multi-task training, currently only trains on a single task
 - [x] Bonus: Now that I have trained a model on bigger images, can it solve tasks with more than 25 squares?
-- [ ] Train on the cluster
+- [x] Train on the cluster

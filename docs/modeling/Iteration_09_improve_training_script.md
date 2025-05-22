@@ -543,13 +543,13 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --batch-size 32 \
 --max-seq-len 3072 \
 --logging-steps 100 \
---eval-steps 100 \
+--eval-steps 0 \
 --save-steps 1000 \
 --lora-r 32 \
 --use-dora \
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
 
-export PARAMETERS=3B
+export PARAMETERS=1.5B
 condor_submit train.condor command="
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
@@ -564,7 +564,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --batch-size 32 \
 --max-seq-len 3072 \
 --logging-steps 100 \
---eval-steps 100 \
+--eval-steps 0 \
 --save-steps 1000 \
 --lora-r 32 \
 --use-dora \
@@ -585,13 +585,15 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --batch-size 32 \
 --max-seq-len 3072 \
 --logging-steps 100 \
---eval-steps 100 \
+--eval-steps 0 \
 --save-steps 1000 \
 --lora-r 32 \
 --use-dora \
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
 ```
 
+I don't have a single number, but it seems that GPU utilization is higher for bigger models. So maybe I should
+not worry about GPU utilization when using small LLMs.
 
 ## Results
 

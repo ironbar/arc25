@@ -29,4 +29,5 @@ add safety and determinism checks.
 
 ## TODO
 
-- [ ] Add safety and determinism checks
+- [x] Add safety and determinism checks
+- [ ] Add more primitive functions and training tasks to learn to use them

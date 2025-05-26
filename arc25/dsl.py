@@ -22,9 +22,12 @@ This are the objects that can be used in the DSL.
 ## Drawing functions
 
 create_img, draw_line, draw_rectangle, flood_fill, draw_horizontal_line, draw_vertical_line, draw_pixel
+
+TODO:
+- Need a way to compare shapes of objects, even if they are upscaled or downscaled.
 """
 import numpy as np
-from typing import Tuple, Union
+from typing import Union
 import skimage
 from scipy import stats
 
@@ -59,18 +62,18 @@ class Img(np.ndarray):
 # Drawing functions
 #############################
 
-def create_img(shape: Tuple[int], color: int = 0) -> Img:
+def create_img(shape: tuple[int, int], color: int = 0) -> Img:
     return Img(np.ones(shape, dtype=np.int8) * color)
 
 
-def draw_line(img: Img, point1: Tuple[int], point2: Tuple[int], color: int) -> Img:
+def draw_line(img: Img, point1: tuple[int, int], point2: tuple[int, int], color: int) -> Img:
     rr, cc = skimage.draw.line(*point1, *point2)
     rr, cc = _filter_points_outside_the_image(rr, cc, img)
     img[rr, cc] = color
     return img
 
 
-def draw_rectangle(img: Img, point1: Tuple[int], point2: Tuple[int], color: int) -> Img:
+def draw_rectangle(img: Img, point1: tuple[int, int], point2: tuple[int, int], color: int) -> Img:
     rr, cc = skimage.draw.rectangle(point1, point2)
     rr, cc = _filter_points_outside_the_image(rr, cc, img)
     img[rr, cc] = color
@@ -85,7 +88,7 @@ def _filter_points_outside_the_image(rows, cols, img):
     return rows, cols
 
 
-def flood_fill(img: Img, point: Tuple[int], color: int, connectivity: int) -> Img:
+def flood_fill(img: Img, point: tuple[int, int], color: int, connectivity: int) -> Img:
     """
     Fill the area of the image with the given color starting from the given point.
 
@@ -110,7 +113,7 @@ def draw_vertical_line(img: Img, x: int, color: int) -> Img:
     return img
 
 
-def draw_pixel(img: Img, point: Tuple[int], color: int) -> Img:
+def draw_pixel(img: Img, point: tuple[int, int], color: int) -> Img:
     if 0 <= point[0] < img.shape[0] and 0 <= point[1] < img.shape[1]:
         img[point[0], point[1]] = color
     return img
@@ -122,7 +125,7 @@ def draw_pixel(img: Img, point: Tuple[int], color: int) -> Img:
 def upscale(img: Img, scale: tuple[int, int]) -> Img:
     img = np.repeat(img, scale[0], axis=0)
     img = np.repeat(img, scale[1], axis=1)
-    return img
+    return Img(img)
 
 
 def downscale(img: Img, scale: tuple[int, int]) -> Img:
@@ -132,22 +135,22 @@ def downscale(img: Img, scale: tuple[int, int]) -> Img:
             # TODO: maybe allow for other aggregation functions
             mode_result = mode(img[r*scale[0]:(r+1)*scale[0], c*scale[1]:(c+1)*scale[1]])
             output[r, c] = mode_result
-    return output
+    return Img(output)
 
 
-def pad(img, width: int, color: int):
-    return np.pad(img, width, mode='constant', constant_values=color)
+def pad(img: Img, width: int, color: int) -> Img:
+    return Img(np.pad(img, width, mode='constant', constant_values=color))
 
 
-def trim(img, width: int):
+def trim(img: Img, width: int) -> Img:
     return img[width:-width, width:-width]
 
 
-def rotate_90(img, n_rot90):
+def rotate_90(img: Img, n_rot90: int) -> Img:
     return np.rot90(img, k=n_rot90)
 
 
-def flip(img, axis):
+def flip(img: Img, axis: int) -> Img:
     return np.flip(img, axis=axis)
 
 #############################

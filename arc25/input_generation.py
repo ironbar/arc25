@@ -6,6 +6,9 @@ from arc25.dsl import *
 logger = logging.getLogger(__name__)
 
 
+MAX_SIDE = 30
+
+
 def random_draw_line_parameters(img: Img):
     point1 = (random.randint(0, img.shape[0] - 1), random.randint(0, img.shape[1] - 1))
     line_type = random.choice(["horizontal", "vertical", "diagonal_decreasing", "diagonal_increasing"])
@@ -70,3 +73,31 @@ def random_draw_pixel_parameters(img: Img):
     color = random.randint(0, 9)
     return dict(point=point, color=color)
 
+
+def random_upscale_parameters(inputs: list[Img]):
+    max_scale = np.min([MAX_SIDE // img.shape for img in inputs], axis=0)
+    scale = (random.randint(1, max_scale[0]), random.randint(1, max_scale[1]))
+    return dict(scale=scale)
+
+
+def random_pad_parameters(inputs: list[Img], max_width: int = 5):
+    max_possible_width = min(min(MAX_SIDE - img.shape) for img in inputs)//2
+    width = random.randint(1, min(max_width, max_possible_width))
+    color = random.randint(0, 9)
+    return dict(width=width, color=color)
+
+
+def random_trim_parameters(inputs: list[Img], max_width: int = 5):
+    max_possible_width = min(min(img.shape) for img in inputs)//2
+    width = random.randint(1, min(max_width, max_possible_width))
+    return dict(width=width)
+
+
+def random_rotate_parameters(*args, **kwargs):
+    n_rot90 = random.randint(1, 3)  # 1 to 3 rotations of 90 degrees
+    return dict(n_rot90=n_rot90)
+
+
+def random_flip_parameters(*args, **kwargs):
+    axis = random.choice([0, 1])  # 0 for vertical flip, 1 for horizontal flip
+    return dict(axis=axis)

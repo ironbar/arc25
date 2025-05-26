@@ -85,6 +85,38 @@ class RandomDrawingTaskOnRandomImgs(RandomDrawingTaskOnEmptyImg):
         return [Img(np.random.randint(0, 10, size=shape)) for _ in range(self.n_inputs)]
 
 
+@dataclass
+class RandomGeometricTransformations(TrainingTask):
+    min_inputs: int = 2
+    max_inputs: int = 5
+    min_side: int = 3
+    max_side: int = 10
+
+    def create_inputs(self):
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        return [Img(np.random.randint(0, 10, size=shape)) for shape in shapes]
+
+    def create_code(self, inputs):
+        code = ''
+        # code += 'img = upscale(img, (2, 2))\n'
+        # code += 'img = downscale(img, (2, 2))\n'
+        
+        # code += 'img = pad(img, 3, 3)\n'
+        # code += 'img = trim(img, 2)\n'
+
+        # code += 'img = rotate_90(img, 1)\n'
+        # code += 'img = flip(img, 0)\n'
+
+        parameter_function = random_trim_parameters
+        parameters = parameter_function(inputs)
+        function_name = parameter_function.__name__.replace("random_", "").replace("_parameters", "")
+        code += f"img = {function_name}(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        
+        code = wrap_code_in_function(code)
+        return code
+
+
 #TODO: RandomDrawingTaskOnStructuredImg
 #TODO: shape dependent drawings. Use references to the shape of the image to create the drawings
 #TODO: a generator that samples from all the tasks

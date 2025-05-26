@@ -99,3 +99,45 @@ def test_draw_vertical_line(x, color, input_img, output_img):
 def test_draw_pixel(point, color, input_img, output_img):
     img = draw_pixel(input_img, point, color)
     assert np.array_equal(img, output_img)
+
+
+def test_upscale_and_downscale():
+    img = create_img((2, 2), 1)
+    upscaled_img = upscale(img, (2, 2))
+    assert np.array_equal(upscaled_img, create_img((4, 4), 1))
+
+    downscaled_img = downscale(upscaled_img, (2, 2))
+    assert np.array_equal(downscaled_img, img)
+
+
+def test_pad_and_trim():
+    img = create_img((2, 2), 1)
+    padded_img = pad(img, 1, 0)
+    assert np.array_equal(padded_img, Img([[0, 0, 0, 0],
+                                            [0, 1, 1, 0],
+                                            [0, 1, 1, 0],
+                                            [0, 0, 0, 0]]))
+    trimmed_img = trim(padded_img, 1)
+    assert np.array_equal(trimmed_img, img)
+
+
+def test_rotate():
+    img = Img([[1, 2],
+                [3, 4]])
+    for n_rot90 in range(1, 5):
+        rotated_img = rotate_90(img, n_rot90)
+        if n_rot90 < 4:
+            assert not np.array_equal(rotated_img, img)
+        else:
+            assert np.array_equal(rotated_img, img)
+
+
+def test_flip():
+    img = Img([[1, 2],
+                [3, 4]])
+    for axis in range(2):
+        flipped_img = flip(img, axis)
+        assert all(flipped_img.shape == img.shape)
+        assert not np.array_equal(flipped_img, img)
+        flipped_img_again = flip(flipped_img, axis)
+        assert np.array_equal(flipped_img_again, img)

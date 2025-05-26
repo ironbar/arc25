@@ -147,11 +147,11 @@ def trim(img: Img, width: int) -> Img:
 
 
 def rotate_90(img: Img, n_rot90: int) -> Img:
-    return np.rot90(img, k=n_rot90)
+    return Img(np.rot90(img, k=n_rot90))
 
 
 def flip(img: Img, axis: int) -> Img:
-    return np.flip(img, axis=axis)
+    return Img(np.flip(img, axis=axis))
 
 #############################
 # Math

@@ -41,11 +41,16 @@ There is no evidence suggesting that using more than 8 predictions is beneficial
 
 ### min_prob
 
-TODO:
+![min_prob](res/1748268325962_image.png)
+
+For the first time we are scoring above 12 on the evaluation set. Despite the randomness of the scores
+we see a clear trend of improvement when using a lower value of `min_prob`. The drawback is that it requires more execution time.
+
+![runtime](res/1748268504912_image.png)
 
 ### max_seq_length
 
-TODO:
+TODO: First look at the original values, then make experiments with different values to see the effect
 
 ## Conclusion
 

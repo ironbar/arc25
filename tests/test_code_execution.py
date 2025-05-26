@@ -56,6 +56,14 @@ from arc25.dsl import create_img
     draw_vertical_line(img, x=0, color=0)
     draw_vertical_line(img, x=1, color=1)
     return img"""),
+    # test with output of different shape
+    ([create_img((3, 3), color=0)],
+"""def task(img):
+    img = upscale(img, (2, 2))
+    return img""",
+"""def task(img):
+    img = upscale(img, (2, 2))
+    return img""",),
 ])
 def test_validate_code_returns_validated_code(inputs, input_code, output_code):
     validated_code = validate_code(input_code, inputs)

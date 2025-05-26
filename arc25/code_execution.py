@@ -45,9 +45,12 @@ class InvalidCode(Exception):
 
 
 def check_at_least_one_output_is_different_to_input(inputs, outputs):
-    any_output_is_different = any(not np.all(input == output) for input, output in zip(inputs, outputs))
+    any_output_is_different = any(_is_different(input, output) for input, output in zip(inputs, outputs))
     if not any_output_is_different:
         raise InvalidCode("The code did not modify the input.")
+
+def _is_different(x, y):
+    return any(x.shape != y.shape) or not np.all(x == y)
 
 
 def check_all_outputs_are_valid(outputs):
@@ -71,7 +74,7 @@ def remove_irrelevant_lines(code, inputs, outputs):
             continue
         code_without_line = '\n'.join(lines[:idx] + lines[idx+1:])
         temp_outputs = safe_code_execution(code_without_line, inputs)
-        is_relevant_line = any(not np.all(temp_output == output) for temp_output, output in zip(temp_outputs, outputs))
+        is_relevant_line = any(_is_different(temp_output, output) for temp_output, output in zip(temp_outputs, outputs))
         if is_relevant_line:
             relevant_lines.append(line)
     validated_code = '\n'.join(relevant_lines)

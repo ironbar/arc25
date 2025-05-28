@@ -56,6 +56,9 @@ TODO: First look at the original values, then make experiments with different va
 
 ## Next steps
 
+- It might be helpful to initialize the LoRA on the new ARC25 tasks. Last year I observed that it was better to start from pretrained LoRA than
+to use a fresh new one.
+
 ## TODO
 
 - [ ]

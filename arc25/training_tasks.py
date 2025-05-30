@@ -32,6 +32,9 @@ class TrainingTask(ABC):
             except InvalidCode as e:
                 logger.debug(f"{e}:\n{code}\nRetrying...")
                 pass
+            except Exception as e:
+                logger.error(f"Unexpected error: {e}:\nRetrying...")
+                pass
         outputs = safe_code_execution(code, inputs)
         return Task(inputs=inputs, outputs=outputs, code=code, name=self.__class__.__name__)
 
@@ -120,11 +123,14 @@ class RandomGeometricTransformations(TrainingTask):
         parameter_functions = parameter_functions[:n_transformations]
 
         code = ''
+        outputs = inputs
         for parameter_function in parameter_functions:
             # TODO: update the inputs to reflect the transformations
-            parameters = parameter_function(inputs)
+            parameters = parameter_function(outputs)
             function_name = parameter_function.__name__.replace("random_", "").replace("_parameters", "")
-            code += f"img = {function_name}(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+            new_line = f"img = {function_name}(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+            code += new_line
+            outputs = safe_code_execution(wrap_code_in_function(new_line), outputs)
         code = wrap_code_in_function(code)
         return code
 

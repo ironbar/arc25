@@ -56,7 +56,7 @@ def _is_different(x, y):
 def check_all_outputs_are_valid(outputs):
     all_outputs_are_valid = all(_is_valid_output(output) for output in outputs)
     if not all_outputs_are_valid:
-        raise InvalidCode("The code did not produce valid outputs.")
+        raise InvalidCode(f"The code did not produce valid outputs: {[output.shape for output in outputs]}.")
 
 
 def remove_irrelevant_lines(code, inputs, outputs):

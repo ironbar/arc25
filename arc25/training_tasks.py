@@ -30,7 +30,7 @@ class TrainingTask(ABC):
                 code = validate_code(code, inputs)
                 break
             except InvalidCode as e:
-                logger.debug(f"{e}: {code}. Retrying...")
+                logger.debug(f"{e}:\n{code}\nRetrying...")
                 pass
         outputs = safe_code_execution(code, inputs)
         return Task(inputs=inputs, outputs=outputs, code=code, name=self.__class__.__name__)

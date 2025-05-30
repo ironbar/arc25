@@ -42,6 +42,8 @@ embedding_learning_rate=1e-5,
 
 ### Check if results improve on the evaluation set
 
+I have to prepare a new notebook that uses pretrained LoRA. As far as I see, I simply have to provide the path to the pretrained LoRA when loading the model. I could remove all the peft configuration completely.
+
 ## Results
 
 ## Conclusion

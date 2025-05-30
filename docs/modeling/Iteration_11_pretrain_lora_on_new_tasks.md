@@ -20,6 +20,26 @@ https://www.kaggle.com/code/ironbar/new-arc-agi-2-tasks
 
 ### Fine-tune LoRAs with the new tasks
 
+I have to check the original fine-tuning parameters used by the architects. Probably use a batch size
+bigger than one because I'm training on multiple tasks.
+The idea is to create a new notebook to do this task. Probably the most efficient implementation is to
+train a different LoRA rank on each GPU, thus each experiment will produce 4 LoRAs.
+
+- https://www.kaggle.com/code/ironbar/pretrain-loras-for-the-architects
+- https://www.kaggle.com/code/ironbar/the-architects-baseline-with-4-gpus
+
+These are the parameters that I used on my script for 4 GPUs, I changed the default parameters from
+the architects, but they can be seen as comments.
+
+```python
+max_seq_length_train = 8192 # default 4224
+
+per_device_train_batch_size=4, # default=2
+gradient_accumulation_steps=1, # default=2
+learning_rate=1e-4,
+embedding_learning_rate=1e-5,
+```
+
 ### Check if results improve on the evaluation set
 
 ## Results
@@ -30,4 +50,4 @@ https://www.kaggle.com/code/ironbar/new-arc-agi-2-tasks
 
 ## TODO
 
-- [ ]
+- [x] Check where random seed is used. Seed is on `infer_aug_params`

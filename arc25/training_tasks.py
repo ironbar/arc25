@@ -99,6 +99,8 @@ class RandomGeometricTransformations(TrainingTask):
     max_inputs: int = 5
     min_side: int = 3
     max_side: int = 10
+    min_transformations: int = 1
+    max_transformations: int = 4
 
     def create_inputs(self):
         n_inputs = random.randint(self.min_inputs, self.max_inputs)
@@ -106,7 +108,6 @@ class RandomGeometricTransformations(TrainingTask):
         return [Img(np.random.randint(0, 10, size=shape)) for shape in shapes]
 
     def create_code(self, inputs):
-        n_transformations = random.randint(1, 4)
         parameter_functions = [
             random_rotate_90_parameters,
             random_flip_parameters
@@ -120,6 +121,7 @@ class RandomGeometricTransformations(TrainingTask):
         else:
             parameter_functions.append(random_trim_parameters)
         random.shuffle(parameter_functions)
+        n_transformations = random.randint(self.min_transformations, self.max_transformations)
         parameter_functions = parameter_functions[:n_transformations]
 
         code = ''

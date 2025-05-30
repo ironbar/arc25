@@ -2,8 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
 
-from arc25.training_tasks import Task
-
 
 def plot_grids_with_shape(grids, suptitle=None, facecolor='white'):
     plt.figure(facecolor=facecolor)
@@ -31,7 +29,7 @@ def plot_task(task):
                 plt.subplot(2, len(samples), plot_idx + 1 + len(samples))
                 plot_grid(sample['output'])
             plt.tight_layout()
-    if isinstance(task, Task):
+    elif isinstance(task, tuple):
         plt.figure(facecolor='white')
         for plot_idx, grid in enumerate(task.inputs):
             plt.subplot(2, len(task.inputs), plot_idx + 1)
@@ -42,6 +40,8 @@ def plot_task(task):
             plot_grid(grid)
             plt.title(f'{len(grid)}x{len(grid[0])}')
         plt.tight_layout()
+    else:
+        raise ValueError(f"Unsupported task type: {type(task)}. Expected dict or Task instance.")
 
 
 def plot_grid(grid, write_numbers=False):

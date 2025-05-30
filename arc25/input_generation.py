@@ -80,6 +80,13 @@ def random_upscale_parameters(inputs: list[Img]):
     return dict(scale=scale)
 
 
+def random_downscale_parameters(inputs: list[Img]):
+    # TODO: make this more robust
+    max_scale = np.min([img.shape for img in inputs], axis=0)
+    scale = (random.randint(1, max_scale[0]), random.randint(1, max_scale[1]))
+    return dict(scale=scale)
+
+
 def random_pad_parameters(inputs: list[Img], max_width: int = 5):
     max_possible_width = min(min(MAX_SIDE - img.shape) for img in inputs)//2
     width = random.randint(1, min(max_width, max_possible_width))
@@ -93,7 +100,7 @@ def random_trim_parameters(inputs: list[Img], max_width: int = 5):
     return dict(width=width)
 
 
-def random_rotate_parameters(*args, **kwargs):
+def random_rotate_90_parameters(*args, **kwargs):
     n_rot90 = random.randint(1, 3)  # 1 to 3 rotations of 90 degrees
     return dict(n_rot90=n_rot90)
 

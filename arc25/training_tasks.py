@@ -6,12 +6,16 @@ All training tasks return: inputs, outputs and code
 Each training task should teach a specific concept, and the name of the task should reflect that
 """
 import random
+import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from collections import namedtuple
 from arc25.dsl import *
 from arc25.input_generation import *
 from arc25.code_execution import safe_code_execution, validate_code, wrap_code_in_function, InvalidCode
+
+logger = logging.getLogger(__name__)
+
 
 Task = namedtuple("Task", ["inputs", "outputs", "code", 'name'])
 
@@ -25,7 +29,8 @@ class TrainingTask(ABC):
                 code = self.create_code(inputs)
                 code = validate_code(code, inputs)
                 break
-            except InvalidCode:
+            except InvalidCode as e:
+                logger.debug(f"{e}: {code}. Retrying...")
                 pass
         outputs = safe_code_execution(code, inputs)
         return Task(inputs=inputs, outputs=outputs, code=code, name=self.__class__.__name__)
@@ -98,21 +103,28 @@ class RandomGeometricTransformations(TrainingTask):
         return [Img(np.random.randint(0, 10, size=shape)) for shape in shapes]
 
     def create_code(self, inputs):
+        n_transformations = random.randint(1, 4)
+        parameter_functions = [
+            random_rotate_90_parameters,
+            random_flip_parameters
+        ]
+        if random.random() < 0.5:
+            parameter_functions.append(random_upscale_parameters)
+        else:
+            parameter_functions.append(random_downscale_parameters)
+        if random.random() < 0.5:
+            parameter_functions.append(random_pad_parameters)
+        else:
+            parameter_functions.append(random_trim_parameters)
+        random.shuffle(parameter_functions)
+        parameter_functions = parameter_functions[:n_transformations]
+
         code = ''
-        # code += 'img = upscale(img, (2, 2))\n'
-        # code += 'img = downscale(img, (2, 2))\n'
-        
-        # code += 'img = pad(img, 3, 3)\n'
-        # code += 'img = trim(img, 2)\n'
-
-        # code += 'img = rotate_90(img, 1)\n'
-        # code += 'img = flip(img, 0)\n'
-
-        parameter_function = random_trim_parameters
-        parameters = parameter_function(inputs)
-        function_name = parameter_function.__name__.replace("random_", "").replace("_parameters", "")
-        code += f"img = {function_name}(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
-        
+        for parameter_function in parameter_functions:
+            # TODO: update the inputs to reflect the transformations
+            parameters = parameter_function(inputs)
+            function_name = parameter_function.__name__.replace("random_", "").replace("_parameters", "")
+            code += f"img = {function_name}(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
         code = wrap_code_in_function(code)
         return code
 

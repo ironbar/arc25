@@ -119,7 +119,6 @@ def safe_code_execution(code, inputs, func_name='task', timeout_duration=1):
 
     func = restricted_locals[func_name]
     try:
-        logger.debug(f"Executing code with function '{func_name}'")
         result = _generate_outputs(inputs, func)
         _disable_timeout_alarm()
         return result

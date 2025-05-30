@@ -74,15 +74,17 @@ def random_draw_pixel_parameters(img: Img):
     return dict(point=point, color=color)
 
 
-def random_upscale_parameters(inputs: list[Img]):
+def random_upscale_parameters(inputs: list[Img], max_upscale: int = 5):
     max_scale = np.min([MAX_SIDE // img.shape for img in inputs], axis=0)
+    max_scale = np.minimum(max_scale, (max_upscale, max_upscale))
     scale = (random.randint(1, max_scale[0]), random.randint(1, max_scale[1]))
     return dict(scale=scale)
 
 
-def random_downscale_parameters(inputs: list[Img]):
+def random_downscale_parameters(inputs: list[Img], max_downscale: int = 3):
     # TODO: make this more robust
     max_scale = np.min([img.shape for img in inputs], axis=0)
+    max_scale = np.minimum(max_scale, (max_downscale, max_downscale))
     scale = (random.randint(1, max_scale[0]), random.randint(1, max_scale[1]))
     return dict(scale=scale)
 
@@ -95,7 +97,7 @@ def random_pad_parameters(inputs: list[Img], max_width: int = 5):
 
 
 def random_trim_parameters(inputs: list[Img], max_width: int = 5):
-    max_possible_width = min(min(img.shape) for img in inputs)//2
+    max_possible_width = min(min(img.shape) - 1 for img in inputs)//2
     width = random.randint(1, min(max_width, max_possible_width))
     return dict(width=width)
 

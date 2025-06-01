@@ -1,5 +1,7 @@
 import random
 import logging
+import math
+from functools import reduce
 
 from arc25.dsl import *
 
@@ -83,10 +85,35 @@ def random_upscale_parameters(inputs: list[Img], max_upscale: int = 5):
 
 def random_downscale_parameters(inputs: list[Img], max_downscale: int = 3):
     # TODO: make this more robust
-    max_scale = np.min([img.shape for img in inputs], axis=0)
-    max_scale = np.minimum(max_scale, (max_downscale, max_downscale))
-    scale = (random.randint(1, max_scale[0]), random.randint(1, max_scale[1]))
-    return dict(scale=scale)
+    scale = []
+    for axis in range(2):
+        sizes = [img.shape[axis] for img in inputs]
+        scale.append(random.choice(common_divisors(sizes)))
+    return dict(scale=tuple(scale))
+
+
+def common_divisors(numbers: list[int]) -> list[int]:
+    """
+    Given a list of positive integers (each ≤ 30), return a sorted list
+    of all divisors that divide every number in the list.
+
+    Example:
+        >>> common_divisors([12, 18, 24])
+        [1, 2, 3, 6]
+    """
+    if not numbers:
+        return []
+
+    # Compute GCD of the whole list
+    gcd_all = reduce(math.gcd, numbers)
+
+    # Find all divisors of gcd_all
+    divs = []
+    for i in range(1, gcd_all + 1):
+        if gcd_all % i == 0:
+            divs.append(i)
+
+    return divs
 
 
 def random_pad_parameters(inputs: list[Img], max_width: int = 5):

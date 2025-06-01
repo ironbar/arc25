@@ -18,6 +18,8 @@ On my experiments during ARC24 I already noticed that it was better to fine-tune
 
 https://www.kaggle.com/code/ironbar/new-arc-agi-2-tasks
 
+So we have 233 new training tasks and 114 new evaluation tasks, 347 new tasks in total.
+
 ### Fine-tune LoRAs with the new tasks
 
 I have to check the original fine-tuning parameters used by the architects. Probably use a batch size
@@ -43,6 +45,8 @@ embedding_learning_rate=1e-5,
 ### Check if results improve on the evaluation set
 
 I have to prepare a new notebook that uses pretrained LoRA. As far as I see, I simply have to provide the path to the pretrained LoRA when loading the model. I could remove all the peft configuration completely.
+
+https://www.kaggle.com/code/ironbar/the-architects-single-task-ttt-from-pretrained
 
 ## Results
 

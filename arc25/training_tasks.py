@@ -66,7 +66,7 @@ def training_tasks_generator():
 
 
 @dataclass
-class RandomDrawingTaskOnEmptyImg(TrainingTask):
+class DrawingTaskOnEmptyImg(TrainingTask):
     n_inputs: int = 1
     min_draws: int = 1
     max_draws: int = 5
@@ -98,12 +98,12 @@ class RandomDrawingTaskOnEmptyImg(TrainingTask):
 
 
 @dataclass
-class RandomDrawingTaskOnEmptyImgs(RandomDrawingTaskOnEmptyImg):
+class DrawingTaskOnEmptyImgs(DrawingTaskOnEmptyImg):
     n_inputs = 2
 
 
 @dataclass
-class RandomDrawingTaskOnRandomImgs(RandomDrawingTaskOnEmptyImg):
+class DrawingTaskOnRandomImgs(DrawingTaskOnEmptyImg):
     n_inputs = 3
 
     def create_inputs(self):
@@ -112,7 +112,7 @@ class RandomDrawingTaskOnRandomImgs(RandomDrawingTaskOnEmptyImg):
 
 
 @dataclass
-class RandomGeometricTransformations(TrainingTask):
+class GeometricTransformations(TrainingTask):
     min_inputs: int = 2
     max_inputs: int = 5
     min_side: int = 3
@@ -176,4 +176,3 @@ class Downscale(TrainingTask):
 
 #TODO: RandomDrawingTaskOnStructuredImg
 #TODO: shape dependent drawings. Use references to the shape of the image to create the drawings
-#TODO: a generator that samples from all the tasks

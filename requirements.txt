@@ -28,3 +28,4 @@ setuptools
 cmake
 deepspeed
 pynvml
+opencv-python

@@ -190,7 +190,10 @@ class GeometricTransformations(TrainingTask):
     def create_inputs(self):
         n_inputs = random.randint(self.min_inputs, self.max_inputs)
         shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        return [Img(np.random.randint(0, 10, size=shape)) for shape in shapes]
+        if random.random() < 0.5:
+            return [Img(np.random.randint(0, 10, size=shape)) for shape in shapes]
+        else:
+            return [create_image_with_random_objects(shape) for shape in shapes]
 
     def create_code(self, inputs):
         parameter_functions = [

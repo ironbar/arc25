@@ -2,6 +2,7 @@ import random
 import logging
 import math
 from functools import reduce
+import cv2
 
 from arc25.dsl import *
 
@@ -137,3 +138,79 @@ def random_rotate_90_parameters(*args, **kwargs):
 def random_flip_parameters(*args, **kwargs):
     axis = random.choice([0, 1])  # 0 for vertical flip, 1 for horizontal flip
     return dict(axis=axis)
+
+
+"""
+Random structure objects image
+"""
+class NoPositionAvailable(Exception):
+    pass
+
+
+def create_image_with_random_objects(shape, n_objects=None, color_range=None, background_ratio=None):
+    n_objects = n_objects or random.randint(1, int(np.sqrt(np.prod(shape))))
+    if color_range is None:
+        monochrome = random.random() < 0.5
+        if monochrome:
+            color = random.randint(1, 9)
+            color_range = [color, color]
+        else:
+            color_range = [1, 9]
+    background_ratio = background_ratio or random.uniform(0.25, 0.75)
+
+    img = create_img(shape)
+    objects = []
+    for idx in range(n_objects):
+        try:
+            background_to_fill = np.mean(img == 0) - background_ratio
+            if idx < n_objects - 1:
+                background_to_fill = random.uniform(0, background_to_fill)
+            object_desired_area = max(int(np.prod(img.shape)*background_to_fill), 1)
+            objects.append(add_random_object(img, p_more=0.9, color_range=color_range, area=object_desired_area))
+        except NoPositionAvailable:
+            pass
+    return img
+
+
+def add_random_object(grid, p_more, color_range, area):
+    """
+    To ensure connectivity the pixels of the object are created sequentially, always on the neighbor pixels of the last pixel
+    """
+    color = random.randint(*color_range)
+    dilated_grid = cv2.dilate((grid == color).astype(np.uint8), np.ones((3, 3), np.uint8))
+    
+    position = get_initial_position(grid + dilated_grid)
+    grid[position[0], position[1]] = color
+    positions = [position]
+    
+    while len(positions) < area:
+        candidate_positions = get_candidate_positions(position, grid + dilated_grid)
+        if not candidate_positions:
+            break
+        position = random.choice(candidate_positions)
+        grid[position[0], position[1]] = color
+        positions.append(position)
+    
+    return dict(color=color, positions=positions)
+
+
+def get_initial_position(grid):
+    candidate_positions = np.where(grid == 0)
+    if candidate_positions[0].size == 0:
+        raise NoPositionAvailable
+    chosen_idx = random.randint(0, len(candidate_positions[0]) - 1)
+    return int(candidate_positions[0][chosen_idx]), int(candidate_positions[1][chosen_idx])
+    
+    
+def get_candidate_positions(position, grid):
+    # TODO: I might speed this by using arrays, selecting the candidate positions at once.
+    candidate_positions = []
+    for i in range(position[0] - 1, position[0] + 2):
+        if i < 0 or i >= grid.shape[0]:
+            continue
+        for j in range(position[1] - 1, position[1] + 2):
+            if j < 0 or j >= grid.shape[1]:
+                continue
+            if grid[i, j] == 0:
+                candidate_positions.append((i, j))
+    return candidate_positions

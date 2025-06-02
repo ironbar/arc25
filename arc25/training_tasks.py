@@ -134,16 +134,46 @@ class ShapeDependentDrawings(DrawingTaskOnEmptyImg):
         n_draws = random.randint(self.min_draws, self.max_draws)
         code = ''
         min_shape = np.min([img.shape for img in inputs], axis=0)
+
+        function_names = [
+            "draw_vertical_line",
+            "draw_horizontal_line",
+            "draw_line",
+            "draw_rectangle",
+            "draw_pixel"
+        ]
+
+
         for _ in range(n_draws):
+            function_name = random.choice(function_names)
             # TODO: add more shape dependent drawings
-            if random.random() < 0.5:
+            if function_name == "draw_vertical_line":
                 # vertical line
                 x = random.choice(list(range(0, min_shape[1]//2)) + list(range(-min_shape[1]//2, 0)))
                 code += f"draw_vertical_line(img, x={x}, color={random.randint(0, 9)})\n"
-            else:
+            elif function_name == "draw_horizontal_line":
                 # horizontal line
                 y = random.choice(list(range(0, min_shape[0]//2)) + list(range(-min_shape[0]//2, 0)))
                 code += f"draw_horizontal_line(img, y={y}, color={random.randint(0, 9)})\n"
+            elif function_name in ["draw_line", "draw_rectangle"]:
+                x1 = random.choice([0, 'img.shape[1] // 2'])
+                if x1 == 'img.shape[1] // 2':
+                    x2 = 'img.shape[1] - 1'
+                else:
+                    x2 = random.choice(['img.shape[1] // 2', 'img.shape[1] - 1'])
+                y1 = random.choice([0, 'img.shape[0] // 2'])
+                if y1 == 'img.shape[0] // 2':
+                    y2 = 'img.shape[0] - 1'
+                else:
+                    y2 = random.choice(['img.shape[0] // 2', 'img.shape[0] - 1'])
+                color = random.randint(0, 9)
+                code += f"{function_name}(img, point1=({y1}, {x1}), point2=({y2}, {x2}), color={color})\n"
+            elif function_name == "draw_pixel":
+                x = random.choice([0, 'img.shape[1] // 2', 'img.shape[1] - 1'])
+                y = random.choice([0, 'img.shape[0] // 2', 'img.shape[0] - 1'])
+                color = random.randint(0, 9)
+                code += f"draw_pixel(img, point=({y}, {x}), color={color})\n"
+
         code = wrap_code_in_function(code)
         return code
                 
@@ -212,4 +242,3 @@ class Downscale(TrainingTask):
         return code
 
 #TODO: RandomDrawingTaskOnStructuredImg
-#TODO: shape dependent drawings. Use references to the shape of the image to create the drawings

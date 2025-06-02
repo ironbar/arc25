@@ -110,6 +110,43 @@ class DrawingTaskOnRandomImgs(DrawingTaskOnEmptyImg):
         shape = np.random.randint(self.min_side, self.max_side + 1, 2)
         return [Img(np.random.randint(0, 10, size=shape)) for _ in range(self.n_inputs)]
 
+@dataclass
+class ShapeDependentDrawings(DrawingTaskOnEmptyImg):
+    min_inputs: int = 2
+    max_inputs: int = 5
+    min_side: int = 3
+    max_side: int = 10
+    min_draws: int = 1
+    max_draws: int = 5
+
+    def create_inputs(self):
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        colors = random.sample(range(10), n_inputs)
+        return [create_img(shape, color=color) for shape, color in zip(shapes, colors)]
+    
+    def create_code(self, inputs):
+        """
+        Uses the shape of the input images to create drawings:
+        - vertical and horizontal lines
+        - lines, rectangles, and pixels referenced to the shape of the image
+        """
+        n_draws = random.randint(self.min_draws, self.max_draws)
+        code = ''
+        min_shape = np.min([img.shape for img in inputs], axis=0)
+        for _ in range(n_draws):
+            # TODO: add more shape dependent drawings
+            if random.random() < 0.5:
+                # vertical line
+                x = random.choice(list(range(0, min_shape[1]//2)) + list(range(-min_shape[1]//2, 0)))
+                code += f"draw_vertical_line(img, x={x}, color={random.randint(0, 9)})\n"
+            else:
+                # horizontal line
+                y = random.choice(list(range(0, min_shape[0]//2)) + list(range(-min_shape[0]//2, 0)))
+                code += f"draw_horizontal_line(img, y={y}, color={random.randint(0, 9)})\n"
+        code = wrap_code_in_function(code)
+        return code
+                
 
 @dataclass
 class GeometricTransformations(TrainingTask):

@@ -110,6 +110,16 @@ class DrawingTaskOnRandomImgs(DrawingTaskOnEmptyImg):
         shape = np.random.randint(self.min_side, self.max_side + 1, 2)
         return [Img(np.random.randint(0, 10, size=shape)) for _ in range(self.n_inputs)]
 
+
+@dataclass
+class DrawingTaskOnObjectImgs(DrawingTaskOnEmptyImg):
+    n_inputs = 3
+
+    def create_inputs(self):
+        shape = np.random.randint(self.min_side, self.max_side + 1, 2)
+        return [create_image_with_random_objects(shape) for _ in range(self.n_inputs)]
+
+
 @dataclass
 class ShapeDependentDrawings(DrawingTaskOnEmptyImg):
     min_inputs: int = 2
@@ -233,7 +243,10 @@ class Downscale(TrainingTask):
     def create_inputs(self):
         n_inputs = random.randint(self.min_inputs, self.max_inputs)
         shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        inputs = [Img(np.random.randint(0, 10, size=shape)) for shape in shapes]
+        if random.random() < 0.5:
+            inputs = [create_image_with_random_objects(shape) for shape in shapes]
+        else:
+            inputs = [Img(np.random.randint(0, 10, size=shape)) for shape in shapes]
         scale = random.randint(self.min_upscale, self.max_upscale)
         inputs = [upscale(img, scale=(scale, scale)) for img in inputs]
         return inputs
@@ -243,5 +256,3 @@ class Downscale(TrainingTask):
         code = f"img = downscale(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
         code = wrap_code_in_function(code)
         return code
-
-#TODO: RandomDrawingTaskOnStructuredImg

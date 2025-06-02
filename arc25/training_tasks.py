@@ -139,13 +139,16 @@ class Downscale(TrainingTask):
     max_inputs: int = 5
     min_side: int = 2
     max_side: int = 5
+    min_upscale: int = 2
+    max_upscale: int = 5
 
     def create_inputs(self):
-        # TODO: this images should have some redundancy, so that downscaling is meaningful
         n_inputs = random.randint(self.min_inputs, self.max_inputs)
-        shape_multiplier = random.randint(2, 5)
-        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2)*shape_multiplier for _ in range(n_inputs)]
-        return [Img(np.random.randint(0, 10, size=shape)) for shape in shapes]
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        inputs = [Img(np.random.randint(0, 10, size=shape)) for shape in shapes]
+        scale = random.randint(self.min_upscale, self.max_upscale)
+        inputs = [upscale(img, scale=(scale, scale)) for img in inputs]
+        return inputs
 
     def create_code(self, inputs):
         parameters = random_downscale_parameters(inputs)

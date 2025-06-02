@@ -112,10 +112,7 @@ class RandomGeometricTransformations(TrainingTask):
             random_rotate_90_parameters,
             random_flip_parameters
         ]
-        if random.random() < 0.5:
-            parameter_functions.append(random_upscale_parameters)
-        else:
-            parameter_functions.append(random_downscale_parameters)
+        parameter_functions.append(random_upscale_parameters)
         if random.random() < 0.5:
             parameter_functions.append(random_pad_parameters)
         else:
@@ -127,7 +124,6 @@ class RandomGeometricTransformations(TrainingTask):
         code = ''
         outputs = inputs
         for parameter_function in parameter_functions:
-            # TODO: update the inputs to reflect the transformations
             parameters = parameter_function(outputs)
             function_name = parameter_function.__name__.replace("random_", "").replace("_parameters", "")
             new_line = f"img = {function_name}(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"

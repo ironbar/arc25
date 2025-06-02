@@ -300,22 +300,14 @@ def get_lora_model(model, adapter_path, r, use_rslora, use_dora, weight_initaliz
 ############################################################################
 
 def random_prompt_generator(grid_encoder, tokenizer, shards):
-    #TODO: this is a very basic and preliminar version
     logger.info(f'Starting random prompt generator with shards: {shards}')
     set_random_seed(shards[0])
-    task_generators = [
-        RandomDrawingTaskOnEmptyImg(max_side=30),
-        RandomDrawingTaskOnRandomImgs(n_inputs=1, max_side=30),
-        RandomDrawingTaskOnEmptyImgs(),
-        RandomDrawingTaskOnRandomImgs(),
-    ]
-    while True:
-        for task_generator in task_generators:
-            task = task_generator.sample()
-            prompt_version = 'code-from-examples-v3'
-            prompt = create_prompt_from_task(
-                task, prompt_version=prompt_version, grid_encoder=grid_encoder, tokenizer=tokenizer)
-            yield {'text': prompt}
+    generator = training_tasks_generator()
+    for task in generator:
+        prompt_version = 'code-from-examples-v3'
+        prompt = create_prompt_from_task(
+            task, prompt_version=prompt_version, grid_encoder=grid_encoder, tokenizer=tokenizer)
+        yield {'text': prompt}
 
 ############################################################################
 # Training

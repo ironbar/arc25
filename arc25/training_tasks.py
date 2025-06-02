@@ -6,6 +6,8 @@ All training tasks return: inputs, outputs and code
 Each training task should teach a specific concept, and the name of the task should reflect that
 """
 import random
+import sys
+import inspect
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -45,6 +47,22 @@ class TrainingTask(ABC):
     @abstractmethod
     def create_code(self, inputs):
         pass
+
+
+def training_tasks_generator():
+    current_module = sys.modules[__name__]
+    training_classes = [
+        cls for name, cls in inspect.getmembers(current_module, inspect.isclass)
+        if issubclass(cls, TrainingTask)
+        and cls is not TrainingTask
+        and cls.__module__ == __name__
+    ]
+    training_tasks = sorted([cls() for cls in training_classes], key=lambda x: x.__class__.__name__)
+    logger.info(f"Found {len(training_tasks)} training tasks: {[task.__class__.__name__ for task in training_tasks]}")
+    while True:
+        # TODO: in the future I would like to be able to give weighted probabilities to the tasks
+        task = random.choice(training_tasks)
+        yield task.sample()
 
 
 @dataclass

@@ -234,15 +234,6 @@ class Object:
         max_col = max([x[1] for x in self.pixel_locations])
         return BoundingBox(min_row, min_col, max_row, max_col)
 
-    def move(self, movement):
-        self.pixel_locations += np.array(movement)
-        self.bounding_box = self._compute_bounding_box()
-
-    def change_color(self, color):
-        self.color = color
-        self.pixel_colors = [color] * self.area
-        self.colors = set(self.pixel_colors)
-
     @property
     def height(self):
         return self.bounding_box.height
@@ -256,13 +247,13 @@ class Object:
         return np.mean(self.pixel_locations, axis=0).astype(int)
 
     def is_line(self):
-        return (self.bounding_box.height == 1 or self.bounding_box.width == 1) and self.area > 1
+        return self.is_vertical_line() or self.is_horizontal_line()
 
     def is_vertical_line(self):
-        return self.is_line() and self.bounding_box.width == 1
+        return self.width == 1 and self.height > 1
 
     def is_horizontal_line(self):
-        return self.is_line() and self.bounding_box.height == 1
+        return self.height == 1 and self.width > 1
 
     def is_point(self):
         return self.area == 1
@@ -271,6 +262,8 @@ class Object:
         return self.bounding_box.height == self.bounding_box.width and self.is_rectangle()
 
     def is_rectangle(self):
+        if self.is_point():
+            return False
         is_filled_rectangle = self.area == self.bounding_box.height * self.bounding_box.width
         return is_filled_rectangle or self._is_empty_rectangle()
 
@@ -292,6 +285,17 @@ class Object:
 
     def copy(self):
         return Object(self.pixel_locations.tolist(), self.pixel_colors.copy())
+    
+    # TODO: does this function belongs to the Object class?
+    def move(self, movement):
+        self.pixel_locations += np.array(movement)
+        self.bounding_box = self._compute_bounding_box()
+
+    # TODO: does this function belongs to the Object class?
+    def change_color(self, color):
+        self.color = color
+        self.pixel_colors = [color] * self.area
+        self.colors = set(self.pixel_colors)
 
     def count_holes(self):
         # Create a binary image of the object within its bounding box

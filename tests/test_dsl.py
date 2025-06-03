@@ -197,6 +197,12 @@ def test_objects_have_correct_properties(img, area, height, width):
           [0, 1, 1],
           [0, 1, 0]]), False),
     (Img([[0, 0, 0],
+          [0, 1, 0],
+          [0, 0, 0]]), False),
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 0, 0]]), True),
+    (Img([[0, 0, 0],
           [1, 1, 1],
           [0, 0, 0]]), True),
     (Img([[0, 1, 0],
@@ -207,3 +213,75 @@ def test_objects_are_lines(img, is_line):
     objects = detect_objects(img, background_color=0, connectivity=4, monochrome=False)
     for obj in objects:
         assert obj.is_line == is_line
+
+
+@pytest.mark.parametrize("img, is_line", [
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 1, 0]]), False),
+    (Img([[0, 0, 0],
+          [0, 1, 0],
+          [0, 0, 0]]), False),
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 0, 0]]), False),
+    (Img([[0, 0, 0],
+          [1, 1, 1],
+          [0, 0, 0]]), False),
+    (Img([[0, 1, 0],
+          [0, 1, 0],
+          [0, 1, 0]]), True),
+])
+def test_objects_are_vertical_lines(img, is_line):
+    objects = detect_objects(img, background_color=0, connectivity=4, monochrome=False)
+    for obj in objects:
+        assert obj.is_vertical_line == is_line
+
+
+@pytest.mark.parametrize("img, is_line", [
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 1, 0]]), False),
+    (Img([[0, 0, 0],
+          [0, 1, 0],
+          [0, 0, 0]]), False),
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 0, 0]]), True),
+    (Img([[0, 0, 0],
+          [1, 1, 1],
+          [0, 0, 0]]), True),
+    (Img([[0, 1, 0],
+          [0, 1, 0],
+          [0, 1, 0]]), False),
+])
+def test_objects_are_horizontal_lines(img, is_line):
+    objects = detect_objects(img, background_color=0, connectivity=4, monochrome=False)
+    for obj in objects:
+        assert obj.is_horizontal_line == is_line
+
+
+@pytest.mark.parametrize("img, is_point", [
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 1, 0]]), False),
+    (Img([[0, 0, 0],
+          [0, 1, 0],
+          [0, 0, 0]]), True),
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 0, 0]]), False),
+    (Img([[0, 0, 0],
+          [1, 1, 1],
+          [0, 0, 0]]), False),
+    (Img([[0, 1, 0],
+          [0, 1, 0],
+          [0, 1, 0]]), False),
+    (Img([[0, 1, 0],
+          [0, 0, 0],
+          [0, 1, 0]]), True),
+])
+def test_objects_are_points(img, is_point):
+    objects = detect_objects(img, background_color=0, connectivity=4, monochrome=False)
+    for obj in objects:
+        assert obj.is_point == is_point

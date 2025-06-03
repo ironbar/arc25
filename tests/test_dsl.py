@@ -320,3 +320,38 @@ def test_objects_are_squares(img, is_square):
     objects = detect_objects(img, background_color=0, connectivity=4, monochrome=False)
     for obj in objects:
         assert obj.is_square == is_square
+
+
+@pytest.mark.parametrize("img, is_rectangle", [
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 1, 0]]), False),
+    (Img([[0, 0, 0],
+          [0, 1, 0],
+          [0, 0, 0]]), False),
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 0, 0]]), False),
+    (Img([[0, 0, 0],
+          [1, 1, 1],
+          [0, 0, 0]]), False),
+    (Img([[0, 1, 0],
+          [0, 1, 0],
+          [0, 1, 0]]), False),
+    (Img([[0, 1, 0],
+          [0, 0, 0],
+          [0, 1, 0]]), False),
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 1, 1]]), True),
+    (Img([[0, 0, 0],
+          [1, 1, 1],
+          [1, 1, 1]]), True),
+    (Img([[1, 1, 1],
+          [1, 1, 1],
+          [1, 1, 1]]), True),
+])
+def test_objects_are_rectangles(img, is_rectangle):
+    objects = detect_objects(img, background_color=0, connectivity=4, monochrome=False)
+    for obj in objects:
+        assert obj.is_rectangle == is_rectangle

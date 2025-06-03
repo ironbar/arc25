@@ -268,7 +268,7 @@ class Object:
     
     @property
     def is_rectangle(self):
-        if self.is_point:
+        if self.is_point or self.is_line:
             return False
         is_filled_rectangle = self.area == self.bounding_box.height * self.bounding_box.width
         is_empty_rectangle = self.area == (self.bounding_box.height * 2 + self.bounding_box.width * 2 - 4)

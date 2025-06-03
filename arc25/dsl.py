@@ -348,7 +348,7 @@ class Object:
 
 
 def detect_objects(image: Img, background_color: int = 0, 
-                   connectivity: int = 4, monochromatic: bool = True) -> list[Object]:
+                   connectivity: int = 4, monochrome: bool = True) -> list[Object]:
     """
     Detect objects in an ARC image using depth-first search (DFS).
 
@@ -386,7 +386,7 @@ def detect_objects(image: Img, background_color: int = 0,
             if in_bounds(nr, nc) and not visited[nr][nc]:
                 neighbor_color = image[nr][nc]
                 if neighbor_color != background_color:
-                    if monochromatic:
+                    if monochrome:
                         if neighbor_color == current_color:
                             dfs(nr, nc, visited, pixel_locations)
                     else:

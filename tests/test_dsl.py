@@ -141,3 +141,35 @@ def test_flip():
         assert not np.array_equal(flipped_img, img)
         flipped_img_again = flip(flipped_img, axis)
         assert np.array_equal(flipped_img_again, img)
+
+
+@pytest.mark.parametrize("img, background_color, connectivity, monochrome, n_objects", [
+    # background color
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 1, 0]]), 0, 4, False, 1),
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 1, 0]]), 1, 4, False, 2),
+    # connectivity
+    (Img([[1, 0, 0],
+          [0, 1, 1],
+          [0, 1, 0]]), 0, 4, False, 2),
+    (Img([[1, 0, 0],
+          [0, 1, 1],
+          [0, 1, 0]]), 0, 8, False, 1),
+    # monochrome
+    (Img([[0, 0, 0],
+          [0, 1, 2],
+          [0, 1, 0]]), 0, 4, False, 1),
+    (Img([[0, 0, 0],
+          [0, 1, 2],
+          [0, 1, 0]]), 0, 4, True, 2),
+    # no objects
+    (Img([[0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]]), 0, 4, False, 0),
+])
+def test_detect_objects_returns_correct_number_of_objects(img, background_color, connectivity, monochrome, n_objects):
+    objects = detect_objects(img, background_color, connectivity, monochrome)
+    assert len(objects) == n_objects

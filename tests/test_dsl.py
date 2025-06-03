@@ -173,3 +173,21 @@ def test_flip():
 def test_detect_objects_returns_correct_number_of_objects(img, background_color, connectivity, monochrome, n_objects):
     objects = detect_objects(img, background_color, connectivity, monochrome)
     assert len(objects) == n_objects
+
+
+@pytest.mark.parametrize("img, area, height, width", [
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 1, 0]]), 3, 2, 2),
+    (Img([[0, 0, 0],
+          [0, 1, 0],
+          [0, 1, 0]]), 2, 2, 1),
+    (Img([[0, 0, 0],
+          [0, 1, 1],
+          [0, 0, 0]]), 2, 1, 2),
+])
+def test_objects_have_correct_properties(img, area, height, width):
+    object = detect_objects(img, background_color=0, connectivity=4, monochrome=False)[0]
+    assert object.area == area
+    assert object.height == height
+    assert object.width == width

@@ -246,32 +246,34 @@ class Object:
     def center(self):
         return np.mean(self.pixel_locations, axis=0).astype(int)
 
+    @property
     def is_line(self):
-        return self.is_vertical_line() or self.is_horizontal_line()
+        return self.is_vertical_line or self.is_horizontal_line
 
+    @property
     def is_vertical_line(self):
         return self.width == 1 and self.height > 1
 
+    @property
     def is_horizontal_line(self):
         return self.height == 1 and self.width > 1
 
+    @property
     def is_point(self):
         return self.area == 1
 
+    @property
     def is_square(self):
-        return self.bounding_box.height == self.bounding_box.width and self.is_rectangle()
-
+        return self.bounding_box.height == self.bounding_box.width and self.is_rectangle
+    
+    @property
     def is_rectangle(self):
-        if self.is_point():
+        if self.is_point:
             return False
         is_filled_rectangle = self.area == self.bounding_box.height * self.bounding_box.width
-        return is_filled_rectangle or self._is_empty_rectangle()
-
-    def _is_empty_rectangle(self):
-        # TODO: fix this definition, it is not correct, 776ffc46, 810b9b61
         is_empty_rectangle = self.area == (self.bounding_box.height * 2 + self.bounding_box.width * 2 - 4)
         is_empty_rectangle = is_empty_rectangle and self.bounding_box.height >= 3 and self.bounding_box.width >= 3
-        return is_empty_rectangle
+        return is_filled_rectangle or is_empty_rectangle
 
     def is_in_img(self, img):
         return all(0 <= r < img.shape[0] and 0 <= c < img.shape[1] for r, c in self.pixel_locations)

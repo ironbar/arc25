@@ -356,3 +356,25 @@ def test_objects_are_rectangles(img, is_rectangle):
     objects = detect_objects(img, background_color=0, connectivity=4, monochrome=False)
     for obj in objects:
         assert obj.is_rectangle == is_rectangle
+
+
+@pytest.mark.parametrize("img, center", [
+      (Img([[0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0]]), (1, 1)),
+      (Img([[0, 0, 0],
+            [1, 1, 1],
+            [0, 0, 0]]), (1, 1)),
+      (Img([[0, 1, 0],
+            [1, 1, 1],
+            [0, 1, 0]]), (1, 1)),
+      (Img([[0, 0, 0],
+            [1, 0, 0],
+            [0, 0, 0]]), (1, 0)),
+      (Img([[1, 0, 0],
+            [1, 0, 0],
+            [1, 0, 0]]), (1, 0)),
+])
+def test_object_center(img, center):
+    object = detect_objects(img, background_color=0, connectivity=4, monochrome=False)[0]
+    assert np.array_equal(object.center, center)

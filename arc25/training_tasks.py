@@ -295,7 +295,6 @@ class LearnDetectObjectsParameters(TrainingTask):
 
     def create_code(self, inputs, metadata):
         # TODO: better control for connectivity and monochrome
-        print(f'Metadata: {metadata}')
         parameters = dict(connectivity=random.choice([4, 8]), monochrome=random.choice([True, False]),
                           **metadata)
         code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"

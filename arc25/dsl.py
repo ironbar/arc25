@@ -174,7 +174,7 @@ def mode(x):
 
 @dataclass
 class BoundingBox:
-    # TODO, not sure if this is the best way to represent a bounding box
+    # TODO: not sure if this is the best way to represent a bounding box
     min_row: int
     min_col: int
     max_row: int
@@ -224,6 +224,7 @@ class BoundingBox:
 
 class Object:
     # TODO: add a method to get the holes inside the object
+    # TODO: Object influence via contact: Many tasks feature physical contact between objects (e.g. one object being translated until it is in contact with another (figure 7), or a line “growing” until it “rebounds” against another object (figure 8).
     def __init__(self, pixel_locations: list[tuple[int, int]], pixel_colors: list[int]):
         self.pixel_locations = np.array(pixel_locations, dtype=int)
         self.pixel_colors = pixel_colors
@@ -336,7 +337,7 @@ def detect_objects(image: Img, background_color: int = 0,
     elif connectivity == 8:
         directions = [(-1, 0), (1, 0), (0, -1), (0, 1),
                       (-1, -1), (-1, 1), (1, -1), (1, 1)]
-    else:
+    else: # pragma: no cover
         raise ValueError(f'Connectivity should be 4 or 8, got {connectivity}')
 
     def in_bounds(r, c):

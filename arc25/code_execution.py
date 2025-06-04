@@ -73,8 +73,13 @@ def remove_irrelevant_lines(code, inputs, outputs):
             relevant_lines.append(line)
             continue
         code_without_line = '\n'.join(lines[:idx] + lines[idx+1:])
-        temp_outputs = safe_code_execution(code_without_line, inputs)
-        is_relevant_line = any(_is_different(temp_output, output) for temp_output, output in zip(temp_outputs, outputs))
+        try:
+            temp_outputs = safe_code_execution(code_without_line, inputs)
+            is_relevant_line = any(_is_different(temp_output, output) for temp_output, output in zip(temp_outputs, outputs))
+        except Exception as e:
+            #logger.debug(f"Error while checking relevance of line '{line}': {e}")
+            # If an error occurs, we assume the line is relevant
+            is_relevant_line = True
         if is_relevant_line:
             relevant_lines.append(line)
     validated_code = '\n'.join(relevant_lines)

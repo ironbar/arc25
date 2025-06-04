@@ -188,38 +188,38 @@ class BoundingBox:
     def width(self):
         return int(self.max_col - self.min_col + 1)
 
-    @property
-    def area(self):
-        return int(self.height * self.width)
+    # @property
+    # def area(self):
+    #     return int(self.height * self.width)
 
-    @property
-    def center(self):
-        return np.array([(self.min_row + self.max_row) // 2, (self.min_col + self.max_col) // 2], dtype=int)
+    # @property
+    # def center(self):
+    #     return np.array([(self.min_row + self.max_row) // 2, (self.min_col + self.max_col) // 2], dtype=int)
     
-    @property
-    def shape(self):
-        return np.array([self.height, self.width], dtype=int)
+    # @property
+    # def shape(self):
+    #     return np.array([self.height, self.width], dtype=int)
 
-    # TODO: move offset and move to other functions
-    def offset(self, offset):
-        if isinstance(offset, int):
-            offset = (offset, offset)
-        return BoundingBox(self.min_row - offset[0],
-                           self.min_col - offset[1],
-                           self.max_row + offset[0],
-                           self.max_col + offset[1])
+    # # TODO: move offset and move to other functions
+    # def offset(self, offset):
+    #     if isinstance(offset, int):
+    #         offset = (offset, offset)
+    #     return BoundingBox(self.min_row - offset[0],
+    #                        self.min_col - offset[1],
+    #                        self.max_row + offset[0],
+    #                        self.max_col + offset[1])
 
-    def move(self, movement):
-        return BoundingBox(self.min_row + movement[0],
-                           self.min_col + movement[1],
-                           self.max_row + movement[0],
-                           self.max_col + movement[1])
+    # def move(self, movement):
+    #     return BoundingBox(self.min_row + movement[0],
+    #                        self.min_col + movement[1],
+    #                        self.max_row + movement[0],
+    #                        self.max_col + movement[1])
 
-    def __repr__(self):
-        return f"BoundingBox(min_row={self.min_row}, min_col={self.min_col}, max_row={self.max_row}, max_col={self.max_col})"
+    # def __repr__(self):
+    #     return f"BoundingBox(min_row={self.min_row}, min_col={self.min_col}, max_row={self.max_row}, max_col={self.max_col})"
 
-    def __str__(self):
-        return f"BoundingBox({self.min_row}, {self.min_col}, {self.max_row}, {self.max_col})"
+    # def __str__(self):
+    #     return f"BoundingBox({self.min_row}, {self.min_col}, {self.max_row}, {self.max_col})"
 
 
 class Object:

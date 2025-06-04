@@ -50,6 +50,15 @@ class TrainingTask(ABC):
 
 
 def training_tasks_generator():
+    training_classes = _get_all_training_classes()
+    training_tasks = [cls() for cls in training_classes]
+    logger.info(f"Found {len(training_tasks)} training tasks: {[task.__class__.__name__ for task in training_tasks]}")
+    while True:
+        # TODO: in the future I would like to be able to give weighted probabilities to the tasks
+        task = random.choice(training_tasks)
+        yield task.sample()
+
+def _get_all_training_classes():
     current_module = sys.modules[__name__]
     training_classes = [
         cls for name, cls in inspect.getmembers(current_module, inspect.isclass)
@@ -57,12 +66,7 @@ def training_tasks_generator():
         and cls is not TrainingTask
         and cls.__module__ == __name__
     ]
-    training_tasks = sorted([cls() for cls in training_classes], key=lambda x: x.__class__.__name__)
-    logger.info(f"Found {len(training_tasks)} training tasks: {[task.__class__.__name__ for task in training_tasks]}")
-    while True:
-        # TODO: in the future I would like to be able to give weighted probabilities to the tasks
-        task = random.choice(training_tasks)
-        yield task.sample()
+    return sorted(training_classes, key=lambda x: x.__name__)
 
 
 @dataclass

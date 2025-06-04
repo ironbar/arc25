@@ -426,3 +426,14 @@ def test_change_object_color(input_img, color, output_img):
     new_img = create_img(input_img.shape, 0)
     new_img = draw_object(new_img, object)
     assert np.array_equal(new_img, output_img)
+
+
+def test_object_copy():
+    img = Img([[0, 0, 0],
+               [0, 1, 0],
+               [0, 0, 0]])
+    object = detect_objects(img, background_color=0, connectivity=4, monochrome=False)[0]
+    copied_object = object.copy()
+    assert all(object.center == copied_object.center)
+    copied_object.move((1, 1))
+    assert all(object.center != copied_object.center)

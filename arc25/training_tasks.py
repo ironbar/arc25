@@ -33,6 +33,7 @@ class TrainingTask(ABC):
             inputs = ret
             metadata = None
 
+        is_valid_code = False
         for _ in range(n_tries):
             try:
                 # TODO: better handling, what happens if we reach n_tries?
@@ -41,6 +42,7 @@ class TrainingTask(ABC):
                 else:
                     code = self.create_code(inputs)
                 code = validate_code(code, inputs)
+                is_valid_code = True
                 break
             except InvalidCode as e:
                 logger.debug(f"{e}:\n{code}\nRetrying...")
@@ -48,6 +50,8 @@ class TrainingTask(ABC):
             except Exception as e:
                 logger.error(f"Unexpected error: {e}:\nRetrying...")
                 pass
+        if not is_valid_code:
+            raise InvalidCode(f"Failed to create a valid code after {n_tries} attempts.")
         outputs = safe_code_execution(code, inputs)
         return Task(inputs=inputs, outputs=outputs, code=code, name=self.__class__.__name__)
 

@@ -1,0 +1,5 @@
+[run]
+omit =
+    arc25/plot.py
+    arc25/logging.py
+    arc25/utils.py

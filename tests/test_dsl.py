@@ -378,3 +378,51 @@ def test_objects_are_rectangles(img, is_rectangle):
 def test_object_center(img, center):
     object = detect_objects(img, background_color=0, connectivity=4, monochrome=False)[0]
     assert np.array_equal(object.center, center)
+
+
+@pytest.mark.parametrize("input_img, movement, output_img", [
+    (Img([[0, 0, 0],
+          [0, 1, 0],
+          [0, 0, 0]]),
+     (1, 1),
+     Img([[0, 0, 0],
+          [0, 0, 0],
+          [0, 0, 1]]),),
+    (Img([[0, 0, 0],
+          [0, 1, 0],
+          [0, 0, 0]]),
+     (-1, -1),
+     Img([[1, 0, 0],
+          [0, 0, 0],
+          [0, 0, 0]]),),
+    (Img([[0, 0, 0],
+          [1, 1, 0],
+          [0, 0, 0]]),
+     (-1, 0),
+     Img([[1, 1, 0],
+          [0, 0, 0],
+          [0, 0, 0]]),),
+])
+def test_move_object(input_img, movement, output_img):
+    object = detect_objects(input_img, background_color=0, connectivity=4, monochrome=False)[0]
+    object.move(movement)
+    moved_img = create_img(input_img.shape, 0)
+    moved_img = draw_object(moved_img, object)
+    assert np.array_equal(moved_img, output_img)
+
+
+@pytest.mark.parametrize("input_img, color, output_img", [
+    (Img([[0, 0, 0],
+          [0, 1, 0],
+          [0, 0, 0]]),
+      2,
+      Img([[0, 0, 0],
+           [0, 2, 0],
+           [0, 0, 0]]),)
+])
+def test_change_object_color(input_img, color, output_img):
+    object = detect_objects(input_img, background_color=0, connectivity=4, monochrome=False)[0]
+    object.change_color(color)
+    new_img = create_img(input_img.shape, 0)
+    new_img = draw_object(new_img, object)
+    assert np.array_equal(new_img, output_img)

@@ -289,29 +289,29 @@ class Object:
         is_empty_rectangle = is_empty_rectangle and self.bounding_box.height >= 3 and self.bounding_box.width >= 3
         return is_filled_rectangle or is_empty_rectangle
 
-    def is_in_img(self, img):
-        return all(0 <= r < img.shape[0] and 0 <= c < img.shape[1] for r, c in self.pixel_locations)
-
-    def is_inside(self, location):
-        # TODO: move this functionality to the function below
-        for pixel_location in self.pixel_locations:
-            if pixel_location[0] == location[0] and pixel_location[1] == location[1]:
-                return True
-        return False
-
     def copy(self):
         return Object(self.pixel_locations.tolist(), self.pixel_colors.copy())
     
     # TODO: does this function belongs to the Object class?
-    def move(self, movement):
+    def move(self, movement: tuple[int, int]):
         self.pixel_locations += np.array(movement)
         self.bounding_box = self._compute_bounding_box()
 
     # TODO: does this function belongs to the Object class?
-    def change_color(self, color):
+    def change_color(self, color: int):
         self.color = color
         self.pixel_colors = [color] * self.area
-        self.colors = set(self.pixel_colors)
+        self.colors = [color]
+
+    # def is_in_img(self, img):
+    #     return all(0 <= r < img.shape[0] and 0 <= c < img.shape[1] for r, c in self.pixel_locations)
+
+    # def is_inside(self, location):
+    #     # TODO: move this functionality to the function below
+    #     for pixel_location in self.pixel_locations:
+    #         if pixel_location[0] == location[0] and pixel_location[1] == location[1]:
+    #             return True
+    #     return False
 
 
 def detect_objects(image: Img, background_color: int = 0, 
@@ -377,3 +377,9 @@ def detect_objects(image: Img, background_color: int = 0,
                 objects.append(obj)
 
     return objects
+
+
+def draw_object(img, object):
+    for (r, c), color in zip(object.pixel_locations, object.pixel_colors):
+        draw_pixel(img, (r, c), color)
+    return img

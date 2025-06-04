@@ -12,6 +12,7 @@ import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from collections import namedtuple
+from typing import Union
 from arc25.dsl import *
 from arc25.input_generation import *
 from arc25.code_execution import safe_code_execution, validate_code, wrap_code_in_function, InvalidCode
@@ -24,11 +25,21 @@ Task = namedtuple("Task", ["inputs", "outputs", "code", 'name'])
 
 class TrainingTask(ABC):
     def sample(self, n_tries=3):
-        inputs = self.create_inputs()
+        ret = self.create_inputs()
+        if isinstance(ret, tuple):
+            inputs = ret[0]
+            metadata = ret[1:]
+        else:
+            inputs = ret
+            metadata = None
+
         for _ in range(n_tries):
             try:
                 # TODO: better handling, what happens if we reach n_tries?
-                code = self.create_code(inputs)
+                if metadata is not None:
+                    code = self.create_code(inputs, *metadata)
+                else:
+                    code = self.create_code(inputs)
                 code = validate_code(code, inputs)
                 break
             except InvalidCode as e:
@@ -41,11 +52,11 @@ class TrainingTask(ABC):
         return Task(inputs=inputs, outputs=outputs, code=code, name=self.__class__.__name__)
 
     @abstractmethod
-    def create_inputs(self):
+    def create_inputs(self) -> Union[list[Img], tuple[list[Img], ...]]:
         pass
 
     @abstractmethod
-    def create_code(self, inputs):
+    def create_code(self, inputs: list[Img], *metadata) -> str:
         pass
 
 
@@ -57,6 +68,7 @@ def training_tasks_generator():
         # TODO: in the future I would like to be able to give weighted probabilities to the tasks
         task = random.choice(training_tasks)
         yield task.sample()
+
 
 def _get_all_training_classes():
     current_module = sys.modules[__name__]
@@ -271,10 +283,11 @@ class LearnDetectObjectsParameters(TrainingTask):
     def create_inputs(self):
         n_inputs = random.randint(self.min_inputs, self.max_inputs)
         shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        return [create_image_with_random_objects(shape) for shape in shapes]
+        return [create_image_with_random_objects(shape) for shape in shapes], 1
 
-    def create_code(self, inputs):
+    def create_code(self, inputs, metadata):
         # TODO: ideally the parameters should be linked to the input generation parameters
+        print(f'Metadata: {metadata}')
         parameters = dict(connectivity=random.choice([4, 8]), monochrome=random.choice([True, False]))
         code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
         code += "n = len(objects)\n"

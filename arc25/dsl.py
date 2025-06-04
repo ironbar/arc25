@@ -126,6 +126,13 @@ def draw_pixel(img: Img, point: tuple[int, int], color: int) -> Img:
         img[point[0], point[1]] = color
     return img
 
+
+def apply_color_map(img, color_map):
+    output = img.copy()
+    for previous_color, new_color in color_map.items():
+        output[img == previous_color] = new_color
+    return output
+
 #############################
 # Geometric transformations
 #############################
@@ -383,3 +390,5 @@ def draw_object(img, object):
     for (r, c), color in zip(object.pixel_locations, object.pixel_colors):
         draw_pixel(img, (r, c), color)
     return img
+
+

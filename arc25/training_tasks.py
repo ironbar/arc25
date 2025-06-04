@@ -283,12 +283,21 @@ class LearnDetectObjectsParameters(TrainingTask):
     def create_inputs(self):
         n_inputs = random.randint(self.min_inputs, self.max_inputs)
         shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        return [create_image_with_random_objects(shape) for shape in shapes], 1
+        inputs = [create_image_with_random_objects(shape) for shape in shapes]
+        if random.random() < 0.33:
+            new_background_color = random.randint(1, 9)
+            colormap = {0: new_background_color, new_background_color: 0}
+            inputs = [apply_color_map(img, colormap) for img in inputs]
+            metadata = dict(background_color=new_background_color)
+        else:
+            metadata = dict(background_color=0)
+        return inputs, metadata
 
     def create_code(self, inputs, metadata):
-        # TODO: ideally the parameters should be linked to the input generation parameters
+        # TODO: better control for connectivity and monochrome
         print(f'Metadata: {metadata}')
-        parameters = dict(connectivity=random.choice([4, 8]), monochrome=random.choice([True, False]))
+        parameters = dict(connectivity=random.choice([4, 8]), monochrome=random.choice([True, False]),
+                          **metadata)
         code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
         code += "n = len(objects)\n"
         code += f"img = create_img((n, n), color={random.randint(0, 9)})\n"

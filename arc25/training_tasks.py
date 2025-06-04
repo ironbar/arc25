@@ -258,4 +258,24 @@ class Downscale(TrainingTask):
         return code
 
 
+class LearnDetectObjectsParameters(TrainingTask):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 3
+    max_side: int = 10
+
+    def create_inputs(self):
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        return [create_image_with_random_objects(shape) for shape in shapes]
+
+    def create_code(self, inputs):
+        # TODO: ideally the parameters should be linked to the input generation parameters
+        parameters = dict(connectivity=random.choice([4, 8]), monochrome=random.choice([True, False]))
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        code += "n = len(objects)\n"
+        code += f"img = create_img((n, n), color={random.randint(0, 9)})\n"
+        code = wrap_code_in_function(code)
+        return code
+
 #TODO: tasks relatead to objects. Typically: for objects that meet some condition, move them, recolor them, etc.

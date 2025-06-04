@@ -437,3 +437,17 @@ def test_object_copy():
     assert all(object.center == copied_object.center)
     copied_object.move((1, 1))
     assert all(object.center != copied_object.center)
+
+
+@pytest.mark.parametrize("input_img, color_map, output_img", [
+    (Img([[0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8]]),
+     {0:1, 1: 0},
+     Img([[1, 0, 2],
+          [3, 4, 5],
+          [6, 7, 8]]),)
+])
+def test_apply_colormap(input_img, color_map, output_img):
+    img = apply_colormap(input_img, color_map)
+    assert np.array_equal(img, output_img)

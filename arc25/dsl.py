@@ -127,9 +127,9 @@ def draw_pixel(img: Img, point: tuple[int, int], color: int) -> Img:
     return img
 
 
-def apply_color_map(img, color_map):
+def apply_colormap(img, colormap):
     output = img.copy()
-    for previous_color, new_color in color_map.items():
+    for previous_color, new_color in colormap.items():
         output[img == previous_color] = new_color
     return output
 

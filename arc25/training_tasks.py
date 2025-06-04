@@ -287,7 +287,7 @@ class LearnDetectObjectsParameters(TrainingTask):
         if random.random() < 0.33:
             new_background_color = random.randint(1, 9)
             colormap = {0: new_background_color, new_background_color: 0}
-            inputs = [apply_color_map(img, colormap) for img in inputs]
+            inputs = [apply_colormap(img, colormap) for img in inputs]
             metadata = dict(background_color=new_background_color)
         else:
             metadata = dict(background_color=0)

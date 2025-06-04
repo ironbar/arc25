@@ -55,9 +55,10 @@ class Img(np.ndarray):
     def shape(self):
         return np.array(super().shape)
 
-    @shape.setter
-    def shape(self, value):
-        super(Img, self.__class__).shape.fset(self, tuple(value))
+    # TODO: not sure why this is needed, once I found I will implement a test for it.
+    # @shape.setter
+    # def shape(self, value):
+    #     super(Img, self.__class__).shape.fset(self, tuple(value))
 
     def __repr__(self):
         return '\n'.join(''.join(str(int(v)) for v in row) for row in self)
@@ -173,13 +174,11 @@ def mode(x):
 
 @dataclass
 class BoundingBox:
+    # TODO, not sure if this is the best way to represent a bounding box
     min_row: int
     min_col: int
     max_row: int
     max_col: int
-
-    def __repr__(self):
-        return f"BoundingBox(min_row={self.min_row}, min_col={self.min_col}, max_row={self.max_row}, max_col={self.max_col})"
 
     @property
     def height(self):
@@ -196,28 +195,38 @@ class BoundingBox:
     @property
     def center(self):
         return np.array([(self.min_row + self.max_row) // 2, (self.min_col + self.max_col) // 2], dtype=int)
-
-    def offset(self, offset):
-        if isinstance(offset, int):
-            offset = (offset, offset)
-        return BoundingBox(self.min_row - offset[0], self.min_col - offset[1], self.max_row + offset[0], self.max_col + offset[1])
-
-    def move(self, movement):
-        return BoundingBox(self.min_row + movement[0], self.min_col + movement[1], self.max_row + movement[0], self.max_col + movement[1])
-
+    
     @property
     def shape(self):
         return np.array([self.height, self.width], dtype=int)
+
+    # TODO: move offset and move to other functions
+    def offset(self, offset):
+        if isinstance(offset, int):
+            offset = (offset, offset)
+        return BoundingBox(self.min_row - offset[0],
+                           self.min_col - offset[1],
+                           self.max_row + offset[0],
+                           self.max_col + offset[1])
+
+    def move(self, movement):
+        return BoundingBox(self.min_row + movement[0],
+                           self.min_col + movement[1],
+                           self.max_row + movement[0],
+                           self.max_col + movement[1])
+
+    def __repr__(self):
+        return f"BoundingBox(min_row={self.min_row}, min_col={self.min_col}, max_row={self.max_row}, max_col={self.max_col})"
 
     def __str__(self):
         return f"BoundingBox({self.min_row}, {self.min_col}, {self.max_row}, {self.max_col})"
 
 
 class Object:
+    # TODO: add a method to get the holes inside the object
     def __init__(self, pixel_locations: list[tuple[int, int]], pixel_colors: list[int]):
         self.pixel_locations = np.array(pixel_locations, dtype=int)
         self.pixel_colors = pixel_colors
-        self.area = len(pixel_locations)
         self.bounding_box = self._compute_bounding_box()
 
         self.colors = set(pixel_colors)
@@ -232,7 +241,11 @@ class Object:
         max_row = max([x[0] for x in self.pixel_locations])
         min_col = min([x[1] for x in self.pixel_locations])
         max_col = max([x[1] for x in self.pixel_locations])
-        return BoundingBox(min_row, min_col, max_row, max_col)
+        return BoundingBox(min_row=min_row, min_col=min_col, max_row=max_row, max_col=max_col)
+
+    @property
+    def area(self):
+        return len(self.pixel_locations)
 
     @property
     def height(self):
@@ -298,59 +311,6 @@ class Object:
         self.color = color
         self.pixel_colors = [color] * self.area
         self.colors = set(self.pixel_colors)
-
-    def count_holes(self):
-        # Create a binary image of the object within its bounding box
-        height = self.bounding_box.height
-        width = self.bounding_box.width
-
-        # Initialize an array of zeros (background)
-        object_array = np.zeros((height, width), dtype=int)
-
-        # Map the object's pixel locations to the array
-        for r, c in self.pixel_locations:
-            adjusted_r = r - self.bounding_box.min_row
-            adjusted_c = c - self.bounding_box.min_col
-            object_array[adjusted_r, adjusted_c] = 1  # Object pixel
-
-        # Invert the object array: object pixels become 0, background becomes 1
-        background_array = 1 - object_array
-
-        # Create a visited mask for flood fill
-        visited = np.zeros_like(background_array, dtype=bool)
-
-        # Use a queue for BFS flood fill
-        queue = deque()
-
-        # Enqueue all border pixels that are background (external background)
-        for i in range(height):
-            for j in [0, width - 1]:
-                if background_array[i, j] == 1 and not visited[i, j]:
-                    queue.append((i, j))
-                    visited[i, j] = True
-        for j in range(width):
-            for i in [0, height - 1]:
-                if background_array[i, j] == 1 and not visited[i, j]:
-                    queue.append((i, j))
-                    visited[i, j] = True
-
-        # Perform BFS to mark external background
-        while queue:
-            i, j = queue.popleft()
-            for di, dj in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-                ni, nj = i + di, j + dj
-                if 0 <= ni < height and 0 <= nj < width:
-                    if background_array[ni, nj] == 1 and not visited[ni, nj]:
-                        visited[ni, nj] = True
-                        queue.append((ni, nj))
-
-        # The unvisited background pixels are holes
-        holes_mask = (background_array == 1) & (~visited)
-
-        # Label connected components in the holes_mask
-        labeled_array, num_features = scipy.ndimage.label(holes_mask)
-
-        return num_features
 
 
 def detect_objects(image: Img, background_color: int = 0, 

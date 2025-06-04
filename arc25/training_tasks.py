@@ -256,3 +256,6 @@ class Downscale(TrainingTask):
         code = f"img = downscale(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
         code = wrap_code_in_function(code)
         return code
+
+
+#TODO: tasks relatead to objects. Typically: for objects that meet some condition, move them, recolor them, etc.

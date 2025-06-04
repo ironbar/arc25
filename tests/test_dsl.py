@@ -9,6 +9,7 @@ def test_create_img(shape, color):
     assert isinstance(img, Img)
     assert np.all(img.shape == shape)
     assert np.all(img == color)
+    print(img)
 
 
 @pytest.mark.parametrize("input_img, point1, point2, color, output_img", [

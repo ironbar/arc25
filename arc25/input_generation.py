@@ -84,12 +84,14 @@ def random_upscale_parameters(inputs: list[Img], max_upscale: int = 5):
     return dict(scale=scale)
 
 
-def random_downscale_parameters(inputs: list[Img], max_downscale: int = 3):
-    # TODO: make this more robust
-    scale = []
-    for axis in range(2):
-        sizes = [img.shape[axis] for img in inputs]
-        scale.append(random.choice(common_divisors(sizes)))
+def random_downscale_parameters(inputs: list[Img], max_tries: int = 5):
+    for _ in range(max_tries):
+        scale = []
+        for axis in range(2):
+            sizes = [img.shape[axis] for img in inputs]
+            scale.append(random.choice(common_divisors(sizes)))
+        if scale != [1, 1]:
+            break
     return dict(scale=tuple(scale))
 
 

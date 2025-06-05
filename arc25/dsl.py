@@ -96,19 +96,19 @@ def _filter_points_outside_the_image(rows, cols, img):
     return rows, cols
 
 
-def flood_fill(img: Img, point: tuple[int, int], color: int, connectivity: int) -> Img:
-    """
-    Fill the area of the image with the given color starting from the given point.
+# def flood_fill(img: Img, point: tuple[int, int], color: int, connectivity: int) -> Img:
+#     """
+#     Fill the area of the image with the given color starting from the given point.
 
-    Parameters
-    ----------
-    connectivity : int
-        The connectivity of the area to be filled. 4 for 4-connectivity, 8 for 8-connectivity.
-    """
-    # TODO: do I really need this function? I believe I could do the same with object detection and changing the color
-    mask = skimage.segmentation.flood(img, seed_point=point, connectivity=connectivity//4)
-    img[mask] = color
-    return img
+#     Parameters
+#     ----------
+#     connectivity : int
+#         The connectivity of the area to be filled. 4 for 4-connectivity, 8 for 8-connectivity.
+#     """
+#     # TODO: do I really need this function? I believe I could do the same with object detection and changing the color
+#     mask = skimage.segmentation.flood(img, seed_point=point, connectivity=connectivity//4)
+#     img[mask] = color
+#     return img
 
 
 def draw_horizontal_line(img: Img, y: int, color: int) -> Img:

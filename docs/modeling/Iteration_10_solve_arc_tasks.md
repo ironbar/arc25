@@ -31,4 +31,4 @@ add safety and determinism checks.
 
 - [x] Add safety and determinism checks
 - [ ] Add more primitive functions and training tasks to learn to use them
-- [ ] I would like to have a list of all the primitive functions from the DSL, and how many times are they used in the training tasks. A correlation plot would also be nice to see which connections are missing.
+- [x] I would like to have a list of all the primitive functions from the DSL, and how many times are they used in the training tasks. A correlation plot would also be nice to see which connections are missing.

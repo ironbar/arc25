@@ -10,9 +10,11 @@ logger = logging.getLogger(__name__)
 def wrap_code_in_function(code):
     function_code = "def task(img):\n"
     indent="    "
-    for line in code.splitlines():
+    lines = code.strip().splitlines()
+    for line in lines:
         function_code += f"{indent}{line}\n"
-    function_code += f"{indent}return img"
+    if 'return ' not in lines[-1]:
+        function_code += f"{indent}return img"
     function_code += "\n"
     return function_code
 

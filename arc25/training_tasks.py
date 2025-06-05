@@ -303,7 +303,8 @@ class LearnDetectObjectsParameters(TrainingTask):
                           **metadata)
         code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
         code += "n = len(objects)\n"
-        code += f"img = create_img((n, n), color={random.randint(0, 9)})\n"
+        code += f"output = create_img((n, n), color={random.randint(0, 9)})\n"
+        code += 'return output\n'
         code = wrap_code_in_function(code)
         return code
 

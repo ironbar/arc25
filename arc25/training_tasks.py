@@ -51,7 +51,7 @@ class TrainingTask(ABC):
                 logger.error(f"Unexpected error: {e}:\nRetrying...")
                 pass
         if not is_valid_code:
-            raise InvalidCode(f"Failed to create a valid code after {n_tries} attempts.")
+            raise InvalidCode(f"Failed to create a valid code for task {self.__class__.__name__} after {n_tries} attempts.")
         outputs = safe_code_execution(code, inputs)
         return Task(inputs=inputs, outputs=outputs, code=code, name=self.__class__.__name__)
 

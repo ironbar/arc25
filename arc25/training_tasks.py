@@ -309,3 +309,6 @@ class LearnDetectObjectsParameters(TrainingTask):
         return code
 
 #TODO: tasks relatead to objects. Typically: for objects that meet some condition, move them, recolor them, etc.
+#TODO: change color based on area, height, width
+#TODO: use object properties (is_line, point, rectangle, etc.) to change colors, move or filter.
+#TODO: colormap over random images

@@ -390,5 +390,3 @@ def draw_object(img, object):
     for (r, c), color in zip(object.pixel_locations, object.pixel_colors):
         draw_pixel(img, (r, c), color)
     return img
-
-

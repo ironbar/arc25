@@ -243,7 +243,11 @@ class GeometricTransformations(TrainingTask):
         code = ''
         outputs = inputs
         for parameter_function in parameter_functions:
-            parameters = parameter_function(outputs)
+            try:
+                parameters = parameter_function(outputs)
+            except ValueError as e:
+                logger.debug(f"Error generating parameters for {parameter_function.__name__}: {e}")
+                continue
             function_name = parameter_function.__name__.replace("random_", "").replace("_parameters", "")
             new_line = f"img = {function_name}(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
             code += new_line

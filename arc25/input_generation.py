@@ -122,6 +122,8 @@ def common_divisors(numbers: list[int]) -> list[int]:
 
 def random_pad_parameters(inputs: list[Img], max_width: int = 5):
     max_possible_width = min(min(MAX_SIDE - img.shape) for img in inputs)//2
+    if max_possible_width <= 0:
+        raise ValueError("All input images are too large to pad.")
     width = random.randint(1, min(max_width, max_possible_width))
     color = random.randint(0, 9)
     return dict(width=width, color=color)

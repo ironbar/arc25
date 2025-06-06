@@ -384,7 +384,33 @@ class ChangeObjectColorBasedOnHeightOrWidth(LearnDetectObjectsParameters):
         return code
 
 
+@dataclass
+class ColormapOnRandomImgs(TrainingTask):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 5
+    max_side: int = 10
+    min_colors: int = 2
+    max_colors: int = 5
+
+    def create_inputs(self):
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        n_colors = random.randint(self.min_colors, self.max_colors)  # Number of unique colors in the images
+        colors = random.sample(range(10), n_colors)
+        return [Img(np.random.choice(colors, size=shape)) for shape in shapes]
+
+    def create_code(self, inputs):
+        unique_colors = np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
+        colormap = {i: random.randint(0, 9) for i in unique_colors}
+        code = f"colormap = {colormap}\n"
+        code += f"output = apply_colormap(img, colormap)\n"
+        code += 'return output\n'
+        code = wrap_code_in_function(code)
+        return code
+
+
 #TODO: use object properties (is_line, point, rectangle, etc.) to change colors, move or filter.
-#TODO: colormap over random images
 #TODO: task with changing background color, how to find background color?
 #TODO: move objects based on some object property
+#TODO: do some transformation to the largest, smallest, widest... objects

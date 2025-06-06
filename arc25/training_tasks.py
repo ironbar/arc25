@@ -439,6 +439,47 @@ class EraseObjectBasedOnProperty(HighlightObjectBasedOnProperty):
         code += 'return img\n'
         code = wrap_code_in_function(code)
         return code
+    
+
+@dataclass
+class MoveObjectBasedOnProperty(HighlightObjectBasedOnProperty):
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        property = random.choice(['is_line', 'is_vertical_line', 'is_horizontal_line', 'is_point'])
+        while True:
+            random_movement = [random.randint(-1, 1) for _ in range(2)]
+            if random_movement != [0, 0]:
+                break
+        code += f"output = create_img(img.shape, color={metadata['background_color']})\n"
+
+        priority = random.choice(['random', 'property_first', 'property_last'])
+        if priority == 'random':
+            code += 'for object in objects:\n'
+            code += f'    if object.{property}:\n'
+            code += f'        object.move({random_movement})\n'
+            code += '    draw_object(output, object)\n'
+        elif priority == 'property_first':
+            code += 'for object in objects:\n'
+            code += f'    if object.{property}:\n'
+            code += f'        object.move({random_movement})\n'
+            code += '        draw_object(output, object)\n'
+            code += 'for object in objects:\n'
+            code += f'    if not object.{property}:\n'
+            code += '        draw_object(output, object)\n'
+        elif priority == 'property_last':
+            code += 'for object in objects:\n'
+            code += f'    if not object.{property}:\n'
+            code += '        draw_object(output, object)\n'
+            code += 'for object in objects:\n'
+            code += f'    if object.{property}:\n'
+            code += f'        object.move({random_movement})\n'
+            code += '        draw_object(output, object)\n'
+        else:
+            raise ValueError(f"Unknown priority: {priority}")
+        code += 'return output\n'
+        code = wrap_code_in_function(code)
+        return code
 
 
 @dataclass
@@ -466,14 +507,14 @@ class ColormapOnRandomImgs(TrainingTask):
         code = wrap_code_in_function(code)
         return code
 
+
 def _get_unique_colors(inputs):
     """
     Helper function to get unique colors from a list of images.
     """
     return np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
 
-
-#TODO: use object properties (is_line, point, rectangle, etc.) to change colors, move or filter.
-#TODO: task with changing background color, how to find background color?
-#TODO: move objects based on some object property
+#TODO: task with changing background color, how to find background color? -> mode
 #TODO: do some transformation to the largest, smallest, widest... objects
+#TODO: task with rectangles and squares
+#TODO: refactor tasks

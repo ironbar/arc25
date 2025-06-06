@@ -11,7 +11,7 @@ import inspect
 import logging
 import traceback
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from collections import namedtuple
 from typing import Union
 from arc25.dsl import *
@@ -312,7 +312,7 @@ class LearnDetectObjectsParameters(TrainingTask):
     
 
 @dataclass
-class ChangeObjectColorBasedOnArea(LearnDetectObjectsParameters):
+class ChangeObjectColorBasedOnArea(TrainingTask):
     min_inputs: int = 3
     max_inputs: int = 5
     min_side: int = 8
@@ -347,7 +347,7 @@ class ChangeObjectColorBasedOnArea(LearnDetectObjectsParameters):
 
 
 @dataclass
-class ChangeObjectColorBasedOnHeightOrWidth(LearnDetectObjectsParameters):
+class ChangeObjectColorBasedOnHeightOrWidth(TrainingTask):
     min_inputs: int = 3
     max_inputs: int = 5
     min_side: int = 8
@@ -385,6 +385,59 @@ class ChangeObjectColorBasedOnHeightOrWidth(LearnDetectObjectsParameters):
 
 
 @dataclass
+class HighlightObjectBasedOnProperty(TrainingTask):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 10
+    max_side: int = 12
+    # TODO: the number of objects should be randomized
+    n_objects: int = 15
+    allowed_sizes: list[int] = field(default_factory=lambda: [1, 2, 3])
+
+    def create_inputs(self):
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        metadata = dict(allowed_sizes=self.allowed_sizes, n_objects=self.n_objects, connectivity=random.choice([4, 8]),
+                        monochrome=random.choice([True, False]),
+                        background_color=random.choice([0]*18 + list(range(1, 10))))
+        allowed_colors = random.sample([color for color in range(10) if color != metadata['background_color']], 2)
+        inputs = [generate_arc_image_with_random_objects(shape, allowed_colors=allowed_colors, **metadata)[0] for shape in shapes]
+        return inputs, metadata
+
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        code += f"output = create_img(img.shape, color={metadata['background_color']})\n"
+
+        property = random.choice(['is_line', 'is_vertical_line', 'is_horizontal_line', 'is_point'])
+        unique_colors = _get_unique_colors(inputs)
+        highlight_color  = random.choice([color for color in range(10) if color not in unique_colors])
+        code += f'highlight_color = {highlight_color}\n'
+        code += 'for object in objects:\n'
+        code += f'    if object.{property}:\n'
+        code += f'        object.change_color(highlight_color)\n'
+        code += '    draw_object(output, object)\n'
+        code += 'return output\n'
+        code = wrap_code_in_function(code)
+        return code
+    
+
+@dataclass
+class EraseObjectBasedOnProperty(HighlightObjectBasedOnProperty):
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        property = random.choice(['is_line', 'is_vertical_line', 'is_horizontal_line', 'is_point'])
+        code += 'for object in objects:\n'
+        code += f'    if object.{property}:\n'
+        code += f'        object.change_color({metadata["background_color"]})\n'
+        code += '    draw_object(img, object)\n'
+        code += 'return img\n'
+        code = wrap_code_in_function(code)
+        return code
+
+
+@dataclass
 class ColormapOnRandomImgs(TrainingTask):
     min_inputs: int = 3
     max_inputs: int = 5
@@ -401,13 +454,19 @@ class ColormapOnRandomImgs(TrainingTask):
         return [Img(np.random.choice(colors, size=shape)) for shape in shapes]
 
     def create_code(self, inputs):
-        unique_colors = np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
+        unique_colors = _get_unique_colors(inputs)
         colormap = {i: random.randint(0, 9) for i in unique_colors}
         code = f"colormap = {colormap}\n"
         code += f"output = apply_colormap(img, colormap)\n"
         code += 'return output\n'
         code = wrap_code_in_function(code)
         return code
+
+def _get_unique_colors(inputs):
+    """
+    Helper function to get unique colors from a list of images.
+    """
+    return np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
 
 
 #TODO: use object properties (is_line, point, rectangle, etc.) to change colors, move or filter.

@@ -1,6 +1,7 @@
 import random
 import logging
 import math
+from typing import Optional
 from functools import reduce
 import cv2
 
@@ -216,3 +217,115 @@ def get_candidate_positions(position, grid):
             if grid[i, j] == 0:
                 candidate_positions.append((i, j))
     return candidate_positions
+
+
+def generate_arc_image_with_random_objects(
+    image_shape: tuple[int, int],
+    allowed_sizes: list[int],
+    n_objects: int,
+    monochrome: bool = False,
+    connectivity: int = 4,
+    background_color: int = 0,
+    allowed_colors: Optional[list[int]] = None,
+    max_attempts: int = 1_000,
+) -> np.ndarray:
+    """
+    Random ARC-style image generator.
+
+    Parameters
+    ----------
+    image_shape      : (height, width) of the grid.
+    allowed_sizes    : admissible object sizes (number of cells).
+    n_objects        : number of connected components to place.
+    monochrome       : if True all objects share one colour.
+    connectivity     : 4 (von Neumann) or 8 (Moore) adjacency.
+    background_color : value used for empty cells (default 0).
+    allowed_colors   : list of usable colours for objects; if None
+                       it defaults to all digits 0-9 except background.
+    max_attempts     : cap on placement attempts.
+    """
+    if connectivity not in (4, 8):
+        raise ValueError("connectivity must be 4 or 8")
+    if not (0 <= background_color <= 9):
+        raise ValueError("background_color must be in 0–9")
+
+    # Build palette
+    if allowed_colors is None:
+        palette = [c for c in range(10) if c != background_color]
+    else:
+        palette = [c for c in allowed_colors if c != background_color]
+    if not palette:
+        raise ValueError("allowed_colors cannot be empty after removing background")
+
+    H, W = image_shape
+    grid = np.full((H, W), background_color, dtype=int)
+
+    offsets4 = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    offsets8 = offsets4 + [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+    offsets = offsets4 if connectivity == 4 else offsets8
+
+    def in_bounds(r, c):
+        return 0 <= r < H and 0 <= c < W
+
+    def random_shape(size):
+        free = np.argwhere(grid == background_color)
+        if free.size == 0:
+            return []
+        shape = [tuple(random.choice(free))]
+        frontier = {shape[0]}
+        while len(shape) < size:
+            cand = set()
+            for r0, c0 in frontier:
+                for dr, dc in offsets:
+                    r1, c1 = r0 + dr, c0 + dc
+                    if (
+                        in_bounds(r1, c1)
+                        and grid[r1, c1] == background_color
+                        and (r1, c1) not in shape
+                    ):
+                        cand.add((r1, c1))
+            if not cand:
+                return []
+            nxt = random.choice(list(cand))
+            shape.append(nxt)
+            frontier.add(nxt)
+        return shape
+
+    def neighbouring_colours(shape):
+        cols = set()
+        for r, c in shape:
+            for dr, dc in offsets:
+                r1, c1 = r + dr, c + dc
+                if in_bounds(r1, c1):
+                    col = grid[r1, c1]
+                    if col != background_color:
+                        cols.add(col)
+        return cols
+
+    mono_colour = random.choice(palette) if monochrome else None
+
+    placed, attempts = 0, 0
+    while placed < n_objects and attempts < max_attempts:
+        attempts += 1
+        size = random.choice(allowed_sizes)
+        shape = random_shape(size)
+        if not shape:
+            continue
+
+        neigh_cols = neighbouring_colours(shape)
+
+        if monochrome:
+            if neigh_cols:
+                continue  # touching forbidden
+            colour = mono_colour
+        else:
+            free_cols = [c for c in palette if c not in neigh_cols]
+            if not free_cols:
+                continue
+            colour = random.choice(free_cols)
+
+        for r, c in shape:
+            grid[r, c] = colour
+        placed += 1
+
+    return grid

@@ -223,12 +223,12 @@ def generate_arc_image_with_random_objects(
     image_shape: tuple[int, int],
     allowed_sizes: list[int],
     n_objects: int,
-    monochrome: bool = False,
+    monochrome: bool = True,
     connectivity: int = 4,
     background_color: int = 0,
     allowed_colors: Optional[list[int]] = None,
     max_attempts: int = 1_000,
-) -> np.ndarray:
+) -> tuple[Img, int]:
     """
     Random ARC-style image generator.
 
@@ -237,32 +237,41 @@ def generate_arc_image_with_random_objects(
     image_shape      : (height, width) of the grid.
     allowed_sizes    : admissible object sizes (number of cells).
     n_objects        : number of connected components to place.
-    monochrome       : if True all objects share one colour.
+    monochrome
+        True  → each object is a single colour; objects may touch,
+                but any touching neighbours must be of *different* colours.
+        False → each object may be internally multi-coloured; objects may
+                NOT touch any other object.
     connectivity     : 4 (von Neumann) or 8 (Moore) adjacency.
     background_color : value used for empty cells (default 0).
     allowed_colors   : list of usable colours for objects; if None
                        it defaults to all digits 0-9 except background.
     max_attempts     : cap on placement attempts.
-    """
+
+    Returns
+    -------
+    Img              : generated image.
+    int              : number of objects placed.
+    """    
     if connectivity not in (4, 8):
         raise ValueError("connectivity must be 4 or 8")
-    if not (0 <= background_color <= 9):
+    if not 0 <= background_color <= 9:
         raise ValueError("background_color must be in 0–9")
 
-    # Build palette
-    if allowed_colors is None:
-        palette = [c for c in range(10) if c != background_color]
-    else:
-        palette = [c for c in allowed_colors if c != background_color]
+    palette = (
+        [c for c in range(10) if c != background_color]
+        if allowed_colors is None
+        else [c for c in allowed_colors if c != background_color]
+    )
     if not palette:
-        raise ValueError("allowed_colors cannot be empty after removing background")
+        raise ValueError("allowed_colors empty after removing background")
 
     H, W = image_shape
     grid = np.full((H, W), background_color, dtype=int)
 
-    offsets4 = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-    offsets8 = offsets4 + [(1, 1), (1, -1), (-1, 1), (-1, -1)]
-    offsets = offsets4 if connectivity == 4 else offsets8
+    offs4 = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    offs8 = offs4 + [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+    offs = offs4 if connectivity == 4 else offs8
 
     def in_bounds(r, c):
         return 0 <= r < H and 0 <= c < W
@@ -276,7 +285,7 @@ def generate_arc_image_with_random_objects(
         while len(shape) < size:
             cand = set()
             for r0, c0 in frontier:
-                for dr, dc in offsets:
+                for dr, dc in offs:
                     r1, c1 = r0 + dr, c0 + dc
                     if (
                         in_bounds(r1, c1)
@@ -291,18 +300,16 @@ def generate_arc_image_with_random_objects(
             frontier.add(nxt)
         return shape
 
-    def neighbouring_colours(shape):
-        cols = set()
+    def neighbour_colours(shape):
+        s = set()
         for r, c in shape:
-            for dr, dc in offsets:
+            for dr, dc in offs:
                 r1, c1 = r + dr, c + dc
                 if in_bounds(r1, c1):
                     col = grid[r1, c1]
                     if col != background_color:
-                        cols.add(col)
-        return cols
-
-    mono_colour = random.choice(palette) if monochrome else None
+                        s.add(col)
+        return s
 
     placed, attempts = 0, 0
     while placed < n_objects and attempts < max_attempts:
@@ -312,20 +319,21 @@ def generate_arc_image_with_random_objects(
         if not shape:
             continue
 
-        neigh_cols = neighbouring_colours(shape)
+        neigh = neighbour_colours(shape)
 
         if monochrome:
-            if neigh_cols:
-                continue  # touching forbidden
-            colour = mono_colour
-        else:
-            free_cols = [c for c in palette if c not in neigh_cols]
+            free_cols = [c for c in palette if c not in neigh]
             if not free_cols:
                 continue
             colour = random.choice(free_cols)
+            for r, c in shape:
+                grid[r, c] = colour
+        else:
+            if neigh:                      # touching not allowed
+                continue
+            for r, c in shape:
+                grid[r, c] = random.choice(palette)
 
-        for r, c in shape:
-            grid[r, c] = colour
         placed += 1
 
-    return grid
+    return Img(grid), placed

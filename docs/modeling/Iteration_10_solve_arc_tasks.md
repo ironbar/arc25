@@ -21,6 +21,11 @@ path is to review those transformations add them and modify if needed.
 Inspired by [Absolute Zero Reinforced Self-play Reasoning with Zero Data](https://arxiv.org/abs/2505.03335) I'm going
 add safety and determinism checks.
 
+### Generation functions
+
+LLM are incredible useful to write generation functions. For example I have asked o3
+to write a function to create ARC images with random objects and it worked perfectly.
+
 ## Results
 
 ## Conclusion

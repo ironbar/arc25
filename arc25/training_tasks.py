@@ -49,8 +49,8 @@ class TrainingTask(ABC):
             except InvalidCode as e:
                 logger.debug(f"{e}:\n{code}\nRetrying...")
             except Exception as e:
-                logger.error(f"Unexpected error: {e}:\nRetrying...")
-                logger.error(traceback.format_exc())
+                logger.error(f"Unexpected error when trying to create code for {self.__class__.__name__}: {e}", exc_info=traceback.format_exc())
+                # logger.error(traceback.format_exc())
         if not is_valid_code:
             raise InvalidCode(f"Failed to create a valid code for task {self.__class__.__name__} after {n_tries} attempts.")
         outputs = safe_code_execution(code, inputs)

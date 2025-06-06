@@ -9,6 +9,7 @@ import random
 import sys
 import inspect
 import logging
+import traceback
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from collections import namedtuple
@@ -16,6 +17,7 @@ from typing import Union
 from arc25.dsl import *
 from arc25.input_generation import *
 from arc25.code_execution import safe_code_execution, validate_code, wrap_code_in_function, InvalidCode
+
 
 logger = logging.getLogger(__name__)
 
@@ -46,10 +48,9 @@ class TrainingTask(ABC):
                 break
             except InvalidCode as e:
                 logger.debug(f"{e}:\n{code}\nRetrying...")
-                pass
             except Exception as e:
                 logger.error(f"Unexpected error: {e}:\nRetrying...")
-                pass
+                logger.error(traceback.format_exc())
         if not is_valid_code:
             raise InvalidCode(f"Failed to create a valid code for task {self.__class__.__name__} after {n_tries} attempts.")
         outputs = safe_code_execution(code, inputs)
@@ -278,6 +279,7 @@ class Downscale(TrainingTask):
         return code
 
 
+@dataclass
 class LearnDetectObjectsParameters(TrainingTask):
     min_inputs: int = 3
     max_inputs: int = 5
@@ -309,26 +311,22 @@ class LearnDetectObjectsParameters(TrainingTask):
         return code
     
 
+@dataclass
 class ChangeObjectColorBasedOnArea(LearnDetectObjectsParameters):
     min_inputs: int = 3
     max_inputs: int = 5
     min_side: int = 8
     max_side: int = 10
     n_objects: int = 5
+    # TODO: add more variability on the sizes
 
     def create_inputs(self):
         n_inputs = random.randint(self.min_inputs, self.max_inputs)
         shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
         metadata = dict(allowed_sizes=[2, 3, 4], n_objects=self.n_objects, connectivity=random.choice([4, 8]),
-                        monochrome=random.choice([True, False]))
+                        monochrome=random.choice([True, False]),
+                        background_color=random.choice([0]*18 + list(range(1, 10))))
         inputs = [generate_arc_image_with_random_objects(shape, **metadata)[0] for shape in shapes]
-        if random.random() < 0.33:
-            new_background_color = random.randint(1, 9)
-            colormap = {0: new_background_color, new_background_color: 0}
-            inputs = [apply_colormap(img, colormap) for img in inputs]
-            metadata['background_color'] = new_background_color
-        else:
-            metadata['background_color'] = 0
         return inputs, metadata
 
     def create_code(self, inputs, metadata):
@@ -348,8 +346,46 @@ class ChangeObjectColorBasedOnArea(LearnDetectObjectsParameters):
         return code
 
 
+@dataclass
+class ChangeObjectColorBasedOnHeightOrWidth(LearnDetectObjectsParameters):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 8
+    max_side: int = 10
+    n_objects: int = 7
+    allowed_size: int = 2
+    # TODO: add more allowed sizes
+
+    def create_inputs(self):
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        metadata = dict(allowed_sizes=[self.allowed_size], n_objects=self.n_objects, connectivity=random.choice([4, 8]),
+                        monochrome=random.choice([True, False]),
+                        background_color=random.choice([0]*18 + list(range(1, 10))))
+        inputs = [generate_arc_image_with_random_objects(shape, **metadata)[0] for shape in shapes]
+        return inputs, metadata
+
+    def create_code(self, inputs, metadata):
+        metadata.pop('allowed_sizes')
+        metadata.pop('n_objects', None)  # n_objects is not used in this task
+        parameters = dict(**metadata)
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        code += f"output = create_img(img.shape, color={metadata['background_color']})\n"
+
+        property = random.choice(['height', 'width'])
+        new_colors = random.sample([color for color in range(10) if color != metadata['background_color']], self.allowed_size)
+        colormap = {key: color for key, color in zip(range(1, len(new_colors) + 1), new_colors)}
+        code += f'{property}_to_color = {colormap}\n'
+        code += 'for object in objects:\n'
+        code += f'    object.change_color({property}_to_color[object.{property}])\n'
+        code += '    draw_object(output, object)\n'
+        code += 'return output\n'
+        code = wrap_code_in_function(code)
+        return code
+
+
+
 #TODO: tasks relatead to objects. Typically: for objects that meet some condition, move them, recolor them, etc.
-#TODO: change color based on area, height, width
 #TODO: use object properties (is_line, point, rectangle, etc.) to change colors, move or filter.
 #TODO: colormap over random images
 #TODO: task with changing background color, how to find background color?

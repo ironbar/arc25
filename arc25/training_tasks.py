@@ -384,8 +384,7 @@ class ChangeObjectColorBasedOnHeightOrWidth(LearnDetectObjectsParameters):
         return code
 
 
-
-#TODO: tasks relatead to objects. Typically: for objects that meet some condition, move them, recolor them, etc.
 #TODO: use object properties (is_line, point, rectangle, etc.) to change colors, move or filter.
 #TODO: colormap over random images
 #TODO: task with changing background color, how to find background color?
+#TODO: move objects based on some object property

@@ -307,8 +307,49 @@ class LearnDetectObjectsParameters(TrainingTask):
         code += 'return output\n'
         code = wrap_code_in_function(code)
         return code
+    
+
+class ChangeObjectColorBasedOnArea(LearnDetectObjectsParameters):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 8
+    max_side: int = 10
+    n_objects: int = 5
+
+    def create_inputs(self):
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        metadata = dict(allowed_sizes=[2, 3, 4], n_objects=self.n_objects, connectivity=random.choice([4, 8]),
+                        monochrome=random.choice([True, False]))
+        inputs = [generate_arc_image_with_random_objects(shape, **metadata)[0] for shape in shapes]
+        if random.random() < 0.33:
+            new_background_color = random.randint(1, 9)
+            colormap = {0: new_background_color, new_background_color: 0}
+            inputs = [apply_colormap(img, colormap) for img in inputs]
+            metadata['background_color'] = new_background_color
+        else:
+            metadata['background_color'] = 0
+        return inputs, metadata
+
+    def create_code(self, inputs, metadata):
+        allowed_sizes = metadata.pop('allowed_sizes')
+        metadata.pop('n_objects', None)  # n_objects is not used in this task
+        parameters = dict(**metadata)
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        code += f"output = create_img(img.shape, color={metadata['background_color']})\n"
+        new_colors = random.sample([color for color in range(10) if color != metadata['background_color']], len(allowed_sizes))
+        area_to_color = {size: color for size, color in zip(allowed_sizes, new_colors)}
+        code += f'area_to_color = {area_to_color}\n'
+        code += 'for object in objects:\n'
+        code += '    object.change_color(area_to_color[object.area])\n'
+        code += '    draw_object(output, object)\n'
+        code += 'return output\n'
+        code = wrap_code_in_function(code)
+        return code
+
 
 #TODO: tasks relatead to objects. Typically: for objects that meet some condition, move them, recolor them, etc.
 #TODO: change color based on area, height, width
 #TODO: use object properties (is_line, point, rectangle, etc.) to change colors, move or filter.
 #TODO: colormap over random images
+#TODO: task with changing background color, how to find background color?

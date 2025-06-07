@@ -534,6 +534,56 @@ class HighlightSquares(HighlightRectangles):
 
 
 @dataclass
+class NormalizeImgsWithDifferentBackgroundColor(TrainingTask):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 10
+    max_side: int = 12
+    # TODO: the number of objects should be randomized
+    n_objects: int = 5
+    allowed_sizes: list[int] = field(default_factory=lambda: [1, 2, 3, 4, 5])
+    random_shape_probability: float = 0.25
+    line_shape_probability: float = 0.25
+
+    def create_inputs(self):
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        background_colors = random.sample(range(10), n_inputs)
+        allowed_colors = [random.choice([color for color in range(10) if color != background_color])
+                          for background_color in background_colors]
+        metadata = dict(
+            allowed_sizes=self.allowed_sizes, n_objects=self.n_objects, connectivity=random.choice([4, 8]),
+            monochrome=True,
+            random_shape_probability=self.random_shape_probability,
+            line_shape_probability=self.line_shape_probability)
+        
+        inputs = [generate_arc_image_with_random_objects(shape, **metadata,
+                                                         background_color=background_color,
+                                                         allowed_colors=[allowed_color])[0]
+                  for shape, background_color, allowed_color in zip(shapes, background_colors, allowed_colors)]
+        return inputs, metadata
+
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome']})
+        code = 'background_color = mode(img)\n'
+        code += f"objects = detect_objects(img, background_color=background_color, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+
+        new_background_color = random.choice([color for color in range(10) if color not in [mode(input) for input in inputs]])
+        new_foreground_color = random.choice([color for color in range(10) if color != new_background_color])
+
+        code += f"new_background_color = {new_background_color}\n"
+        code += f"output = create_img(img.shape, color=new_background_color)\n"
+
+        code += f'new_foreground_color = {new_foreground_color}\n'
+        code += 'for object in objects:\n'
+        code += f'    object.change_color(new_foreground_color)\n'
+        code += '    draw_object(output, object)\n'
+        code += 'return output\n'
+        code = wrap_code_in_function(code)
+        return code
+
+
+@dataclass
 class ColormapOnRandomImgs(TrainingTask):
     min_inputs: int = 3
     max_inputs: int = 5
@@ -565,7 +615,6 @@ def _get_unique_colors(inputs):
     """
     return np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
 
-#TODO: task with changing background color, how to find background color? -> mode
 #TODO: do some transformation to the largest, smallest, widest... objects
 #TODO: refactor tasks
 #TODO: some task with drawings based on for loops

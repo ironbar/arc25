@@ -230,9 +230,18 @@ def generate_arc_image_with_random_objects(
     background_color: int = 0,
     allowed_colors: Optional[list[int]] = None,
     max_attempts: int = 1_000,
-) -> tuple[Img, int]:
+    random_shape_probability: float = 0.5,
+    line_shape_probability: float = 0.5,
+):
     """
     Random ARC-style image generator.
+
+    An object of size *s* is produced in two ways:
+      • with probability ``random_shape_probability`` a free-form random shape
+      • otherwise a regular shape chosen at random from
+        {vertical_line, horizontal_line, rectangle}.
+
+    The remainder of the behaviour matches the original implementation.
 
     Parameters
     ----------
@@ -249,12 +258,16 @@ def generate_arc_image_with_random_objects(
     allowed_colors   : list of usable colours for objects; if None
                        it defaults to all digits 0-9 except background.
     max_attempts     : cap on placement attempts.
+    random_shape_probability : chance of drawing a free-form shape (0–1).
+    line_shape_probability : chance of drawing a line shape (0–1), when regular shape is chosen
 
     Returns
     -------
     Img              : generated image.
     int              : number of objects placed.
-    """    
+    """
+    if not 0.0 <= random_shape_probability <= 1.0:
+        raise ValueError("random_shape_probability must lie in [0, 1]")
     if connectivity not in (4, 8):
         raise ValueError("connectivity must be 4 or 8")
     if not 0 <= background_color <= 9:
@@ -278,11 +291,15 @@ def generate_arc_image_with_random_objects(
     def in_bounds(r, c):
         return 0 <= r < H and 0 <= c < W
 
-    def random_shape(size):
-        free = np.argwhere(grid == background_color)
-        if free.size == 0:
+    def free(cells):
+        return all(grid[r, c] == background_color for r, c in cells)
+
+    # ----- shape generators -------------------------------------------------
+    def shape_random(size):
+        free_cells = np.argwhere(grid == background_color)
+        if free_cells.size == 0:
             return []
-        shape = [tuple(random.choice(free))]
+        shape = [tuple(random.choice(free_cells))]
         frontier = {shape[0]}
         while len(shape) < size:
             cand = set()
@@ -302,6 +319,58 @@ def generate_arc_image_with_random_objects(
             frontier.add(nxt)
         return shape
 
+    def shape_vertical_line(size):
+        if size > H:
+            return []
+        for _ in range(10):
+            col = random.randrange(W)
+            row0 = random.randrange(H - size + 1)
+            cells = [(row0 + i, col) for i in range(size)]
+            if free(cells):
+                return cells
+        return []
+
+    def shape_horizontal_line(size):
+        if size > W:
+            return []
+        for _ in range(10):
+            row = random.randrange(H)
+            col0 = random.randrange(W - size + 1)
+            cells = [(row, col0 + i) for i in range(size)]
+            if free(cells):
+                return cells
+        return []
+
+    def shape_rectangle(size):
+        factors = [
+            (h, size // h)
+            for h in range(2, int(size**0.5) + 1)
+            if size % h == 0
+        ]
+        random.shuffle(factors)
+        for h, w in factors:
+            if h > H or w > W:
+                continue
+            for _ in range(10):
+                r0 = random.randrange(H - h + 1)
+                c0 = random.randrange(W - w + 1)
+                cells = [
+                    (r0 + dr, c0 + dc) for dr in range(h) for dc in range(w)
+                ]
+                if free(cells):
+                    return cells
+        return []
+
+    def make_shape(size):
+        if random.random() < random_shape_probability:
+            return shape_random(size)
+        if random.random() < line_shape_probability:
+            gen = random.choice([shape_vertical_line, shape_horizontal_line])
+            return gen(size)
+        else:
+            return shape_rectangle(size)
+
+    # ----- neighbour-colour helper ------------------------------------------
     def neighbour_colours(shape):
         s = set()
         for r, c in shape:
@@ -317,12 +386,10 @@ def generate_arc_image_with_random_objects(
     while placed < n_objects and attempts < max_attempts:
         attempts += 1
         size = random.choice(allowed_sizes)
-        shape = random_shape(size)
+        shape = make_shape(size)
         if not shape:
             continue
-
         neigh = neighbour_colours(shape)
-
         if monochrome:
             free_cols = [c for c in palette if c not in neigh]
             if not free_cols:
@@ -331,11 +398,10 @@ def generate_arc_image_with_random_objects(
             for r, c in shape:
                 grid[r, c] = colour
         else:
-            if neigh:                      # touching not allowed
+            if neigh:
                 continue
             for r, c in shape:
                 grid[r, c] = random.choice(palette)
-
         placed += 1
 
     return Img(grid), placed

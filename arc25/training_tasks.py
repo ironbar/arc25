@@ -618,3 +618,4 @@ def _get_unique_colors(inputs):
 #TODO: do some transformation to the largest, smallest, widest... objects
 #TODO: refactor tasks
 #TODO: some task with drawings based on for loops
+#TODO: histogram based on area, height, width, etc, sorting the objects

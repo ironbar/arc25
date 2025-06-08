@@ -55,6 +55,19 @@ we see a clear trend of improvement when using a lower value of `min_prob`. The 
 It seems that if it is too small is it hurtful, otherwise there isn't a relation between the parameters.
 Thus I believe I should use the maximum possible value to be able to solve tasks with big grids.
 
+### Repeatability
+
+| configuration                                | mean eval score | n_experiments |
+|----------------------------------------------|-----------------|---------------|
+| epochs=10, n=1, lr=1e-4, r=16, min_prob=0.17 | 9.8 ± 0.7       | 13            |
+| epochs=10, n=1, lr=2e-4, r=4, min_prob=0.17  | 10.4 ± 0.8      | 11            |
+| epochs=10, n=1, lr=2e-4, r=4, min_prob=0.1   | 10.6 ± 0.7      | 11            |
+
+Evidence is not very strong, but it seems that for the evaluation set we have found a better configuration
+than the previous one.
+
+TODO: 5 submissions with the new configuration.
+
 ## Conclusion
 
 ## Next steps

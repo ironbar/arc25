@@ -50,7 +50,10 @@ we see a clear trend of improvement when using a lower value of `min_prob`. The 
 
 ### max_seq_length
 
-TODO: First look at the original values, then make experiments with different values to see the effect
+![max_seq_length](res/1749380700465_image.png)
+
+It seems that if it is too small is it hurtful, otherwise there isn't a relation between the parameters.
+Thus I believe I should use the maximum possible value to be able to solve tasks with big grids.
 
 ## Conclusion
 

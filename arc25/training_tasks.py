@@ -615,6 +615,52 @@ class DeleteExtremeObjects(TrainingTask):
         code += 'return img\n'
         code = wrap_code_in_function(code)
         return code
+    
+
+@dataclass
+class HistogramObjects(TrainingTask):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 8
+    max_side: int = 10
+    n_objects: int = 7
+    allowed_sizes: list[int] = field(default_factory=lambda: [1, 2, 3, 4, 5])
+    # TODO: add more allowed sizes
+
+    def create_inputs(self):
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        metadata = dict(allowed_sizes=self.allowed_sizes, n_objects=self.n_objects, connectivity=random.choice([4, 8]),
+                        monochrome=random.choice([True, False]),
+                        background_color=random.choice([0]*18 + list(range(1, 10))))
+        inputs = [generate_arc_image_with_random_objects(shape, **metadata)[0] for shape in shapes]
+        return inputs, metadata
+
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        property = random.choice(['height', 'width', 'area'])
+        if random.random() < 0.5:
+            code += f"objects = sorted(objects, key=lambda x: x.{property})\n"
+        else:
+            code += f"objects = sorted(objects, key=lambda x: x.{property}, reverse=True)\n"
+        code += f'sorted_{property} = [object.{property} for object in objects]\n'
+
+        transpose = random.choice([True, False])
+        if transpose:
+            code += f'output = create_img((max(sorted_{property}), len(objects)), color={metadata["background_color"]})\n'
+        else:
+            code += f'output = create_img((len(objects), max(sorted_{property})), color={metadata["background_color"]})\n'
+        color = random.choice([color for color in range(10) if color != metadata["background_color"]])
+        code += f'color = {color}\n'
+        code += f'for i, {property} in enumerate(sorted_{property}):\n'
+        if transpose:
+            code += f'    output[:{property}, i] = color\n'
+        else:
+            code += f'    output[i, :{property}] = color\n'
+        code += 'return output\n'
+        code = wrap_code_in_function(code)
+        return code
 
 
 @dataclass
@@ -649,7 +695,5 @@ def _get_unique_colors(inputs):
     """
     return np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
 
-#TODO: do some transformation to the largest, smallest, widest... objects
 #TODO: refactor tasks
 #TODO: some task with drawings based on for loops
-#TODO: histogram based on area, height, width, etc, sorting the objects

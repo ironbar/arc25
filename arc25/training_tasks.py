@@ -351,22 +351,26 @@ class ChangeObjectColorBasedOnArea(TrainingTask):
     max_inputs: int = 5
     min_side: int = 8
     max_side: int = 10
-    n_objects: int = 5
+    min_objects: int = 5
+    max_objects: int = 10
+    allowed_sizes: list[int] = field(default_factory=lambda: [1, 2, 3, 4])
     # TODO: add more variability on the sizes
 
     def create_inputs(self):
         n_inputs = random.randint(self.min_inputs, self.max_inputs)
         shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        metadata = dict(allowed_sizes=[2, 3, 4], n_objects=self.n_objects, connectivity=random.choice([4, 8]),
+        metadata = dict(allowed_sizes=self.allowed_sizes,
+                        connectivity=random.choice([4, 8]),
                         monochrome=random.choice([True, False]),
                         background_color=random.choice([0]*18 + list(range(1, 10))))
-        inputs = [generate_arc_image_with_random_objects(shape, **metadata)[0] for shape in shapes]
+        inputs = [generate_arc_image_with_random_objects(
+            shape, **metadata, n_objects=random.randint(self.min_objects, self.max_objects),)[0]
+            for shape in shapes]
         return inputs, metadata
 
     def create_code(self, inputs, metadata):
         allowed_sizes = metadata.pop('allowed_sizes')
-        metadata.pop('n_objects', None)  # n_objects is not used in this task
-        parameters = dict(**metadata)
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
         code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
         code += f"output = create_img(img.shape, color={metadata['background_color']})\n"
         new_colors = random.sample([color for color in range(10) if color != metadata['background_color']], len(allowed_sizes))
@@ -727,4 +731,6 @@ def _get_unique_colors(inputs):
     return np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
 
 #TODO: refactor tasks
+# - Input generation is very similar across tasks, I should refactor it to a common function
+# - Better and more intuitive way of using metadata in tasks
 #TODO: sort the objects by x or y coordinate, using the center

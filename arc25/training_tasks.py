@@ -725,3 +725,4 @@ def _get_unique_colors(inputs):
     return np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
 
 #TODO: refactor tasks
+#TODO: sort the objects by x or y coordinate, using the center

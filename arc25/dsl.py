@@ -37,6 +37,7 @@ import numpy as np
 import skimage
 from scipy import stats
 import scipy.ndimage
+from itertools import cycle
 
 #############################
 # Objects

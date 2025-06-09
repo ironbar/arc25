@@ -207,7 +207,36 @@ class ShapeDependentDrawings(DrawingTaskOnEmptyImg):
 
         code = wrap_code_in_function(code)
         return code
-                
+
+
+@dataclass
+class RectanglePattern(TrainingTask):
+    min_inputs: int = 2
+    max_inputs: int = 5
+    min_side: int = 2
+    max_side: int = 4
+
+    def create_inputs(self):
+        rectangle_shape = np.array([random.randint(self.min_side, self.max_side) for _ in range(2)], dtype=int)
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(2, 7)*rectangle_shape for _ in range(n_inputs)]
+        if random.random() < 0.5:
+            return [create_image_with_random_objects(shape) for shape in shapes], rectangle_shape
+        else:
+            return [Img(np.random.randint(0, 10, size=shape)) for shape in shapes], rectangle_shape
+
+    def create_code(self, inputs, rectangle_shape):
+        colors = random.sample(range(0, 10), random.randint(3, 10))
+        code = f'rectangle_shape = {rectangle_shape.tolist()}\n'
+        code += f'colors = cycle({colors})\n'
+        code += f'for y in range(0, img.shape[0], rectangle_shape[0]):\n'
+        code += f'    for x in range(0, img.shape[1], rectangle_shape[1]):\n'
+        code += f'        color = next(colors)\n'
+        code += f'        draw_rectangle(img, (y, x), (y + rectangle_shape[0] - 1, x + rectangle_shape[1] - 1), color=color)\n'
+        code += 'return img\n'
+        code = wrap_code_in_function(code)
+        return code
+
 
 @dataclass
 class GeometricTransformations(TrainingTask):
@@ -696,4 +725,3 @@ def _get_unique_colors(inputs):
     return np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
 
 #TODO: refactor tasks
-#TODO: some task with drawings based on for loops

@@ -16,6 +16,7 @@ from collections import namedtuple
 from typing import Union
 from arc25.dsl import *
 from arc25.input_generation import *
+from arc25.random_parameters import *
 from arc25.code_execution import safe_code_execution, validate_code, wrap_code_in_function, InvalidCode
 
 
@@ -553,6 +554,7 @@ class HighlightRectangles(TrainingTask):
         code += 'return output\n'
         code = wrap_code_in_function(code)
         return code
+
 
 @dataclass
 class HighlightSquares(HighlightRectangles):

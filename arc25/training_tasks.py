@@ -584,6 +584,40 @@ class NormalizeImgsWithDifferentBackgroundColor(TrainingTask):
 
 
 @dataclass
+class DeleteExtremeObjects(TrainingTask):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 8
+    max_side: int = 10
+    n_objects: int = 7
+    allowed_sizes: list[int] = field(default_factory=lambda: [1, 2, 3, 4, 5])
+    # TODO: add more allowed sizes
+
+    def create_inputs(self):
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        metadata = dict(allowed_sizes=self.allowed_sizes, n_objects=self.n_objects, connectivity=random.choice([4, 8]),
+                        monochrome=random.choice([True, False]),
+                        background_color=random.choice([0]*18 + list(range(1, 10))))
+        inputs = [generate_arc_image_with_random_objects(shape, **metadata)[0] for shape in shapes]
+        return inputs, metadata
+
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        property = random.choice(['height', 'width', 'area'])
+        extreme = random.choice(['max', 'min'])
+        code += f'{extreme}_{property} = {extreme}([object.{property} for object in objects])\n'
+        code += 'for object in objects:\n'
+        code += f'    if object.{property} == {extreme}_{property}:\n'
+        code += f'        object.change_color({metadata["background_color"]})\n'
+        code += '    draw_object(img, object)\n'
+        code += 'return img\n'
+        code = wrap_code_in_function(code)
+        return code
+
+
+@dataclass
 class ColormapOnRandomImgs(TrainingTask):
     min_inputs: int = 3
     max_inputs: int = 5

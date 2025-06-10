@@ -715,6 +715,48 @@ class CropObjectOfSingularColor(TrainingTask):
         return code
 
 
+@dataclass
+class CropObjectOfExtremeProperty(TrainingTask):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 10
+    max_side: int = 12
+    min_objects: int = 8
+    max_objects: int = 10
+    allowed_sizes: list[int] = field(default_factory=lambda: [5, 6, 7, 8])
+    n_allowed_colors: int = 4
+    random_shape_probability: float = 1.0
+
+    def create_inputs(self):
+        inputs, metadata = create_inputs_generate_arc_image_with_random_objects(**asdict(self))
+        property = random.choice(['area', 'height', 'width'])
+        extreme = random.choice(['min', 'max'])
+        metadata['property'] = property
+        metadata['extreme'] = extreme
+        modified_inputs = []
+        for img in inputs:
+            parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+            objects = detect_objects(img, **parameters)
+            extreme_property = eval(f'{extreme}([obj.{property} for obj in objects])')
+            chosen_objects = [obj for obj in objects if getattr(obj, property) == extreme_property]
+            random.shuffle(chosen_objects)
+            for chosen_object in chosen_objects[1:]:
+                chosen_object.change_color(metadata['background_color'])
+                draw_object(img, chosen_object)
+            modified_inputs.append(img)
+        return modified_inputs, metadata
+    
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        code += f'chosen_object = {metadata["extreme"]}(objects, key=lambda obj: obj.{metadata["property"]})\n'
+        code += 'output = crop(img, chosen_object)\n'
+        code += 'return output\n'
+        code = wrap_code_in_function(code)
+        return code
+
+
+
 def _get_unique_colors(inputs):
     """
     Helper function to get unique colors from a list of images.

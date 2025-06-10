@@ -110,5 +110,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 - [x] Add safety and determinism checks
 - [x] Add more primitive functions and training tasks to learn to use them
 - [x] I would like to have a list of all the primitive functions from the DSL, and how many times are they used in the training tasks. A correlation plot would also be nice to see which connections are missing.
+- [ ] Is the sampling speed enough?
 - [ ] Stats about the input tokens distribution, what should be the max-seq-len?
 - [ ] Optimize learning rate and batch size for 2 GPUs.
+- [ ] I need a way to do evaluation at scale, using multiple GPUs, and saving all the generated tasks when searching for a solution.

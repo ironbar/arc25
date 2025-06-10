@@ -11,7 +11,7 @@ import inspect
 import logging
 import traceback
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from collections import namedtuple
 from typing import Union
 from arc25.dsl import *
@@ -357,16 +357,7 @@ class ChangeObjectColorBasedOnArea(TrainingTask):
     # TODO: add more variability on the sizes
 
     def create_inputs(self):
-        n_inputs = random.randint(self.min_inputs, self.max_inputs)
-        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        metadata = dict(allowed_sizes=self.allowed_sizes,
-                        connectivity=random.choice([4, 8]),
-                        monochrome=random.choice([True, False]),
-                        background_color=random.choice([0]*18 + list(range(1, 10))))
-        inputs = [generate_arc_image_with_random_objects(
-            shape, **metadata, n_objects=random.randint(self.min_objects, self.max_objects),)[0]
-            for shape in shapes]
-        return inputs, metadata
+        return create_inputs(**asdict(self))
 
     def create_code(self, inputs, metadata):
         allowed_sizes = metadata.pop('allowed_sizes')
@@ -390,28 +381,21 @@ class ChangeObjectColorBasedOnHeightOrWidth(TrainingTask):
     max_inputs: int = 5
     min_side: int = 8
     max_side: int = 10
-    n_objects: int = 7
-    allowed_size: int = 2
+    min_objects: int = 6
+    max_objects: int = 8
+    allowed_sizes: list[int] = field(default_factory=lambda: [2])
     # TODO: add more allowed sizes
 
     def create_inputs(self):
-        n_inputs = random.randint(self.min_inputs, self.max_inputs)
-        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        metadata = dict(allowed_sizes=[self.allowed_size], n_objects=self.n_objects, connectivity=random.choice([4, 8]),
-                        monochrome=random.choice([True, False]),
-                        background_color=random.choice([0]*18 + list(range(1, 10))))
-        inputs = [generate_arc_image_with_random_objects(shape, **metadata)[0] for shape in shapes]
-        return inputs, metadata
+        return create_inputs(**asdict(self))
 
     def create_code(self, inputs, metadata):
-        metadata.pop('allowed_sizes')
-        metadata.pop('n_objects', None)  # n_objects is not used in this task
-        parameters = dict(**metadata)
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
         code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
         code += f"output = create_img(img.shape, color={metadata['background_color']})\n"
 
         property = random.choice(['height', 'width'])
-        new_colors = random.sample([color for color in range(10) if color != metadata['background_color']], self.allowed_size)
+        new_colors = random.sample([color for color in range(10) if color != metadata['background_color']], self.allowed_sizes[0])
         colormap = {key: color for key, color in zip(range(1, len(new_colors) + 1), new_colors)}
         code += f'{property}_to_color = {colormap}\n'
         code += 'for object in objects:\n'
@@ -428,19 +412,13 @@ class HighlightObjectBasedOnProperty(TrainingTask):
     max_inputs: int = 5
     min_side: int = 10
     max_side: int = 12
-    # TODO: the number of objects should be randomized
-    n_objects: int = 15
+    min_objects: int = 13
+    max_objects: int = 15
     allowed_sizes: list[int] = field(default_factory=lambda: [1, 2, 3])
+    n_allowed_colors: int = 2
 
     def create_inputs(self):
-        n_inputs = random.randint(self.min_inputs, self.max_inputs)
-        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        metadata = dict(allowed_sizes=self.allowed_sizes, n_objects=self.n_objects, connectivity=random.choice([4, 8]),
-                        monochrome=random.choice([True, False]),
-                        background_color=random.choice([0]*18 + list(range(1, 10))))
-        allowed_colors = random.sample([color for color in range(10) if color != metadata['background_color']], 2)
-        inputs = [generate_arc_image_with_random_objects(shape, allowed_colors=allowed_colors, **metadata)[0] for shape in shapes]
-        return inputs, metadata
+        return create_inputs(**asdict(self))
 
     def create_code(self, inputs, metadata):
         parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
@@ -522,26 +500,16 @@ class HighlightRectangles(TrainingTask):
     max_inputs: int = 5
     min_side: int = 10
     max_side: int = 12
-    # TODO: the number of objects should be randomized
-    n_objects: int = 15
+    min_objects: int = 13
+    max_objects: int = 15
     allowed_sizes: list[int] = field(default_factory=lambda: [3, 4, 6, 8, 9])
+    n_allowed_colors: int = 2
     property: str = 'is_rectangle'
     random_shape_probability: float = 0.25
     line_shape_probability: float = 0.25
 
     def create_inputs(self):
-        n_inputs = random.randint(self.min_inputs, self.max_inputs)
-        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        background_color = random.choice([0]*18 + list(range(1, 10)))
-        metadata = dict(
-            allowed_sizes=self.allowed_sizes, n_objects=self.n_objects, connectivity=random.choice([4, 8]),
-            monochrome=random.choice([True, False]),
-            background_color=background_color,
-            allowed_colors=random.sample([color for color in range(10) if color != background_color], 2),
-            random_shape_probability=self.random_shape_probability,
-            line_shape_probability=self.line_shape_probability)
-        inputs = [generate_arc_image_with_random_objects(shape, **metadata)[0] for shape in shapes]
-        return inputs, metadata
+        return create_inputs(**asdict(self))
 
     def create_code(self, inputs, metadata):
         parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
@@ -624,18 +592,12 @@ class DeleteExtremeObjects(TrainingTask):
     max_inputs: int = 5
     min_side: int = 8
     max_side: int = 10
-    n_objects: int = 7
+    min_objects: int = 6
+    max_objects: int = 8
     allowed_sizes: list[int] = field(default_factory=lambda: [1, 2, 3, 4, 5])
-    # TODO: add more allowed sizes
 
     def create_inputs(self):
-        n_inputs = random.randint(self.min_inputs, self.max_inputs)
-        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        metadata = dict(allowed_sizes=self.allowed_sizes, n_objects=self.n_objects, connectivity=random.choice([4, 8]),
-                        monochrome=random.choice([True, False]),
-                        background_color=random.choice([0]*18 + list(range(1, 10))))
-        inputs = [generate_arc_image_with_random_objects(shape, **metadata)[0] for shape in shapes]
-        return inputs, metadata
+        return create_inputs(**asdict(self))
 
     def create_code(self, inputs, metadata):
         parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
@@ -658,18 +620,12 @@ class HistogramObjects(TrainingTask):
     max_inputs: int = 5
     min_side: int = 8
     max_side: int = 10
-    n_objects: int = 7
+    min_objects: int = 6
+    max_objects: int = 8
     allowed_sizes: list[int] = field(default_factory=lambda: [1, 2, 3, 4, 5])
-    # TODO: add more allowed sizes
 
     def create_inputs(self):
-        n_inputs = random.randint(self.min_inputs, self.max_inputs)
-        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        metadata = dict(allowed_sizes=self.allowed_sizes, n_objects=self.n_objects, connectivity=random.choice([4, 8]),
-                        monochrome=random.choice([True, False]),
-                        background_color=random.choice([0]*18 + list(range(1, 10))))
-        inputs = [generate_arc_image_with_random_objects(shape, **metadata)[0] for shape in shapes]
-        return inputs, metadata
+        return create_inputs(**asdict(self))
 
     def create_code(self, inputs, metadata):
         parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
@@ -729,6 +685,32 @@ def _get_unique_colors(inputs):
     Helper function to get unique colors from a list of images.
     """
     return np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
+
+
+#TODO: rename and move to a better place
+def create_inputs(min_inputs, max_inputs, min_side, max_side, allowed_sizes,
+                  min_objects, max_objects, n_allowed_colors: Optional[int] = None,
+                  random_shape_probability: float = 0.5,
+                  line_shape_probability: float = 0.5,
+                  **kwargs):
+    n_inputs = random.randint(min_inputs, max_inputs)
+    shapes = [np.random.randint(min_side, max_side + 1, 2) for _ in range(n_inputs)]
+    metadata = dict(allowed_sizes=allowed_sizes,
+                    connectivity=random.choice([4, 8]),
+                    monochrome=random.choice([True, False]),
+                    background_color=random.choice([0]*18 + list(range(1, 10))),
+                    random_shape_probability=random_shape_probability,
+                    line_shape_probability=line_shape_probability)
+    if n_allowed_colors is not None:
+        allowed_colors = random.sample([color for color in range(10) if color != metadata['background_color']], n_allowed_colors)
+    else:
+        allowed_colors = None
+    inputs = [generate_arc_image_with_random_objects(
+        shape, **metadata, n_objects=random.randint(min_objects, max_objects), 
+        allowed_colors=allowed_colors)[0]
+        for shape in shapes]
+    return inputs, metadata
+
 
 #TODO: refactor tasks
 # - Input generation is very similar across tasks, I should refactor it to a common function

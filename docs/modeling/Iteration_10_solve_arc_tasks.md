@@ -71,6 +71,31 @@ copy                               0 times (Object)
 This is clearly not enough, but I want to train a model on these tasks and see if it can solve any
 of the ARC training tasks.
 
+### Training
+
+```bash
+export N_GPUS=2
+export PARAMETERS=0.5B
+export STEPS=16000
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-10-first-real-trainings/A6000-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 4 \
+--per-device-eval-batch-size 8 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+```
 
 ## Results
 
@@ -83,5 +108,7 @@ of the ARC training tasks.
 ## TODO
 
 - [x] Add safety and determinism checks
-- [ ] Add more primitive functions and training tasks to learn to use them
+- [x] Add more primitive functions and training tasks to learn to use them
 - [x] I would like to have a list of all the primitive functions from the DSL, and how many times are they used in the training tasks. A correlation plot would also be nice to see which connections are missing.
+- [ ] Stats about the input tokens distribution, what should be the max-seq-len?
+- [ ] Optimize learning rate and batch size for 2 GPUs.

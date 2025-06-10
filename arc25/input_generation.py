@@ -343,12 +343,13 @@ def create_inputs_generate_arc_image_with_random_objects(
         min_objects: int, max_objects: int, n_allowed_colors: Optional[int] = None,
         random_shape_probability: float = 0.5,
         line_shape_probability: float = 0.5,
+        monochrome: Optional[bool] = None,
         **kwargs):
     n_inputs = random.randint(min_inputs, max_inputs)
     shapes = [np.random.randint(min_side, max_side + 1, 2) for _ in range(n_inputs)]
     metadata = dict(allowed_sizes=allowed_sizes,
                     connectivity=random.choice([4, 8]),
-                    monochrome=random.choice([True, False]),
+                    monochrome= monochrome or random.choice([True, False]),
                     background_color=random.choice([0]*18 + list(range(1, 10))),
                     random_shape_probability=random_shape_probability,
                     line_shape_probability=line_shape_probability)

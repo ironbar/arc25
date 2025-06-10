@@ -336,3 +336,28 @@ def generate_arc_image_with_random_objects(
         placed += 1
 
     return Img(grid), placed
+
+
+def create_inputs_generate_arc_image_with_random_objects(
+        min_inputs: int, max_inputs: int, min_side: int, max_side: int, allowed_sizes: list[int],
+        min_objects: int, max_objects: int, n_allowed_colors: Optional[int] = None,
+        random_shape_probability: float = 0.5,
+        line_shape_probability: float = 0.5,
+        **kwargs):
+    n_inputs = random.randint(min_inputs, max_inputs)
+    shapes = [np.random.randint(min_side, max_side + 1, 2) for _ in range(n_inputs)]
+    metadata = dict(allowed_sizes=allowed_sizes,
+                    connectivity=random.choice([4, 8]),
+                    monochrome=random.choice([True, False]),
+                    background_color=random.choice([0]*18 + list(range(1, 10))),
+                    random_shape_probability=random_shape_probability,
+                    line_shape_probability=line_shape_probability)
+    if n_allowed_colors is not None:
+        allowed_colors = random.sample([color for color in range(10) if color != metadata['background_color']], n_allowed_colors)
+    else:
+        allowed_colors = None
+    inputs = [generate_arc_image_with_random_objects(
+        shape, **metadata, n_objects=random.randint(min_objects, max_objects), 
+        allowed_colors=allowed_colors)[0]
+        for shape in shapes]
+    return inputs, metadata

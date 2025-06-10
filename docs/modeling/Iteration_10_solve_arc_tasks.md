@@ -26,11 +26,59 @@ add safety and determinism checks.
 LLM are incredible useful to write generation functions. For example I have asked o3
 to write a function to create ARC images with random objects and it worked perfectly.
 
+### Stats about current implementation
+
+```
+Found 23 training tasks
+
+There are 17 DSL functions defined in arc25.dsl:
+	DSL functions used in 1000 tasks:
+detect_objects                   621 times
+draw_object                      425 times
+create_img                       395 times
+crop                             123 times
+draw_rectangle                   122 times
+draw_vertical_line               111 times
+draw_horizontal_line              98 times
+draw_line                         94 times
+draw_pixel                        91 times
+mode                              49 times
+apply_colormap                    46 times
+downscale                         33 times
+rotate_90                         32 times
+flip                              28 times
+upscale                           27 times
+pad                               17 times
+trim                              15 times
+
+There are 13 DSL attributes defined in arc25.dsl:
+	DSL attributes used in 1000 tasks:
+change_color                     380 times (Object)
+area                              89 times (Object)
+height                            72 times (BoundingBox, Object)
+width                             66 times (BoundingBox, Object)
+is_horizontal_line                48 times (Object)
+is_rectangle                      46 times (Object)
+move                              45 times (Object)
+is_square                         42 times (Object)
+is_vertical_line                  40 times (Object)
+center                            38 times (Object)
+is_line                           32 times (Object)
+is_point                          31 times (Object)
+copy                               0 times (Object)
+```
+
+This is clearly not enough, but I want to train a model on these tasks and see if it can solve any
+of the ARC training tasks.
+
+
 ## Results
 
 ## Conclusion
 
 ## Next steps
+
+- Hypothesis: If I implement a DSL that covers the whole training and evaluation set, it should generalize to the test set.
 
 ## TODO
 

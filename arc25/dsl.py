@@ -38,6 +38,7 @@ import skimage
 from scipy import stats
 import scipy.ndimage
 from itertools import cycle
+from typing import Union
 
 #############################
 # Objects
@@ -387,7 +388,14 @@ def detect_objects(image: Img, background_color: int = 0,
     return objects
 
 
-def draw_object(img, object):
+def draw_object(img: Img, object: Object):
     for (r, c), color in zip(object.pixel_locations, object.pixel_colors):
         draw_pixel(img, (r, c), color)
     return img
+
+
+def crop(img: Img, bounding_box: Union[BoundingBox, Object]):
+    if isinstance(bounding_box, Object):
+        bounding_box = bounding_box.bounding_box
+    return img[bounding_box.min_row:bounding_box.max_row+1,
+                bounding_box.min_col:bounding_box.max_col+1]

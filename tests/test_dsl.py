@@ -451,3 +451,16 @@ def test_object_copy():
 def test_apply_colormap(input_img, color_map, output_img):
     img = apply_colormap(input_img, color_map)
     assert np.array_equal(img, output_img)
+
+
+def test_crop():
+    img = Img([[0, 0, 0],
+               [0, 1, 1],
+               [0, 0, 1]])
+    object = detect_objects(img, background_color=0, connectivity=4, monochrome=False)[0]
+    cropped_img = crop(img, object)
+    expected_crop = Img([[1, 1],
+                         [0, 1]])
+    assert np.array_equal(expected_crop, cropped_img)
+    cropped_img = crop(img, object.bounding_box)
+    assert np.array_equal(expected_crop, cropped_img)

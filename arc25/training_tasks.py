@@ -317,26 +317,17 @@ class Downscale(TrainingTask):
 class LearnDetectObjectsParameters(TrainingTask):
     min_inputs: int = 3
     max_inputs: int = 5
-    min_side: int = 3
+    min_side: int = 6
     max_side: int = 10
+    min_objects: int = 3
+    max_objects: int = 10
+    allowed_sizes: list[int] = field(default_factory=lambda: [1, 2, 3, 4])
 
     def create_inputs(self):
-        n_inputs = random.randint(self.min_inputs, self.max_inputs)
-        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
-        inputs = [create_image_with_random_objects(shape) for shape in shapes]
-        if random.random() < 0.33:
-            new_background_color = random.randint(1, 9)
-            colormap = {0: new_background_color, new_background_color: 0}
-            inputs = [apply_colormap(img, colormap) for img in inputs]
-            metadata = dict(background_color=new_background_color)
-        else:
-            metadata = dict(background_color=0)
-        return inputs, metadata
+        return create_inputs(**asdict(self))
 
     def create_code(self, inputs, metadata):
-        # TODO: better control for connectivity and monochrome
-        parameters = dict(connectivity=random.choice([4, 8]), monochrome=random.choice([True, False]),
-                          **metadata)
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
         code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
         code += "n = len(objects)\n"
         code += f"output = create_img((n, n), color={random.randint(0, 9)})\n"

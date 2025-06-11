@@ -102,11 +102,20 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 I'm seeing a new error on the cluster.
 
 ```
+AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
+
+
 # local libraries
 accelerate                1.6.0                    pypi_0    pypi
 torch                     2.6.0                    pypi_0    pypi
 transformers              4.51.3                   pypi_0    pypi
 datasets                  3.5.1                    pypi_0    pypi
+
+# cluster libraries
+accelerate==1.7.0
+torch==2.6.0
+transformers==4.52.4
+datasets==3.6.0
 ```
 
 #### Local experiments

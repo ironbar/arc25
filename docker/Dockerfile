@@ -16,6 +16,7 @@ RUN apt-get update && \
     python3.10-dev \
     python3.10-distutils \
     curl \
+    libgl1 \
     git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

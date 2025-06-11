@@ -99,6 +99,16 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
 ```
 
+I'm seeing a new error on the cluster.
+
+```
+# local libraries
+accelerate                1.6.0                    pypi_0    pypi
+torch                     2.6.0                    pypi_0    pypi
+transformers              4.51.3                   pypi_0    pypi
+datasets                  3.5.1                    pypi_0    pypi
+```
+
 #### Local experiments
 
 ```bash

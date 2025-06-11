@@ -12,7 +12,7 @@ wandb
 transformers
 peft
 trl
-datasets
+datasets==3.5.1 # try to fix problems with pickle: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
 bitsandbytes
 GPUtil
 pytest

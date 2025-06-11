@@ -124,9 +124,29 @@ scripts/finetuning.py \
 --use-dora \
 --use-rslora
 
-export MAXSEQLEN=6144
+export MAXSEQLEN=8192
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 scripts/finetuning.py \
+--model_path /home/gbarbadillo/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-06-10-first-real-trainings/3090-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora
+
+export N_GPUS=1
+export CUDA_VISIBLE_DEVICES=0
+export MAXSEQLEN=8192
+python scripts/finetuning.py \
 --model_path /home/gbarbadillo/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-06-10-first-real-trainings/3090-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${MAXSEQLEN}msl \
 --device-map None \
@@ -152,7 +172,17 @@ the queue was filled.
 {'train_runtime': 298.5646, 'train_samples_per_second': 10.718, 'train_steps_per_second': 0.335, 'train_loss': 0.24244340896606445, 'epoch': 1.0}
 # export MAXSEQLEN=6144
 {'train_runtime': 363.6891, 'train_samples_per_second': 8.799, 'train_steps_per_second': 0.275, 'train_loss': 0.23476869583129883, 'epoch': 1.0}
+# export MAXSEQLEN=8192
+2025-06-11 06:32:08,621 - __main__ - INFO - log_prompt_length_percentiles -     train number of prompts: 1000, max number of tokens : 5108, percentiles: {50: 1249, 75: 1567, 90: 1960, 95: 2069, 97: 2139}
+{'train_runtime': 374.4698, 'train_samples_per_second': 8.545, 'train_steps_per_second': 0.267, 'train_loss': 0.23707759857177735, 'epoch': 1.0}
+
+export N_GPUS=1
+export CUDA_VISIBLE_DEVICES=0
+export MAXSEQLEN=8192
+{'train_runtime': 671.3956, 'train_samples_per_second': 4.766, 'train_steps_per_second': 0.149, 'train_loss': 0.23653331756591797, 'epoch': 1.0} 
 ```
+
+To be safe I should probably use `max-seq-len=8192`.
 
 ## Results
 
@@ -167,7 +197,7 @@ the queue was filled.
 - [x] Add safety and determinism checks
 - [x] Add more primitive functions and training tasks to learn to use them
 - [x] I would like to have a list of all the primitive functions from the DSL, and how many times are they used in the training tasks. A correlation plot would also be nice to see which connections are missing.
-- [ ] Is the sampling speed enough?
-- [ ] Stats about the input tokens distribution, what should be the max-seq-len?
+- [x] Is the sampling speed enough?
+- [x] Stats about the input tokens distribution, what should be the max-seq-len?
 - [ ] Optimize learning rate and batch size for 2 GPUs.
 - [ ] I need a way to do evaluation at scale, using multiple GPUs, and saving all the generated tasks when searching for a solution.

@@ -308,15 +308,14 @@ class PromptTokenDistributionLogger():
     def add_prompt(self, prompt):
         self.prompt_lengths.append(len(self.tokenizer.encode(prompt)))
         if len(self.prompt_lengths) >= self.period:
-            print_prompt_length_percentiles(self.prompt_lengths, 'train')
+            log_prompt_length_percentiles(self.prompt_lengths, 'train')
             self.prompt_lengths = []
 
 
-def print_prompt_length_percentiles(prompt_lengths, prefix):
-    logger.info(f'\t{prefix} prompt length percentiles, number of prompts: {len(prompt_lengths)}')
-    for percentile in [50, 75, 90, 95, 97]:
-        logger.info(f'{prefix} prompt length percentile {percentile}: {int(np.percentile(prompt_lengths, percentile))}')
-    logger.info(f'{prefix} prompt length max: {max(prompt_lengths)}')
+def log_prompt_length_percentiles(prompt_lengths, prefix):
+    percentiles = [50, 75, 90, 95, 97, 98, 99]
+    percentile_to_n_tokens = {percentile: int(np.percentile(prompt_lengths, percentile)) for percentile in percentiles}
+    logger.info(f'\t{prefix} number of prompts: {len(prompt_lengths)}, max number of tokens : {max(prompt_lengths)}, percentiles: {percentile_to_n_tokens}')
 
 
 def random_prompt_generator(grid_encoder, tokenizer, shards):

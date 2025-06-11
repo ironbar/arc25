@@ -73,6 +73,8 @@ of the ARC training tasks.
 
 ### Training
 
+#### Cluster
+
 ```bash
 export N_GPUS=2
 export PARAMETERS=0.5B
@@ -95,6 +97,61 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --lora-r 32 \
 --use-dora \
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+```
+
+#### Local experiments
+
+```bash
+export N_GPUS=2
+export PARAMETERS=0.5B
+export STEPS=100
+export MAXSEQLEN=3072
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+scripts/finetuning.py \
+--model_path /home/gbarbadillo/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-06-10-first-real-trainings/3090-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora
+
+export MAXSEQLEN=6144
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+scripts/finetuning.py \
+--model_path /home/gbarbadillo/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-06-10-first-real-trainings/3090-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora
+```
+
+It is training around 2.66s/it, task generation does not seem to be the bottleneck. At the beginning of the training used multiple cores to sample, but then CPU usage was low. Probably
+the queue was filled.
+
+```
+# --max-seq-len 3072
+{'train_runtime': 298.5646, 'train_samples_per_second': 10.718, 'train_steps_per_second': 0.335, 'train_loss': 0.24244340896606445, 'epoch': 1.0}
+# export MAXSEQLEN=6144
+{'train_runtime': 363.6891, 'train_samples_per_second': 8.799, 'train_steps_per_second': 0.275, 'train_loss': 0.23476869583129883, 'epoch': 1.0}
 ```
 
 ## Results

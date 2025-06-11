@@ -299,15 +299,38 @@ def get_lora_model(model, adapter_path, r, use_rslora, use_dora, weight_initaliz
 # Data
 ############################################################################
 
+class PromptTokenDistributionLogger():
+    def __init__(self, tokenizer, period=1000):
+        self.period = period
+        self.tokenizer = tokenizer
+        self.prompt_lengths = []
+
+    def add_prompt(self, prompt):
+        self.prompt_lengths.append(len(self.tokenizer.encode(prompt)))
+        if len(self.prompt_lengths) >= self.period:
+            print_prompt_length_percentiles(self.prompt_lengths, 'train')
+            self.prompt_lengths = []
+
+
+def print_prompt_length_percentiles(prompt_lengths, prefix):
+    logger.info(f'\t{prefix} prompt length percentiles, number of prompts: {len(prompt_lengths)}')
+    for percentile in [50, 75, 90, 95, 97]:
+        logger.info(f'{prefix} prompt length percentile {percentile}: {int(np.percentile(prompt_lengths, percentile))}')
+    logger.info(f'{prefix} prompt length max: {max(prompt_lengths)}')
+
+
 def random_prompt_generator(grid_encoder, tokenizer, shards):
     logger.info(f'Starting random prompt generator with shards: {shards}')
     set_random_seed(shards[0])
     generator = training_tasks_generator()
+    prompt_distribution_logger = PromptTokenDistributionLogger(tokenizer)
     for task in generator:
         prompt_version = 'code-from-examples-v3'
         prompt = create_prompt_from_task(
             task, prompt_version=prompt_version, grid_encoder=grid_encoder, tokenizer=tokenizer)
+        prompt_distribution_logger.add_prompt(prompt)
         yield {'text': prompt}
+
 
 ############################################################################
 # Training

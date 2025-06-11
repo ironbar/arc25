@@ -11,7 +11,7 @@ accelerate==1.6.0 # try to fix problems with pickle: AttributeError: Can't pickl
 wandb
 transformers
 peft
-trl==0.18.0.dev0 # try to fix problems with pickle: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
+trl==0.18.0 # try to fix problems with pickle: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
 datasets==3.5.1 # try to fix problems with pickle: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
 bitsandbytes
 GPUtil

@@ -110,12 +110,14 @@ accelerate                1.6.0                    pypi_0    pypi
 torch                     2.6.0                    pypi_0    pypi
 transformers              4.51.3                   pypi_0    pypi
 datasets                  3.5.1                    pypi_0    pypi
+trl                       0.18.0.dev0
 
 # cluster libraries
 accelerate==1.7.0
 torch==2.6.0
 transformers==4.52.4
 datasets==3.6.0
+trl==0.18.1
 ```
 
 #### Local experiments

@@ -232,6 +232,62 @@ export MAXSEQLEN=8192
 
 To be safe I should probably use `max-seq-len=8192`.
 
+#### Debugging
+
+```bash
+
+export N_GPUS=2
+export PARAMETERS=0.5B
+export STEPS=10
+export MAXSEQLEN=8192
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+scripts/finetuning.py \
+--model_path /home/gbarbadillo/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-06-10-first-real-trainings/3090-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora \
+--no-resume_from_checkpoint
+
+export N_GPUS=1
+export PARAMETERS=0.5B
+export STEPS=10
+export MAXSEQLEN=8192
+python \
+scripts/finetuning.py \
+--model_path /home/gbarbadillo/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-06-10-first-real-trainings/3090-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora \
+--no-resume_from_checkpoint \
+--dataloader-num-workers 0
+
+# this works --dataloader-num-workers 0
+# this does not: --dataloader-num-workers 1
+# it is unrelated from: os.environ['TOKENIZERS_PARALLELISM'] = 'true'
+```
+
 ## Results
 
 ## Conclusion

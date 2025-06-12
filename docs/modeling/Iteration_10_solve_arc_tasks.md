@@ -78,21 +78,23 @@ of the ARC training tasks.
 ```bash
 export N_GPUS=2
 export PARAMETERS=0.5B
-export STEPS=16000
+export STEPS=1000
+export LEARNING_RATE=1e-4
 condor_submit train.condor command="
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-10-first-real-trainings/A6000-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-12-first-real-trainings/A6000-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
 --device-map None \
 --max-steps ${STEPS} \
 --n-gpus ${N_GPUS} \
---per-device-train-batch-size 4 \
---per-device-eval-batch-size 8 \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
 --batch-size 32 \
---max-seq-len 3072 \
---logging-steps 100 \
---eval-steps 0 \
+--max-seq-len 8192 \
+--logging-steps 10 \
+--eval-steps 50 \
 --save-steps 1000 \
 --lora-r 32 \
 --use-dora \
@@ -341,6 +343,9 @@ multiprocessing_context=None,
 multiprocessing_context='fork',
 sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multiprocessing_context='fork',/" \
 /home/gbarbadillo/miniconda3/envs/arc25-clone/lib/python3.10/site-packages/torch/utils/data/dataloader.py
+
+sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multiprocessing_context='fork',/" \
+/mnt/scratch/users/gbarbadillo/arc25/cached-environments/venv_07bdecf0b823319f4d2fcbe9cdc354d9/lib/python3.10/site-packages/torch/utils/data/dataloader.py
 ```
 
 ## Results

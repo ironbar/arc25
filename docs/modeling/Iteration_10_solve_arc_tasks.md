@@ -326,6 +326,23 @@ AttributeError: Can't pickle local object 'truncate_dataset.<locals>.truncate'
 So I have changed how the dataset is generator to avoid entering in that 'SFTTrainer._prepare_dataset.<locals>.add_eos' place, but then another similar error has arised.
 The biggest question is why hasn't happened this before.
 
+This is the most similar problem found online, but there is no solution: https://github.com/huggingface/trl/issues/2979
+
+This guy says that spawn might be used by default sometimes: https://discuss.pytorch.org/t/the-default-value-of-dataloader-multiprocessing-context-is-spawn-in-a-spawned-process/107494
+
+https://github.com/pytorch/pytorch/issues/44687 Slightly related.
+Setting the DataLoader(..., multiprocessing_context='fork') fixes the issue for me.
+
+This seems to solve the problem, change this line:
+
+```
+/home/gbarbadillo/miniconda3/envs/arc25-clone/lib/python3.10/site-packages/torch/utils/data/dataloader.py
+multiprocessing_context=None,
+multiprocessing_context='fork',
+sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multiprocessing_context='fork',/" \
+/home/gbarbadillo/miniconda3/envs/arc25-clone/lib/python3.10/site-packages/torch/utils/data/dataloader.py
+```
+
 ## Results
 
 ## Conclusion

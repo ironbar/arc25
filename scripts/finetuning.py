@@ -1,6 +1,7 @@
 # TODO: remove this line when the script is stable
 import multiprocessing as mp, os
-mp.set_start_method("fork", force=True)
+#mp.set_start_method("fork", force=True)
+#mp.set_start_method("spawn", force=True)
 print(">>> multiprocessing start-method:", mp.get_start_method(), "PID:", os.getpid())
 
 
@@ -73,7 +74,7 @@ class Config:
     torch_dtype: str = "bfloat16" # "bfloat16" or "float16", float16 causes divergence when training on my PC, but it is 4x faster on Kaggle
     packing: bool = False # multiple short examples are packed in the same input sequence to increase training efficiency
     use_liger_kernel: bool = False # reduces memory usage by 60% and in theory increase speed by 20%
-    dataloader_num_workers: int = 4 # Number of subprocesses to use for data loading
+    dataloader_num_workers: int = 4 # Number of subprocesses to use for data loading, if set to 0, the data will be loaded in the main process
     # LoRA
     use_lora: bool = True
     use_rslora: bool = True
@@ -124,7 +125,7 @@ def fine_tuning_main():
     dataset_kwargs = {'grid_encoder': grid_encoder, 'tokenizer': tokenizer}
     train_dataset = IterableDataset.from_generator(
         partial(random_prompt_generator, **dataset_kwargs),
-        gen_kwargs={"shards": [current_process_seed + i for i in range(cfg.dataloader_num_workers)]})
+        gen_kwargs={"shards": [current_process_seed + i for i in range(max(cfg.dataloader_num_workers, 1))]})
     val_generator = random_prompt_generator(grid_encoder, tokenizer, [current_process_seed + cfg.dataloader_num_workers])
     val_dataset = Dataset.from_dict({'text': [x['text'] for x in islice(val_generator, 100)]})
 
@@ -395,10 +396,10 @@ def get_training_arguments(cfg):
 
             dataloader_num_workers=cfg.dataloader_num_workers, # Number of subprocesses to use for data loading
             dataloader_pin_memory=True, # Whether you want to pin memory in data loaders or not. Will default to True.
-            dataloader_prefetch_factor=4, # Number of batches loaded in advance by each worker
+            dataloader_prefetch_factor=4 if cfg.dataloader_num_workers else None, # Number of batches loaded in advance by each worker
 
             # required by deepspeed
-            bf16=True, 
+            bf16=True,
             bf16_full_eval=True,
 
             **batch_size_kwargs

@@ -318,6 +318,14 @@ scripts/finetuning.py \
 
 Trying with trl=0.17.0 on job 204192. No success.
 
+What is the problem? The problem seems to be that pickle cannot work with functions defined inside functions.
+```
+AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
+AttributeError: Can't pickle local object 'truncate_dataset.<locals>.truncate'
+```
+So I have changed how the dataset is generator to avoid entering in that 'SFTTrainer._prepare_dataset.<locals>.add_eos' place, but then another similar error has arised.
+The biggest question is why hasn't happened this before.
+
 ## Results
 
 ## Conclusion

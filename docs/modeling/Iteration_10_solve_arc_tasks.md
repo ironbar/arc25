@@ -97,6 +97,29 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --lora-r 32 \
 --use-dora \
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+export N_GPUS=1
+export PARAMETERS=0.5B
+export STEPS=1000
+condor_submit train.condor command="
+python  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-12-first-real-trainings/A6000-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len 8192 \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--dataloader_num_workers 0 \
+--use-rslora" -append request_gpus=${N_GPUS}
 ```
 
 I'm seeing a new error on the cluster.
@@ -287,6 +310,11 @@ scripts/finetuning.py \
 # this does not: --dataloader-num-workers 1
 # it is unrelated from: os.environ['TOKENIZERS_PARALLELISM'] = 'true'
 ```
+
+- https://github.com/pytorch/pytorch/blob/v2.7.0/torch/utils/data/dataloader.py#L173
+- https://docs.pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader
+- https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods
+- https://wandb.ai/guillermobarbadillo/2025-05-21-model-size/runs/3g8opphj/files/requirements.txt, on the last successful training in the cluster I used trl=0.17.0
 
 ## Results
 

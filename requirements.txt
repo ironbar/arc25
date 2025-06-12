@@ -7,12 +7,12 @@ torch
 torchvision
 torchaudio
 vllm==0.8.5
-accelerate==1.6.0 # try to fix problems with pickle: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
+accelerate
 wandb
 transformers
 peft
-trl==0.18.0 # try to fix problems with pickle: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
-datasets==3.5.1 # try to fix problems with pickle: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
+trl==0.17.0 # try to fix problems with pickle: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
+datasets
 bitsandbytes
 GPUtil
 pytest

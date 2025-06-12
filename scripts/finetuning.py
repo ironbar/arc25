@@ -1,3 +1,7 @@
+# TODO: remove this line when the script is stable
+import multiprocessing as mp, os
+print(">>> multiprocessing start-method:", mp.get_start_method(), "PID:", os.getpid())
+
 import os
 import random
 import json

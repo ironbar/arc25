@@ -112,12 +112,31 @@ transformers              4.51.3                   pypi_0    pypi
 datasets                  3.5.1                    pypi_0    pypi
 trl                       0.18.0.dev0
 
-# cluster libraries
+# cluster libraries (experiments run on docker)
 accelerate==1.7.0
 torch==2.6.0
 transformers==4.52.4
 datasets==3.6.0
 trl==0.18.1
+
+# local experiments updating library versions
+trl==0.18.0 -> works
+trl==0.18.1 -> works
+accelerate==1.7.0 -> works
+transformers==4.52.4 -> works
+datasets==3.6.0 -> works
+
+# adding this line at the start of the script reproduces the problem locally
+import multiprocessing as mp
+mp.set_start_method("spawn", force=True)
+> [rank0]: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
+
+# adding this other line
+import multiprocessing as mp, os
+print(">>> multiprocessing start-method:", mp.get_start_method(), "PID:", os.getpid())
+# local response
+>>> multiprocessing start-method: fork PID: 19840
+>>> multiprocessing start-method: fork PID: 19841
 ```
 
 #### Local experiments
@@ -125,7 +144,7 @@ trl==0.18.1
 ```bash
 export N_GPUS=2
 export PARAMETERS=0.5B
-export STEPS=100
+export STEPS=10
 export MAXSEQLEN=3072
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 scripts/finetuning.py \
@@ -143,7 +162,9 @@ scripts/finetuning.py \
 --save-steps 1000 \
 --lora-r 32 \
 --use-dora \
---use-rslora
+--use-rslora \
+--no-resume_from_checkpoint
+
 
 export MAXSEQLEN=8192
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \

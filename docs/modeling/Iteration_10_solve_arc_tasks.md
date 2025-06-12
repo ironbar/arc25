@@ -316,6 +316,8 @@ scripts/finetuning.py \
 - https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods
 - https://wandb.ai/guillermobarbadillo/2025-05-21-model-size/runs/3g8opphj/files/requirements.txt, on the last successful training in the cluster I used trl=0.17.0
 
+Trying with trl=0.17.0 on job 204192. No success.
+
 ## Results
 
 ## Conclusion

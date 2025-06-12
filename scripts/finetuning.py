@@ -1,6 +1,6 @@
 # TODO: remove this line when the script is stable
 import multiprocessing as mp, os
-#mp.set_start_method("fork", force=True)
+mp.set_start_method("fork", force=True)
 #mp.set_start_method("spawn", force=True)
 print(">>> multiprocessing start-method:", mp.get_start_method(), "PID:", os.getpid())
 
@@ -125,13 +125,15 @@ def fine_tuning_main():
     dataset_kwargs = {'grid_encoder': grid_encoder, 'tokenizer': tokenizer}
     train_dataset = IterableDataset.from_generator(
         partial(random_prompt_generator, **dataset_kwargs),
-        gen_kwargs={"shards": [current_process_seed + i for i in range(max(cfg.dataloader_num_workers, 1))]})
+        gen_kwargs={"shard": [current_process_seed + i for i in range(max(cfg.dataloader_num_workers, 1))],
+                    "verbose": [True] + [False] * (cfg.dataloader_num_workers - 1)})
     val_generator = random_prompt_generator(grid_encoder, tokenizer, [current_process_seed + cfg.dataloader_num_workers])
-    val_dataset = Dataset.from_dict({'text': [x['text'] for x in islice(val_generator, 100)]})
+    val_dataset = Dataset.from_dict({'input_ids': [x['input_ids'] for x in islice(val_generator, 100)]})
 
-    if accelerator.is_main_process: # Ensure printing only happens once in multi-GPU setups
-        logger.info("Sampling one element from the training dataset:")
-        pretty_print_prompt(next(iter(train_dataset))['text'])
+    # TODO: undo tokenization to show the prompt
+    # if accelerator.is_main_process: # Ensure printing only happens once in multi-GPU setups
+    #     logger.info("Sampling one element from the training dataset:")
+    #     pretty_print_prompt(next(iter(train_dataset))['text'])
 
     # train_dataset = Dataset.from_dict({'text': [next(iter(train_dataset))['text'] for _ in range(16*200)]})
 
@@ -313,6 +315,7 @@ class PromptTokenDistributionLogger():
         self.prompt_lengths = []
 
     def add_prompt(self, prompt):
+        # TODO: avoid double tokenization
         self.prompt_lengths.append(len(self.tokenizer.encode(prompt)))
         if len(self.prompt_lengths) >= self.period:
             log_prompt_length_percentiles(self.prompt_lengths, 'train')
@@ -325,17 +328,19 @@ def log_prompt_length_percentiles(prompt_lengths, prefix):
     logger.info(f'\t{prefix} number of prompts: {len(prompt_lengths)}, max number of tokens : {max(prompt_lengths)}, percentiles: {percentile_to_n_tokens}')
 
 
-def random_prompt_generator(grid_encoder, tokenizer, shards):
-    logger.info(f'Starting random prompt generator with shards: {shards}')
-    set_random_seed(shards[0])
-    generator = training_tasks_generator()
+def random_prompt_generator(grid_encoder, tokenizer, shard, verbose=False):
+    shard = shard[0] if isinstance(shard, list) else shard
+    verbose = verbose[0] if isinstance(verbose, list) else verbose
+    logger.info(f'Starting random prompt generator with shard: {shard}')
+    set_random_seed(shard)
+    generator = training_tasks_generator(verbose)
     prompt_distribution_logger = PromptTokenDistributionLogger(tokenizer)
     for task in generator:
         prompt_version = 'code-from-examples-v3'
         prompt = create_prompt_from_task(
             task, prompt_version=prompt_version, grid_encoder=grid_encoder, tokenizer=tokenizer)
-        prompt_distribution_logger.add_prompt(prompt)
-        yield {'text': prompt}
+        if verbose: prompt_distribution_logger.add_prompt(prompt)
+        yield {'input_ids': tokenizer.encode(prompt, return_tensors='pt').squeeze(0).tolist()}
 
 
 ############################################################################

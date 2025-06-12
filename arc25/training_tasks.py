@@ -66,10 +66,10 @@ class TrainingTask(ABC):
         pass
 
 
-def training_tasks_generator():
+def training_tasks_generator(verbose: bool = True):
     training_classes = _get_all_training_classes()
     training_tasks = [cls() for cls in training_classes]
-    logger.info(f"Found {len(training_tasks)} training tasks: {[task.__class__.__name__ for task in training_tasks]}")
+    if verbose: logger.info(f"Found {len(training_tasks)} training tasks: {[task.__class__.__name__ for task in training_tasks]}")
     while True:
         # TODO: in the future I would like to be able to give weighted probabilities to the tasks
         task = random.choice(training_tasks)

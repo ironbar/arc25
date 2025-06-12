@@ -1,6 +1,6 @@
 # # TODO: remove this line when the script is stable
-# import multiprocessing as mp, os
-# mp.set_start_method("fork", force=True)
+import multiprocessing as mp, os
+mp.set_start_method("fork", force=True)
 # #mp.set_start_method("spawn", force=True)
 # print(">>> multiprocessing start-method:", mp.get_start_method(), "PID:", os.getpid())
 

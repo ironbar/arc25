@@ -131,12 +131,18 @@ import multiprocessing as mp
 mp.set_start_method("spawn", force=True)
 > [rank0]: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
 
-# adding this other line
+# adding this other line to see what it is printed
 import multiprocessing as mp, os
 print(">>> multiprocessing start-method:", mp.get_start_method(), "PID:", os.getpid())
 # local response
 >>> multiprocessing start-method: fork PID: 19840
 >>> multiprocessing start-method: fork PID: 19841
+# cluster response
+>>> multiprocessing start-method: fork PID: 57
+>>> multiprocessing start-method: fork PID: 58
+
+# adding this line at the start does not solve the problem in the cluster
+mp.set_start_method("fork", force=True)
 ```
 
 #### Local experiments

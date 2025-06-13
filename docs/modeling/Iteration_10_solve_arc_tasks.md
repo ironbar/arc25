@@ -73,103 +73,11 @@ of the ARC training tasks.
 
 ### Training
 
-#### Cluster
-
-```bash
-export N_GPUS=2
-export PARAMETERS=0.5B
-export LEARNING_RATE=2e-4
-export STEPS=4000; condor_submit train.condor command="
-accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
-/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
---model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-13-first-real-trainings/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
---device-map None \
---max-steps ${STEPS} \
---n-gpus ${N_GPUS} \
---learning-rate ${LEARNING_RATE} \
---per-device-train-batch-size 2 \
---per-device-eval-batch-size 4 \
---batch-size 32 \
---max-seq-len 8192 \
---logging-steps 10 \
---eval-steps 50 \
---save-steps 200 \
---lora-r 32 \
---use-dora \
---use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
-
-export N_GPUS=1
-export PARAMETERS=0.5B
-export STEPS=1000
-export LEARNING_RATE=4e-5; condor_submit train.condor command="
-python  \
-/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
---model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-13-first-real-trainings/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
---device-map None \
---max-steps ${STEPS} \
---n-gpus ${N_GPUS} \
---learning-rate ${LEARNING_RATE} \
---per-device-train-batch-size 2 \
---per-device-eval-batch-size 4 \
---batch-size 32 \
---max-seq-len 8192 \
---logging-steps 10 \
---eval-steps 50 \
---save-steps 1000 \
---lora-r 32 \
---use-dora \
---use-rslora" -append request_gpus=${N_GPUS}
-```
-
-I'm seeing a new error on the cluster.
-
-```
-AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
-
-
-# local libraries
-accelerate                1.6.0                    pypi_0    pypi
-torch                     2.6.0                    pypi_0    pypi
-transformers              4.51.3                   pypi_0    pypi
-datasets                  3.5.1                    pypi_0    pypi
-trl                       0.18.0.dev0
-
-# cluster libraries (experiments run on docker)
-accelerate==1.7.0
-torch==2.6.0
-transformers==4.52.4
-datasets==3.6.0
-trl==0.18.1
-
-# local experiments updating library versions
-trl==0.18.0 -> works
-trl==0.18.1 -> works
-accelerate==1.7.0 -> works
-transformers==4.52.4 -> works
-datasets==3.6.0 -> works
-
-# adding this line at the start of the script reproduces the problem locally
-import multiprocessing as mp
-mp.set_start_method("spawn", force=True)
-> [rank0]: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
-
-# adding this other line to see what it is printed
-import multiprocessing as mp, os
-print(">>> multiprocessing start-method:", mp.get_start_method(), "PID:", os.getpid())
-# local response
->>> multiprocessing start-method: fork PID: 19840
->>> multiprocessing start-method: fork PID: 19841
-# cluster response
->>> multiprocessing start-method: fork PID: 57
->>> multiprocessing start-method: fork PID: 58
-
-# adding this line at the start does not solve the problem in the cluster
-mp.set_start_method("fork", force=True)
-```
-
 #### Local experiments
+
+<details>
+  <summary>Click to see the bash commands</summary>
+
 
 ```bash
 export N_GPUS=2
@@ -236,6 +144,9 @@ python scripts/finetuning.py \
 --use-rslora
 ```
 
+</details>
+
+
 It is training around 2.66s/it, task generation does not seem to be the bottleneck. At the beginning of the training used multiple cores to sample, but then CPU usage was low. Probably
 the queue was filled.
 
@@ -254,9 +165,63 @@ export MAXSEQLEN=8192
 {'train_runtime': 671.3956, 'train_samples_per_second': 4.766, 'train_steps_per_second': 0.149, 'train_loss': 0.23653331756591797, 'epoch': 1.0} 
 ```
 
-To be safe I should probably use `max-seq-len=8192`.
+To be safe I should probably use `max-seq-len=8192`, otherwise we will be missing some training tasks.
+
+#### Cluster
+
+```bash
+export N_GPUS=2
+export PARAMETERS=0.5B
+export LEARNING_RATE=2e-4
+export STEPS=4000; condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-13-first-real-trainings/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len 8192 \
+--logging-steps 10 \
+--eval-steps 50 \
+--save-steps 200 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+export N_GPUS=1
+export PARAMETERS=0.5B
+export STEPS=1000
+export LEARNING_RATE=4e-5; condor_submit train.condor command="
+python  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-13-first-real-trainings/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len 8192 \
+--logging-steps 10 \
+--eval-steps 50 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS}
+```
+
 
 #### Debugging
+
+<details>
+  <summary>Click to expand/collapse this section</summary>
 
 ```bash
 
@@ -312,6 +277,52 @@ scripts/finetuning.py \
 # it is unrelated from: os.environ['TOKENIZERS_PARALLELISM'] = 'true'
 ```
 
+I'm seeing a new error on the cluster.
+
+```
+AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
+
+
+# local libraries
+accelerate                1.6.0                    pypi_0    pypi
+torch                     2.6.0                    pypi_0    pypi
+transformers              4.51.3                   pypi_0    pypi
+datasets                  3.5.1                    pypi_0    pypi
+trl                       0.18.0.dev0
+
+# cluster libraries (experiments run on docker)
+accelerate==1.7.0
+torch==2.6.0
+transformers==4.52.4
+datasets==3.6.0
+trl==0.18.1
+
+# local experiments updating library versions
+trl==0.18.0 -> works
+trl==0.18.1 -> works
+accelerate==1.7.0 -> works
+transformers==4.52.4 -> works
+datasets==3.6.0 -> works
+
+# adding this line at the start of the script reproduces the problem locally
+import multiprocessing as mp
+mp.set_start_method("spawn", force=True)
+> [rank0]: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.<locals>.add_eos'
+
+# adding this other line to see what it is printed
+import multiprocessing as mp, os
+print(">>> multiprocessing start-method:", mp.get_start_method(), "PID:", os.getpid())
+# local response
+>>> multiprocessing start-method: fork PID: 19840
+>>> multiprocessing start-method: fork PID: 19841
+# cluster response
+>>> multiprocessing start-method: fork PID: 57
+>>> multiprocessing start-method: fork PID: 58
+
+# adding this line at the start does not solve the problem in the cluster
+mp.set_start_method("fork", force=True)
+```
+
 - https://github.com/pytorch/pytorch/blob/v2.7.0/torch/utils/data/dataloader.py#L173
 - https://docs.pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader
 - https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods
@@ -346,6 +357,7 @@ sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multipro
 sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multiprocessing_context='fork',/" \
 /mnt/scratch/users/gbarbadillo/arc25/cached-environments/venv_07bdecf0b823319f4d2fcbe9cdc354d9/lib/python3.10/site-packages/torch/utils/data/dataloader.py
 ```
+</details>
 
 ## Results
 

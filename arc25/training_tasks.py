@@ -76,7 +76,7 @@ def training_tasks_generator(verbose: bool = True):
             task = random.choice(training_tasks)
             yield task.sample()
         except Exception as e:
-            logger.error(f"Error generating task {task.name}: {e}", exc_info=traceback.format_exc())
+            logger.error(f"Error generating task {task.__class__.__name__}: {e}", exc_info=traceback.format_exc())
 
 
 def _get_all_training_classes():

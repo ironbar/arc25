@@ -79,8 +79,7 @@ of the ARC training tasks.
 export N_GPUS=2
 export PARAMETERS=0.5B
 export STEPS=1000
-export LEARNING_RATE=1e-4
-condor_submit train.condor command="
+export LEARNING_RATE=1e-4; condor_submit train.condor command="
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
@@ -103,24 +102,24 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 export N_GPUS=1
 export PARAMETERS=0.5B
 export STEPS=1000
-condor_submit train.condor command="
+export LEARNING_RATE=2e-4; condor_submit train.condor command="
 python  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-12-first-real-trainings/A6000-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-12-first-real-trainings/A6000-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
 --device-map None \
 --max-steps ${STEPS} \
 --n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
 --per-device-train-batch-size 2 \
 --per-device-eval-batch-size 4 \
 --batch-size 32 \
 --max-seq-len 8192 \
---logging-steps 100 \
---eval-steps 0 \
+--logging-steps 10 \
+--eval-steps 50 \
 --save-steps 1000 \
 --lora-r 32 \
 --use-dora \
---dataloader_num_workers 0 \
 --use-rslora" -append request_gpus=${N_GPUS}
 ```
 

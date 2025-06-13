@@ -54,6 +54,7 @@ class Config:
     warmup_ratio: float = 0.05
     batch_size: int = 16 #16
     random_seed: Optional[int] = None # None, 7
+    val_random_seed: int = 42
     grid_encoder: str = 'GridShapeEncoder(RowNumberEncoder(MinimalGridEncoder()))'
     # SmolLM-135M-Instruct: (4, 4); Qwen/Qwen2-0.5B-Instruct: (1, 2)
     per_device_train_batch_size: int = 1
@@ -120,7 +121,7 @@ def fine_tuning_main():
         partial(random_prompt_generator, **dataset_kwargs),
         gen_kwargs={"shard": [current_process_seed + i for i in range(max(cfg.dataloader_num_workers, 1))],
                     "verbose": [True] + [False] * (cfg.dataloader_num_workers - 1)})
-    val_generator = random_prompt_generator(grid_encoder, tokenizer, [current_process_seed + cfg.dataloader_num_workers])
+    val_generator = random_prompt_generator(grid_encoder, tokenizer, cfg.val_random_seed)
     val_dataset = Dataset.from_dict({'input_ids': [x['input_ids'] for x in islice(val_generator, 100)]})
 
     # TODO: undo tokenization to show the prompt

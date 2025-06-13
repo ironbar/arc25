@@ -6,8 +6,6 @@ import numpy as np
 from tqdm.auto import tqdm
 import wandb
 from typing import Optional, List
-import argparse
-import traceback
 from functools import partial
 from itertools import islice
 from dataclasses import dataclass, asdict, field
@@ -19,15 +17,15 @@ from peft import LoraConfig, PeftModel, prepare_model_for_kbit_training, get_pef
 from trl import SFTTrainer, DataCollatorForCompletionOnlyLM, SFTConfig
 from datasets import Dataset, IterableDataset
 
-from arc25.encoders import create_grid_encoder
-from arc25.prompting import create_prompt_from_task, pretty_print_prompt
-# from arc24.data import load_arc_data_with_solutions, BarcDataset
-from arc25.logging import log_execution_time, configure_logging
-from arc25.training_tasks import *
-from arc25.utils import set_random_seed
-
 from accelerate.logging import get_logger
 from accelerate import Accelerator
+
+from arc25.encoders import create_grid_encoder
+from arc25.prompting import create_prompt_from_task, pretty_print_prompt
+from arc25.logging import log_execution_time, configure_logging
+from arc25.training_tasks import training_tasks_generator
+from arc25.utils import set_random_seed
+
 
 logger = get_logger(__name__)
 

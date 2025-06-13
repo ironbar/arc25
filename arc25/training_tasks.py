@@ -72,8 +72,11 @@ def training_tasks_generator(verbose: bool = True):
     if verbose: logger.info(f"Found {len(training_tasks)} training tasks: {[task.__class__.__name__ for task in training_tasks]}")
     while True:
         # TODO: in the future I would like to be able to give weighted probabilities to the tasks
-        task = random.choice(training_tasks)
-        yield task.sample()
+        try:
+            task = random.choice(training_tasks)
+            yield task.sample()
+        except Exception as e:
+            logger.error(f"Error generating task {task.name}: {e}", exc_info=traceback.format_exc())
 
 
 def _get_all_training_classes():

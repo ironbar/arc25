@@ -78,12 +78,12 @@ of the ARC training tasks.
 ```bash
 export N_GPUS=2
 export PARAMETERS=0.5B
-export STEPS=1000
-export LEARNING_RATE=1e-4; condor_submit train.condor command="
+export LEARNING_RATE=2e-4
+export STEPS=4000; condor_submit train.condor command="
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-12-first-real-trainings/A6000-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-13-first-real-trainings/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
 --device-map None \
 --max-steps ${STEPS} \
 --n-gpus ${N_GPUS} \
@@ -94,7 +94,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --max-seq-len 8192 \
 --logging-steps 10 \
 --eval-steps 50 \
---save-steps 1000 \
+--save-steps 200 \
 --lora-r 32 \
 --use-dora \
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
@@ -102,11 +102,11 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 export N_GPUS=1
 export PARAMETERS=0.5B
 export STEPS=1000
-export LEARNING_RATE=2e-4; condor_submit train.condor command="
+export LEARNING_RATE=4e-5; condor_submit train.condor command="
 python  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-12-first-real-trainings/A6000-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-13-first-real-trainings/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
 --device-map None \
 --max-steps ${STEPS} \
 --n-gpus ${N_GPUS} \
@@ -349,6 +349,20 @@ sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multipro
 
 ## Results
 
+### Training Hyperparameters
+
+For a batch size of 32 and lora rank of 32 a learning rate of 2e-4 seems to be good. 1e-3 is too much, 
+4e-4 also works but for longer trainings 2e-4 might be a better option.
+
+Since I only have 23 training tasks, I don't expect to see relevant improvements by using a batch size
+bigger than 32. So I'm not going to do experiments with the batch size.
+
+[Wandb experiment](https://wandb.ai/guillermobarbadillo/2025-06-13-first-real-trainings/workspace?nw=nwuserguillermobarbadillo), filter by `1000steps`.
+
+### Fine-tuning capacity
+
+TODO: change the lora rank and also try a full fine-tuning and check the training metrics
+
 ## Conclusion
 
 ## Next steps
@@ -362,5 +376,6 @@ sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multipro
 - [x] I would like to have a list of all the primitive functions from the DSL, and how many times are they used in the training tasks. A correlation plot would also be nice to see which connections are missing.
 - [x] Is the sampling speed enough?
 - [x] Stats about the input tokens distribution, what should be the max-seq-len?
-- [ ] Optimize learning rate and batch size for 2 GPUs.
+- [x] Optimize learning rate and batch size for 2 GPUs.
+- [ ] Create a notebook to evaluate the trained models on real ARC tasks
 - [ ] I need a way to do evaluation at scale, using multiple GPUs, and saving all the generated tasks when searching for a solution.

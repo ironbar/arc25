@@ -173,7 +173,7 @@ To be safe I should probably use `max-seq-len=8192`, otherwise we will be missin
 export N_GPUS=2
 export PARAMETERS=0.5B
 export LEARNING_RATE=2e-4
-export STEPS=4000; condor_submit train.condor command="
+export STEPS=32000; condor_submit train.condor command="
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
@@ -192,6 +192,27 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --lora-r 32 \
 --use-dora \
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+export N_GPUS=2
+export PARAMETERS=0.5B
+export STEPS=8000
+export LEARNING_RATE=1e-4; condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-14-full-fine-tuning/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len 8192 \
+--logging-steps 10 \
+--eval-steps 50 \
+--save-steps 200 \
+--no-use-lora" -append request_gpus=${N_GPUS} -append request_cpus=12
 
 export N_GPUS=1
 export PARAMETERS=0.5B
@@ -215,6 +236,10 @@ python  \
 --lora-r 32 \
 --use-dora \
 --use-rslora" -append request_gpus=${N_GPUS}
+
+
+# Copy the results to MEGA
+rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-13-first-real-trainings /mnt/data/MEGA/TEMP --exclude wandb/*
 ```
 
 

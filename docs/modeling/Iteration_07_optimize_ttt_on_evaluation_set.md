@@ -66,15 +66,19 @@ Thus I believe I should use the maximum possible value to be able to solve tasks
 Evidence is not very strong, but it seems that for the evaluation set we have found a better configuration
 than the previous one.
 
-TODO: 5 submissions with the new configuration.
+However I have made submissions with the new configuration, and on the test set I don't see a difference.
+
+| configuration                       | mean test score | n_experiments |
+|-------------------------------------|-----------------|---------------|
+| epochs=10, n=1, min_prob=0.17, r=16 | 9.9 ± 1.7       | 5             |
+| epochs=10, n=1, min_prob=0.17, r=32 | 10.5 ± 1.3      | 5             |
+| epochs=10, n=1, min_prob=0.17, r=4, | 10.3 ± 1.3      | 5             |
 
 ## Conclusion
+
+We have optimized the hyperparameters for the evaluation set, but the improvements didn't transfer to the test set.
 
 ## Next steps
 
 - It might be helpful to initialize the LoRA on the new ARC25 tasks. Last year I observed that it was better to start from pretrained LoRA than
 to use a fresh new one.
-
-## TODO
-
-- [ ]

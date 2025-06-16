@@ -195,8 +195,8 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 
 export N_GPUS=2
 export PARAMETERS=0.5B
-export STEPS=8000
-export LEARNING_RATE=1e-4; condor_submit train.condor command="
+export STEPS=32000
+export LEARNING_RATE=4e-5; condor_submit train.condor command="
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
@@ -208,7 +208,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --per-device-train-batch-size 2 \
 --per-device-eval-batch-size 4 \
 --batch-size 32 \
---max-seq-len 8192 \
+--max-seq-len 6144 \
 --logging-steps 10 \
 --eval-steps 50 \
 --save-steps 200 \
@@ -399,6 +399,7 @@ bigger than 32. So I'm not going to do experiments with the batch size.
 ### Fine-tuning capacity
 
 TODO: change the lora rank and also try a full fine-tuning and check the training metrics
+TODO: improve learning rate policy by adding a min value
 
 ## Conclusion
 
@@ -416,3 +417,10 @@ TODO: change the lora rank and also try a full fine-tuning and check the trainin
 - [x] Optimize learning rate and batch size for 2 GPUs.
 - [ ] Create a notebook to evaluate the trained models on real ARC tasks
 - [ ] I need a way to do evaluation at scale, using multiple GPUs, and saving all the generated tasks when searching for a solution.
+- [ ] If possible I should use Kaggle compute for evaluation. It is almost free and is a good way to store and visualize results.
+- [ ] When studying how the method is working on real ARC tasks, I believe I should reuse the DSL analysis from the training tasks.
+  That way I can see if it is using the right abstractions, and if it combining them correctly
+- [ ] Compositionality, can the model solve the task that selects the biggest object, crop and trim? That
+  would be a good example of compositionality because those functions were not used together in the dataset
+- [ ] Sequential solving. Try also solving the tasks in multiple steps, not just once. It could help
+  with compositionality.

@@ -48,11 +48,18 @@ I have to prepare a new notebook that uses pretrained LoRA. As far as I see, I s
 
 https://www.kaggle.com/code/ironbar/the-architects-single-task-ttt-from-pretrained
 
-## Results
+| lora_rank | baseline eval score | pretrain eval score |
+|-----------|---------------------|---------------------|
+| 2         | 11.8                | 11.4                |
+| 4         | 11.8                | 9.3                 |
+| 8         | 11.4                | 8.6                 |
+
+Although I know that there is variability in the results, first evaluations are not promising. I'm not
+going to devote more time for this task.
 
 ## Conclusion
 
-## Next steps
+First results were not promising, so I decided to stop working on this iteration.
 
 ## TODO
 

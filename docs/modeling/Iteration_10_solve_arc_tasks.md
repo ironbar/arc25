@@ -1,4 +1,4 @@
-# Iteration 10. Solve ARC tasks
+# Iteration 10. Try to solve real ARC tasks
 
 _22-05-2025_
 
@@ -416,7 +416,27 @@ the schedulers don't have a minimum learning rate value.
 
 Finally the full fine-tuning required a slightly lower learning rate (4e-5 vs 1e-4).
 
+### Trying to solve real ARC tasks
+
+- `08ed6ac`, does not understand that the task is about sorting and changing colors
+- `0b148d6`, Understands that the task is about detecting objects and cropping, but does not know to use the color
+- `0ca9ddb`, seems to understand that the task is about drawing pixels, but it does not use the center as a reference. Neither it uses the color to select certain objects
+- `0d3d703e`, the model does not recognize that the task is about apply_colormap. Create more tasks showing how to change colors, not changing all the colors always.
+- `178fcbfb`, does understand that the task is about drawing horizontal and vertical lines, but does not know to use the center as a reference
+- `1bfc4729`, understands that it needs to draw some pattern, but does not have a way to make a different drawing for each image
+- `1c786137`, does not understand that the task is about selecting the object
+
+It seems that the main problem is that the model does not have a good intuition of how to solve the tasks.
+It simply does not use the correct primitive function in some cases, in other cases it is missing examples of how
+to use them. If the initial direction is not correct, it is not possible that HER can help to achieve the desired goal.
+
+I might introduce diversity in the generations by suggesting to use some DSL primitive functions.
+
 ## Conclusion
+
+I have run the first experiments to try to solve real ARC tasks. So far **no task has been solved**, but I have evaluated
+just a tiny subset of the training ARC tasks. On the following iteration I would like to solve at least the 7 tasks
+analyzed on this iteration.
 
 ## Next steps
 
@@ -430,10 +450,10 @@ Finally the full fine-tuning required a slightly lower learning rate (4e-5 vs 1e
 - [x] Is the sampling speed enough?
 - [x] Stats about the input tokens distribution, what should be the max-seq-len?
 - [x] Optimize learning rate and batch size for 2 GPUs.
-- [ ] Create a notebook to evaluate the trained models on real ARC tasks
+- [x] Create a notebook to evaluate the trained models on real ARC tasks
 - [ ] I need a way to do evaluation at scale, using multiple GPUs, and saving all the generated tasks when searching for a solution.
 - [ ] If possible I should use Kaggle compute for evaluation. It is almost free and is a good way to store and visualize results.
-- [ ] When studying how the method is working on real ARC tasks, I believe I should reuse the DSL analysis from the training tasks.
+- [x] When studying how the method is working on real ARC tasks, I believe I should reuse the DSL analysis from the training tasks.
   That way I can see if it is using the right abstractions, and if it combining them correctly
 - [ ] Compositionality, can the model solve the task that selects the biggest object, crop and trim? That
   would be a good example of compositionality because those functions were not used together in the dataset

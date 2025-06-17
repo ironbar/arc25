@@ -396,10 +396,25 @@ bigger than 32. So I'm not going to do experiments with the batch size.
 
 [Wandb experiment](https://wandb.ai/guillermobarbadillo/2025-06-13-first-real-trainings/workspace?nw=nwuserguillermobarbadillo), filter by `1000steps`.
 
-### Fine-tuning capacity
+For longer trainings 1e-4 might be a better option.
 
-TODO: change the lora rank and also try a full fine-tuning and check the training metrics
-TODO: improve learning rate policy by adding a min value
+### Fine-tuning model capacity
+
+The following table shows the validation loss for trainings of different length.
+
+| steps | LoRA 32 | full fine-tuning |
+|-------|---------|------------------|
+| 8k    | 0.0198  | 0.0178           |
+| 16k   | 0.0165  | 0.0155           |
+| 32k   | 0.0149  | 0.0123           |
+
+The full fine-tuning achieves a lower validation loss, while being faster. F.e. training for 32k steps
+took 24h when doing the full fine-tuning and 30h when using LoRA.
+
+I have seen that at the end of the training learning stops, but there is not a quick fix to this because
+the schedulers don't have a minimum learning rate value.
+
+Finally the full fine-tuning required a slightly lower learning rate (4e-5 vs 1e-4).
 
 ## Conclusion
 

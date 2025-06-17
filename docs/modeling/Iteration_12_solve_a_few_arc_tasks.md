@@ -17,6 +17,14 @@ Probe that I can solve a few selected ARC tasks by using an LLM to write code.
 
 ## Motivation
 
+On the previous [Iteration 10](Iteration_10_solve_arc_tasks.md) I tried to solve a few ARC tasks without
+success: `08ed6ac7, 0b148d64, 0ca9ddb6, 0d3d703e, 178fcbfb, 1bfc4729, 1c786137`. The goal of this iteration
+is to solve all those tasks by implementing new training tasks and/or improving the solving algorithm.
+
+I should avoid creating training tasks that are clones from the real ARC tasks, otherwise I cannot
+measure the generalization capability of the model. My goal should be to write training tasks that
+teach the core knowledge that is needed for ARC.
+
 ## Development
 
 ## Results

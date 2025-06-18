@@ -810,21 +810,11 @@ class DrawWith2CentersReferencePoints(TrainingTask):
     max_objects: int = 2
     random_shape_probability: float = 0
     monochrome: bool = True
+    allowed_sizes: list[int] = field(default_factory=lambda: [1, 3, 9])
+    line_shape_probability: dict[int, float] = field(default_factory=lambda: {1: 1.0, 3: 1.0, 9:0})
 
     def create_inputs(self):
-        size = random.choice([1, 3, 9])
-        if size <= 3:
-            line_shape_probability = 1.0
-        else:
-            line_shape_probability = 0.0
-
-        kwargs = dict(
-            **asdict(self), 
-            single_color=self._get_single_color(),
-            allowed_sizes=[size],
-            line_shape_probability=line_shape_probability,
-        )
-        return create_inputs_generate_arc_image_with_random_objects(**kwargs)
+        return create_inputs_generate_arc_image_with_random_objects(**asdict(self), single_color=self._get_single_color())
     
     @staticmethod
     def _get_single_color():
@@ -906,7 +896,8 @@ class DrawVerticalAndHorizontalLinesWithCentersReferencePoints(DrawWith2CentersR
         code += 'return img\n'
         code = wrap_code_in_function(code)
         return code
-    
+
+
 class DrawPixelsWithCentersReferencePoints(DrawWith2CentersReferencePoints):
     "Input should be an image with points, 3d lines or 3x3 squares, colors are random"
     do_remove_irrelevant_lines: bool = False

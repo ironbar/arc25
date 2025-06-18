@@ -1,7 +1,7 @@
 import random
 import logging
 import math
-from typing import Optional
+from typing import Optional, Union
 from functools import reduce
 import cv2
 
@@ -162,8 +162,8 @@ def generate_arc_image_with_random_objects(
     allowed_colors: Optional[list[int]] = None,
     single_color: bool = False,
     max_attempts: int = 1_000,
-    random_shape_probability: float = 0.5,
-    line_shape_probability: float = 0.5,
+    random_shape_probability: Union[float, dict[int, float]] = 0.5,
+    line_shape_probability: Union[float, dict[int, float]] = 0.5,
 ):
     """
     Random ARC-style image generator.
@@ -191,8 +191,8 @@ def generate_arc_image_with_random_objects(
                        it defaults to all digits 0-9 except background.
     single_color     : if True, all objects are of the same colour.
     max_attempts     : cap on placement attempts.
-    random_shape_probability : chance of drawing a free-form shape (0–1).
-    line_shape_probability : chance of drawing a line shape (0–1), when regular shape is chosen
+    random_shape_probability : chance of drawing a free-form shape (0–1), can also be a dict mapping sizes to probabilities.
+    line_shape_probability : chance of drawing a line shape (0–1), when regular shape is chosen, can also be a dict mapping sizes to probabilities.
 
     Returns
     -------
@@ -300,9 +300,15 @@ def generate_arc_image_with_random_objects(
         return []
 
     def make_shape(size):
-        if random.random() < random_shape_probability:
+
+        def random_bool(prob, size):
+            if isinstance(prob, dict):
+                return random.random() < prob[size]
+            return random.random() < prob
+
+        if random_bool(random_shape_probability, size):
             return shape_random(size)
-        if random.random() < line_shape_probability:
+        if random_bool(line_shape_probability, size):
             gen = random.choice([shape_vertical_line, shape_horizontal_line])
             return gen(size)
         else:
@@ -348,8 +354,8 @@ def generate_arc_image_with_random_objects(
 def create_inputs_generate_arc_image_with_random_objects(
         min_inputs: int, max_inputs: int, min_side: int, max_side: int, allowed_sizes: list[int],
         min_objects: int, max_objects: int, n_allowed_colors: Optional[int] = None,
-        random_shape_probability: float = 0.5,
-        line_shape_probability: float = 0.5,
+        random_shape_probability: Union[float, dict[int, float]] = 0.5,
+        line_shape_probability: Union[float, dict[int, float]] = 0.5,
         monochrome: Optional[bool] = None,
         single_color: bool = False,
         **kwargs):

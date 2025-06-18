@@ -798,6 +798,31 @@ class CropObjectOfExtremePosition(TrainingTask):
         return code
 
 
+@dataclass
+class DrawWith2ReferencePoints(TrainingTask):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 8
+    max_side: int = 10
+    min_objects: int = 2
+    max_objects: int = 2
+    allowed_sizes: list[int] = field(default_factory=lambda: [1])
+
+    def create_inputs(self):
+        return create_inputs_generate_arc_image_with_random_objects(**asdict(self), single_color=random.choice([True, False]))
+
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        color = random.choice([color for color in range(10) if color != metadata['background_color']])
+        if random.random() < 0.5:
+            code += f'draw_rectangle(img, objects[0].center, objects[1].center, color={color})\n'
+        else:
+            code += f'draw_line(img, objects[0].center, objects[1].center, color={color})\n'
+        code += 'return img\n'
+        code = wrap_code_in_function(code)
+        return code
+
 
 def _get_unique_colors(inputs):
     """

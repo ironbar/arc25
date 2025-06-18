@@ -809,6 +809,7 @@ class DrawWith2ReferencePoints(TrainingTask):
     min_objects: int = 2
     max_objects: int = 2
     random_shape_probability: float = 0
+    monochrome: bool = True
 
     def create_inputs(self):
         size = random.choice([1, 3, 9])
@@ -843,17 +844,10 @@ class DrawWith2ReferencePoints(TrainingTask):
     
 
 @dataclass
-class DrawWith2ReferencePointsAndColor(TrainingTask):
-    min_inputs: int = 3
-    max_inputs: int = 5
-    min_side: int = 8
-    max_side: int = 10
-    min_objects: int = 2
-    max_objects: int = 2
-    allowed_sizes: list[int] = field(default_factory=lambda: [1])
-
-    def create_inputs(self):
-        return create_inputs_generate_arc_image_with_random_objects(**asdict(self), single_color=True)
+class DrawWith2ReferencePointsAndColor(DrawWith2ReferencePoints):
+    @staticmethod
+    def _get_single_color():
+        return True
 
     def create_code(self, inputs, metadata):
         parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
@@ -868,18 +862,10 @@ class DrawWith2ReferencePointsAndColor(TrainingTask):
 
 
 @dataclass
-class DrawWith2ReferencePointsAndColorV2(TrainingTask):
-    do_remove_irrelevant_lines: bool = False
-    min_inputs: int = 3
-    max_inputs: int = 5
-    min_side: int = 8
-    max_side: int = 10
-    min_objects: int = 2
-    max_objects: int = 2
-    allowed_sizes: list[int] = field(default_factory=lambda: [1])
-
-    def create_inputs(self):
-        return create_inputs_generate_arc_image_with_random_objects(**asdict(self), single_color=False)
+class DrawWith2ReferencePointsAndColorV2(DrawWith2ReferencePoints):
+    @staticmethod
+    def _get_single_color():
+        return False
 
     def create_code(self, inputs, metadata):
         parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
@@ -900,7 +886,6 @@ def _get_unique_colors(inputs):
     """
     return np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
 
-# TODO: use also squares and lines as reference points
 # TODO: draw vertical and horizontal lines using the center
 # TODO: draw pixels using the center
 # TODO: more complex task that has pairs of points of different colors, and draws rectangles or lines between them

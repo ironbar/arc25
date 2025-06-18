@@ -925,6 +925,34 @@ class DrawPixelsWithCentersReferencePoints(DrawWith2CentersReferencePoints):
         return code
 
 
+@dataclass
+class DrawPixelsWithCentersReferencePointsColorBasedOnArea(DrawWith2CentersReferencePoints):
+    "Input should be an image with points, 3d lines or 3x3 squares, colors are random"
+    do_remove_irrelevant_lines: bool = False
+    min_objects: int = 4
+    max_objects: int = 4
+    min_side: int = 10
+    max_side: int = 12
+
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        if random.random() < 0.5:
+            code += f'objects = sorted(objects, key=lambda x: x.center[{random.choice([0, 1])}], reverse={random.choice([True, False])})\n'
+        else:
+            code += f'objects = sorted(objects, key=lambda x: x.area, reverse={random.choice([True, False])})\n'
+        colors = random.sample([color for color in range(10) if color != metadata['background_color']], 3)
+        area_to_color = {size: color for size, color in zip(metadata['allowed_sizes'], colors)}
+        code += f'area_to_color = {area_to_color}\n'
+        code += 'for object in objects:\n'
+        code += f'    offset = np.array({np.random.randint(-1, 2, size=2).tolist()})\n'
+        code += f'    draw_pixel(img, object.center + offset, color=area_to_color[object.area])\n'
+        if random.random() < 0.5:
+            code += f'    offset = np.array({np.random.randint(-1, 2, size=2).tolist()})\n'
+            code += f'    draw_pixel(img, object.center + offset, color=area_to_color[object.area])\n'
+        code += 'return img\n'
+        code = wrap_code_in_function(code)
+        return code
 
 
 def _get_unique_colors(inputs):

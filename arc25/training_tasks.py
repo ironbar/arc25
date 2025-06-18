@@ -822,6 +822,31 @@ class DrawWith2ReferencePoints(TrainingTask):
         code += 'return img\n'
         code = wrap_code_in_function(code)
         return code
+    
+
+@dataclass
+class DrawWith2ReferencePointsAndColor(TrainingTask):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 8
+    max_side: int = 10
+    min_objects: int = 2
+    max_objects: int = 2
+    allowed_sizes: list[int] = field(default_factory=lambda: [1])
+
+    def create_inputs(self):
+        return create_inputs_generate_arc_image_with_random_objects(**asdict(self), single_color=True)
+
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        if random.random() < 0.5:
+            code += f'draw_rectangle(img, objects[0].center, objects[1].center, color=objects[0].color)\n'
+        else:
+            code += f'draw_line(img, objects[0].center, objects[1].center, color=objects[0].color)\n'
+        code += 'return img\n'
+        code = wrap_code_in_function(code)
+        return code
 
 
 def _get_unique_colors(inputs):

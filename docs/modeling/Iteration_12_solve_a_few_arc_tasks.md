@@ -32,9 +32,9 @@ teach the core knowledge that is needed for ARC.
 - [ ] Sort objects and do something to them based on the order. I can sort objects based on: area, x, y. I can move the objects, change their colors. This requires more control over the input images.
 - [ ] Learn to use the color of the object. Let's focus on monochrome objects by now. Based on the color of the object something is done (move, change color, crop)
 - [ ] Aggregate properties and use them to select, f.e. most/least popular color/area/shape...
-- [ ] Learn to draw using object center as a reference, points, lines (also vertical and horizontal), rectangles...
-- [ ] Create more tasks with apply_colormap
-- [ ] Learn to draw using color of the objects as a reference
+- [x] Learn to draw using object center as a reference, points, lines (also vertical and horizontal), rectangles...
+- [x] Create more tasks with apply_colormap
+- [x] Learn to draw using color of the objects as a reference
 - [ ] More tasks about selecting an object that has some unique or extreme property
 
 ## Results

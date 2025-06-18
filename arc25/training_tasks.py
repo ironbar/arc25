@@ -677,6 +677,56 @@ class ColormapOnRandomImgs(TrainingTask):
 
 
 @dataclass
+class ColormapOnRandomImgsOnSubsetOfColors(TrainingTask):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 5
+    max_side: int = 10
+    min_colors: int = 5
+    max_colors: int = 7
+
+    def create_inputs(self):
+        n_inputs = random.randint(self.min_inputs, self.max_inputs)
+        shapes = [np.random.randint(self.min_side, self.max_side + 1, 2) for _ in range(n_inputs)]
+        n_colors = random.randint(self.min_colors, self.max_colors)  # Number of unique colors in the images
+        colors = random.sample(range(10), n_colors)
+        return [Img(np.random.choice(colors, size=shape)) for shape in shapes]
+
+    def create_code(self, inputs):
+        unique_colors = _get_unique_colors(inputs)
+        selected_colors = random.sample(unique_colors, random.randint(2, min(len(unique_colors), 5)))
+        colormap = {i: random.randint(0, 9) for i in selected_colors}
+        code = f"colormap = {colormap}\n"
+        code += f"output = apply_colormap(img, colormap)\n"
+        code += 'return output\n'
+        code = wrap_code_in_function(code)
+        return code
+
+
+@dataclass
+class ColormapOnStructuredImgsOnSubsetOfColors(TrainingTask):
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 8
+    max_side: int = 10
+    min_objects: int = 5
+    max_objects: int = 10
+    allowed_sizes: list[int] = field(default_factory=lambda: [1, 2, 3, 4])
+
+    def create_inputs(self):
+        return create_inputs_generate_arc_image_with_random_objects(**asdict(self))[0]
+
+    def create_code(self, inputs):
+        unique_colors = _get_unique_colors(inputs)
+        selected_colors = random.sample(unique_colors, random.randint(2, min(len(unique_colors), 5)))
+        colormap = {i: random.randint(0, 9) for i in selected_colors}
+        code = f"colormap = {colormap}\n"
+        code += f"output = apply_colormap(img, colormap)\n"
+        code += 'return output\n'
+        code = wrap_code_in_function(code)
+        return code
+
+@dataclass
 class CropObjectOfSingularColor(TrainingTask):
     """
     The idea is to create input images where there is always a singular object:

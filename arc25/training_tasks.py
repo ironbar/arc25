@@ -808,10 +808,26 @@ class DrawWith2ReferencePoints(TrainingTask):
     max_side: int = 10
     min_objects: int = 2
     max_objects: int = 2
-    allowed_sizes: list[int] = field(default_factory=lambda: [1])
+    random_shape_probability: float = 0
 
     def create_inputs(self):
-        return create_inputs_generate_arc_image_with_random_objects(**asdict(self), single_color=random.choice([True, False]))
+        size = random.choice([1, 3, 9])
+        if size <= 3:
+            line_shape_probability = 1.0
+        else:
+            line_shape_probability = 0.0
+
+        kwargs = dict(
+            **asdict(self), 
+            single_color=self._get_single_color(),
+            allowed_sizes=[size],
+            line_shape_probability=line_shape_probability,
+        )
+        return create_inputs_generate_arc_image_with_random_objects(**kwargs)
+    
+    @staticmethod
+    def _get_single_color():
+        return random.choice([True, False])
 
     def create_code(self, inputs, metadata):
         parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
@@ -849,7 +865,8 @@ class DrawWith2ReferencePointsAndColor(TrainingTask):
         code += 'return img\n'
         code = wrap_code_in_function(code)
         return code
-    
+
+
 @dataclass
 class DrawWith2ReferencePointsAndColorV2(TrainingTask):
     do_remove_irrelevant_lines: bool = False

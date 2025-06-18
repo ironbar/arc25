@@ -883,5 +883,8 @@ def _get_unique_colors(inputs):
     """
     return np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
 
-
-#TODO: sort the objects by x or y coordinate, using the center
+# TODO: use also squares and lines as reference points
+# TODO: draw vertical and horizontal lines using the center
+# TODO: draw pixels using the center
+# TODO: more complex task that has pairs of points of different colors, and draws rectangles or lines between them
+# TODO: use other reference points from an object for drawing (other than the center)

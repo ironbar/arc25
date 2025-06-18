@@ -51,6 +51,7 @@ def plot_correlation_matrix(correlation_matrix, dsl_primitives):
     plt.yticks(ticks=np.arange(len(dsl_primitives)), labels=dsl_primitives)
     plt.title('DSL Primitives Usage Correlation Matrix')
     plt.tight_layout()
+    plt.grid(alpha=0.2)
     plt.show()
 
 

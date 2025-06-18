@@ -801,7 +801,7 @@ class CropObjectOfExtremePosition(TrainingTask):
 
 
 @dataclass
-class DrawWith2ReferencePoints(TrainingTask):
+class DrawWith2CentersReferencePoints(TrainingTask):
     min_inputs: int = 3
     max_inputs: int = 5
     min_side: int = 8
@@ -844,7 +844,7 @@ class DrawWith2ReferencePoints(TrainingTask):
     
 
 @dataclass
-class DrawWith2ReferencePointsAndColor(DrawWith2ReferencePoints):
+class DrawWith2CentersReferencePointsAndColor(DrawWith2CentersReferencePoints):
     @staticmethod
     def _get_single_color():
         return True
@@ -862,7 +862,7 @@ class DrawWith2ReferencePointsAndColor(DrawWith2ReferencePoints):
 
 
 @dataclass
-class DrawWith2ReferencePointsAndColorV2(DrawWith2ReferencePoints):
+class DrawWith2CentersReferencePointsAndColorV2(DrawWith2CentersReferencePoints):
     @staticmethod
     def _get_single_color():
         return False

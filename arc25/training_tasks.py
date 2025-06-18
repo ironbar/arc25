@@ -863,6 +863,8 @@ class DrawWith2CentersReferencePointsAndColor(DrawWith2CentersReferencePoints):
 
 @dataclass
 class DrawWith2CentersReferencePointsAndColorV2(DrawWith2CentersReferencePoints):
+    do_remove_irrelevant_lines: bool = False
+
     @staticmethod
     def _get_single_color():
         return False
@@ -880,13 +882,58 @@ class DrawWith2CentersReferencePointsAndColorV2(DrawWith2CentersReferencePoints)
         return code
 
 
+class DrawVerticalAndHorizontalLinesWithCentersReferencePoints(DrawWith2CentersReferencePoints):
+    "Input should be an image with points, 3d lines or 3x3 squares, colors are random"
+    do_remove_irrelevant_lines: bool = False
+    # TODO: make the input images more diverse, having objects of different areas
+    # TODO: make a variant where the color of the line is the same as the object
+
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        if random.random() < 0.5:
+            code += f'objects = sorted(objects, key=lambda x: x.center[{random.choice([0, 1])}], reverse={random.choice([True, False])})\n'
+        else:
+            code += f'objects = sorted(objects, key=lambda x: x.area, reverse={random.choice([True, False])})\n'
+        color = random.choice([color for color in range(10) if color != metadata['background_color']])
+        code += 'for object in objects:\n'
+        if random.random() < 0.5:
+            code += f'    draw_vertical_line(img, object.center[1], color={color})\n'
+        else:
+            code += f'    draw_horizontal_line(img, object.center[0], color={color})\n'
+        if random.random() < 0.5:
+            code += f'    draw_object(img, object)\n'
+        code += 'return img\n'
+        code = wrap_code_in_function(code)
+        return code
+    
+class DrawPixelsWithCentersReferencePoints(DrawWith2CentersReferencePoints):
+    "Input should be an image with points, 3d lines or 3x3 squares, colors are random"
+    do_remove_irrelevant_lines: bool = False
+
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        if random.random() < 0.5:
+            code += f'objects = sorted(objects, key=lambda x: x.center[{random.choice([0, 1])}], reverse={random.choice([True, False])})\n'
+        else:
+            code += f'objects = sorted(objects, key=lambda x: x.area, reverse={random.choice([True, False])})\n'
+        color = random.choice([color for color in range(10) if color != metadata['background_color']])
+        code += 'for object in objects:\n'
+        code += f'    offset = np.array({np.random.randint(-1, 2, size=2).tolist()})\n'
+        code += f'    draw_pixel(img, object.center + offset, color={color})\n'
+        code += 'return img\n'
+        code = wrap_code_in_function(code)
+        return code
+
+
+
+
 def _get_unique_colors(inputs):
     """
     Helper function to get unique colors from a list of images.
     """
     return np.unique(np.concatenate([np.unique(input) for input in inputs])).tolist()
 
-# TODO: draw vertical and horizontal lines using the center
-# TODO: draw pixels using the center
 # TODO: more complex task that has pairs of points of different colors, and draws rectangles or lines between them
 # TODO: use other reference points from an object for drawing (other than the center)

@@ -27,6 +27,8 @@ Task = namedtuple("Task", ["inputs", "outputs", "code", 'name'])
 
 
 class TrainingTask(ABC):
+    do_remove_irrelevant_lines: bool = True
+
     def sample(self, n_tries=3):
         ret = self.create_inputs()
         if isinstance(ret, tuple):
@@ -44,7 +46,7 @@ class TrainingTask(ABC):
                     code = self.create_code(inputs, *metadata)
                 else:
                     code = self.create_code(inputs)
-                code = validate_code(code, inputs)
+                code = validate_code(code, inputs, do_remove_irrelevant_lines=self.do_remove_irrelevant_lines)
                 is_valid_code = True
                 break
             except InvalidCode as e:
@@ -840,6 +842,32 @@ class DrawWith2ReferencePointsAndColor(TrainingTask):
     def create_code(self, inputs, metadata):
         parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
         code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        if random.random() < 0.5:
+            code += f'draw_rectangle(img, objects[0].center, objects[1].center, color=objects[0].color)\n'
+        else:
+            code += f'draw_line(img, objects[0].center, objects[1].center, color=objects[0].color)\n'
+        code += 'return img\n'
+        code = wrap_code_in_function(code)
+        return code
+    
+@dataclass
+class DrawWith2ReferencePointsAndColorV2(TrainingTask):
+    do_remove_irrelevant_lines: bool = False
+    min_inputs: int = 3
+    max_inputs: int = 5
+    min_side: int = 8
+    max_side: int = 10
+    min_objects: int = 2
+    max_objects: int = 2
+    allowed_sizes: list[int] = field(default_factory=lambda: [1])
+
+    def create_inputs(self):
+        return create_inputs_generate_arc_image_with_random_objects(**asdict(self), single_color=False)
+
+    def create_code(self, inputs, metadata):
+        parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
+        code = f"objects = detect_objects(img, {', '.join(f'{k}={v}' for k, v in parameters.items())})\n"
+        code += f'objects = sorted(objects, key=lambda x: x.center[{random.choice([0, 1])}], reverse={random.choice([True, False])})\n'
         if random.random() < 0.5:
             code += f'draw_rectangle(img, objects[0].center, objects[1].center, color=objects[0].color)\n'
         else:

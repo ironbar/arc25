@@ -19,7 +19,7 @@ def wrap_code_in_function(code):
     return function_code
 
 
-def validate_code(code, inputs):
+def validate_code(code, inputs, do_remove_irrelevant_lines=True):
     """
     1. Validates that the code is safe and deterministic
     2. Verifies that the task is meaningful and valid
@@ -30,8 +30,9 @@ def validate_code(code, inputs):
     outputs =  safe_code_execution(code, inputs)
     check_at_least_one_output_is_different_to_input(inputs, outputs)
     check_all_outputs_are_valid(outputs)
-    validated_code = remove_irrelevant_lines(code, inputs, outputs)
-    return validated_code
+    if do_remove_irrelevant_lines:
+        code = remove_irrelevant_lines(code, inputs, outputs)
+    return code
 
 
 class UnsafeCode(Exception):

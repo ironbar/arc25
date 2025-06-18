@@ -872,11 +872,12 @@ class DrawWith2CentersReferencePointsAndColorV2(DrawWith2CentersReferencePoints)
         return code
 
 
+@dataclass
 class DrawVerticalAndHorizontalLinesWithCentersReferencePoints(DrawWith2CentersReferencePoints):
     "Input should be an image with points, 3d lines or 3x3 squares, colors are random"
     do_remove_irrelevant_lines: bool = False
-    # TODO: make the input images more diverse, having objects of different areas
-    # TODO: make a variant where the color of the line is the same as the object
+    min_objects: int = 2
+    max_objects: int = 4
 
     def create_code(self, inputs, metadata):
         parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})
@@ -885,7 +886,10 @@ class DrawVerticalAndHorizontalLinesWithCentersReferencePoints(DrawWith2CentersR
             code += f'objects = sorted(objects, key=lambda x: x.center[{random.choice([0, 1])}], reverse={random.choice([True, False])})\n'
         else:
             code += f'objects = sorted(objects, key=lambda x: x.area, reverse={random.choice([True, False])})\n'
-        color = random.choice([color for color in range(10) if color != metadata['background_color']])
+        if random.random() < 0.5:
+            color = random.choice([color for color in range(10) if color != metadata['background_color']])
+        else:
+            color = 'object.color'
         code += 'for object in objects:\n'
         if random.random() < 0.5:
             code += f'    draw_vertical_line(img, object.center[1], color={color})\n'
@@ -898,9 +902,12 @@ class DrawVerticalAndHorizontalLinesWithCentersReferencePoints(DrawWith2CentersR
         return code
 
 
+@dataclass
 class DrawPixelsWithCentersReferencePoints(DrawWith2CentersReferencePoints):
     "Input should be an image with points, 3d lines or 3x3 squares, colors are random"
     do_remove_irrelevant_lines: bool = False
+    min_objects: int = 2
+    max_objects: int = 4
 
     def create_code(self, inputs, metadata):
         parameters = dict({key: metadata[key] for key in ['connectivity', 'monochrome', 'background_color']})

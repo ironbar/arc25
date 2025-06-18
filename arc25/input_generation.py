@@ -160,6 +160,7 @@ def generate_arc_image_with_random_objects(
     connectivity: int = 4,
     background_color: int = 0,
     allowed_colors: Optional[list[int]] = None,
+    single_color: bool = False,
     max_attempts: int = 1_000,
     random_shape_probability: float = 0.5,
     line_shape_probability: float = 0.5,
@@ -188,6 +189,7 @@ def generate_arc_image_with_random_objects(
     background_color : value used for empty cells (default 0).
     allowed_colors   : list of usable colours for objects; if None
                        it defaults to all digits 0-9 except background.
+    single_color     : if True, all objects are of the same colour.
     max_attempts     : cap on placement attempts.
     random_shape_probability : chance of drawing a free-form shape (0–1).
     line_shape_probability : chance of drawing a line shape (0–1), when regular shape is chosen
@@ -203,6 +205,11 @@ def generate_arc_image_with_random_objects(
         raise ValueError("connectivity must be 4 or 8")
     if not 0 <= background_color <= 9:
         raise ValueError("background_color must be in 0–9")
+    
+    allowed_colors = allowed_colors or list(range(10))
+    allowed_colors = [c for c in allowed_colors if c != background_color]
+    if single_color:
+        allowed_colors = [random.choice(allowed_colors)]
 
     palette = (
         [c for c in range(10) if c != background_color]
@@ -344,6 +351,7 @@ def create_inputs_generate_arc_image_with_random_objects(
         random_shape_probability: float = 0.5,
         line_shape_probability: float = 0.5,
         monochrome: Optional[bool] = None,
+        single_color: bool = False,
         **kwargs):
     n_inputs = random.randint(min_inputs, max_inputs)
     shapes = [np.random.randint(min_side, max_side + 1, 2) for _ in range(n_inputs)]
@@ -352,7 +360,8 @@ def create_inputs_generate_arc_image_with_random_objects(
                     monochrome= monochrome or random.choice([True, False]),
                     background_color=random.choice([0]*18 + list(range(1, 10))),
                     random_shape_probability=random_shape_probability,
-                    line_shape_probability=line_shape_probability)
+                    line_shape_probability=line_shape_probability,
+                    single_color=single_color,)
     if n_allowed_colors is not None:
         allowed_colors = random.sample([color for color in range(10) if color != metadata['background_color']], n_allowed_colors)
     else:

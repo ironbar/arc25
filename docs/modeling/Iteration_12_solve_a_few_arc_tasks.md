@@ -37,6 +37,65 @@ teach the core knowledge that is needed for ARC.
 - [x] Learn to draw using color of the objects as a reference
 - [ ] More tasks about selecting an object that has some unique or extreme property
 
+### Training
+
+<details>
+  <summary>Click to expand/collapse this section</summary>
+
+```bash
+export N_GPUS=2
+export PARAMETERS=0.5B
+export LEARNING_RATE=1e-4
+export STEPS=2000; condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-18-more-training-tasks/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len 6144 \
+--logging-steps 10 \
+--eval-steps 50 \
+--save-steps 200 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+export N_GPUS=2
+export PARAMETERS=1.5B
+export LEARNING_RATE=1e-4
+export STEPS=2000; condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-18-more-training-tasks/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len 6144 \
+--logging-steps 10 \
+--eval-steps 50 \
+--save-steps 200 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-18-more-training-tasks /mnt/data/MEGA/TEMP --exclude wandb/* --exclude *.pt
+```
+
+</details>
+
+
+
 ## Results
 
 ## Conclusion

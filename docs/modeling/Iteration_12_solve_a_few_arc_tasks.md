@@ -94,9 +94,25 @@ rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-18
 
 </details>
 
-
-
 ## Results
+
+### Influence of training steps and diversity of predictions
+
+When making predictions with a model trained for 8k steps I was surprised to see that only produced 1 unique
+prediction (making a ton of repeated predictions)
+
+| task \ steps (k) | 1   | 2   | 4   | 8  | 16 |
+|------------------|-----|-----|-----|----|----|
+| 1bfc4729         | 2   | 16  | 10  | 1  | 14 |
+| 0ca9ddb6         | 69  | 31  | 20  | 17 | 11 |
+| 178fcbfb         | 5   | 10  | 5   | 8  | 6  |
+| 0d3d703e         | 121 | 120 | 115 | 14 | 88 |
+
+The table below shows the number of unique and valid predictions for the `Qwen2.5-Coder-0.5` model.
+The total number of predictions was 136.
+The relation is unclear and inconsistent between tasks.
+
+Thus so far does not seem that training for longer reduces the model predictions diversity.
 
 ## Conclusion
 

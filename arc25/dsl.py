@@ -238,12 +238,7 @@ class Object:
         self.pixel_locations = np.array(pixel_locations, dtype=int)
         self.pixel_colors = pixel_colors
         self.bounding_box = self._compute_bounding_box()
-
         self.colors = set(pixel_colors)
-        if len(self.colors) == 1:
-            self.color = self.pixel_colors[0]
-        else:
-            self.color = None
 
     def _compute_bounding_box(self):
         # Compute the bounding box: min_row, min_col, max_row, max_col
@@ -252,6 +247,13 @@ class Object:
         min_col = min([x[1] for x in self.pixel_locations])
         max_col = max([x[1] for x in self.pixel_locations])
         return BoundingBox(min_row=min_row, min_col=min_col, max_row=max_row, max_col=max_col)
+
+    @property
+    def color(self):
+        if len(self.colors) == 1:
+            return self.pixel_colors[0]
+        else:
+            return None
 
     @property
     def area(self):
@@ -308,7 +310,6 @@ class Object:
 
     # TODO: does this function belongs to the Object class?
     def change_color(self, color: int):
-        self.color = color
         self.pixel_colors = [color] * self.area
         self.colors = [color]
 

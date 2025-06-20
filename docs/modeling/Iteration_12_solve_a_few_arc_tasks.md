@@ -90,6 +90,29 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
 
 export N_GPUS=2
+export PARAMETERS=3B
+export LEARNING_RATE=1e-4
+export STEPS=1000; condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-18-more-training-tasks/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len 6144 \
+--logging-steps 10 \
+--eval-steps 50 \
+--save-steps 200 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+export N_GPUS=2
 export PARAMETERS=7B
 export LEARNING_RATE=1e-4
 export STEPS=1000; condor_submit train.condor command="

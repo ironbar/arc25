@@ -29,3 +29,4 @@ cmake
 deepspeed
 pynvml
 opencv-python
+liger-kernel

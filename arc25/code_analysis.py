@@ -9,7 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def analyze_dsl_usage(functions):
+def analyze_dsl_usage(functions, remove_unused_primitives=True):
     dsl_function_names = _get_dsl_function_names() + ['sorted', 'max', 'min']
     dsl_class_attributes = _get_dsl_class_attributes()
     dsl_primitives = [f'{function_name}(' for function_name in dsl_function_names] \
@@ -27,10 +27,18 @@ def analyze_dsl_usage(functions):
             for j in range(i + 1, len(code_dsl_usage)):
                 correlation_matrix[dsl_primitives.index(primitive), dsl_primitives.index(code_dsl_usage[j])] += 1
                 correlation_matrix[dsl_primitives.index(code_dsl_usage[j]), dsl_primitives.index(primitive)] += 1
-        
+
+    if remove_unused_primitives:
+        unused_primitives = [name for name, count in dsl_usage.items() if count == 0]
+        logger.info(f'Removing {len(unused_primitives)} unused DSL primitives: {unused_primitives}')
+        keep_indices = [i for i, name in enumerate(dsl_primitives) if name not in unused_primitives]
+        correlation_matrix = correlation_matrix[keep_indices, :][:, keep_indices]
+        dsl_primitives = [dsl_primitives[i] for i in keep_indices]
+        dsl_usage = {name: count for name, count in dsl_usage.items() if name not in unused_primitives}
+
     # Display the correlation matrix
     plot_correlation_matrix(correlation_matrix, dsl_primitives)
-    
+
     # create a pandas DataFrame for better visualization
     import pandas as pd
     df = pd.DataFrame.from_dict(dsl_usage, orient='index', columns=['Usage Count'])

@@ -110,6 +110,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --save-steps 200 \
 --lora-r 32 \
 --use-dora \
+--use-liger-kernel \
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
 
 export N_GPUS=2

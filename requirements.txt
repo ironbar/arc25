@@ -7,7 +7,7 @@ torch
 torchvision
 torchaudio
 vllm==0.8.5
-accelerate
+accelerate==1.7.0
 wandb
 transformers
 peft

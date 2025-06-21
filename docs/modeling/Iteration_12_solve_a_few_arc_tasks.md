@@ -144,6 +144,11 @@ rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-18
 
 ## Results
 
+I have the feeling that bigger models do better
+I have solved the first real ARC task
+But the lack of generalization is worrying, maybe the training data generation strategy is not the best
+HER works, but needs a model with diverse predictions and good intuition
+
 ### Influence of training steps and diversity of predictions
 
 When making predictions with a model trained for 8k steps I was surprised to see that only produced 1 unique

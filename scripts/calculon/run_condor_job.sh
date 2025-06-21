@@ -13,6 +13,7 @@ ENV_CACHE_DIR="/mnt/scratch/users/gbarbadillo/arc25/cached-environments"  # Dire
 ENV_HASH=$(md5sum $REQUIREMENTS_FILE | awk '{print $1}')  # Hash the requirements.txt
 ENV_DIR="$ENV_CACHE_DIR/venv_$ENV_HASH"
 
+echo "Started job at $(date)"
 # Check if the environment exists
 if [ -d "$ENV_DIR" ]; then
     echo "Environment already exists. Reusing... $ENV_DIR"
@@ -24,8 +25,11 @@ else
     pip3 install --upgrade pip
     pip3 install -r $REQUIREMENTS_FILE
     MAX_JOBS=2 pip3 install flash-attn==2.6.3 --no-build-isolation
+    # fix torch dataloader
+    sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multiprocessing_context='fork',/" $ENV_DIR/lib/python3.10/site-packages/torch/utils/data/dataloader.py
     echo "Environment created and cached at $ENV_DIR."
 fi
 
 $COMMAND
 deactivate
+echo "Finished job at $(date)"

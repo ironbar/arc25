@@ -144,11 +144,6 @@ rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-18
 
 ## Results
 
-I have the feeling that bigger models do better
-I have solved the first real ARC task
-But the lack of generalization is worrying, maybe the training data generation strategy is not the best
-HER works, but needs a model with diverse predictions and good intuition
-
 ### Influence of training steps and diversity of predictions
 
 When making predictions with a model trained for 8k steps I was surprised to see that only produced 1 unique
@@ -166,6 +161,34 @@ The total number of predictions was 136.
 The relation is unclear and inconsistent between tasks.
 
 Thus so far does not seem that training for longer reduces the model predictions diversity.
+
+### Analysis of trying to solve the tasks
+
+| task \ model | 0.5B@1k steps                                                                            | 1.5B@1k steps                                                                                                    | 1.5B@16k steps                                                                             | 3B@1k steps                                                                                          | 7B@1k steps                                                                             |
+|--------------|------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| 08ed6ac7     |                                                                                          |                                                                                                                  |                                                                                            | does not understand that the task is about changing colors, sorting the objects by area              | does not understand that the task is about changing colors, sorting the objects by area |
+| 0b148d64     |                                                                                          |                                                                                                                  |                                                                                            | the most succesfull approach is downscaling instead of selecting and cropping                        | OOM                                                                                     |
+| 0ca9ddb6     | draws 3 points, tries to use area for color. Tried an attempt to use the color as input  | draws 2 points, tries to use area for color                                                                      | draws 2 points, tries to use area for color                                                | draws 4 points, but doesn't understand that color depends on the object color, tries to use the area | draws 3 points, then starts to draw lines                                               |
+| 0d3d703e     | does not understand that  is about colormaps                                             | does not understand that is about colormaps                                                                      | Solved at epoch 6                                                                          | Solved at epoch 2                                                                                    | Solved at epoch 3                                                                       |
+| 178fcbfb     | draws vertical or horizontal lines, but not both                                         | draws vertical and horizontal lines, but does not understand there is a condition                                | only vertical lines, very low diversity                                                    | draws vertical and horizontal lines, but does not understand there is a condition                    | draws vertical and horizontal lines, but does not understand there is a condition       |
+| 1bfc4729     | only horizontal lines                                                                    | only horizontal lines                                                                                            | does not understand the task, draws horizontal lines on the points and the rest is garbage | low diversity in predictions, does not improve over horizontal lines                                 | many different predictions, but not in the correct direction                            |
+| 1c786137     |                                                                                          | chooses the object using height instead of area, maybe another property is needed. Probably color should be used |                                                                                            | does not understand the task                                                                         | OOM                                                                                     |
+
+### Thoughts
+
+- I have the feeling that bigger models do better
+- I have solved the first real ARC task, although it was very simple it required adaptation with HER
+- But the lack of generalization is worrying, maybe the training data generation strategy is not the best
+- Lack of creativity, only does what it has learned to do during training
+- HER works, but needs a model with diverse predictions and good intuition
+
+If the model is in the right direction, I believe it's very likely that HER will help to achieve the
+correct solution. However so far the model is lacking that ability to understand the tasks and use
+the appropriate DSL primitives to solve the problem.
+
+Another problem is the low diversity in the proposed solutions. For some tasks-model combinations it is
+as low as proposing the same solution over and over. Reinforcement learning requires exploration to
+solve a problem, and in many cases the solution space is not being explored correctly.
 
 ## Conclusion
 

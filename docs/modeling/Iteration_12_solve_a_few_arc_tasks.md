@@ -190,6 +190,10 @@ Another problem is the low diversity in the proposed solutions. For some tasks-m
 as low as proposing the same solution over and over. Reinforcement learning requires exploration to
 solve a problem, and in many cases the solution space is not being explored correctly.
 
+Deep learning works when the training set densely covers the space. That is not the case for the current
+training tasks. It was the case for the toy drawing problem, because the space was small. However when the
+DSL grows that becomes more and more difficult.
+
 ## Conclusion
 
 ## Next steps

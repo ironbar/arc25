@@ -47,6 +47,10 @@ for the same task and answers with the most promising solution.
 We know that o3 was trained with reinforcement learning on the ARC training set. This RL trained
 gave o3 the abilities to explore different solutions to the tasks and to select the one that is most likely correct.
 
+This approach has some problems:
+
+- Since it generates the grids directly, it can make errors despite describing the tasks correctly. There are not correction guarantees.
+
 ### The bitter lesson
 
 Search and learn, the two methods that can scale arbitrarily with compute, noticed brilliantly on [Richard Sutton blogpost](http://www.incompleteideas.net/IncIdeas/BitterLesson.html).

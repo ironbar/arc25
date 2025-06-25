@@ -69,7 +69,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 export N_GPUS=2
 export PARAMETERS=1.5B
 export LEARNING_RATE=1e-4
-export STEPS=2000; condor_submit train.condor command="
+export STEPS=16000; condor_submit train.condor command="
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
@@ -92,7 +92,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 export N_GPUS=2
 export PARAMETERS=3B
 export LEARNING_RATE=1e-4
-export STEPS=1000; condor_submit train.condor command="
+export STEPS=16000; condor_submit train.condor command="
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
@@ -116,7 +116,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 export N_GPUS=2
 export PARAMETERS=7B
 export LEARNING_RATE=1e-4
-export STEPS=1000; condor_submit train.condor command="
+export STEPS=16000; condor_submit train.condor command="
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
@@ -128,7 +128,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --per-device-train-batch-size 1 \
 --per-device-eval-batch-size 2 \
 --batch-size 32 \
---max-seq-len 6144 \
+--max-seq-len 5120 \
 --logging-steps 10 \
 --eval-steps 50 \
 --save-steps 200 \
@@ -196,11 +196,23 @@ DSL grows that becomes more and more difficult.
 
 ## Conclusion
 
+On this iteration I have prepared new sample tasks to learn how to use the DSL. Despite of doing this
+job only one real ARC task was solved (and it was simply applying a colormap). 
+
+I have to rethink the approach, because the current implementation does not correctly explore the solution space. 
+Only explores a small fraction of the solution space and repeats the same errors over and over.
+
 ## Next steps
+
+- Better sampling strategy. Could play with temperature, top_k and top_p to create more diverse samples. https://huggingface.co/docs/transformers/v4.52.3/en/main_classes/text_generation#transformers.GenerationConfig.temperature
+- Better training objective. label_smoothing_factor might be used to preserve entropy. https://huggingface.co/docs/transformers/v4.52.3/en/main_classes/trainer#transformers.TrainingArguments.label_smoothing_factor
+- Validation might be solved ARC tasks. That way I could better measure the effect of the training tasks.
+- Reread transduction and induction paper, and code.
+- What if I give hints of how to solve the problem? Is the model capable on that case?
 
 ## TODO
 
-- [ ] Write new training tasks to solve the current knowledge gaps of the model
+- [x] Write new training tasks to solve the current knowledge gaps of the model
 - [ ] I need a way to do evaluation at scale, using multiple GPUs, and saving all the generated tasks when searching for a solution.
 - [ ] If possible I should use Kaggle compute for evaluation. It is almost free and is a good way to store and visualize results.
 - [ ] Compositionality, can the model solve the task that selects the biggest object, crop and trim? That

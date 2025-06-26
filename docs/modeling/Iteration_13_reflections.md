@@ -15,7 +15,13 @@ clear goal. This allows to gain greater knowledge of the problem on each iterati
 
 Think about the current approach and propose next steps.
 
+## Motivation
+
+I need a solid theoretical foundation before I continue working to solve ARC.
+
 ## Analysis of the current problems
+
+TODO:
 
 ## Thoughts about ARC
 
@@ -50,24 +56,29 @@ gave o3 the abilities to explore different solutions to the tasks and to select 
 This approach has some problems:
 
 - Since it generates the grids directly, it can make errors despite describing the tasks correctly. There are not correction guarantees.
+- Search won't be enough if the policy has wrong beliefs
 
 ### The bitter lesson
 
-Search and learn, the two methods that can scale arbitrarily with compute, noticed brilliantly on [Richard Sutton blogpost](http://www.incompleteideas.net/IncIdeas/BitterLesson.html).
+Search and learn, the two methods that can scale arbitrarily with compute, noticed brilliantly by [Richard Sutton](http://www.incompleteideas.net/IncIdeas/BitterLesson.html).
 
 Search and learn are the two methods that allow to adapt to novelty. We can search a program to do a new task,
 or we can learn the new task directly.
 
+### Search in the program space
+
+I like the search approach, but I believe it's better to search in the space of python programs. That allows
+to execute the code and if the code is correct the output will be correct. This gives much more stronger
+guarantees than learning or searching in the space of natural language programs.
+
+However this requires to develop or to have a domain specific language (DSL). The expressivity of the
+system will be tied to this DSL, if the DSL is not complete the system won't be able to solve ARC.
+
+But I would argue that the same limitation applies to o3. Those transformations that weren't learned
+on the training set, won't be able to be applied at test time. Because during training o3 has developed
+its own natural language DSL.
+
 ### Synthesis: Search and learn
-
-Limited to the expresivity of the DSL, but same applies to o3. It cannot do the actions that weren't described
-on the training set.
-
-## Motivation
-
-## Development
-
-## Results
 
 ## Conclusion
 

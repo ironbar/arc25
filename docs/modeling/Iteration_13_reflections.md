@@ -78,7 +78,25 @@ But I would argue that the same limitation applies to o3. Those transformations 
 on the training set, won't be able to be applied at test time. Because during training o3 has developed
 its own natural language DSL.
 
+If we want to search, we should probably train the model to do search. That would be done with RL.
+Currently, I'm not doing that, just supervised fine-tuning on single turn conversation.
+
 ### Synthesis: Search and learn
+
+My bet is to combine search and learning. I believe that it should be the most efficient approach and
+that is how human intelligence works.
+
+The system would search python programs that implement the new task. And it will refine its search
+policy using hindsight experience replay. I believe that should reduce the number of search steps dramatically.
+
+My current approach is failing at search (exploration). It does not explore the full solution space,
+and repeats the errors over and over. This happens because:
+
+- The model has not been trained to search, that requires RL or distillation from a model that knows
+  how to search
+- The current generation setup has no memory. All the predictions are independent, and that allows
+  to repeat the errors over and over. I'm doing parallel search, when probably for ARC has more
+  sense to do sequential search.
 
 ## Conclusion
 
@@ -86,4 +104,5 @@ its own natural language DSL.
 
 ## TODO
 
-- [ ]
+- [ ] I don't know how to do RL with tool use
+- [ ] What is the max sequence length for training and inference on a GPU with 24GB of VRAM?

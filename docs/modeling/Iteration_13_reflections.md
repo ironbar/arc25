@@ -132,7 +132,12 @@ and repeats the errors over and over. This happens because:
 
 ## Next steps
 
-## TODO
-
-- [ ] I don't know how to do RL with tool use
-- [ ] What is the max sequence length for training and inference on a GPU with 24GB of VRAM?
+- What is the max sequence length for training and inference on a GPU with 24GB of VRAM?
+- Better sampling strategy. Could play with temperature, top_k and top_p to create more diverse samples. https://huggingface.co/docs/transformers/v4.52.3/en/main_classes/text_generation#transformers.GenerationConfig.temperature
+- What if I give hints of how to solve the problem int the prompt? Is the model capable on that case?
+- What if I have a multi-turn conversation with the model to improve its own code?
+- Reread transduction and induction paper, and code.
+- Learn how to do RL with tool use
+- Define the new data strategy. I might refactor an existing DSL. Given the typed hints to the model could allow to learn how to use it. I could try to generate tasks with LLMs.
+- Better training objective. label_smoothing_factor might be used to preserve entropy. https://huggingface.co/docs/transformers/v4.52.3/en/main_classes/trainer#transformers.TrainingArguments.label_smoothing_factor
+- Validation might be solved ARC tasks. That way I could better measure the effect of the training tasks.

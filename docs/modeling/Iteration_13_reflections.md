@@ -21,7 +21,37 @@ I need a solid theoretical foundation before I continue working to solve ARC.
 
 ## Analysis of the current problems
 
-TODO:
+Despite adding more sample training tasks it only solved one real ARC task that is very easy.
+
+### Bad exploration
+
+The solution space is not fully explored, seems to be limited to repeat what it saw on training. This
+is a huge problem, because without exploration(trying new approaches) we cannot solve any novel task.
+
+On a game the action space is small, but the search space of an LLM is huge.
+
+### Bias on the training data
+
+There might be problems (bias) with the training data. If each primitive function is used just on a different
+data distribution, the model might learn the association between code and inputs, ignoring the outputs completely.
+Ideally the same input would be reused on all tasks.
+
+If this problem exists, it's difficult for the model to develop the intuition needed to solve new tasks.
+
+### Compositionality
+
+Could a model trained on single step tasks learn to combine the steps to create multi-step tasks? I'm not sure.
+Probably we should train for n steps, and hope that it could do novel combinations at test-time.
+
+### Training data generation
+
+Could an LLM generate novel tasks given code examples? Maybe because if we just give the information
+as code, is a higher level abstraction than the ARC tasks and the domain of LLMs.
+
+That was done in the transduction and induction paper, I need to revisit it. It would be a more direct
+development because I would just write solutions for the ARC tasks and generators for the inputs.
+
+And if later I see holes, I could create new tasks.
 
 ## Thoughts about ARC
 

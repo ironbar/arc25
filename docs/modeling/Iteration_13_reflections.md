@@ -2,15 +2,6 @@
 
 _23-06-2025_
 
-<!---
-The work is done using short iterations. Each iteration needs to have a very
-clear goal. This allows to gain greater knowledge of the problem on each iteration.
-
-<details>
-  <summary>Click to expand/collapse this section</summary>
-</details>
---->
-
 ## Goal
 
 Think about the current approach and propose next steps.
@@ -130,12 +121,18 @@ and repeats the errors over and over. This happens because:
 
 ## Conclusion
 
+After this reflections I have a much clearer view of the challenges that need to be addressed to
+solve ARC. I have to do a follow-up iteration to gain more information, and after that I would
+redefine the strategy. I should start with humble goals, like solving a few real ARC tasks, but
+at the same time with approaches that can scale once I verify that they work.
+
 ## Next steps
 
-- What is the max sequence length for training and inference on a GPU with 24GB of VRAM?
-- Better sampling strategy. Could play with temperature, top_k and top_p to create more diverse samples. https://huggingface.co/docs/transformers/v4.52.3/en/main_classes/text_generation#transformers.GenerationConfig.temperature
-- What if I give hints of how to solve the problem int the prompt? Is the model capable on that case?
-- What if I have a multi-turn conversation with the model to improve its own code?
+- In the next iteration
+  - What is the max sequence length for training and inference on a GPU with 24GB of VRAM?
+  - Better sampling strategy. Could play with temperature, top_k and top_p to create more diverse samples. https://huggingface.co/docs/transformers/v4.52.3/en/main_classes/text_generation#transformers.GenerationConfig.temperature
+  - What if I give hints of how to solve the problem int the prompt? Is the model capable on that case?
+  - What if I have a multi-turn conversation with the model to improve its own code?
 - Reread transduction and induction paper, and code.
 - Learn how to do RL with tool use
 - Define the new data strategy. I might refactor an existing DSL. Given the typed hints to the model could allow to learn how to use it. I could try to generate tasks with LLMs.

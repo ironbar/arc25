@@ -66,7 +66,7 @@ This approach can be improved by:
 This approach is less likely to work on complex tasks that require multiple steps, or rules interacting with each other.
 Thus it does not seem the most promising way to solve ARC-AGI-2.
 
-### Search
+### Search. Induction
 
 It seems that o3 does search in the space of natural language programs. It describes the task with
 natural language and generates the output using that description. It tries different approaches

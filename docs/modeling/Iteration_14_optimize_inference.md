@@ -28,7 +28,19 @@ without redesigning the training and the strategy.
 
 ### Max sequence length
 
+I could generate and train on up to 32k sequences with a GPU of 24GB of VRAM.
+
 #### Inference
+
+I have verified that all the Qwen-Coder models listed below can generate 32k tokens on a 4090GPU.
+They differ in speed and on GPU utilization.
+
+| model | tokens/s |
+|-------|----------|
+| 0.5B  | 49.8     |
+| 1.5B  | 39.6     |
+| 3B    | 27.4     |
+| 7B    | 18.6     |
 
 #### Training
 
@@ -48,7 +60,7 @@ Notice how the training speed decreases with the sequence length.
 
 ## TODO
 
-- [ ] What is the max sequence length for training and inference on a GPU with 24GB of VRAM?
+- [x] What is the max sequence length for training and inference on a GPU with 24GB of VRAM?
 - [ ] Better sampling strategy. Could play with temperature, top_k and top_p to create more diverse samples. https://huggingface.co/docs/transformers/v4.52.3/en/main_classes/text_generation#transformers.GenerationConfig.temperature
 - [ ] What if I give hints of how to solve the problem int the prompt? Is the model capable on that case?
 - [ ] What if I have a multi-turn conversation with the model to improve its own code?

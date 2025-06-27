@@ -26,6 +26,22 @@ without redesigning the training and the strategy.
 
 ## Results
 
+### Max sequence length
+
+#### Inference
+
+#### Training
+
+If we use liger kernels and gradient checkpoint we can train the 0.5B model in a GPU with 24GB of VRAM
+and a sequence length of 32000.
+
+![alt text](res/1751035022370_image.png)
+
+We can train with up to 32k tokens with the 3B model, for the 7B model we can only reach 16k tokens.
+Notice how the training speed decreases with the sequence length.
+
+![alt text](res/1751035076528_image.png)
+
 ## Conclusion
 
 ## Next steps

@@ -54,6 +54,24 @@ Notice how the training speed decreases with the sequence length.
 
 ![alt text](res/1751035076528_image.png)
 
+### Better sampling parameters
+
+We can play with the temperature or top_p to induce more variability in the predictions, but still
+not enough. In the best scenario the rate of unique predictions is just 17% (45/256).
+
+#### Temperature
+
+Increasing the temperature decrease the number of valid predictions, but also can increase the number
+of unique predictions (there is a sweet spot)
+
+![alt text](res/1751102393172_image.png)
+
+#### Top_p
+
+The same effect can be observed with top_p, there is a sweet spot for unique predictions.
+
+![alt text](res/1751102479336_image.png)
+
 ## Conclusion
 
 ## Next steps
@@ -61,6 +79,6 @@ Notice how the training speed decreases with the sequence length.
 ## TODO
 
 - [x] What is the max sequence length for training and inference on a GPU with 24GB of VRAM?
-- [ ] Better sampling strategy. Could play with temperature, top_k and top_p to create more diverse samples. https://huggingface.co/docs/transformers/v4.52.3/en/main_classes/text_generation#transformers.GenerationConfig.temperature
+- [x] Better sampling parameters. Could play with temperature, top_k and top_p to create more diverse samples. https://huggingface.co/docs/transformers/v4.52.3/en/main_classes/text_generation#transformers.GenerationConfig.temperature
 - [ ] What if I give hints of how to solve the problem int the prompt? Is the model capable on that case?
 - [ ] What if I have a multi-turn conversation with the model to improve its own code?

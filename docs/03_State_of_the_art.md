@@ -92,6 +92,11 @@ I don't understand the method well but it seems to be trying to create a compres
 - They use [sglang](https://github.com/sgl-project/sglang) for inference
 - By looking at the code it seems that they use `temperature=1.0` for inference
 
+I believe this paper is in the right direction. It uses code, hindsight relabelling and combines search and learning. Why it does not solve ARC?
+
+- Maybe a tighter integration between search and learning is needed, a more integral approach.
+- Using a DSL could also have a big effect, but probably not enough to solve ARC
+
 ### [CodeIt: Self-Improving Language Models with Prioritized Hindsight Replay](https://arxiv.org/abs/2402.04858)
 
 This is a very interesting paper that uses code and hindsight experience replay. They use [Hodel's DSL](https://github.com/michaelhodel/re-arc) as a start point but they apply mutation to augment the tasks.

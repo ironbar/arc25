@@ -74,6 +74,24 @@ I don't understand the method well but it seems to be trying to create a compres
 
 ## Reasoning, code and RL
 
+### [Self-Improving Language Models for Evolutionary Program Synthesis: A Case Study on ARC-AGI](https://icml.cc/virtual/2025/poster/43499)
+
+> Many program synthesis tasks prove too challenging for even state-of-the-art language models to solve in single attempts. Search-based evolutionary methods offer a promising alternative by exploring solution spaces iteratively, but their effectiveness remain limited by the fixed capabilities of the underlying generative model. We propose SOAR, a method that learns program synthesis by integrating language models into a self-improving evolutionary loop. SOAR alternates between an evolutionary search that uses an LLM to sample and refine candidate solutions, and a hindsight learning phase that converts search attempts into valid problem-solution pairs used to fine-tune the LLM's sampling and refinement capabilities—enabling increasingly effective search in subsequent iterations. On the challenging ARC-AGI benchmark, SOAR achieves significant performance gains across model scales and iterations, leveraging positive transfer between the sampling and refinement finetuning tasks. These improvements carry over to test-time adaptation, enabling SOAR to solve 52\% of the public test set.
+
+![SOAR results](res/1752485393103_image.png)
+
+![alt text](res/1752492484931_image.png)
+
+- It does not use a DSL, writes all the python code directly. I believe that the DSL allows for shorter programs, enabling faster and easier exploration. Maybe we can give the interface of the DSL functions as input to the model.
+- Search is mostly independent, they do 3k samples in the first place and then try to refine those. I believe it is more efficient to have a more global view when searching.
+- One thing that worries me is that the improvement of test-time training is small, just 3-5%. There is no table that makes this explicit
+- It seems that no data augmentation was used, this could improve the results slightly but won't be game-changer
+- It is beneficial to use data from all the models, diversity is crucial
+- Bigger models get better scores
+- Remember that closed frontier models could score higher than 50% just with search
+- They use [sglang](https://github.com/sgl-project/sglang) for inference
+- By looking at the code it seems that they use `temperature=1.0` for inference
+
 ### [CodeIt: Self-Improving Language Models with Prioritized Hindsight Replay](https://arxiv.org/abs/2402.04858)
 
 This is a very interesting paper that uses code and hindsight experience replay. They use [Hodel's DSL](https://github.com/michaelhodel/re-arc) as a start point but they apply mutation to augment the tasks.

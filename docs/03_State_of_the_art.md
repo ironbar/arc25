@@ -48,7 +48,7 @@ Probably the best implementation and description was done by [the Architects](ht
 
 Update: The MindsAI team has published [a paper](https://github.com/MohamedOsman1998/deep-learning-for-arc/blob/main/deep_learning_for_arc.pdf) describing their approach.
 
-## Code generation
+## Code generation (Search)
 
 Different attempts have tried using LLMs to generate python code to solve the ARC tasks. This induction approach has the advantage that the functions can be verified, whereas output grids from the transduction approach cannot be verified.
 This allows to generate thousands of candidate solutions and filter all those that do not generate correct outputs
@@ -57,6 +57,19 @@ for the training samples. The main differences between this methods is how the m
 - [Summary of the progress in the public leaderboard in 2024](https://arcprize.org/blog/2024-progress-arc-agi-pub)
 - [Jeremy Berman](https://jeremyberman.substack.com/p/how-i-got-a-record-536-on-arc-agi) uses an approach similar to [FunSearch](https://deepmind.google/discover/blog/funsearch-making-new-discoveries-in-mathematical-sciences-using-large-language-models/)
 - [Ryan Greenblatt](https://redwoodresearch.substack.com/p/getting-50-sota-on-arc-agi-with-gpt) was the first to show that this approach could work and how it scaled with the number of predictions.
+
+### [Inference-Time Scaling and Collective Intelligence for Frontier AI](https://sakana.ai/ab-mcts/)
+
+> Recent advances demonstrate that increasing inference-time computation can significantly boost the reasoning capabilities of large language models (LLMs). Although repeated sampling (i.e., generating multiple candidate outputs) is a highly effective strategy, it does not leverage external feedback signals for refinement, which are often available in tasks like coding. In this work, we propose Adaptive Branching Monte Carlo Tree Search (AB-MCTS), a novel inference-time framework that generalizes repeated sampling with principled multi-turn exploration and exploitation. At each node in the search tree, AB-MCTS dynamically decides whether to "go wider" by expanding new candidate responses or "go deeper" by revisiting existing ones based on external feedback signals. We evaluate our method on complex coding and engineering tasks using frontier models. Empirical results show that AB-MCTS consistently outperforms both repeated sampling and standard MCTS, underscoring the importance of combining the response diversity of LLMs with multi-turn solution refinement for effective inference-time scaling.
+
+![Overview of the search algorithm in Multi-LLM AB-MCTS](res/1752561777382_image.png)
+
+![Results of AB-MCTS and Multi-LLM AB-MCTS on ARC-AGI-2, showing Pass@k as a function of the number of LLM calls.](res/1752562034376_image.png)
+
+This paper is interesting because clearly explains the challenges of search: go wider or deeper?
+Their search strategy learns to decide which LLM to use and wether to go wider or deeper for each ARC problem.
+
+One worrying thing is that even when generating code, they pass@250 of 30% goes down to 19% when doing pass@2. I thought that selecting the correct code was more or less trivial, but does not seem to be the case.
 
 ## [Transduction and induction](https://arxiv.org/abs/2411.02272)
 

@@ -2,9 +2,9 @@
 
 <!--- --->
 
-I'm going to recap all the learnings from the previous [ARC24 challenge](https://www.kaggle.com/competitions/arc-prize-2024).
+I'm going to recap all the learnings from the previous [ARC24 challenge](https://www.kaggle.com/competitions/arc-prize-2024). I would also add new and relevant papers during the ARC25 competition.
 
-## Summary of all the learnings
+## Learnings from ARC24
 
 - Reasoning models trained with RL like `o3` can solve ARC-AGI-1, but they need a lot of compute. That is around [x40000 times](https://x.com/guille_bar/status/1870479630383329472) the compute allowed in the competition ($8 vs $340k). However on ARC-AGI-2 they seem to be scoring below 5%.
 - Test-time training is crucial to improve the accuracy of transduction models. In my case the score improves from 11 to 33.
@@ -12,7 +12,7 @@ I'm going to recap all the learnings from the previous [ARC24 challenge](https:/
 - Induction and transduction are complementary approaches. It would have sense to first try with induction (which has higher guarantees) and use transduction only if induction fails.
 - LLMs struggle with tasks that have big grids, however the fact that `o3` can solve ARC might hint that a 2d representation for the grid is not needed.
 
-## [OpenAI solved the ARC challenge with a tuned version of `o3`](https://arcprize.org/blog/oai-o3-pub-breakthrough)
+### [OpenAI solved the ARC challenge with a tuned version of `o3`](https://arcprize.org/blog/oai-o3-pub-breakthrough)
 
 ![o3 performance](res/2025-03-18-13-59-03.png)
 
@@ -32,7 +32,7 @@ Notice that OpenAI has decided [not to release `o3`](https://techcrunch.com/2025
 Mikel Bobel-Irizar did an [awesome analysis](https://anokas.substack.com/p/llms-struggle-with-perception-not-reasoning-arcagi) of the effect of task length on the accuracy of `o3`. We could
 use upscaling as data augmentation so the model learns to work with bigger images. There is also another [blogpost](https://anokas.substack.com/p/o3-and-arc-agi-the-unsolved-tasks) with the unsolved evaluation tasks.
 
-### Other reasoning models
+#### Other reasoning models
 
 ![other reasoning model results](res/2025-03-18-14-48-47.png)
 
@@ -40,13 +40,22 @@ Other reasoning models such as `r1` and Sonnet 3.7 but none of them achieve as h
 
 Interestingly in the [results](https://arcprize.org/blog/r1-zero-r1-results-analysis) we can see that `r1` uses 6-11k tokens to solve each task. That is between 5 and 10 times less than `o3`.
 
-## Test-time training (TTT)
+### Test-time training (TTT)
 
 Test-time training was arguably the biggest discovery of ARC24 challenge. In retrospective it is clear that if intelligence is all about adaptation to novelty, then we should not keep the models frozen but let them adapt to do new tasks. The MindsAI team found this approach but they decided not to make their solution public.
 
 Probably the best implementation and description was done by [the Architects](https://arxiv.org/abs/2411.07279). There is also a paper named [The Surprising Effectiveness of Test-Time Training for Abstract Reasoning](https://arxiv.org/abs/2411.07279) and my own [solution](https://ironbar.github.io/arc24/05_Solution_Summary/) also used TTT.
 
 Update: The MindsAI team has published [a paper](https://github.com/MohamedOsman1998/deep-learning-for-arc/blob/main/deep_learning_for_arc.pdf) describing their approach.
+
+### [Transduction and induction](https://arxiv.org/abs/2411.02272)
+
+This paper defined the terms transduction (generating the output grid directly) and induction (writing code to solve the tasks) and showed they were complimentary. Additionally they generated 400k new tasks using LLMs, showing that is possible to augment the data.
+
+The [code](https://github.com/xu3kev/BARC) is open-source and I should take a look at it, it could serve as inspiration for creating the DSL.
+
+Notice that they are able to generate new tasks using LLMs because they work directly with code, not with the grid images. So they switch the modality from image to text
+and that way are able to harness the power of LLMs. They used gpt-4o-mini for generation, so today we could use more powerful models for more diverse and complex tasks.
 
 ## Code generation (Search)
 
@@ -70,23 +79,6 @@ This paper is interesting because clearly explains the challenges of search: go 
 Their search strategy learns to decide which LLM to use and wether to go wider or deeper for each ARC problem.
 
 One worrying thing is that even when generating code, they pass@250 of 30% goes down to 19% when doing pass@2. I thought that selecting the correct code was more or less trivial, but does not seem to be the case.
-
-## [Transduction and induction](https://arxiv.org/abs/2411.02272)
-
-This paper defined the terms transduction (generating the output grid directly) and induction (writing code to solve the tasks) and showed they were complimentary. Additionally they generated 400k new tasks using LLMs, showing that is possible to augment the data.
-
-The [code](https://github.com/xu3kev/BARC) is open-source and I should take a look at it, it could serve as inspiration for creating the DSL.
-
-Notice that they are able to generate new tasks using LLMs because they work directly with code, not with the grid images. So they switch the modality from image to text
-and that way are able to harness the power of LLMs. They used gpt-4o-mini for generation, so today we could use more powerful models for more diverse and complex tasks.
-
-## [ARC-AGI without pretraining](https://iliao2345.github.io/blog_posts/arc_agi_without_pretraining/arc_agi_without_pretraining.html)
-
-This novel approach does not use any training data! Scores 4.17 on ARC-AGI-2.
-
-> We propose that lossless information compression can serve as an effective framework for solving ARC-AGI puzzles. A more efficient (i.e., lower-bit) compression of a puzzle correlates with a more accurate solution.
-
-I don't understand the method well but it seems to be trying to create a compressed representation of the task, that is used to generate the output for the test sample.
 
 ## Reasoning, code and RL
 
@@ -199,6 +191,14 @@ Curiosity might be used during training, or during search for node exploration. 
 - [Gemini Deep Research](https://g.co/gemini/share/5d2672835546)
 
 ## Other
+
+### [ARC-AGI without pretraining](https://iliao2345.github.io/blog_posts/arc_agi_without_pretraining/arc_agi_without_pretraining.html)
+
+This novel approach does not use any training data! Scores 4.17 on ARC-AGI-2.
+
+> We propose that lossless information compression can serve as an effective framework for solving ARC-AGI puzzles. A more efficient (i.e., lower-bit) compression of a puzzle correlates with a more accurate solution.
+
+I don't understand the method well but it seems to be trying to create a compressed representation of the task, that is used to generate the output for the test sample.
 
 ### [Searching Latent Program Spaces](https://arxiv.org/abs/2411.08706)
 

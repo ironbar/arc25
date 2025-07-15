@@ -77,6 +77,9 @@ This paper defined the terms transduction (generating the output grid directly) 
 
 The [code](https://github.com/xu3kev/BARC) is open-source and I should take a look at it, it could serve as inspiration for creating the DSL.
 
+Notice that they are able to generate new tasks using LLMs because they work directly with code, not with the grid images. So they switch the modality from image to text
+and that way are able to harness the power of LLMs. They used gpt-4o-mini for generation, so today we could use more powerful models for more diverse and complex tasks.
+
 ## [ARC-AGI without pretraining](https://iliao2345.github.io/blog_posts/arc_agi_without_pretraining/arc_agi_without_pretraining.html)
 
 This novel approach does not use any training data! Scores 4.17 on ARC-AGI-2.
@@ -176,6 +179,24 @@ Very cool paper that shows how test-time RL can help an LLM to optimize rocket d
 Similar to AlphaEvolve in spirit, but using a much smaller LLM that evolves over time.
 
 Is there room for a platform that helps users do this kind of things?
+
+### Learning from sparse and binary rewards
+
+1. Reward shaping
+2. Curiosity: Intrinsic motivation
+3. Hindsight Experience Replay
+4. Curriculum learning
+5. Imitation learning
+
+This search for methods that allow learning from sparse and binary rewards hasn't thrown
+anything new. I was already aware of HER. Curriculum learning might naturally arise in ARC because the model will likely solve easier tasks first, train on them and then solve more complex tasks. Imitation learning is the basis of the training of an LLM. 
+
+**Reward shaping** might be achieved by defining a metric function that isn't binary. However I'm afraid that simple pixel accuracy is not enough: there might be some program that is on the correct direction but has lower accuracy than a program that is in the wrong direction.
+
+Curiosity might be used during training, or during search for node exploration. However again it's difficult to write a metric for curiosity.
+
+- [ChatGPT Deep Research](https://chatgpt.com/share/68765887-ca40-8012-b400-0a46ffd0be8b)
+- [Gemini Deep Research](https://g.co/gemini/share/5d2672835546)
 
 ## Other
 

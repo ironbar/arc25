@@ -80,6 +80,19 @@ Their search strategy learns to decide which LLM to use and wether to go wider o
 
 One worrying thing is that even when generating code, they pass@250 of 30% goes down to 19% when doing pass@2. I thought that selecting the correct code was more or less trivial, but does not seem to be the case.
 
+### [FunSearch](https://deepmind.google/discover/blog/funsearch-making-new-discoveries-in-mathematical-sciences-using-large-language-models/) and [AlphaEvolve](https://deepmind.google/discover/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/)
+
+These two papers describe an evolutionary method where LLMs write code to optimize some function. Funsearch
+used small LLMs that were sampled millions of times, whereas AlphaEvolve uses frontier models that
+only need in the order of thousand calls to optimize the task.
+
+On each new generation the LLM receives the context of the problem, and previous code generation
+with their scores.
+
+This method shows how we can use search with LLMs to discover new solutions to problems. The main difference
+with ARC is that Alphaevolve requires a continuous metric (f.e. execution time, memory usage...) and
+on ARC we have sparse rewards.
+
 ## Reasoning, code and RL
 
 ### [Self-Improving Language Models for Evolutionary Program Synthesis: A Case Study on ARC-AGI](https://icml.cc/virtual/2025/poster/43499)

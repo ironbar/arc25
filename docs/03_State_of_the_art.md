@@ -90,8 +90,10 @@ On each new generation the LLM receives the context of the problem, and previous
 with their scores.
 
 This method shows how we can use search with LLMs to discover new solutions to problems. The main difference
-with ARC is that Alphaevolve requires a continuous metric (f.e. execution time, memory usage...) and
-on ARC we have sparse rewards.
+with ARC is that AlphaEvolve requires a continuous metric (f.e. execution time, memory usage...) and
+on ARC we have sparse rewards. AlphaEvolve requires the continuous metric to be able to evolve the population (they used an island-based method).
+
+Finally they use multiple prompts to increase diversity in the responses.
 
 ## Reasoning, code and RL
 

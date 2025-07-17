@@ -2,15 +2,6 @@
 
 _17-06-2025_
 
-<!---
-The work is done using short iterations. Each iteration needs to have a very
-clear goal. This allows to gain greater knowledge of the problem on each iteration.
-
-<details>
-  <summary>Click to expand/collapse this section</summary>
-</details>
---->
-
 ## Goal
 
 Define the solution I want to implement in the following months.
@@ -79,10 +70,19 @@ Evolutionary methods require a continuous metric. The nature of ARC is binary in
 to better explore the search space. This should be investigated using the search
 traces of the model.
 
+### Data generation
+
+I believe that the best data generation mechanism is the one used on the [transduction and induction paper](https://arxiv.org/abs/2411.02272). This requires implementing a DSL and writing solutions and generator for the ARC tasks. But once we have that data
+we can use frontier LLMs to generate an arbitrary number of new tasks.
+
+The other source of data would be the data generating during evaluation of the system.
+
 ## Summary
+
+Generate python code with an LLM to solve ARC tasks. The system uses an intelligent search
+process and learns from its mistakes.
 
 ## Next steps
 
-## TODO
-
-- [ ]
+- Start by using the DSL defined in the BARC repo. Do search with base models
+- Fine-tune on BARC and repeat search experiments. Analyze unsolved tasks

@@ -15,13 +15,13 @@ clear goal. This allows to gain greater knowledge of the problem on each iterati
 
 Define the solution I want to implement in the following months.
 
-## Motivation
+## Search and Learn
 
-## Development
+![Search and Learn](res/1752753996905_arc25.png)
 
-## Results
-
-## Conclusion
+Search and learn are the two mechanisms to adapt to novelty, and I bet that to beat ARC we need both.
+Thus my proposal for ARC25 is a system that is able to explore the program space of the solutions and
+learn during the exploration.
 
 ## Next steps
 

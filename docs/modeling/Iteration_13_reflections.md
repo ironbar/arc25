@@ -17,7 +17,7 @@ Despite adding more sample training tasks it only solved one real ARC task that 
 ### Bad exploration
 
 The solution space is not fully explored, seems to be limited to repeat what it saw on training. This
-is a huge problem, because without exploration(trying new approaches) we cannot solve any novel task.
+is a huge problem, because without exploration (trying new approaches) we cannot solve any novel task.
 
 On a game the action space is small, but the search space of an LLM is huge.
 
@@ -36,7 +36,7 @@ Probably we should train for n steps, and hope that it could do novel combinatio
 
 ### Training data generation
 
-Could an LLM generate novel tasks given code examples? Maybe because if we just give the information
+Could an LLM generate novel tasks given code examples? Maybe, because if we just give the information
 as code, is a higher level abstraction than the ARC tasks and the domain of LLMs.
 
 That was done in the transduction and induction paper, I need to revisit it. It would be a more direct

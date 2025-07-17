@@ -31,7 +31,7 @@ search more efficiently.
 
 ### Search
 
-As a human I know everything that I have tried (at least at a high level summary) when solving a new task.
+As a human I know everything that I have tried (at least at a high level summary) when solving a new task. I also know when to change direction when reaching a dead end.
 The search history guides the next steps of the search to avoid repeating previous failures. This was
 one of the weaknesses of my previous iterations, where all the generated solutions were independent.
 
@@ -59,6 +59,25 @@ of the available functions in the DSL)
 All the predicted functions can be treated as new task, with hindsight relabelling. On previous iterations
 I have already seen that on toy tasks this enables broader generalization, and on the [SOAR paper](https://icml.cc/virtual/2025/poster/43499) a small
 improvement was measured when using this technique.
+
+### Alternating cycles
+
+One possible implementation would alternate between search and learning phases in a cycling fashion. For example the search phase could involve sampling 32 new function,
+then switch to training on those new 32 tasks.
+
+## Other details
+
+### Data augmentation
+
+Each task variation would require a different function most of the cases. Thus when searching we should treat each task variation generated with data augmentation as a different task. The value of using data augmentation during search would be adding diversity. But since compute is limited, it should be investigated if it is beneficial.
+
+It could be used for evaluation and to generate more training data.
+
+### Continuous metric
+
+Evolutionary methods require a continuous metric. The nature of ARC is binary in essence, but maybe we can define some proxy metrics that are continuous and allow
+to better explore the search space. This should be investigated using the search
+traces of the model.
 
 ## Summary
 

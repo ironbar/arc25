@@ -25,6 +25,16 @@ I could explore how to generate new functions, refine existing ones or combine m
 
 ## Development
 
+### Public DSLs
+
+- [BARC](https://github.com/xu3kev/BARC): 54 primitive functions, solve around 160 training tasks
+- [RE-ARC](https://github.com/michaelhodel/re-arc): 160 primitive functions, verified to be complete
+  for the ARC-AGI-1 train set
+
+Having a big number of primitive functions will result in a bigger prompt if we want to give the LLM
+the footprint of all the functions. Also make the combinatorial problem harder. The DSL should be
+as minimal as possible.
+
 ## Results
 
 ## Conclusion
@@ -33,7 +43,7 @@ I could explore how to generate new functions, refine existing ones or combine m
 
 ## TODO
 
-- [ ] How many primitive functions does BARC have? And Hodel?
+- [x] How many primitive functions does BARC have? And Hodel?
 - [ ] What is the best way to do inference?
   - [ ] VLLM
   - [ ] SGLang

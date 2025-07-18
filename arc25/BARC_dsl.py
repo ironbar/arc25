@@ -2,6 +2,8 @@
 
 import numpy as np
 import random
+from typing import List, Tuple, Optional, Union, Set, Callable, Any
+from numpy.typing import NDArray
 
 
 class Color:
@@ -36,7 +38,7 @@ class Color:
     NOT_BLACK = [BLUE, RED, GREEN, YELLOW, GREY, PINK, ORANGE, TEAL, MAROON]
 
 
-def flood_fill(grid, x, y, color, connectivity=4):
+def flood_fill(grid: NDArray[np.int_], x: int, y: int, color: int, connectivity: int = 4) -> None:
     """
     Fill the connected region that contains the point (x, y) with the specified color.
 
@@ -50,7 +52,7 @@ def flood_fill(grid, x, y, color, connectivity=4):
     _flood_fill(grid, x, y, color, old_color, connectivity)
 
 
-def _flood_fill(grid, x, y, color, old_color, connectivity):
+def _flood_fill(grid: NDArray[np.int_], x: int, y: int, color: int, old_color: int, connectivity: int) -> None:
     """
     internal function not used by LLM
     """
@@ -82,7 +84,7 @@ def _flood_fill(grid, x, y, color, old_color, connectivity):
         _flood_fill(grid, x + 1, y + 1, color, old_color, connectivity)
 
 
-def draw_line(grid, x, y, end_x=None, end_y=None, length=None, direction=None, color=None, stop_at_color=[]):
+def draw_line(grid: NDArray[np.int_], x: Union[int, float], y: Union[int, float], end_x: Optional[Union[int, float]] = None, end_y: Optional[Union[int, float]] = None, length: Optional[int] = None, direction: Optional[Tuple[int, int]] = None, color: Optional[int] = None, stop_at_color: List[int] = []) -> Tuple[int, int]:
     """
     Draws a line starting at (x, y) extending to (end_x, end_y) or of the specified length in the specified direction
     Direction should be a vector with elements -1, 0, or 1.
@@ -130,8 +132,8 @@ def draw_line(grid, x, y, end_x=None, end_y=None, length=None, direction=None, c
 
 
 def find_connected_components(
-    grid, background=Color.BLACK, connectivity=4, monochromatic=True
-):
+    grid: NDArray[np.int_], background: int = Color.BLACK, connectivity: int = 4, monochromatic: bool = True
+) -> List[NDArray[np.int_]]:
     """
     Find the connected components in the grid. Returns a list of connected components, where each connected component is a numpy array.
 
@@ -168,7 +170,7 @@ def find_connected_components(
                 connected_components.append(connected_component)
         return connected_components
 
-def randomly_scatter_points(grid, color, density=0.5, background=Color.BLACK):
+def randomly_scatter_points(grid: NDArray[np.int_], color: int, density: float = 0.5, background: int = Color.BLACK) -> NDArray[np.int_]:
     """
     Randomly scatter points of the specified color in the grid with specified density.
 
@@ -185,7 +187,7 @@ def randomly_scatter_points(grid, color, density=0.5, background=Color.BLACK):
             colored += 1
     return grid
 
-def scale_pattern(pattern, scale_factor):
+def scale_pattern(pattern: NDArray[np.int_], scale_factor: int) -> NDArray[np.int_]:
     """
     Scales the pattern by the specified factor.
     """
@@ -198,7 +200,7 @@ def scale_pattern(pattern, scale_factor):
             new_pattern[i, j] = pattern[i // scale_factor, j // scale_factor]
     return new_pattern
 
-def scale_sprite(sprite, factor):
+def scale_sprite(sprite: NDArray[np.int_], factor: int) -> NDArray[np.int_]:
     """
     Scales the sprite by the specified factor.
 
@@ -210,7 +212,7 @@ def scale_sprite(sprite, factor):
     """
     return np.kron(sprite, np.ones((factor, factor), dtype=sprite.dtype))
 
-def blit(grid, sprite, x=0, y=0, background=None):
+def blit(grid: NDArray[np.int_], sprite: NDArray[np.int_], x: Union[int, float] = 0, y: Union[int, float] = 0, background: Optional[int] = None) -> NDArray[np.int_]:
     """
     Copies the sprite into the grid at the specified location. Modifies the grid in place.
 
@@ -230,7 +232,7 @@ def blit(grid, sprite, x=0, y=0, background=None):
 
     return new_grid
 
-def blit_object(grid, obj, background=Color.BLACK):
+def blit_object(grid: NDArray[np.int_], obj: NDArray[np.int_], background: int = Color.BLACK) -> NDArray[np.int_]:
     """
     Draws an object onto the grid using its current location.
 
@@ -239,7 +241,7 @@ def blit_object(grid, obj, background=Color.BLACK):
     """
     return blit(grid, obj, x=0, y=0, background=background)
 
-def blit_sprite(grid, sprite, x, y, background=Color.BLACK):
+def blit_sprite(grid: NDArray[np.int_], sprite: NDArray[np.int_], x: Union[int, float], y: Union[int, float], background: int = Color.BLACK) -> NDArray[np.int_]:
     """
     Draws a sprite onto the grid at the specified location.
 
@@ -249,7 +251,7 @@ def blit_sprite(grid, sprite, x, y, background=Color.BLACK):
     return blit(grid, sprite, x=x, y=y, background=background)
 
 
-def bounding_box(grid, background=Color.BLACK):
+def bounding_box(grid: NDArray[np.int_], background: int = Color.BLACK) -> Tuple[int, int, int, int]:
     """
     Find the bounding box of the non-background pixels in the grid.
     Returns a tuple (x, y, width, height) of the bounding box.
@@ -273,7 +275,7 @@ def bounding_box(grid, background=Color.BLACK):
 
     return x_min, y_min, x_max - x_min + 1, y_max - y_min + 1
 
-def bounding_box_mask(grid, background=Color.BLACK):
+def bounding_box_mask(grid: NDArray[np.int_], background: int = Color.BLACK) -> NDArray[np.bool_]:
     """
     Find the bounding box of the non-background pixels in the grid.
     Returns a mask of the bounding box.
@@ -290,7 +292,7 @@ def bounding_box_mask(grid, background=Color.BLACK):
 
     return mask
 
-def object_position(obj, background=Color.BLACK, anchor="upper left"):
+def object_position(obj: NDArray[np.int_], background: int = Color.BLACK, anchor: str = "upper left") -> Tuple[Union[int, float], Union[int, float]]:
     """
     (x,y) position of the provided object. By default, the upper left corner.
 
@@ -333,7 +335,7 @@ def object_position(obj, background=Color.BLACK, anchor="upper left"):
     return answer_x, answer_y
 
 
-def object_colors(obj, background=Color.BLACK):
+def object_colors(obj: NDArray[np.int_], background: int = Color.BLACK) -> List[int]:
     """
     Returns a list of colors in the object.
 
@@ -343,7 +345,7 @@ def object_colors(obj, background=Color.BLACK):
     return list(set(obj.flatten()) - {background})
 
 
-def crop(grid, background=Color.BLACK):
+def crop(grid: NDArray[np.int_], background: int = Color.BLACK) -> NDArray[np.int_]:
     """
     Crop the grid to the smallest bounding box that contains all non-background pixels.
 
@@ -354,7 +356,7 @@ def crop(grid, background=Color.BLACK):
     x, y, w, h = bounding_box(grid, background)
     return grid[x : x + w, y : y + h]
 
-def translate(obj, x, y, background=Color.BLACK):
+def translate(obj: NDArray[np.int_], x: int, y: int, background: int = Color.BLACK) -> NDArray[np.int_]:
     """
     Translate by the vector (x, y). Fills in the new pixels with the background color.
 
@@ -376,8 +378,8 @@ def translate(obj, x, y, background=Color.BLACK):
 
 
 def collision(
-    _=None, object1=None, object2=None, x1=0, y1=0, x2=0, y2=0, background=Color.BLACK
-):
+    _: Optional[Any] = None, object1: Optional[NDArray[np.int_]] = None, object2: Optional[NDArray[np.int_]] = None, x1: Union[int, float] = 0, y1: Union[int, float] = 0, x2: Union[int, float] = 0, y2: Union[int, float] = 0, background: int = Color.BLACK
+) -> bool:
     """
     Check if object1 and object2 collide when object1 is at (x1, y1) and object2 is at (x2, y2).
 
@@ -412,16 +414,16 @@ def collision(
 
 
 def contact(
-    _=None,
-    object1=None,
-    object2=None,
-    x1=0,
-    y1=0,
-    x2=0,
-    y2=0,
-    background=Color.BLACK,
-    connectivity=4,
-):
+    _: Optional[Any] = None,
+    object1: Optional[NDArray[np.int_]] = None,
+    object2: Optional[NDArray[np.int_]] = None,
+    x1: Union[int, float] = 0,
+    y1: Union[int, float] = 0,
+    x2: Union[int, float] = 0,
+    y2: Union[int, float] = 0,
+    background: int = Color.BLACK,
+    connectivity: int = 4,
+) -> bool:
     """
     Check if object1 and object2 touch each other (have contact) when object1 is at (x1, y1) and object2 is at (x2, y2).
     They are touching each other if they share a border, or if they overlap. Collision implies contact, but contact does not imply collision.
@@ -474,7 +476,7 @@ def contact(
 
     return False
 
-def randomly_spaced_indices(max_len, n_indices, border_size=1, padding=1):
+def randomly_spaced_indices(max_len: int, n_indices: int, border_size: int = 1, padding: int = 1) -> NDArray[np.int_]:
     """
     Generate randomly-spaced indices guaranteed to not be adjacent.
     Useful for generating random dividers.
@@ -505,7 +507,7 @@ def randomly_spaced_indices(max_len, n_indices, border_size=1, padding=1):
 
     return np.argwhere(indices).flatten()
 
-def check_between_objects(obj1, obj2, x, y, padding = 0, background=Color.BLACK):
+def check_between_objects(obj1: NDArray[np.int_], obj2: NDArray[np.int_], x: int, y: int, padding: int = 0, background: int = Color.BLACK) -> bool:
     """
     Check if a pixel is between two objects.
 
@@ -549,13 +551,13 @@ def check_between_objects(obj1, obj2, x, y, padding = 0, background=Color.BLACK)
 
 
 def random_free_location_for_sprite(
-    grid,
-    sprite,
-    background=Color.BLACK,
-    border_size=0,
-    padding=0,
-    padding_connectivity=8,
-):
+    grid: NDArray[np.int_],
+    sprite: NDArray[np.int_],
+    background: int = Color.BLACK,
+    border_size: int = 0,
+    padding: int = 0,
+    padding_connectivity: int = 8,
+) -> Tuple[int, int]:
     """
     Find a random free location for the sprite in the grid
     Returns a tuple (x, y) of the top-left corner of the sprite in the grid, which can be passed to `blit_sprite`
@@ -622,7 +624,7 @@ def random_free_location_for_sprite(
 
     return random.choice(pruned_locations)
 
-def random_free_location_for_object(*args, **kwargs):
+def random_free_location_for_object(*args: Any, **kwargs: Any) -> Tuple[int, int]:
     """
     internal function not used by LLM
 
@@ -630,7 +632,7 @@ def random_free_location_for_object(*args, **kwargs):
     """
     return random_free_location_for_sprite(*args, **kwargs)
 
-def object_interior(grid, background=Color.BLACK):
+def object_interior(grid: NDArray[np.int_], background: int = Color.BLACK) -> NDArray[np.bool_]:
     """
     Computes the interior of the object (including edges)
 
@@ -656,7 +658,7 @@ def object_interior(grid, background=Color.BLACK):
 
     return mask != 42
 
-def object_boundary(grid, background=Color.BLACK):
+def object_boundary(grid: NDArray[np.int_], background: int = Color.BLACK) -> NDArray[np.bool_]:
     """
     Computes the boundary of the object (excluding interior)
 
@@ -685,7 +687,7 @@ def object_boundary(grid, background=Color.BLACK):
 
     return boundary
 
-def object_neighbors(grid, background=Color.BLACK, connectivity=4):
+def object_neighbors(grid: NDArray[np.int_], background: int = Color.BLACK, connectivity: int = 4) -> NDArray[np.bool_]:
     """
     Computes a mask of the points that neighbor or border the object, but are not part of the object.
 
@@ -721,13 +723,13 @@ class Symmetry:
     Returned by `detect_rotational_symmetry`, `detect_translational_symmetry`, `detect_mirror_symmetry`.
     """
 
-    def apply(self, x, y, iters=1):
+    def apply(self, x: Union[int, float], y: Union[int, float], iters: int = 1) -> Tuple[Union[int, float], Union[int, float]]:
         """
         Apply the symmetry transformation to the point (x, y) `iters` times.
         Returns the transformed point (x',y')
         """
 
-def orbit(grid, x, y, symmetries):
+def orbit(grid: NDArray[np.int_], x: int, y: int, symmetries: List[Symmetry]) -> List[Tuple[int, int]]:
     """
     Compute the orbit of the point (x, y) under the symmetry transformations `symmetries`.
     The orbit is the set of points that the point (x, y) maps to after applying the symmetry transformations different numbers of times.
@@ -770,10 +772,10 @@ class TranslationalSymmetry(Symmetry):
         for x, y in symmetric_points:
             output_grid[x, y] = input_grid[x, y]
     """
-    def __init__(self, translate_x, translate_y):
+    def __init__(self, translate_x: int, translate_y: int) -> None:
         self.translate_x, self.translate_y = translate_x, translate_y
 
-    def apply(self, x, y, iters=1):
+    def apply(self, x: Union[int, float], y: Union[int, float], iters: int = 1) -> Tuple[Union[int, float], Union[int, float]]:
         x = x + iters * self.translate_x
         y = y + iters * self.translate_y
         if isinstance(x, np.ndarray):
@@ -786,13 +788,13 @@ class TranslationalSymmetry(Symmetry):
             y = int(round(y))
         return x, y
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"TranslationalSymmetry(translate_x={self.translate_x}, translate_y={self.translate_y})"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"TranslationalSymmetry(translate_x={self.translate_x}, translate_y={self.translate_y})"
 
-    def _iter_range(self, grid_shape):
+    def _iter_range(self, grid_shape: Tuple[int, int]) -> Tuple[int, int]:
         import math
         top_of_range = 0
         if self.translate_x != 0:
@@ -802,7 +804,7 @@ class TranslationalSymmetry(Symmetry):
 
         return (-top_of_range, top_of_range+1)
 
-def detect_translational_symmetry(grid, ignore_colors=[Color.BLACK], background=None):
+def detect_translational_symmetry(grid: NDArray[np.int_], ignore_colors: List[int] = [Color.BLACK], background: Optional[int] = None) -> List[TranslationalSymmetry]:
     """
     Finds translational symmetries in a grid.
     Satisfies: grid[x, y] == grid[x + translate_x, y + translate_y] for all x, y, as long as neither pixel is in `ignore_colors`, and as long as x,y is not background.
@@ -853,7 +855,7 @@ def detect_translational_symmetry(grid, ignore_colors=[Color.BLACK], background=
 
     return detections
 
-class MirrorSymmetry():
+class MirrorSymmetry(Symmetry):
     """
     Mirror symmetry transformation, which flips horizontally and/or vertically
 
@@ -866,10 +868,10 @@ class MirrorSymmetry():
         output_grid[x2, y2] = mirrored_object[x, y]
 
     """
-    def __init__(self, mirror_x, mirror_y):
+    def __init__(self, mirror_x: Optional[Union[int, float]], mirror_y: Optional[Union[int, float]]) -> None:
         self.mirror_x, self.mirror_y = mirror_x, mirror_y
 
-    def apply(self, x, y, iters=1):
+    def apply(self, x: Union[int, float], y: Union[int, float], iters: int = 1) -> Tuple[Union[int, float], Union[int, float]]:
         if iters % 2 == 0:
             return x, y
         if self.mirror_x is not None:
@@ -886,16 +888,16 @@ class MirrorSymmetry():
             y = int(round(y))
         return x, y
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"MirrorSymmetry(mirror_x={self.mirror_x}, mirror_y={self.mirror_y})"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"MirrorSymmetry(mirror_x={self.mirror_x}, mirror_y={self.mirror_y})"
 
-    def _iter_range(self, grid_shape):
+    def _iter_range(self, grid_shape: Tuple[int, int]) -> Tuple[int, int]:
         return (0, 2)
 
-def detect_mirror_symmetry(grid, ignore_colors=[Color.BLACK], background=None):
+def detect_mirror_symmetry(grid: NDArray[np.int_], ignore_colors: List[int] = [Color.BLACK], background: Optional[int] = None) -> List[MirrorSymmetry]:
     """
     Returns list of mirror symmetries.
     Satisfies: grid[x, y] == grid[2*mirror_x - x, 2*mirror_y - y] for all x, y, as long as neither pixel is in `ignore_colors`
@@ -944,7 +946,7 @@ def detect_mirror_symmetry(grid, ignore_colors=[Color.BLACK], background=None):
     return best_symmetries
 
 
-def detect_rotational_symmetry(grid, ignore_colors=[Color.BLACK], background=None):
+def detect_rotational_symmetry(grid: NDArray[np.int_], ignore_colors: List[int] = [Color.BLACK], background: Optional[int] = None) -> Optional['RotationalSymmetry']:
     """
     Finds rotational symmetry in a grid, or returns None if no symmetry is possible.
     Satisfies: grid[x, y] == grid[y - rotate_center_y + rotate_center_x, -x + rotate_center_y + rotate_center_x] # clockwise
@@ -1009,7 +1011,7 @@ def detect_rotational_symmetry(grid, ignore_colors=[Color.BLACK], background=Non
 
     return best_rotation
 
-def _score_symmetry(grid, symmetry, ignore_colors, background=None):
+def _score_symmetry(grid: NDArray[np.int_], symmetry: Symmetry, ignore_colors: List[int], background: Optional[int] = None) -> Tuple[int, int, int]:
     """
     internal function not used by LLM
 
@@ -1064,7 +1066,7 @@ def _score_symmetry(grid, symmetry, ignore_colors, background=None):
 
     return perfect_mapping, off_canvas, bad_mapping
 
-def show_colored_grid(grid, text=True):
+def show_colored_grid(grid: NDArray[np.int_], text: bool = True) -> None:
     """
     internal function not used by LLM
     Not used by the language model, used by the rest of the code for debugging
@@ -1141,7 +1143,7 @@ def show_colored_grid(grid, text=True):
         print()
 
 
-def visualize(input_generator, transform, n_examples=5, n_attempts=100):
+def visualize(input_generator: Callable[[], NDArray[np.int_]], transform: Callable[[NDArray[np.int_]], NDArray[np.int_]], n_examples: int = 5, n_attempts: int = 100) -> None:
     """
     internal function not used by LLM
     """
@@ -1174,7 +1176,7 @@ def visualize(input_generator, transform, n_examples=5, n_attempts=100):
         print(failures[0])
 
 
-def apply_symmetry(sprite, symmetry_type, background=Color.BLACK):
+def apply_symmetry(sprite: NDArray[np.int_], symmetry_type: str, background: int = Color.BLACK) -> NDArray[np.int_]:
     """
     internal function not used by LLM
     Apply the specified symmetry within the bounds of the sprite.
@@ -1197,7 +1199,7 @@ def apply_symmetry(sprite, symmetry_type, background=Color.BLACK):
     return sprite
 
 
-def apply_diagonal_symmetry(sprite, background=Color.BLACK):
+def apply_diagonal_symmetry(sprite: NDArray[np.int_], background: int = Color.BLACK) -> NDArray[np.int_]:
     """
     internal function not used by LLM
     Apply diagonal symmetry within the bounds of the sprite. Assumes square sprite.
@@ -1214,7 +1216,7 @@ def apply_diagonal_symmetry(sprite, background=Color.BLACK):
     return sprite
 
 
-def is_contiguous(bitmask, background=Color.BLACK, connectivity=4):
+def is_contiguous(bitmask: NDArray[np.int_], background: int = Color.BLACK, connectivity: int = 4) -> bool:
     """
     Check if an array is contiguous.
 
@@ -1237,15 +1239,15 @@ def is_contiguous(bitmask, background=Color.BLACK, connectivity=4):
 
 
 def generate_sprite(
-    n,
-    m,
-    symmetry_type,
-    fill_percentage=0.5,
-    max_colors=9,
-    color_palate=None,
-    connectivity=4,
-    background=Color.BLACK
-):
+    n: int,
+    m: int,
+    symmetry_type: str,
+    fill_percentage: float = 0.5,
+    max_colors: int = 9,
+    color_palate: Optional[List[int]] = None,
+    connectivity: int = 4,
+    background: int = Color.BLACK
+) -> NDArray[np.int_]:
     """
     internal function not used by LLM
     """
@@ -1353,7 +1355,7 @@ def generate_sprite(
     return grid
 
 
-def random_sprite(n, m, density=0.5, symmetry=None, color_palette=None, connectivity=4, background=Color.BLACK):
+def random_sprite(n: Union[int, List[int], range], m: Union[int, List[int], range], density: float = 0.5, symmetry: Optional[str] = None, color_palette: Optional[List[int]] = None, connectivity: int = 4, background: int = Color.BLACK) -> NDArray[np.int_]:
     """
     Generate a sprite (an object), represented as a numpy array.
 
@@ -1436,7 +1438,7 @@ def random_sprite(n, m, density=0.5, symmetry=None, color_palette=None, connecti
 
 
 
-def detect_objects(grid, _=None, predicate=None, background=Color.BLACK, monochromatic=False, connectivity=None, allowed_dimensions=None, colors=None, can_overlap=False):
+def detect_objects(grid: NDArray[np.int_], _: Optional[Any] = None, predicate: Optional[Callable[[NDArray[np.int_]], bool]] = None, background: int = Color.BLACK, monochromatic: bool = False, connectivity: Optional[int] = None, allowed_dimensions: Optional[List[Tuple[int, int]]] = None, colors: Optional[List[int]] = None, can_overlap: bool = False) -> List[NDArray[np.int_]]:
     """
     Detects and extracts objects from the grid that satisfy custom specification.
 

@@ -37,6 +37,17 @@ Having a big number of primitive functions will result in a bigger prompt if we 
 the footprint of all the functions. Also make the combinatorial problem harder. The DSL should be
 as minimal as possible.
 
+### VLLM vs transformers
+
+| Model                       | VLLM | VLLM quantized | transformers | transformers quantized | speedup | speedup quantized |
+|-----------------------------|------|----------------|--------------|------------------------|---------|-------------------|
+| Qwen2.5-Coder-0.5B-Instruct | 1107 | 563            | 48           | 36                     | 23.1    | 15.6              |
+| Qwen2.5-Coder-1.5B-Instruct | 426  | 282            | 42           | 29                     | 10.1    | 9.7               |
+| Qwen2.5-Coder-3B-Instruct   | 452  | 180            | 32           | 24                     | 14.1    | 7.5               |
+| Qwen2.5-Coder-7B-Instruct   | -    | 100            | -            | 27                     | -       | 3.7               |
+
+VLLM is much faster than transformer when doing sequential inference (batch size 1).
+
 ## Results
 
 ## Conclusion

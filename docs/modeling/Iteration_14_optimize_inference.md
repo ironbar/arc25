@@ -74,7 +74,10 @@ The same effect can be observed with top_p, there is a sweet spot for unique pre
 
 ## Conclusion
 
-## Next steps
+A GPU with 24GB of VRAM is enough to make inference with a window size of 32k tokens, and we can train
+with 32k tokens for models up to 3B and 16k for the 7B models.
+
+Playing with inference parameters was not enough to increase output diversity.
 
 ## TODO
 

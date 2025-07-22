@@ -128,7 +128,7 @@ def safe_code_execution(code, inputs, func_name='task', timeout_duration=1):
 
     func = restricted_locals[func_name]
     try:
-        result = _generate_outputs(inputs, func)
+        result = [func(input.copy()) for input in inputs]
         _disable_timeout_alarm()
         return result
     except Exception as e:
@@ -144,13 +144,6 @@ def _set_timeout_alarm(timeout_duration):
 
 def _disable_timeout_alarm():
     signal.alarm(0)
-
-
-def _generate_outputs(inputs, func):
-    if isinstance(inputs, list):
-        return [func(input.copy()) for input in inputs]
-    else:
-        raise NotImplementedError("Currently only list of inputs is supported.")
 
 
 class TimeoutException(Exception):

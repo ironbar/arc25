@@ -52,6 +52,7 @@ def check_at_least_one_output_is_different_to_input(inputs, outputs):
     if not any_output_is_different:
         raise InvalidCode("The code did not modify the input.")
 
+
 def _is_different(x, y):
     return any(x.shape != y.shape) or not np.all(x == y)
 

@@ -69,6 +69,13 @@ After seeing this huge differences in speed I will be using only VLLM on this it
 I have also seen that `enable_prefix_caching` allows faster execution the second time we call the model.
 If the number of output tokens is small we can notice the inference speed, for example increasing to 150 tokens/second from an initial 75. For longer generations the effect is not that big.
 
+### Try the Qwen2.5-Coder-14B-Instruct model
+
+Just loading the 14B model with VLLM takes 4 minutes, although is a [4-bit quantized GGUF version](https://huggingface.co/Qwen/Qwen2.5-Coder-14B-Instruct-GGUF).
+I had to also download the tokenizer from the [normal version](https://huggingface.co/Qwen/Qwen2.5-Coder-14B-Instruct)
+
+It is capable of generating text at 100 tokens/s.
+
 ## Results
 
 ## Conclusion
@@ -78,8 +85,9 @@ If the number of output tokens is small we can notice the inference speed, for e
 ## TODO
 
 - [x] How many primitive functions does BARC have? And Hodel?
-- [ ] Create a prompt with the available DSL functions
-- [ ] What is the best way to do inference?
-  - [ ] VLLM
-  - [ ] SGLang
-  - [ ] Pure python with caching
+- [x] Create a prompt with the available DSL functions
+- [x] What is the best way to do inference?
+  - [x] VLLM
+  - [x] Pure python with caching
+  - [ ] SGLang (I'm not going to try it this iteration)
+- [ ] What is the effect of the model size?

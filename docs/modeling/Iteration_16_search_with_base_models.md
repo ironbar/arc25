@@ -44,7 +44,7 @@ as minimal as possible.
 | Qwen2.5-Coder-0.5B-Instruct | 1107 | 563            | 48           | 36                     | 23.1    | 15.6              |
 | Qwen2.5-Coder-1.5B-Instruct | 426  | 282            | 42           | 29                     | 10.1    | 9.7               |
 | Qwen2.5-Coder-3B-Instruct   | 452  | 180            | 32           | 24                     | 14.1    | 7.5               |
-| Qwen2.5-Coder-7B-Instruct   | -    | 100            | -            | 27                     | -       | 3.7               |
+| Qwen2.5-Coder-7B-Instruct   | 200    | 100            | -            | 27                     | -       | 3.7               |
 
 VLLM is much faster than transformer when doing sequential inference (batch size 1).
 
@@ -63,6 +63,11 @@ example for the the following models we can increase the throughput (tokens/s) x
 So for the smaller model we could generate around 6k tokens per second. That would be 1e9 tokens
 if we generate with 4 GPUs for 12 hours. As a reference OpenAI generated 5.7e9 tokens to solve the test
 set from ARC-AGI-1.
+
+After seeing this huge differences in speed I will be using only VLLM on this iteration.
+
+I have also seen that `enable_prefix_caching` allows faster execution the second time we call the model.
+If the number of output tokens is small we can notice the inference speed, for example increasing to 150 tokens/second from an initial 75. For longer generations the effect is not that big.
 
 ## Results
 

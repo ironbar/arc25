@@ -84,7 +84,12 @@ The plot below shows the valid outputs probability and the dsl usage of Qwen2.5-
 sizes. The size is really important (at least for base models). Bigger models generate valid
 outputs more frequently and use the dsl more frequently as well.
 
-![alt text](res/1753286002876_image.png)
+![alt text](res/1753292348173_image.png)
+
+To be able to use the 14B model I had to use `tensor_parallel_size=2` and halve the `max_model_len=16000`.
+
+I have also tried Qwen3 but it was slower and worse, so I will be using Qwen2.5-Coder-7B for the experiments
+in this iteration.
 
 ## Conclusion
 

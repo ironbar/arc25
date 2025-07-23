@@ -1,6 +1,8 @@
 import signal
 import numpy as np
 import logging
+from typing import Optional
+from types import ModuleType
 
 from arc25.dsl import *
 
@@ -110,10 +112,12 @@ def _is_valid_output(output):
     return np.min(output.shape) >= 1 and np.max(output.shape) <= 30
 
 
-def safe_code_execution(code, inputs, func_name='task', timeout_duration=1):
+def safe_code_execution(code: str, inputs: list, func_name: str = 'task',
+                        timeout_duration: int = 1, dsl: Optional[ModuleType] = None):
     _set_timeout_alarm(timeout_duration)
     restricted_locals = {}
     restricted_globals = globals() # TODO: restrict the globals
+    if dsl is not None: restricted_globals['dsl'] = dsl
 
     # Dynamically define the function to be executed
     try:

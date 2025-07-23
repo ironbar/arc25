@@ -78,6 +78,14 @@ It is capable of generating text at 100 tokens/s.
 
 ## Results
 
+### Model size matters
+
+The plot below shows the valid outputs probability and the dsl usage of Qwen2.5-Coder with different
+sizes. The size is really important (at least for base models). Bigger models generate valid
+outputs more frequently and use the dsl more frequently as well.
+
+![alt text](res/1753286002876_image.png)
+
 ## Conclusion
 
 ## Next steps
@@ -90,4 +98,4 @@ It is capable of generating text at 100 tokens/s.
   - [x] VLLM
   - [x] Pure python with caching
   - [ ] SGLang (I'm not going to try it this iteration)
-- [ ] What is the effect of the model size?
+- [x] What is the effect of the model size?

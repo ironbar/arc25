@@ -12,21 +12,8 @@ def pixel_similarity_score(ground_truth: np.ndarray, reference: np.ndarray) -> f
 
     Returns a float in [0.0, 1.0].
     """
-    # Dimension checks
-    if ground_truth is None or reference is None:
-        return 0.0
     gt = np.asarray(ground_truth)
     ref = np.asarray(reference)
-    if gt.ndim > 2 or ref.ndim > 2:
-        raise ValueError("Only 1D or 2D arrays are supported")
-    if gt.ndim == 1:
-        gt = gt[np.newaxis, :]
-    elif gt.ndim == 0:
-        gt = np.array([[gt]], dtype=int)
-    if ref.ndim == 1:
-        ref = ref[np.newaxis, :]
-    elif ref.ndim == 0:
-        ref = np.array([[ref]], dtype=int)
 
     h1, w1 = gt.shape
     h2, w2 = ref.shape

@@ -95,14 +95,14 @@ def remove_irrelevant_lines(code, inputs, outputs):
 def check_code_is_safe(code):
     forbidden_modules = ['logging', 'threading', 'bcrypt', 'datetime', 'os.sys', 'multiprocessing', 'time',
                          'os.path', 'pebble', 'hashlib', 'sys.exit', 'subprocess', 'calendar', 'os.environ',
-                         'matplotlib']
+                         'matplotlib', 'pygame']
     for module in forbidden_modules:
         if f'{module}.' in code:
             raise UnsafeCode(f"The code uses a forbidden module: {module}\nCode: {code}")
 
-    forbidden_functions = ['input(', '.save(']
+    forbidden_functions = ['input', '.save', 'write', 'open', 'exec', 'eval', 'compile']
     for func in forbidden_functions:
-        if func in code:
+        if f'{func}(' in code:
             raise UnsafeCode(f"The code uses a forbidden function: {func}\nCode: {code}")
 
 

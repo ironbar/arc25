@@ -53,3 +53,16 @@ def pixel_similarity_score(ground_truth: np.ndarray, reference: np.ndarray) -> f
                 best_matches = matches
 
     return best_matches / float(denom)
+
+
+def correct_grids_score(outputs, preds):
+    scores = []
+    for output, pred in zip(outputs, preds):
+        if output.shape != pred.shape: # TODO: this does not work with my Img implementation
+            scores.append(0.0)
+        else:
+            if np.all(output == pred):
+                scores.append(1.0)
+            else:
+                scores.append(0.0)
+    return np.mean(scores)

@@ -14,8 +14,13 @@ def pixel_similarity_score(ground_truth: np.ndarray, reference: np.ndarray) -> f
     """
     gt = np.asarray(ground_truth)
     ref = np.asarray(reference)
-    if gt.ndim != 2 or ref.ndim != 2:
-        raise ValueError("Both inputs must be 2D matrices")
+    # Dimension checks
+    if gt.ndim > 2 or ref.ndim > 2:
+        raise ValueError("Only 1D or 2D arrays are supported")
+    if gt.ndim == 1:
+        gt = gt[np.newaxis, :]
+    if ref.ndim == 1:
+        ref = ref[np.newaxis, :]
 
     h1, w1 = gt.shape
     h2, w2 = ref.shape

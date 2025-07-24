@@ -22,6 +22,7 @@ from arc25.metrics import pixel_similarity_score
     # edge cases
     (0, np.ones((2, 2), dtype=int), 0.0),
     (1, np.ones((2, 2), dtype=int), 0.25),
+    (None, np.ones((2, 2), dtype=int), 0.0),
 ])
 def test_pixel_similarity_score(ground_truth, prediction, expected_score):
     """

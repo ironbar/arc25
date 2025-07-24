@@ -12,9 +12,11 @@ def pixel_similarity_score(ground_truth: np.ndarray, reference: np.ndarray) -> f
 
     Returns a float in [0.0, 1.0].
     """
+    # Dimension checks
+    if ground_truth is None or reference is None:
+        return 0.0
     gt = np.asarray(ground_truth)
     ref = np.asarray(reference)
-    # Dimension checks
     if gt.ndim > 2 or ref.ndim > 2:
         raise ValueError("Only 1D or 2D arrays are supported")
     if gt.ndim == 1:

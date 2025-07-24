@@ -94,10 +94,16 @@ def remove_irrelevant_lines(code, inputs, outputs):
 
 def check_code_is_safe(code):
     forbidden_modules = ['logging', 'threading', 'bcrypt', 'datetime', 'os.sys', 'multiprocessing', 'time',
-                         'os.path', 'pebble', 'hashlib', 'sys.exit', 'subprocess', 'calendar', 'os.environ',]
+                         'os.path', 'pebble', 'hashlib', 'sys.exit', 'subprocess', 'calendar', 'os.environ',
+                         'matplotlib']
     for module in forbidden_modules:
-        if module in code:
+        if f'{module}.' in code:
             raise UnsafeCode(f"The code uses a forbidden module: {module}\nCode: {code}")
+
+    forbidden_functions = ['input(', '.save(']
+    for func in forbidden_functions:
+        if func in code:
+            raise UnsafeCode(f"The code uses a forbidden function: {func}\nCode: {code}")
 
 
 def check_code_is_deterministic(code):
@@ -114,6 +120,7 @@ def _is_valid_output(output):
 
 def safe_code_execution(code: str, inputs: list, func_name: str = 'task',
                         timeout_duration: int = 1, dsl: Optional[ModuleType] = None):
+    check_code_is_safe(code)
     _set_timeout_alarm(timeout_duration)
     restricted_locals = {}
     restricted_globals = globals() # TODO: restrict the globals

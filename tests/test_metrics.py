@@ -19,6 +19,9 @@ from arc25.metrics import pixel_similarity_score
     # verify that works with 1d arrays
     (np.ones((1,), dtype=int), np.ones((2, 2), dtype=int), 0.25),
     (np.ones((2, 2), dtype=int), np.ones((1, ), dtype=int), 0.25),
+    # edge cases
+    (0, np.ones((2, 2), dtype=int), 0.0),
+    (1, np.ones((2, 2), dtype=int), 0.25),
 ])
 def test_pixel_similarity_score(ground_truth, prediction, expected_score):
     """

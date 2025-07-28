@@ -138,6 +138,14 @@ This uses only one GPU, and we were able to do 512 predictions for 400 tasks in 
 Or if we devote half of the time to training, we could do 2048 predictions per task. Sounds like a big enough number.
 
 In the next experiments I have to answer the question: can I improve this results using a more advanced search?
+For the same compute budget (number of predictions), can we improve the metrics and/or the unique outputs ratio?
+
+### Can we increase the unique outputs by conditioning on already generated code?
+
+I have the belief that if we provide the model the already generated code and ask to implement different
+approaches to the problem, the unique outputs will increase.
+
+TODO: probe it, I can use a small number of predictions such as 8 and 16 that runs on a small time.
 
 ## Conclusion
 

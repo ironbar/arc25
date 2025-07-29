@@ -174,6 +174,9 @@ I have to look for diversity elsewhere. Maybe more worrying is that I have tried
 of refining the existing code, and the exact duplicates rate was the highest of all the experiments: 19%.
 Thus it seems that if I want to refine code, I'm going to throw many attempts to the trash can.
 
+- [Gemini 2.5 Pro explanation](https://g.co/gemini/share/fdc61d549f8a)
+- [o3 explanation](https://chatgpt.com/share/6888f931-ee80-8012-99eb-355934748062)
+
 ## Conclusion
 
 ## Next steps

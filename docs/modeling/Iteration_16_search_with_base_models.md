@@ -145,7 +145,34 @@ For the same compute budget (number of predictions), can we improve the metrics 
 I have the belief that if we provide the model the already generated code and ask to implement different
 approaches to the problem, the unique outputs will increase.
 
-TODO: probe it, I can use a small number of predictions such as 8 and 16 that runs on a small time.
+However the results below show that my intuition was wrong. In fact I get the opposite effect, the model
+does not understand the instruction and the diversity is reduced. Furthermore in many of the tasks
+copied the sample code exactly.
+
+| experiment                           | valid outputs | unique outputs | exact duplicates |
+|--------------------------------------|---------------|----------------|------------------|
+| independent search                   | 87.3%         | 77.1%          | 0.0%             |
+| sequential search v1                 | 91.8%         | 66.4%          | 13.0%            |
+| sequential search v2                 | 92.6%         | 69.0%          | 8.0%             |
+| sequential search v3                 | 91.0%         | 69.9%          | 5.8%             |
+| sequential search v4 (system prompt) | 89.5%         | 71.8%          | 0.8%             |
+| v4 + repetition_penalty=1.05         | 88.1%         | 72.7%          | 0.5%             |
+| v4 + repetition_penalty=1.1          | 81.8%         | 72.1%          | 0.0%             |
+| v4 + repetition_penalty=1.2          | 63.3%         | 61.1%          | 0.0%             |
+| v1 +  repetition_penalty=1.05        | 91.9%         | 71.5%          | 4.8%             |
+| v1 +  repetition_penalty=1.1         | 87.5%         | 70.3%          | 1.3%             |
+| refine prompt v1                     | 95.5%         | 63.9%          | 19.0%            |
+
+The results show that none of the sequential search experiments gets a similar unique output ratio
+to simply do independent search. I was able to tune the prompt in the different versions of the
+sequential search, and I saw improvements but the problem persisted.
+
+Thus this is not a good strategy for searching (at least with this base model). I believe RL could
+solve this, and maybe bigger models do better.
+
+I have to look for diversity elsewhere. Maybe more worrying is that I have tried a prompt with the goal
+of refining the existing code, and the exact duplicates rate was the highest of all the experiments: 19%.
+Thus it seems that if I want to refine code, I'm going to throw many attempts to the trash can.
 
 ## Conclusion
 

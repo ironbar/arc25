@@ -25,6 +25,7 @@ In this issue I will take a different approach and instead I will add variation 
 - Shuffle the order of the training samples
 - Prompt variations (I could prepare different prompts with LLMs)
 - Data augmentation
+- Temperature or other sampling parameters
 
 The goal is to maximize diversity, but at the same time measure generation speed because generating multiple predictions with the same prompt is more
 efficient than making multiple predictions with different prompts.

@@ -1066,81 +1066,81 @@ def _score_symmetry(grid: NDArray[np.int_], symmetry: Symmetry, ignore_colors: L
 
     return perfect_mapping, off_canvas, bad_mapping
 
-def show_colored_grid(grid: NDArray[np.int_], text: bool = True) -> None:
-    """
-    internal function not used by LLM
-    Not used by the language model, used by the rest of the code for debugging
-    """
+# def show_colored_grid(grid: NDArray[np.int_], text: bool = True) -> None:
+#     """
+#     internal function not used by LLM
+#     Not used by the language model, used by the rest of the code for debugging
+#     """
 
-    if not text:
-        import matplotlib.pyplot as plt
-        from matplotlib.colors import ListedColormap
+#     if not text:
+#         import matplotlib.pyplot as plt
+#         from matplotlib.colors import ListedColormap
 
-        # RGB
-        colors_rgb = {
-            0: (0x00, 0x00, 0x00),
-            1: (0x00, 0x74, 0xD9),
-            2: (0xFF, 0x41, 0x36),
-            3: (0x2E, 0xCC, 0x40),
-            4: (0xFF, 0xDC, 0x00),
-            5: (0xA0, 0xA0, 0xA0),
-            6: (0xF0, 0x12, 0xBE),
-            7: (0xFF, 0x85, 0x1B),
-            8: (0x7F, 0xDB, 0xFF),
-            9: (0x87, 0x0C, 0x25),
-        }
+#         # RGB
+#         colors_rgb = {
+#             0: (0x00, 0x00, 0x00),
+#             1: (0x00, 0x74, 0xD9),
+#             2: (0xFF, 0x41, 0x36),
+#             3: (0x2E, 0xCC, 0x40),
+#             4: (0xFF, 0xDC, 0x00),
+#             5: (0xA0, 0xA0, 0xA0),
+#             6: (0xF0, 0x12, 0xBE),
+#             7: (0xFF, 0x85, 0x1B),
+#             8: (0x7F, 0xDB, 0xFF),
+#             9: (0x87, 0x0C, 0x25),
+#         }
 
-        _float_colors = [tuple(c / 255 for c in col) for col in colors_rgb.values()]
-        arc_cmap = ListedColormap(_float_colors)
-        grid = grid.T
-        plt.figure()
-        plot_handle = plt.gca()
-        plot_handle.pcolormesh(
-            grid,
-            cmap=arc_cmap,
-            rasterized=True,
-            vmin=0,
-            vmax=9,
-        )
-        plot_handle.set_xticks(np.arange(0, grid.shape[1], 1))
-        plot_handle.set_yticks(np.arange(0, grid.shape[0], 1))
-        plot_handle.grid()
-        plot_handle.set_aspect(1)
-        plot_handle.invert_yaxis()
-        plt.show()
-        return
+#         _float_colors = [tuple(c / 255 for c in col) for col in colors_rgb.values()]
+#         arc_cmap = ListedColormap(_float_colors)
+#         grid = grid.T
+#         plt.figure()
+#         plot_handle = plt.gca()
+#         plot_handle.pcolormesh(
+#             grid,
+#             cmap=arc_cmap,
+#             rasterized=True,
+#             vmin=0,
+#             vmax=9,
+#         )
+#         plot_handle.set_xticks(np.arange(0, grid.shape[1], 1))
+#         plot_handle.set_yticks(np.arange(0, grid.shape[0], 1))
+#         plot_handle.grid()
+#         plot_handle.set_aspect(1)
+#         plot_handle.invert_yaxis()
+#         plt.show()
+#         return
 
-    color_names = [
-        "black",
-        "blue",
-        "red",
-        "green",
-        "yellow",
-        "grey",
-        "pink",
-        "orange",
-        "teal",
-        "maroon",
-    ]
-    color_8bit = {
-        "black": 0,
-        "blue": 4,
-        "red": 1,
-        "green": 2,
-        "yellow": 3,
-        "grey": 7,
-        "pink": 13,
-        "orange": 202,
-        "teal": 6,
-        "maroon": 196,
-    }
+#     color_names = [
+#         "black",
+#         "blue",
+#         "red",
+#         "green",
+#         "yellow",
+#         "grey",
+#         "pink",
+#         "orange",
+#         "teal",
+#         "maroon",
+#     ]
+#     color_8bit = {
+#         "black": 0,
+#         "blue": 4,
+#         "red": 1,
+#         "green": 2,
+#         "yellow": 3,
+#         "grey": 7,
+#         "pink": 13,
+#         "orange": 202,
+#         "teal": 6,
+#         "maroon": 196,
+#     }
 
-    for y in range(grid.shape[1]):
-        for x in range(grid.shape[0]):
-            cell = grid[x, y]
-            color_code = color_8bit[color_names[cell]]
-            print(f"\033[38;5;{color_code}m{cell}\033[0m", end="")
-        print()
+#     for y in range(grid.shape[1]):
+#         for x in range(grid.shape[0]):
+#             cell = grid[x, y]
+#             color_code = color_8bit[color_names[cell]]
+#             print(f"\033[38;5;{color_code}m{cell}\033[0m", end="")
+#         print()
 
 
 def visualize(input_generator: Callable[[], NDArray[np.int_]], transform: Callable[[NDArray[np.int_]], NDArray[np.int_]], n_examples: int = 5, n_attempts: int = 100) -> None:

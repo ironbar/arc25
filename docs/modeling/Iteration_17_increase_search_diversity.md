@@ -38,6 +38,11 @@ efficient than making multiple predictions with different prompts.
 
 ## Next steps
 
+- How can we effectively explore the search space
+  - Funsearch
+  - Alphacode (Google DeepMind’s AlphaCode shows that this simple pipeline yields >90 % unique clusters even with off‑the‑shelf Transformer samplers)
+- Another source of variability is using multiple LLMs
+
 ## TODO
 
 - [ ]

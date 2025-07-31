@@ -179,7 +179,17 @@ Thus it seems that if I want to refine code, I'm going to throw many attempts to
 
 ## Conclusion
 
+This experimentation successfully demonstrated that a base code-generation model using a DSL can solve a subset of ARC tasks. 
+The best experiment solved 11.5% of the training tasks.
+The two most critical factors for success were model size and prediction volume. 
+Larger models consistently produced higher-quality solutions and solved more tasks. 
+
+The most effective strategy was a simple brute-force approach, generating hundreds of independent solutions per task, as this method significantly outperformed more complex search techniques aimed at refinement or increasing diversity. These "smarter" search prompts were counterproductive, often reducing the variety of generated outputs. While effective, the brute-force method is inefficient, suffering from diminishing returns in solution uniqueness, a key challenge that was only explorable thanks to the massive inference speedups provided by VLLM.
+
 ## Next steps
+
+- Try to increase search diversity
+- Refine solution
 
 ## TODO
 

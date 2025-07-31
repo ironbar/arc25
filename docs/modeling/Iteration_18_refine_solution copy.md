@@ -15,6 +15,15 @@ I can also do it.
 
 ## Development
 
+To be able to refine a function, I believe we should give the model the output grids and the scores.
+That information is useful to modify the initial function.
+
+I could give all the information on the user message, or simulate a multi-turn conversation with the agent.
+I believe they should give similar results but I need to check it.
+
+The goal of the experiment is to check if doing function refinement leads to better accuracy
+than simply sampling the model.
+
 ## Results
 
 ## Conclusion

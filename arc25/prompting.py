@@ -86,13 +86,20 @@ def pretty_print_prompt(text, default_color='black'):
             color = 'blue'
         elif line.startswith('<|user|>') or line.startswith('<|im_start|>user'):
             color = default_color
-        elif line.startswith('<|system|>') or line.startswith('<|im_start|>system'):
+        elif line.startswith('<|system|>') or line.startswith('<|im_start|>system') or line.startswith('<|begin_of_text|><|start_header_id|>system'):
             color = 'green'
         if line.startswith('<'):
             attrs = ['bold']
         else:
             attrs = None
         print(colored(line, color, attrs=attrs))
+        # llama-3
+        if line.endswith('<|start_header_id|>user<|end_header_id|>'):
+            color = default_color
+        elif line.endswith('<|start_header_id|>assistant<|end_header_id|>'):
+            color = 'blue'
+        elif line.endswith('<|start_header_id|>system<|end_header_id|>'):
+            color = 'green'
     print('-'*80)
 
 

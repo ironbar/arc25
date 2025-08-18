@@ -148,3 +148,33 @@ class ReplaceNumberEncoder(GridEncoder):
             text = text.replace(symbol, str(idx))
         grid = self.encoder.to_grid(text)
         return grid
+
+
+class ColorNameEncoder(GridEncoder):
+    # https://github.com/xu3kev/BARC/blob/a7b51a6b1ff969da3a78a71c533b6d79a93966e7/data_processing/gen_transduction_prompt.py#L53C1-L64C2
+    COLOR_MAPPING = {
+        0: "Black",
+        1: "Blue",
+        2: "Red",
+        3: "Green",
+        4: "Yellow",
+        5: "Gray",  # instead of "Grey"
+        6: "Pink",
+        7: "Orange",
+        8: "Purple",
+        9: "Brown"
+    }
+    def _color_name_to_number(self, color_name):
+        for number, name in self.COLOR_MAPPING.items():
+            if color_name == name:
+                return number
+        raise ValueError(f'Unknown color name: {color_name}')
+
+    def to_text(self, grid):
+        text = '\n'.join([' '.join([self.COLOR_MAPPING[x] for x in line]) for line in grid])
+        return text
+
+    def to_grid(self, text):
+        lines = text.strip().splitlines()
+        grid = [[self._color_name_to_number(x) for x in line.split()] for line in lines]
+        return grid

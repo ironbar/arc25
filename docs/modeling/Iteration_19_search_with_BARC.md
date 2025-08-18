@@ -21,6 +21,24 @@ Links:
 - https://github.com/xu3kev/BARC/tree/master
 - https://huggingface.co/barc0/Llama-3.1-ARC-Potpourri-Induction-8B
 
+### Grid encoder
+
+I have developed a new grid encoder that represents the grids with colors with their names:
+
+```
+Black Blue Red Green Yellow Gray Pink Orange Purple Brown
+```
+
+After being tokenized this does not use more tokens than my implementation, the spaces are encoded with the words.
+
+However I have noticed that the first words of each row are represented differently by the encoder.
+Probably this is not the best option but the model was trained this way. Below you can see how the
+tokenizer tokenizes a 2x2 matrix with zeros.
+
+```
+['Black', 'ĠBlack', 'Ċ', 'Black', 'ĠBlack']
+```
+
 ## Results
 
 ## Conclusion

@@ -16,6 +16,11 @@ improve dramatically the accuracy of an induction model by learning from the sea
 
 ## Development
 
+Links:
+
+- https://github.com/xu3kev/BARC/tree/master
+- https://huggingface.co/barc0/Llama-3.1-ARC-Potpourri-Induction-8B
+
 ## Results
 
 ## Conclusion

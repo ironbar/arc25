@@ -97,7 +97,7 @@ def check_code_is_safe(code):
                          'os.path', 'pebble', 'hashlib', 'sys.exit', 'subprocess', 'calendar', 'os.environ',
                          'matplotlib', 'pygame']
     for module in forbidden_modules:
-        if f'{module}.' in code:
+        if f'{module}.' in code or f'import {module}' in code:
             raise UnsafeCode(f"The code uses a forbidden module: {module}\nCode: {code}")
 
     forbidden_functions = ['input', '.save', 'write', 'open', 'exec', 'eval', 'compile']

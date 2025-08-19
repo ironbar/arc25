@@ -5,7 +5,8 @@ from typing import Optional
 from types import ModuleType
 
 # TODO: this is not elegant, but it works for now
-from arc25.BARC_dsl import *
+# from arc25.BARC_dsl import *
+from arc25.dsl import *
 
 logger = logging.getLogger(__name__)
 
@@ -125,28 +126,16 @@ def safe_code_execution(code: str, inputs: list, func_name: str = 'task',
                         timeout_duration: int = 1, dsl: Optional[ModuleType] = None):
     check_code_is_safe(code)
     _set_timeout_alarm(timeout_duration)
-    restricted_locals = {}
-    restricted_globals = globals() # TODO: restrict the globals
-    if dsl is not None: restricted_globals['dsl'] = dsl
+    namespace = globals() # TODO: restrict the globals
+    namespace['input_grids'] = inputs
+    if dsl is not None: namespace['dsl'] = dsl
 
-    # Dynamically define the function to be executed
+    code = code + f'\n\noutput_grids = [{func_name}(input.copy()) for input in input_grids]'
     try:
-        exec(code, restricted_globals, restricted_locals)
+        exec(code, namespace)
+        return namespace['output_grids']
     except Exception as e:
         logger.debug(f"Error during code execution: {e}")
-        _disable_timeout_alarm()
-        raise e
-    # Check if the function is defined in the restricted locals
-    if func_name not in restricted_locals:
-        raise ValueError(f"The code did not define the expected '{func_name}' function.")
-
-    func = restricted_locals[func_name]
-    try:
-        result = [func(input.copy()) for input in inputs]
-        _disable_timeout_alarm()
-        return result
-    except Exception as e:
-        logger.debug(f"Error during function execution: {e}")
         _disable_timeout_alarm()
         raise e
 

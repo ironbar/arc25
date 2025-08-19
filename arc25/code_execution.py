@@ -5,8 +5,8 @@ from typing import Optional
 from types import ModuleType
 
 # TODO: this is not elegant, but it works for now
-# from arc25.BARC_dsl import *
-from arc25.dsl import *
+from arc25.BARC_dsl import *
+# from arc25.dsl import *
 
 logger = logging.getLogger(__name__)
 

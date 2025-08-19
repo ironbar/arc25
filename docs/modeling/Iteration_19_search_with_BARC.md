@@ -45,6 +45,14 @@ tokenizer tokenizes a 2x2 matrix with zeros.
 
 ## Next steps
 
+- Induction results from the BARC paper are obtained with 20k samples, that gets 38% on the validation set.
+  With the hardware available at Kaggle I could make around 2k predictions per task. That would yield
+  a score around 20% on the validation set. 500 predictions yields around 15%, 200 around 10%, not sure how many are needed to get 5% score.
+  So maybe my approach from last year was not that bad, I was simply not making that many predictions.
+  Maybe reinforcement learning could increase the efficiency of the model at test-time, reducing the number
+  of required predictions.
+![alt text](res/1755582102516_image.png)
+
 ## TODO
 
 - [ ]

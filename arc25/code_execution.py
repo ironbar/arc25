@@ -4,7 +4,8 @@ import logging
 from typing import Optional
 from types import ModuleType
 
-from arc25.dsl import *
+# TODO: this is not elegant, but it works for now
+from arc25.BARC_dsl import *
 
 logger = logging.getLogger(__name__)
 
@@ -93,6 +94,8 @@ def remove_irrelevant_lines(code, inputs, outputs):
 
 
 def check_code_is_safe(code):
+    # TODO: verify that the findings are not in comment lines:
+    # To make the output, replicate the 3x3 pattern to fill the entire grid by shifting it to the right and down by 3 pixels each time.
     forbidden_modules = ['logging', 'threading', 'bcrypt', 'datetime', 'os.sys', 'multiprocessing', 'time',
                          'os.path', 'pebble', 'hashlib', 'sys.exit', 'subprocess', 'calendar', 'os.environ',
                          'matplotlib', 'pygame']

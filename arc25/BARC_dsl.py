@@ -31,6 +31,8 @@ class Color:
     ORANGE = 7
     TEAL = 8
     MAROON = 9
+    PURPLE = 8
+    BROWN = 9
     TRANSPARENT = 0 # sometimes the language model likes to pretend that there is something called transparent/background, and black is a reasonable default
     BACKGROUND = 0
 

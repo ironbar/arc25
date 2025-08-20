@@ -133,6 +133,7 @@ def safe_code_execution(code: str, inputs: list, func_name: str = 'task',
     code = code + f'\n\noutput_grids = [{func_name}(input.copy()) for input in input_grids]'
     try:
         exec(code, namespace)
+        _disable_timeout_alarm()
         return namespace['output_grids']
     except Exception as e:
         logger.debug(f"Error during code execution: {e}")

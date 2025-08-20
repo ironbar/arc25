@@ -3,6 +3,7 @@ ipykernel
 matplotlib
 numpy
 tqdm
+tqdm-joblib
 torch
 torchvision
 torchaudio

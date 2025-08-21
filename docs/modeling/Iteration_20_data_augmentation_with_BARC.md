@@ -22,6 +22,20 @@ data augmentation was not helpful. That result was weird, so I want to repeat th
 
 ## Development
 
+### ARC-AGI-1 evaluation set is chosen
+
+For these experiments I believe that evaluation set from ARC-AGI-1 has the greatest signal. The BARC
+model was able to solve around 20% of the tasks. The scores on the training set are not trustable because
+the model was trained on those or similar tasks, while the ARC-AGI-2 evaluation set is more difficult
+and only 2 out of 120 tasks were solved.
+
+### Experimental setup
+
+The idea is to reuse all the data augmentation implemented on [iteration 17](Iteration_17_increase_search_diversity.md).
+I will make predictions in batches of 8 or 16 predictions per task, and later I will aggregate all the predictions to
+estimate the accuracy of the system. I will have to save the data augmentation configuration alongside each prediction
+to be able to undo it when executing the code.
+
 ## Results
 
 ## Conclusion

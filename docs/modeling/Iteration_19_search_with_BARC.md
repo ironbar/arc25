@@ -41,6 +41,38 @@ tokenizer tokenizes a 2x2 matrix with zeros.
 
 ## Results
 
+### Comparison of pass@n in the different datasets
+
+The plot below shows the pass@n for the different datasets versus the number of predictions. I believe
+this validates my current implementation because I get similar or better numbers to the ones reported
+in the BARC paper. This could be happening due to using a higher temperature and/or using more input samples.
+
+![alt text](res/1755754930851_image.png)
+
+- 2024 datasets do not show signs of stopping if we increase the number of predictions, however the
+  2025 dataset does not improve when increasing the number of predictions from 256 to 1024. This might
+  be a sign that the 2025 dataset is much harder than the previous one.
+- Interesting to see that the training set is not easily solved, this might indicate that there is room
+  for improvement
+
+### Other metrics analysis
+
+| dataset         | n_preds | valid code | valid outputs | unique outputs | pixel similarity | correct grids | pass_rate | pass@n |
+|-----------------|---------|------------|---------------|----------------|------------------|---------------|-----------|--------|
+| training-2024   | 248     | 100.0%     | 82.0%         | 38.1%          | 61.9%            | 15.0%         | 12.40%    | 58.00% |
+| evaluation-2024 | 568     | 100.0%     | 75.9%         | 40.9%          | 57.1%            | 3.0%          | 1.96%     | 21.00% |
+| evaluation-2025 | 1560    | 100.0%     | 72.8%         | 39.9%          | 50.3%            | 0.1%          | 0.051%    | 1.67%  |
+
+- The ratio of unique outputs is quite good, when [searching with base models](./Iteration_16_search_with_base_models.md#effect-of-the-number-of-predictions-with-independent-search)
+I would only get around 40% unique outputs when doing 16 predictions, and the rate lowered to 20% when
+doing 512 predictions.
+- Pixel similarity might not be a good metric, the difference between the datasets is small, but the differences in pass rate are huge.
+  This could be caused by the binary nature of the arc tasks, they are either correct or wrong.
+
+### Optimizing the number of predictions for throughput
+
+
+
 ## Conclusion
 
 ## Next steps

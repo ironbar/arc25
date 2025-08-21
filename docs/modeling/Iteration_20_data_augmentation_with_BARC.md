@@ -17,6 +17,9 @@ Does using data augmentation increases the diversity of the predictions and impr
 
 ## Motivation
 
+On a previous [iteration with base models](Iteration_17_increase_search_diversity.md) I found that
+data augmentation was not helpful. That result was weird, so I want to repeat the experiments with BARC.
+
 ## Development
 
 ## Results

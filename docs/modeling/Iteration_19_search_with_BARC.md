@@ -71,7 +71,12 @@ doing 512 predictions.
 
 ### Optimizing the number of predictions for throughput
 
+The plot below shows the throughput vs the number of predictions per prompt for the evaluation-2024 dataset.
 
+![alt text](res/1755757546858_image.png)
+
+16 predictions per prompt might be the sweet spot for my hardware (RTX 3090). So when applying data augmentation
+or other tricks on the following iterations, I should be doing 8 or 16 predictions per prompt.
 
 ## Conclusion
 

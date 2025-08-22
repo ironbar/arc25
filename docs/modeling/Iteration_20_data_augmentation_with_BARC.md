@@ -53,6 +53,16 @@ This could explain why my previous experiments with just 8 predictions per task 
 This is probably caused by having more diversity on the outputs, the metric that measure the unique outputs improves
 from 40.9% to 44.4%.
 
+### Trustability of the metrics
+
+I have seen that we can only trust the metrics for a number of predictions around 1/4 of the total
+of predictions run (at least for pass@n metric). There is a bias to underestimate the pass@n rate when
+the number of predictions is small.
+
+![alt text](res/1755840721821_image.png)
+
+Thus when making comparisons between experiments we should try to have a similar number of predictions.
+
 ## Conclusion
 
 ## Next steps

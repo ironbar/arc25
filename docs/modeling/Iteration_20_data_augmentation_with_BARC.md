@@ -80,4 +80,5 @@ The important takeaway is that the current configuration is not hurting the accu
 - [x] Have a look at some of the solutions to verify they are legit implementations
 - [ ] Document some of the predictions
 - [ ] Check that I'm using the correct number of training samples. Maybe I should decouple from the Task object. Maybe I'm not giving all the training samples and making the problem harder.
+  Indeed that is the case, I'm using just the training samples. So I have to fix that bug and repeat the experimentation.
 - [x] Distribution of prediction length

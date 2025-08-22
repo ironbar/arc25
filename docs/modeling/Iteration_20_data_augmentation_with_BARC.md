@@ -63,6 +63,14 @@ the number of predictions is small.
 
 Thus when making comparisons between experiments we should try to have a similar number of predictions.
 
+### Distribution of output tokens
+
+![alt text](res/1755849933817_image.png)
+
+I was using the `max_tokens=2048` from the previous iterations and it seems it is a good value.
+The median output tokens seems to be around 400, and we can see that the datasets are sorted by inference speed as expected. We could probably be using 1024 output tokens without much impact on the results.
+The important takeaway is that the current configuration is not hurting the accuracy of the model.
+
 ## Conclusion
 
 ## Next steps
@@ -70,4 +78,4 @@ Thus when making comparisons between experiments we should try to have a similar
 ## TODO
 
 - [ ] Have a look at some of the solutions to verify they are legit implementations
-- [ ] Distribution of prediction length
+- [x] Distribution of prediction length

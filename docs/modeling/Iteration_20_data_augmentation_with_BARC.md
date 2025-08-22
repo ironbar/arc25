@@ -38,6 +38,21 @@ to be able to undo it when executing the code.
 
 ## Results
 
+### Data augmentation improves the accuracy of the model by increasing the diversity of the predictions
+
+![alt text](res/1755837928981_image.png)
+
+The pass@n metric improves when using data augmentation. The difference is bigger when the number of predictions grows.
+This could explain why my previous experiments with just 8 predictions per task did not show improvements.
+
+| experiment        | n_preds | valid code | valid outputs | unique outputs | pixel similarity | correct grids | pass_rate | pass@n     |
+|-------------------|---------|------------|---------------|----------------|------------------|---------------|-----------|------------|
+| baseline          | 568     | 100.0%     | 75.9%         | 40.9%          | **57.1%**        | **3.0%**      | 1.96%     | 21.00%     |
+| data augmentation | 584     | 100.0%     | **76.5%**     | **44.4%**      | 56.4%            | 2.9%          | **1.98%** | **24.50%** |
+
+This is probably caused by having more diversity on the outputs, the metric that measure the unique outputs improves
+from 40.9% to 44.4%.
+
 ## Conclusion
 
 ## Next steps
@@ -45,3 +60,4 @@ to be able to undo it when executing the code.
 ## TODO
 
 - [ ] Have a look at some of the solutions to verify they are legit implementations
+- [ ] Distribution of prediction length

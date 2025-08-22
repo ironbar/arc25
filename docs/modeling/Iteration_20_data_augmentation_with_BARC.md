@@ -77,5 +77,7 @@ The important takeaway is that the current configuration is not hurting the accu
 
 ## TODO
 
-- [ ] Have a look at some of the solutions to verify they are legit implementations
+- [x] Have a look at some of the solutions to verify they are legit implementations
+- [ ] Document some of the predictions
+- [ ] Check that I'm using the correct number of training samples. Maybe I should decouple from the Task object. Maybe I'm not giving all the training samples and making the problem harder.
 - [x] Distribution of prediction length

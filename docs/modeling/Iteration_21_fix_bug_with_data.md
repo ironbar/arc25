@@ -25,7 +25,9 @@ I already know that data augmentation is helpful, so I will be using it by defau
 
 ## Results
 
-TODO: add image
+### Accuracy on the different datasets
+
+![alt text](res/1756053829174_image.png)
 
 | dataset              | n_preds | valid code | valid outputs | unique outputs | pixel similarity | correct grids | train_pass_rate | train_pass@n | pass_rate | pass@n |
 |----------------------|---------|------------|---------------|----------------|------------------|---------------|-----------------|--------------|-----------|--------|
@@ -39,6 +41,8 @@ It is worth mentioning that it seems that we would need around 32768 to solve th
 These numbers are very similar to the ones that I have previously to solving the bug.
 
 One good property of this model is that the pass rate of the task is almost identical to the pass rate of just the training samples. This implies that a function that is able to solve the training samples is very likely to solve also the test samples.
+
+### Effect of data augmentation
 
 ## Conclusion
 

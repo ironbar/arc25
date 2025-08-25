@@ -65,7 +65,6 @@ scripts/finetuning_hr.py \
 --max-steps ${STEPS} \
 --n-gpus ${N_GPUS} \
 --per-device-train-batch-size 1 \
---per-device-eval-batch-size 2 \
 --batch-size 32 \
 --max-seq-len ${MAXSEQLEN} \
 --logging-steps 1 \
@@ -83,7 +82,7 @@ from Llama to add the pad token.
 - That reduces to 1.6 seconds when using 2 GPUS, so scaling is nice because GPU usage is almost 100% all the time.
 - If I increase the max_seq_len to 8192 the training time per sample increases to 2 seconds, but the memory
   seems to increase just from 13GB to 15GB so there might be room for bigger training sequences.
-- Training on 3200 samples would take around 1.5 hours on my 2x3090 setup. I have to use 4 bit quantization,
+- Training on 3200 samples would take around 1h40min on my 2x3090 setup. I had to use 4 bit quantization,
   liger kernels and gradient checkpoint to avoid the OOM errors.
 
 #### Data collator

@@ -78,6 +78,8 @@ python scripts/finetuning_hr.py \
 
 - There is some problem with the tokenizer, I have some function only ready for Qwen
 
+Around 3s per instance when training with batch size 32 and 4096 max sequence length.
+
 #### Data collator
 
 The data collator adds a new labels field to the batch that allows to skip the user text.

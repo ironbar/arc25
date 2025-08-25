@@ -24,10 +24,7 @@ from datasets import Dataset, IterableDataset
 from accelerate.logging import get_logger
 from accelerate import Accelerator
 
-from arc25.encoders import create_grid_encoder
-from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 from arc25.logging import log_execution_time, configure_logging
-from arc25.training_tasks import training_tasks_generator
 from arc25.utils import set_random_seed
 
 from finetuning import (
@@ -77,7 +74,7 @@ class Config:
     torch_dtype: str = "bfloat16" # "bfloat16" or "float16", float16 causes divergence when training on my PC, but it is 4x faster on Kaggle
     packing: bool = False # multiple short examples are packed in the same input sequence to increase training efficiency
     use_liger_kernel: bool = True # reduces memory usage by 60% and in theory increase speed by 20%
-    dataloader_num_workers: int = 4 # Number of subprocesses to use for data loading, if set to 0, the data will be loaded in the main process
+    dataloader_num_workers: int = 0 # Number of subprocesses to use for data loading, if set to 0, the data will be loaded in the main process
     # LoRA
     use_lora: bool = True
     use_rslora: bool = True
@@ -105,7 +102,8 @@ def fine_tuning_main():
     logger.info(f'Train configuration: {asdict(cfg)}')
 
     model = get_model(cfg.model_path, torch_dtype=cfg.torch_dtype,
-                      use_4bit_quantization=cfg.use_4bit_quantization, device_map=cfg.device_map)
+                      use_4bit_quantization=cfg.use_4bit_quantization, device_map=cfg.device_map,
+                      use_gradient_checkpointing=cfg.gradient_checkpointing)
     tokenizer = get_tokenizer(cfg.model_path, model)
     if cfg.use_lora:
         model = get_lora_model(model, cfg.adapter_path, cfg.lora_r, cfg.use_rslora,
@@ -154,8 +152,12 @@ def random_prompt_generator(dataset_filepath, tokenizer, shard, verbose=False):
         for task_id in task_ids:
             hr_tasks = tasks[task_id]
             prompt = hr_tasks[prompt_idx % len(hr_tasks)]
+            # TODO: better implement this
+            if len(tokenizer.encode(prompt)) > 4096:
+                continue
             if prompt_distribution_logger is not None: prompt_distribution_logger.add_prompt(prompt)
-            yield {'input_ids': tokenizer.encode(prompt, return_tensors='pt').squeeze(0).tolist()}
+            yield {'text': prompt}
+            # yield {'input_ids': tokenizer.encode(prompt, return_tensors='pt').squeeze(0).tolist()}
         prompt_idx += 1
 
 if __name__ == '__main__':

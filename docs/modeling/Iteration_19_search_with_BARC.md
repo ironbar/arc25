@@ -7,6 +7,11 @@ _18/08/2025_
 Use the induction model from Boostrapping ARC (BARC) to search code solutions. This will stablish
 a baseline score that could be later be used to explore methods to improve the efficiency of the search.
 
+!!! warning
+
+    There was a bug where only the training samples from each task were used on this iteration. The conclusions
+    are still valid but go to [Iteration 21](Iteration_21_fix_bug_with_data.md) to see the results after fixing the bug.
+
 ## Motivation
 
 I believe I can validate my ideas using the model from BARC. That saves me the process of generating

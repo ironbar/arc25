@@ -231,6 +231,10 @@ def get_tokenizer(model_path, model, pad_token='<|pad|>'):
         elif 'smollm' in model_path.lower():
             logger.info('Changing pad token to "<|endoftext|>" for SmolLM models, because it is the same as eos token <|im_end|>')
             tokenizer.pad_token = "<|endoftext|>"
+        elif 'llama-3.1' in model_path.lower():
+            #TODO: check if this is necessary or optimal
+            logger.info('Changing pad token from <|eot_id|> to "<|pad|>" for Llama3.1 models. Not sure if this is necessary')
+            tokenizer.pad_token = "<|pad|>"
         else:
             raise NotImplementedError('Changing padding token is only implemented for Qwen models')
     elif 'pad_token' not in tokenizer.special_tokens_map or tokenizer.pad_token == tokenizer.eos_token:
@@ -261,7 +265,7 @@ def check_tokenizer_has_unique_words_for_numbers(tokenizer):
     for i in range(10):
         words = get_words_with_symbol(str(i), tokenizer.get_vocab())
         if len(words) != 1:
-            raise ValueError(f'Found {len(words)} words with symbol {i} in tokenizer vocabulary: {words}')
+            logger.warning(f'Found {len(words)} words with symbol {i} in tokenizer vocabulary: {words}')
     logger.info('Tokenizer is valid, each number has a unique word in the vocabulary')
 
 

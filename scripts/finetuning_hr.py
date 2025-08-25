@@ -152,13 +152,13 @@ def random_prompt_generator(dataset_filepath, tokenizer, shard, verbose=False):
 
     with open(dataset_filepath, 'r') as f:
         tasks = json.load(f)
-    task_ids = list(range(len(tasks)))
+    task_ids = list(tasks.keys())
     random.shuffle(task_ids)
     prompt_idx = random.randint(0, 1000)
     while True:
         for task_id in task_ids:
             hr_tasks = tasks[task_id]
-            prompt = hr_tasks[prompt_idx % len(hr_tasks)]['prompt']
+            prompt = hr_tasks[prompt_idx % len(hr_tasks)]
             if prompt_distribution_logger is not None: prompt_distribution_logger.add_prompt(prompt)
             yield {'input_ids': tokenizer.encode(prompt, return_tensors='pt').squeeze(0).tolist()}
         prompt_idx += 1

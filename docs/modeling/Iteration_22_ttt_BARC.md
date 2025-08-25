@@ -66,7 +66,6 @@ python scripts/finetuning_hr.py \
 --max-steps ${STEPS} \
 --n-gpus ${N_GPUS} \
 --per-device-train-batch-size 1 \
---per-device-eval-batch-size 2 \
 --batch-size 32 \
 --max-seq-len ${MAXSEQLEN} \
 --logging-steps 100 \
@@ -78,6 +77,19 @@ python scripts/finetuning_hr.py \
 ```
 
 - There is some problem with the tokenizer, I have some function only ready for Qwen
+
+#### Data collator
+
+The data collator adds a new labels field to the batch that allows to skip the user text.
+
+```python
+print(tokenizer(text))
+{'input_ids': tensor([[128000, 128000, 128006,  ...,    198,  74694, 128009]]), 'attention_mask': tensor([[1, 1, 1,  ..., 1, 1, 1]])}
+data_collator([tokenizer(text)])
+{'input_ids': tensor([[128000, 128000, 128006,  ...,    198,  74694, 128009]]), 'attention_mask': tensor([[1, 1, 1,  ..., 1, 1, 1]]), 'labels': tensor([[ -100,  -100,  -100,  ...,   198, 74694,  -100]])}
+```
+
+In this case it is ignoring the end of text token because it is the same as the padding token.
 
 ## Results
 

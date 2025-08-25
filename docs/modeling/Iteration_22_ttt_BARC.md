@@ -56,7 +56,7 @@ python scripts/finetuning_hr.py \
 --no-resume_from_checkpoint
 
 export N_GPUS=2
-export STEPS=100
+export STEPS=1000
 export MAXSEQLEN=8192
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 scripts/finetuning_hr.py \
@@ -68,7 +68,7 @@ scripts/finetuning_hr.py \
 --batch-size 32 \
 --max-seq-len ${MAXSEQLEN} \
 --logging-steps 1 \
---save-steps 1000 \
+--save-steps 100 \
 --lora-r 32 \
 --use-dora \
 --use-rslora \

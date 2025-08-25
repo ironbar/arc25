@@ -44,7 +44,7 @@ class Config:
     model_path: str = '/home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B'
     adapter_path: Optional[str] = None
     use_4bit_quantization: bool = True
-    train_dataset_path: str = '/mnt/hdd0/MEGA/AI/22_Kaggle/arc25/notebooks/temp.json'
+    train_dataset_path: str = '/mnt/hdd0/Kaggle/arc25/data/hindsight_relabeled/2025-08-25_evaluation-85640.json'
     # train_datasets: List[List[str]] = field(default_factory=lambda: [['/mnt/hdd0/Kaggle/arc24/data/new_partitions/train_rs7.json', 'output-from-examples-v0']])
     # remove_train_samples_to_fit_max_seq_len: bool = False
     # subsample_train_tasks_ratio: Optional[float] = None

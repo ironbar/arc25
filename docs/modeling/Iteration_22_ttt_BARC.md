@@ -54,6 +54,27 @@ scripts/finetuning_hr.py \
 --use-dora \
 --use-rslora \
 --no-resume_from_checkpoint
+
+# better work with a single gpu for debugging
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=10
+export MAXSEQLEN=4096
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-25-hr-trainings/3090-GPUS${N_GPUS}-BARC-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora \
+--no-resume_from_checkpoint
 ```
 
 - There is some problem with the tokenizer, I have some function only ready for Qwen

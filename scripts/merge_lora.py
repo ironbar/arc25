@@ -23,7 +23,7 @@ def merge_lora(base_model_path: str, lora_path: str, output_path: str):
     if is_lora_path(lora_path):
         base_model = AutoModelForCausalLM.from_pretrained(base_model_path, torch_dtype=torch.float16)
         tokenizer = AutoTokenizer.from_pretrained(base_model_path, trust_remote_code=True)
-        if 'llama' in base_model_path:
+        if 'llama' in base_model_path.lower(): # TODO: this condition should be more general, or an input argument
             tokenizer.add_special_tokens({'pad_token': '<|pad|>'})
             base_model.resize_token_embeddings(len(tokenizer))
 
@@ -45,6 +45,8 @@ def merge_lora(base_model_path: str, lora_path: str, output_path: str):
             shutil.copy(filepath, dst)
 
     for filepath in glob.glob(os.path.join(base_model_path, '*')):
+        if os.path.isdir(filepath):
+            continue
         dst = os.path.join(output_path, os.path.basename(filepath))
         if not os.path.exists(dst):
             logger.info(f'Copying {filepath}...')

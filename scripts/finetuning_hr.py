@@ -117,7 +117,7 @@ def fine_tuning_main():
     else:
         current_process_seed = random.randint(0, 2**32 - 1)
 
-    dataset_kwargs = {'dataset_filepath': cfg.train_dataset_path, 'tokenizer': tokenizer}
+    dataset_kwargs = {'dataset_filepath': cfg.train_dataset_path, 'tokenizer': tokenizer, 'max_seq_len': cfg.max_seq_len}
     train_dataset = IterableDataset.from_generator(
         partial(random_prompt_generator, **dataset_kwargs),
         gen_kwargs={"shard": [current_process_seed + i for i in range(max(cfg.dataloader_num_workers, 1))],
@@ -136,7 +136,7 @@ def fine_tuning_main():
     torch.distributed.destroy_process_group()
 
 
-def random_prompt_generator(dataset_filepath, tokenizer, shard, verbose=False):
+def random_prompt_generator(dataset_filepath, tokenizer, max_seq_len, shard, verbose=False):
     shard = shard[0] if isinstance(shard, list) else shard
     verbose = verbose[0] if isinstance(verbose, list) else verbose
     prompt_distribution_logger = PromptTokenDistributionLogger(tokenizer) if verbose else None
@@ -153,9 +153,9 @@ def random_prompt_generator(dataset_filepath, tokenizer, shard, verbose=False):
             hr_tasks = tasks[task_id]
             prompt = hr_tasks[prompt_idx % len(hr_tasks)]
             # TODO: better implement this
-            if len(tokenizer.encode(prompt)) > 4096:
-                continue
             if prompt_distribution_logger is not None: prompt_distribution_logger.add_prompt(prompt)
+            if len(tokenizer.encode(prompt)) > max_seq_len:
+                continue
             yield {'text': prompt}
             # yield {'input_ids': tokenizer.encode(prompt, return_tensors='pt').squeeze(0).tolist()}
         prompt_idx += 1

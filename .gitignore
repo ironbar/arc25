@@ -9,3 +9,4 @@ build/*
 dist/*
 .coverage
 notebooks/*.csv
+notebooks/temp.json

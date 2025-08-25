@@ -68,7 +68,7 @@ class Config:
     # SmolLM-135M-Instruct: (4, 4); Qwen/Qwen2-0.5B-Instruct: (1, 2)
     per_device_train_batch_size: int = 1
     per_device_eval_batch_size: int = 1 # if using 2 the validation loss is not correctly computed
-    gradient_checkpointing: bool = False
+    gradient_checkpointing: bool = True
     learning_rate: float = 1e-4
     lr_scheduler_type: str = "linear" #linear, constant_with_warmup, cosine, cosine_with_restarts
     lr_num_cycles: int = 4 # only applicable for cosine_with_restarts
@@ -76,7 +76,7 @@ class Config:
     optim: str = "paged_adamw_8bit" # "paged_adamw_8bit"
     torch_dtype: str = "bfloat16" # "bfloat16" or "float16", float16 causes divergence when training on my PC, but it is 4x faster on Kaggle
     packing: bool = False # multiple short examples are packed in the same input sequence to increase training efficiency
-    use_liger_kernel: bool = False # reduces memory usage by 60% and in theory increase speed by 20%
+    use_liger_kernel: bool = True # reduces memory usage by 60% and in theory increase speed by 20%
     dataloader_num_workers: int = 4 # Number of subprocesses to use for data loading, if set to 0, the data will be loaded in the main process
     # LoRA
     use_lora: bool = True
@@ -84,11 +84,6 @@ class Config:
     use_dora: bool = False # Currently it is not supported by VLLM
     lora_r: int = 16
     lora_weight_initialization: str = 'default' # 'gaussian', 'olora', 'pissa', 'pissa_niter_[number of iters]', 'loftq', 'default'
-    # Data augmentation
-    # compose_new_task_probability: float = 0.0
-    # compose_new_task_weights: Optional[List[float]] = None
-    # Verify
-    # verify_correct_output_probability: float = 0.5
 
 
 @log_execution_time

@@ -112,3 +112,4 @@ In this case it is ignoring the end of text token because it is the same as the 
   - [ ] With and without solved tasks
 - [ ] Which LoRA parameters are compatible with VLLM?
 - [ ] Train the model on the cluster
+- [ ] Script for inference

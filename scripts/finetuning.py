@@ -99,7 +99,8 @@ def fine_tuning_main():
     logger.info(f'Train configuration: {asdict(cfg)}')
 
     model = get_model(cfg.model_path, torch_dtype=cfg.torch_dtype,
-                      use_4bit_quantization=cfg.use_4bit_quantization, device_map=cfg.device_map)
+                      use_4bit_quantization=cfg.use_4bit_quantization, device_map=cfg.device_map,
+                      use_gradient_checkpointing=cfg.gradient_checkpointing)
     tokenizer = get_tokenizer(cfg.model_path, model)
     if cfg.use_lora:
         model = get_lora_model(model, cfg.adapter_path, cfg.lora_r, cfg.use_rslora,
@@ -150,7 +151,7 @@ def save_train_conf(cfg):
 ###########################################################################
 # Model and tokenizer loading
 ###########################################################################
-def get_model(model_path, torch_dtype, device_map, use_4bit_quantization=False):
+def get_model(model_path, torch_dtype, device_map, use_4bit_quantization=False, use_gradient_checkpointing=False):
     logger.info('Loading model...')
     if use_4bit_quantization:
         logger.info('Using 4-bit quantization')
@@ -177,7 +178,7 @@ def get_model(model_path, torch_dtype, device_map, use_4bit_quantization=False):
     print_gpu_memory()
     if use_4bit_quantization:
         # QLoRA on Kaggle is 4 times slower than LoRA, I'm trying to disable gradient checkpointing
-        model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=False)
+        model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=use_gradient_checkpointing)
     return model
 
 
@@ -232,9 +233,9 @@ def get_tokenizer(model_path, model, pad_token='<|pad|>'):
             logger.info('Changing pad token to "<|endoftext|>" for SmolLM models, because it is the same as eos token <|im_end|>')
             tokenizer.pad_token = "<|endoftext|>"
         elif 'llama-3.1' in model_path.lower():
-            #TODO: check if this is necessary or optimal
-            logger.info('Changing pad token from <|eot_id|> to "<|pad|>" for Llama3.1 models. Not sure if this is necessary')
-            tokenizer.pad_token = "<|pad|>"
+            logger.info('Changing pad token from <|eot_id|> to <|pad|> for Llama3.1 models. Otherwise the collator does not work properly and the model does not learn to end the sequence.')
+            tokenizer.add_special_tokens({'pad_token': pad_token})
+            model.resize_token_embeddings(len(tokenizer))
         else:
             raise NotImplementedError('Changing padding token is only implemented for Qwen models')
     elif 'pad_token' not in tokenizer.special_tokens_map or tokenizer.pad_token == tokenizer.eos_token:
@@ -243,14 +244,7 @@ def get_tokenizer(model_path, model, pad_token='<|pad|>'):
         tokenizer.add_special_tokens({'pad_token': pad_token})
         tokenizer.padding_side = 'right'
         model.resize_token_embeddings(len(tokenizer))
-    # if tokenizer.chat_template is None:
-    #     logger.warning('The tokenizer does not have a chat template, assigning Qwen2 chat template')
-    #     tokenizer.chat_template = AutoTokenizer.from_pretrained('Qwen/Qwen2.5-0.5B-Instruct', trust_remote_code=True).chat_template
-    #     # tried adding this additional code without success
-    #     tokenizer.add_special_tokens({'eos_token': '<|im_end|>'})
-    #     tokenizer.add_special_tokens({'pad_token': '<|endoftext|>'})
-    #     # tokenizer.eos_token = '<|im_end|>'
-    #     # tokenizer.pad_token = '<|endoftext|>'
+
     assert tokenizer.pad_token != tokenizer.eos_token
     assert tokenizer.pad_token_id != tokenizer.eos_token_id
     check_tokenizer_has_unique_words_for_numbers(tokenizer)

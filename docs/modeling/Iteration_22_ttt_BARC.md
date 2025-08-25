@@ -40,4 +40,5 @@ the data directly with the chat template from the BARC model.
 
 ## TODO
 
-- [ ]
+- [ ] Prepare the training data. With and without data augmentation
+- [ ] Train the model on the cluster

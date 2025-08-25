@@ -32,6 +32,32 @@ doing multiple epochs would yield the best results. I'm not going to worry about
 The first step is generate the data for training. The fastest way could be to generate
 the data directly with the chat template from the BARC model.
 
+### First trainings
+
+```bash
+export N_GPUS=2
+export STEPS=10
+export MAXSEQLEN=4096
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-25-hr-trainings/3090-GPUS${N_GPUS}-BARC-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora \
+--no-resume_from_checkpoint
+```
+
+- There is some problem with the tokenizer, I have some function only ready for Qwen
+
 ## Results
 
 ## Conclusion
@@ -40,5 +66,8 @@ the data directly with the chat template from the BARC model.
 
 ## TODO
 
-- [ ] Prepare the training data. With and without data augmentation
+- [ ] Prepare the training data.
+  - [x] Small toy dataset
+  - [ ] With and without data augmentation
+  - [ ] With and without solved tasks
 - [ ] Train the model on the cluster

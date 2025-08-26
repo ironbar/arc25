@@ -177,9 +177,13 @@ def get_model(model_path, torch_dtype, device_map, use_4bit_quantization=False, 
         )
     # print(model.hf_device_map)
     log_gpu_memory()
+    if use_gradient_checkpointing: # Always disable cache when using gradient checkpointing
+        model.config.use_cache = False
     if use_4bit_quantization:
         # QLoRA on Kaggle is 4 times slower than LoRA, I'm trying to disable gradient checkpointing
         model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=use_gradient_checkpointing)
+    elif use_gradient_checkpointing:
+        model.gradient_checkpointing_enable()
     return model
 
 
@@ -320,7 +324,7 @@ class PromptTokenDistributionLogger():
 
 
 def log_prompt_length_percentiles(prompt_lengths, prefix):
-    percentiles = [50, 75, 90, 95, 97, 98, 99]
+    percentiles = [10, 50, 75, 90, 95, 97, 98, 99]
     percentile_to_n_tokens = {percentile: int(np.percentile(prompt_lengths, percentile)) for percentile in percentiles}
     logger.info(f'\t{prefix} number of prompts: {len(prompt_lengths)}, max number of tokens : {max(prompt_lengths)}, percentiles: {percentile_to_n_tokens}')
 

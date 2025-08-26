@@ -216,7 +216,7 @@ python scripts/finetuning_hr.py \
 --no-resume_from_checkpoint
 
 export LORA_RANK=8
-export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=0
 export N_GPUS=1
 export STEPS=1
 export MAXSEQLEN=1024
@@ -247,6 +247,107 @@ it is saving the whole 4bit quantized model. The second result does not make sen
 
 I have solved the issue by reusing the token `<|finetune_right_pad_id|>` that was already inside
 the tokenizer instead of creating a new one.
+
+### Check which LoRA versions are compatible with VLLM
+
+I'm going to run very short train with the different configurations and see if they are compatible with VLLM.
+
+```bash
+export LORA_RANK=8
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=1
+export MAXSEQLEN=8192
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-lora-compatibility/qLoRA_${LORA_RANK}_dora_rslora \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers 1 \
+--lora-r ${LORA_RANK} \
+--use-dora \
+--use-rslora \
+--use-4bit-quantization \
+--no-resume_from_checkpoint
+
+export LORA_RANK=8
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=1
+export MAXSEQLEN=8192
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-lora-compatibility/qLoRA_${LORA_RANK}_rslora \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers 1 \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora \
+--use-4bit-quantization \
+--no-resume_from_checkpoint
+
+export LORA_RANK=8
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=1
+export MAXSEQLEN=8192
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-lora-compatibility/qLoRA_${LORA_RANK} \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers 1 \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--no-use-rslora \
+--use-4bit-quantization \
+--no-resume_from_checkpoint
+```
+
+VLLM supports LoRA and RSLoRA, it does not support DoRA. Moreover I can give models on the fly, it seems that the first time is slower but otherwise speed looks to be the same.
+
+```
+sampling_params = SamplingParams(n=800, temperature=1.0, top_p=0.95, max_tokens=10)
+Base model: 8000 tokens generated in 4.95 seconds (1614.81 tokens/second)
+LoRA model: 8000 tokens generated in 5.78 seconds (1384.20 tokens/second)
+RSLoRA model: 8000 tokens generated in 6.01 seconds (1330.54 tokens/second)
+LoRA model: 8000 tokens generated in 5.26 seconds (1522.17 tokens/second)
+RSLoRA model: 8000 tokens generated in 5.29 seconds (1512.97 tokens/second)
+```
+
+It seems that the first time a model is called it is slightly slower. And the LoRA model by itself is slightly slower than the base model. But manageable.
+
+<details>
+  <summary>ChatGPT summary of the 3 techniques</summary>
+
+* **LoRA (Low-Rank Adaptation)**
+  Freeze base weights $W$ and learn a low-rank update $\Delta W = \frac{\alpha}{r} BA$ with $A \in \mathbb{R}^{r\times d_\text{in}}$, $B \in \mathbb{R}^{d_\text{out}\times r}$. Cheap to train/serve, drop-in for Q/K/V/O and MLPs.
+
+* **rsLoRA (rank-stabilized / root-scaled LoRA)**
+  Same idea as LoRA, but changes the scaling (and init) so the update norm is \~invariant w\.r.t. rank (often $\alpha/\sqrt{r}$ instead of $\alpha/r$). More stable across different ranks; same runtime cost as LoRA.
+
+* **DoRA (Weight-Decomposed LoRA)**
+  Decomposes a weight into **direction** and **magnitude**; applies a low-rank update to the direction and learns a small per-channel magnitude (scale) too. Tends to boost quality vs plain LoRA, but needs explicit runtime support because of the decomposition step.
+
+</details>
+
+I believe then I should use rsLoRA and don't use DoRA for the following experiments.
 
 ## Results
 

@@ -153,19 +153,32 @@ rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-25
 
 If I remove the gradient checkpointing I get OOM error when using the A6000 GPUs.
 
+### QLoRA is saving the whole model
+
+It seems that when using QLoRA the whole quantized model is saved instead of just the adapter. I might
+have to save the adapter manually to avoid moving large files.
 
 ## Results
+
+### LoRA variants
+
+It seems that VLLM does not support DoRA, so ideally we would use LoRA or rsLoRA for training. Is there any difference
+in the results between the variants?
 
 ## Conclusion
 
 ## Next steps
 
+- Do multiple iterations of search and learn
+
 ## TODO
 
 - [ ] Prepare the training data.
   - [x] Small toy dataset
-  - [ ] With and without data augmentation
+  - [x] With and without data augmentation
   - [ ] With and without solved tasks
 - [ ] Which LoRA parameters are compatible with VLLM?
-- [ ] Train the model on the cluster
+- [ ] Fix issue with qlora model saving the complete model
+- [x] Train the model on the cluster
 - [ ] Script for inference
+- [ ] Find best training hyperparameters (learning rate, batch size, lora rank)

@@ -153,6 +153,7 @@ def save_train_conf(cfg):
 ###########################################################################
 def get_model(model_path, torch_dtype, device_map, use_4bit_quantization=False, use_gradient_checkpointing=False):
     logger.info('Loading model...')
+    print_gpu_memory()
     if use_4bit_quantization:
         logger.info('Using 4-bit quantization')
         bnb_config = BitsAndBytesConfig(

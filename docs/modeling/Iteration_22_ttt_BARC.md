@@ -196,17 +196,18 @@ export N_GPUS=1
 export LEARNING_RATE=1e-4
 export MAXSEQLEN=8192
 export STEPS=20;
+export BATCH_SIZE=1
 condor_submit train.condor command=" 
 python \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
 --train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-speed-tests/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-plain-lora \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-speed-tests/${N_GPUS}xA6000-${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-plain-lora-pdbs${BATCH_SIZE} \
 --max-steps ${STEPS} \
 --device-map None \
 --n-gpus ${N_GPUS} \
 --learning-rate ${LEARNING_RATE} \
---per-device-train-batch-size 1 \
+--per-device-train-batch-size ${BATCH_SIZE} \
 --batch-size 32 \
 --max-seq-len ${MAXSEQLEN} \
 --dataloader_num_workers ${N_GPUS} \
@@ -262,6 +263,52 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --logging-steps 1 \
 --save-steps 100 \
 --lora-r 32 \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=14 -append request_memory=80G
+```
+
+- 1 GPU: 71.63s/it
+- 2 GPUS: 42.74s/it
+- 4 GPUs: 26.82s/it
+- 7 GPUs: Does not run successfully, probably OOM error but I'm not sure.
+
+2 GPUs seems to be the sweet spot.
+
+| n gpus | per-device-batch-size | batch time (s) | speedup | efficiency |
+|--------|-----------------------|----------------|---------|------------|
+| 1      | 1                     | 71.6           | 1       | 100.00%    |
+| 2      | 1                     | 42.7           | 1.7     | 83.84%     |
+| 4      | 1                     | 26.8           | 2.7     | 66.79%     |
+| 7      | 1                     | -              | #VALUE! | #VALUE!    |
+| 1      | 2                     | 75.2           | 1.0     | 95.21%     |
+| 1      | 4                     | OOM            | #VALUE! | #VALUE!    |
+| 1      | 8                     | OOM            | #VALUE! | #VALUE!    |
+
+#### Lora rank sweep
+
+```bash
+export LORA_RANK=64
+export N_GPUS=2
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=1000
+condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-lora-rank/${N_GPUS}xA6000-${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-lora${LORA_RANK} \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r ${LORA_RANK} \
 --no-use-dora \
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
 ```

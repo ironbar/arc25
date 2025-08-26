@@ -220,7 +220,9 @@ def log_gpu_memory():
     if n_devices == 0:
         logger.warning('No GPU is available!!!')
     for device in range(n_devices):
-        logger.info(f'GPU {device} memory allocated: {torch.cuda.memory_allocated(device)/1024**3:.1f} GB, max memory allocated: {torch.cuda.max_memory_allocated(device)/1024**3:.1f} GB')
+        logger.info(f'GPU {device} memory allocated: {torch.cuda.memory_allocated(device)/1024**3:.1f} GB, \
+                    max memory allocated: {torch.cuda.max_memory_allocated(device)/1024**3:.1f} GB, \
+                    GPU total memory: {torch.cuda.get_device_properties(device).total_memory/1024**3:.1f} GB')
 
 
 def get_tokenizer(model_path, model, grid_encoder, pad_token='<|pad|>'):

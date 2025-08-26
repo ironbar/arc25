@@ -193,12 +193,13 @@ have to save the adapter manually to avoid moving large files.
 
 ```bash
 # better work with a single gpu for debugging
+export LORA_RANK=8
 export CUDA_VISIBLE_DEVICES=0
 export N_GPUS=1
 export STEPS=1
 export MAXSEQLEN=1024
 python scripts/finetuning_hr.py \
---output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-qlora-issue/LoRA \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-qlora-issue/LoRA_${LORA_RANK} \
 --device-map None \
 --max-steps ${STEPS} \
 --n-gpus ${N_GPUS} \
@@ -208,18 +209,19 @@ python scripts/finetuning_hr.py \
 --logging-steps 1 \
 --save-steps 1000 \
 --dataloader_num_workers 1 \
---lora-r 32 \
+--lora-r ${LORA_RANK} \
 --use-dora \
 --use-rslora \
 --no-use-4bit-quantization \
 --no-resume_from_checkpoint
 
-export CUDA_VISIBLE_DEVICES=0
+export LORA_RANK=8
+export CUDA_VISIBLE_DEVICES=1
 export N_GPUS=1
 export STEPS=1
 export MAXSEQLEN=1024
 python scripts/finetuning_hr.py \
---output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-qlora-issue/qLoRA \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-qlora-issue/qLoRA_${LORA_RANK} \
 --device-map None \
 --max-steps ${STEPS} \
 --n-gpus ${N_GPUS} \
@@ -229,36 +231,19 @@ python scripts/finetuning_hr.py \
 --dataloader_num_workers 1 \
 --logging-steps 1 \
 --save-steps 1000 \
---lora-r 32 \
---use-dora \
---use-rslora \
---use-4bit-quantization \
---no-resume_from_checkpoint
-
-export CUDA_VISIBLE_DEVICES=0
-export N_GPUS=1
-export STEPS=1
-export MAXSEQLEN=1024
-python scripts/finetuning_hr.py \
---output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-qlora-issue/qLoRA \
---device-map None \
---max-steps ${STEPS} \
---n-gpus ${N_GPUS} \
---per-device-train-batch-size 1 \
---batch-size 1 \
---max-seq-len ${MAXSEQLEN} \
---dataloader_num_workers 1 \
---logging-steps 1 \
---save-steps 1000 \
---lora-r 32 \
+--lora-r ${LORA_RANK} \
 --use-dora \
 --use-rslora \
 --use-4bit-quantization \
 --no-resume_from_checkpoint
 ```
 
-The saved adapter weights 4.3GB if I use qLoRA, 2.2 if I use LoRA. The first result makes sense if
+- The saved adapter weights 4.3GB if I use qLoRA, 2.2 if I use LoRA. The first result makes sense if
 it is saving the whole 4bit quantized model. The second result does not make sense.
+- Reducing the rank from 32 to 8 did not have any effect on the saved weight.
+- Disabling the gradient checkpoint does not have any effect
+- If I save the model manually the cause is clear, it is saving the embeddings layer because the size
+  is changed when loading the model.
 
 ## Results
 
@@ -281,6 +266,7 @@ in the results between the variants?
   - [ ] With and without solved tasks
 - [ ] Which LoRA parameters are compatible with VLLM?
 - [ ] Fix issue with qlora model saving the complete model
+  - [ ] I'm able to continue the training from the current checkpoints?
 - [x] Train the model on the cluster
 - [ ] Script for inference
 - [ ] Find best training hyperparameters (learning rate, batch size, lora rank)

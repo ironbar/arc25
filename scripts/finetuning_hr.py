@@ -61,7 +61,7 @@ class Config:
     batch_size: int = 16 #16
     random_seed: Optional[int] = None # None, 7
     val_random_seed: int = 42
-    grid_encoder: str = 'GridShapeEncoder(RowNumberEncoder(MinimalGridEncoder()))'
+    grid_encoder: str = 'ColorNameEncoder()'
     # SmolLM-135M-Instruct: (4, 4); Qwen/Qwen2-0.5B-Instruct: (1, 2)
     per_device_train_batch_size: int = 1
     per_device_eval_batch_size: int = 1 # if using 2 the validation loss is not correctly computed
@@ -104,7 +104,7 @@ def fine_tuning_main():
     model = get_model(cfg.model_path, torch_dtype=cfg.torch_dtype,
                       use_4bit_quantization=cfg.use_4bit_quantization, device_map=cfg.device_map,
                       use_gradient_checkpointing=cfg.gradient_checkpointing)
-    tokenizer = get_tokenizer(cfg.model_path, model)
+    tokenizer = get_tokenizer(cfg.model_path, model, cfg.grid_encoder)
     if cfg.use_lora:
         model = get_lora_model(model, cfg.adapter_path, cfg.lora_r, cfg.use_rslora,
                                cfg.use_dora, cfg.lora_weight_initialization)

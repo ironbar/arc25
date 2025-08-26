@@ -101,7 +101,7 @@ def fine_tuning_main():
     model = get_model(cfg.model_path, torch_dtype=cfg.torch_dtype,
                       use_4bit_quantization=cfg.use_4bit_quantization, device_map=cfg.device_map,
                       use_gradient_checkpointing=cfg.gradient_checkpointing)
-    tokenizer = get_tokenizer(cfg.model_path, model)
+    tokenizer = get_tokenizer(cfg.model_path, model, cfg.grid_encoder)
     if cfg.use_lora:
         model = get_lora_model(model, cfg.adapter_path, cfg.lora_r, cfg.use_rslora,
                                cfg.use_dora, cfg.lora_weight_initialization)
@@ -220,7 +220,7 @@ def print_gpu_memory():
         logger.info(f'GPU {device} memory allocated: {torch.cuda.memory_allocated(device)/1024**3:.1f} GB, max memory allocated: {torch.cuda.max_memory_allocated(device)/1024**3:.1f} GB')
 
 
-def get_tokenizer(model_path, model, pad_token='<|pad|>'):
+def get_tokenizer(model_path, model, grid_encoder, pad_token='<|pad|>'):
     #TODO: delete numbers from vocabulary if necessary
     logger.info('Loading tokenizer...')
     tokenizer = AutoTokenizer.from_pretrained(
@@ -248,7 +248,8 @@ def get_tokenizer(model_path, model, pad_token='<|pad|>'):
 
     assert tokenizer.pad_token != tokenizer.eos_token
     assert tokenizer.pad_token_id != tokenizer.eos_token_id
-    check_tokenizer_has_unique_words_for_numbers(tokenizer)
+    if not 'ColorNameEncoder' in grid_encoder:
+        check_tokenizer_has_unique_words_for_numbers(tokenizer)
 
     # ValueError: You are attempting to perform batched generation with padding_side='right' this may lead to unexpected behaviour for Flash Attention version of Qwen2. Make sure to  call `tokenizer.padding_side  = 'left'` before tokenizing the input. 
     # TODO: could this have an effect on inference?
@@ -260,7 +261,7 @@ def check_tokenizer_has_unique_words_for_numbers(tokenizer):
     for i in range(10):
         words = get_words_with_symbol(str(i), tokenizer.get_vocab())
         if len(words) != 1:
-            logger.warning(f'Found {len(words)} words with symbol {i} in tokenizer vocabulary: {words}')
+            raise ValueError(f'Found {len(words)} words with symbol {i} in tokenizer vocabulary: {words}')
     logger.info('Tokenizer is valid, each number has a unique word in the vocabulary')
 
 

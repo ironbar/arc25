@@ -11,7 +11,7 @@ from arc25.logging import logging, configure_logging
 logger = logging.getLogger(__name__)
 
 
-def merge_lora(base_model_path: str, lora_path: str, output_path: str):
+def merge_lora(base_model_path: str, lora_path: str, output_path: str, add_pad_token: bool = False):
     """
     Merges a base model and a lora adapter into a single model.
 
@@ -19,14 +19,14 @@ def merge_lora(base_model_path: str, lora_path: str, output_path: str):
         base_model_path (str): Path to the folder with the base model.
         lora_path (str): Path to the folder with the lora adapter.
         output_path (str): Path to the folder where the merged model will be saved.
+        add_pad_token (bool): Whether to add a pad token to the tokenizer. If true, the pad token <|pad|> will be added and the model embeddings resized.
     """
     if is_lora_path(lora_path):
         base_model = AutoModelForCausalLM.from_pretrained(base_model_path, torch_dtype=torch.float16)
         tokenizer = AutoTokenizer.from_pretrained(base_model_path, trust_remote_code=True)
-        if 'llama' in base_model_path.lower(): # TODO: this condition should be more general, or an input argument
+        if add_pad_token:
             tokenizer.add_special_tokens({'pad_token': '<|pad|>'})
             base_model.resize_token_embeddings(len(tokenizer))
-
 
         model = PeftModel.from_pretrained(base_model, lora_path)
         merged_model = model.merge_and_unload()

@@ -191,6 +191,75 @@ when using the same configuration as the other GPUs.
 It seems that when using QLoRA the whole quantized model is saved instead of just the adapter. I might
 have to save the adapter manually to avoid moving large files.
 
+```bash
+# better work with a single gpu for debugging
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=1
+export MAXSEQLEN=1024
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-qlora-issue/LoRA \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers 1 \
+--lora-r 32 \
+--use-dora \
+--use-rslora \
+--no-use-4bit-quantization \
+--no-resume_from_checkpoint
+
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=1
+export MAXSEQLEN=1024
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-qlora-issue/qLoRA \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers 1 \
+--logging-steps 1 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora \
+--use-4bit-quantization \
+--no-resume_from_checkpoint
+
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=1
+export MAXSEQLEN=1024
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-qlora-issue/qLoRA \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers 1 \
+--logging-steps 1 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora \
+--use-4bit-quantization \
+--no-resume_from_checkpoint
+```
+
+The saved adapter weights 4.3GB if I use qLoRA, 2.2 if I use LoRA. The first result makes sense if
+it is saving the whole 4bit quantized model. The second result does not make sense.
+
 ## Results
 
 ### LoRA variants

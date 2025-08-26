@@ -100,6 +100,8 @@ I have solved it by changing the pad token to `<|finetune_right_pad_id|>`.
 
 ### Training again in the cluster
 
+#### First steps
+
 I have updated the requirements of the environment, so the environment will have to be regenerated
 in the cluster.
 
@@ -186,6 +188,83 @@ Training speed comparison (when using plain LoRA):
 
 It is possible that we can speedup the H100 training because only 17% of the VRAM memory is being used
 when using the same configuration as the other GPUs.
+
+#### Speed tests
+
+```bash
+export N_GPUS=1
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=20;
+condor_submit train.condor command=" 
+python \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-speed-tests/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-plain-lora \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+
+export N_GPUS=2
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=20;
+condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-speed-tests/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-plain-lora \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+export N_GPUS=7
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=20;
+condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-speed-tests/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-plain-lora \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 56 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+```
 
 ### QLoRA is saving the whole model
 
@@ -351,6 +430,8 @@ I believe then I should use rsLoRA and don't use DoRA for the following experime
 
 ## Results
 
+### Speed tests
+
 ### LoRA variants
 
 It seems that VLLM does not support DoRA, so ideally we would use LoRA or rsLoRA for training. Is there any difference
@@ -368,7 +449,7 @@ in the results between the variants?
   - [x] Small toy dataset
   - [x] With and without data augmentation
   - [ ] With and without solved tasks
-- [ ] Which LoRA parameters are compatible with VLLM?
+- [x] Which LoRA parameters are compatible with VLLM? rsLoRA is compatible, DoRA isn't
 - [x] Fix issue with qlora model saving the complete model
 - [x] Train the model on the cluster
 - [ ] Script for inference

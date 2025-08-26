@@ -153,7 +153,7 @@ def save_train_conf(cfg):
 ###########################################################################
 def get_model(model_path, torch_dtype, device_map, use_4bit_quantization=False, use_gradient_checkpointing=False):
     logger.info('Loading model...')
-    print_gpu_memory()
+    log_gpu_memory()
     if use_4bit_quantization:
         logger.info('Using 4-bit quantization')
         bnb_config = BitsAndBytesConfig(
@@ -176,7 +176,7 @@ def get_model(model_path, torch_dtype, device_map, use_4bit_quantization=False, 
         attn_implementation=get_flash_attention_implementation(),
         )
     # print(model.hf_device_map)
-    print_gpu_memory()
+    log_gpu_memory()
     if use_4bit_quantization:
         # QLoRA on Kaggle is 4 times slower than LoRA, I'm trying to disable gradient checkpointing
         model = prepare_model_for_kbit_training(model, use_gradient_checkpointing=use_gradient_checkpointing)
@@ -215,8 +215,11 @@ def get_flash_attention_implementation():
     return attn_implementation
 
 
-def print_gpu_memory():
-    for device in range(torch.cuda.device_count()):
+def log_gpu_memory():
+    n_devices = torch.cuda.device_count()
+    if n_devices == 0:
+        logger.warning('No GPU is available!!!')
+    for device in range(n_devices):
         logger.info(f'GPU {device} memory allocated: {torch.cuda.memory_allocated(device)/1024**3:.1f} GB, max memory allocated: {torch.cuda.max_memory_allocated(device)/1024**3:.1f} GB')
 
 

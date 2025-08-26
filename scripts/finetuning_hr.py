@@ -133,7 +133,7 @@ def fine_tuning_main():
         args=training_arguments,
     )
     trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
-    torch.distributed.destroy_process_group()
+    # torch.distributed.destroy_process_group()
 
 
 def random_prompt_generator(dataset_filepath, tokenizer, max_seq_len, shard, verbose=False):

@@ -148,10 +148,43 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --no-use-dora \
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
 
+export N_GPUS=2
+export LEARNING_RATE=5e-4
+export MAXSEQLEN=8192
+export STEPS=1000;
+condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-25-hr-trainings/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-plain-lora \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--no-use-dora \
+--no-use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
 rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-25-hr-trainings /mnt/data/MEGA/TEMP --exclude wandb/* --exclude *.pt
 ```
 
 If I remove the gradient checkpointing I get OOM error when using the A6000 GPUs.
+
+Training speed comparison (when using plain LoRA):
+
+- 2xH100: 15.4s/it
+- 2xA6000: 40.8s/it
+- 2x3090: 46.7s/it
+
+It is possible that we can speedup the H100 training because only 17% of the VRAM memory is being used
+when using the same configuration as the other GPUs.
 
 ### QLoRA is saving the whole model
 

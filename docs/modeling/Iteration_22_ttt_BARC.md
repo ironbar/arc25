@@ -192,7 +192,6 @@ It seems that when using QLoRA the whole quantized model is saved instead of jus
 have to save the adapter manually to avoid moving large files.
 
 ```bash
-# better work with a single gpu for debugging
 export LORA_RANK=8
 export CUDA_VISIBLE_DEVICES=0
 export N_GPUS=1

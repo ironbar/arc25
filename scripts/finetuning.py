@@ -242,6 +242,9 @@ def get_tokenizer(model_path, model, grid_encoder, pad_token='<|pad|>'):
         elif 'smollm' in model_path.lower():
             logger.info('Changing pad token to "<|endoftext|>" for SmolLM models, because it is the same as eos token <|im_end|>')
             tokenizer.pad_token = "<|endoftext|>"
+        elif 'Llama-3.1-ARC-Potpourri-Induction-8B' in model_path:
+            logger.info('Changing pad token from <|eot_id|> to <|finetune_right_pad_id|> for Llama-3.1-ARC-Potpourri-Induction-8B. Otherwise the collator does not work properly and the model does not learn to end the sequence.')
+            tokenizer.pad_token = '<|finetune_right_pad_id|>'
         elif 'llama-3.1' in model_path.lower():
             logger.info('Changing pad token from <|eot_id|> to <|pad|> for Llama3.1 models. Otherwise the collator does not work properly and the model does not learn to end the sequence.')
             tokenizer.add_special_tokens({'pad_token': pad_token})

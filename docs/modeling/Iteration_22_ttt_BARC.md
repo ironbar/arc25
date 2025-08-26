@@ -96,6 +96,7 @@ data_collator([tokenizer(text)])
 ```
 
 In this case it is ignoring the end of text token because it is the same as the padding token.
+I have solved it by changing the pad token to `<|finetune_right_pad_id|>`.
 
 ### Training again in the cluster
 
@@ -244,6 +245,9 @@ it is saving the whole 4bit quantized model. The second result does not make sen
 - If I save the model manually the cause is clear, it is saving the embeddings layer because the size
   is changed when loading the model.
 
+I have solved the issue by reusing the token `<|finetune_right_pad_id|>` that was already inside
+the tokenizer instead of creating a new one.
+
 ## Results
 
 ### LoRA variants
@@ -264,8 +268,7 @@ in the results between the variants?
   - [x] With and without data augmentation
   - [ ] With and without solved tasks
 - [ ] Which LoRA parameters are compatible with VLLM?
-- [ ] Fix issue with qlora model saving the complete model
-  - [ ] I'm able to continue the training from the current checkpoints?
+- [x] Fix issue with qlora model saving the complete model
 - [x] Train the model on the cluster
 - [ ] Script for inference
 - [ ] Find best training hyperparameters (learning rate, batch size, lora rank)

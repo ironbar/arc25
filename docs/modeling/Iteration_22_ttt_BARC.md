@@ -71,8 +71,7 @@ scripts/finetuning_hr.py \
 --save-steps 100 \
 --lora-r 32 \
 --use-dora \
---use-rslora \
---no-resume_from_checkpoint
+--use-rslora
 ```
 
 I had to solve a bug of my implementation when using gradient checkpointing, and modify the tokenizer
@@ -97,6 +96,63 @@ data_collator([tokenizer(text)])
 ```
 
 In this case it is ignoring the end of text token because it is the same as the padding token.
+
+### Training again in the cluster
+
+I have updated the requirements of the environment, so the environment will have to be regenerated
+in the cluster.
+
+```bash
+rsync -P /mnt/data/MEGA/TEMP/2025-08-25_evaluation-85640.json calculon01:/mnt/scratch/users/gbarbadillo/arc25/data
+
+export N_GPUS=2
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=1000; condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-25-hr-trainings/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-25-hr-trainings/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-no-dora \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-25-hr-trainings /mnt/data/MEGA/TEMP --exclude wandb/* --exclude *.pt
+```
+
+If I remove the gradient checkpointing I get OOM error when using the A6000 GPUs.
+
 
 ## Results
 

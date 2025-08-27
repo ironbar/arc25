@@ -523,7 +523,7 @@ in the results between the variants?
   - [x] With support for LoRA
   - [ ] Move all possible functionality to the library, and add tests.
   - [ ] Including evaluation of the predictions, otherwise I have to do it on my computer.
-  - [ ] Try the script on the cluster
-  - [ ] There might be a problem with `os.environ['CUDA_VISIBLE_DEVICES'] = str(get_least_used_gpu_index())` on the cluster or on my computer. Probably it should only do changes if the variable is not set.
+  - [x] Try the script on the cluster
+  - [x] There might be a problem with `os.environ['CUDA_VISIBLE_DEVICES'] = str(get_least_used_gpu_index())` on the cluster or on my computer. Probably it should only do changes if the variable is not set.
 - [ ] Find best training hyperparameters (learning rate, batch size, lora rank)
 - [ ] Check training data: the order should be random

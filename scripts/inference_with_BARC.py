@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from typing import Optional
 import tyro
 import json
+import random
 
 from transformers import AutoTokenizer
 from vllm import LLM, SamplingParams
@@ -18,12 +19,14 @@ from vllm.lora.request import LoRARequest
 from arc25.logging import logging, configure_logging, log_execution_time
 from arc25.utils import get_timestamp, load_arc_dataset_with_solutions
 from arc25.encoders import create_grid_encoder
+from arc25.data_augmentation import apply_data_augmentation, get_random_data_augmentation_params
+from arc25.prompting import Template
 
 logger = logging.getLogger(__name__)
 
 @dataclass
 class Config:
-    base_mode_path: str
+    base_model_path: str
     dataset_path: str
     output_folder: str
     lora_path: Optional[str] = None
@@ -36,12 +39,13 @@ class Config:
 
 def main():
     cfg = tyro.cli(Config, description="Inference with BARC models")
+    logger.info(f'Running BARC inference with config: {cfg}')
     llm, tokenizer = load_vllm_model_and_tokenizer(
-        cfg.base_mode_path, use_4bit_quantization=cfg.use_4bit_quantization,
+        cfg.base_model_path, use_4bit_quantization=cfg.use_4bit_quantization,
         tensor_parallel_size=cfg.tensor_parallel_size,
         enable_lora=cfg.lora_path is not None, max_model_len=16000, max_lora_rank=32)
     if cfg.lora_path is not None:
-        lora_request = LoRARequest('LoRA', 1, adapter_path=cfg.lora_path)
+        lora_request = LoRARequest(lora_name='LoRA', lora_int_id=1, lora_path=cfg.lora_path)
     else:
         lora_request = None
     grid_encoder = create_grid_encoder('ColorNameEncoder()')
@@ -114,6 +118,48 @@ def load_vllm_model_and_tokenizer(model_path: str, use_4bit_quantization: bool=F
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
     return llm, tokenizer
 
+
+# TODO: maybe move this to the prompting module
+# https://huggingface.co/barc0/Llama-3.1-ARC-Potpourri-Induction-8B
+system_prompt = """You are a world-class puzzle solver with exceptional pattern recognition skills and expertise in Python programming. Your task is to analyze puzzles and provide Python solutions."""
+
+prompt_template_text = """Given input-output grid pairs as reference examples, carefully observe the patterns to predict the output grid for new test input. Each pair follows the same transformation rule. Grids are 2D arrays represented as strings, with cells (colors) separated by spaces and rows by newlines.
+Here are the input and output grids for the reference examples:
+{% for sample in train_samples %}Example {{ loop.index }}
+Input:
+{{ sample.input }}
+
+Output:
+{{ sample.output }}
+
+{% endfor %}
+Here is the input grid for the test example:
+{{ test }}
+
+Write a Python function `transform` that can convert any given input grid to its corresponding output grid based on the pattern observed in the reference examples.
+"""
+
+# I have verified that all responses start with this prefix
+common_prefix = "Let's solve this puzzle using Python code with the common library functions. We'll first reason about the problem and then write the code to solve it. The `transform` function will take the input grid and return the output grid. Here is the Python code with the comments describing how to solve the problem:\n" #```python\nfrom common import *\n"
+
+prompt_template = Template(prompt_template_text)
+
+def create_prompt_from_task(task, grid_encoder, tokenizer, shuffle_train_samples=True):
+    train_samples = [{'input': grid_encoder.to_text(sample['input']), 'output': grid_encoder.to_text(sample['output'])} for sample in task['train']]
+    if shuffle_train_samples:
+        random.shuffle(train_samples)
+    test_sample = random.choice(task['test'])
+    render_kwargs = dict(train_samples=train_samples, test=grid_encoder.to_text(test_sample['input']))
+    messages = [{"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt_template.render(**render_kwargs)},
+                {"role": "assistant", "content": common_prefix}]
+    prompt = tokenizer.apply_chat_template(messages,
+                                            tokenize=False,
+                                            add_generation_prompt=False,
+                                            continue_final_message=True,
+                                            # enable_thinking=False,
+                                            )
+    return prompt
 
 
 if __name__ == '__main__':

@@ -477,6 +477,12 @@ It seems that the first time a model is called it is slightly slower. And the Lo
 
 I believe then I should use rsLoRA and don't use DoRA for the following experiments.
 
+### Inference script
+
+```bash
+python scripts/inference_with_BARC.py --base-model-path /home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B --dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-08-27_first-finetuning-steps --lora-path /mnt/hdd0/MEGA/TEMP/2025-08-26-lora-rank/2xA6000--1000steps-8192msl-1e-4lr-lora32/checkpoint-1000
+```
+
 ## Results
 
 ### Speed tests

@@ -503,5 +503,6 @@ in the results between the variants?
 - [x] Train the model on the cluster
 - [ ] Script for inference
   - [ ] With support for LoRA
+  - [ ] Move all possible functionality to the library, and add tests.
   - [ ] Including evaluation of the predictions, otherwise I have to do it on my computer.
 - [ ] Find best training hyperparameters (learning rate, batch size, lora rank)

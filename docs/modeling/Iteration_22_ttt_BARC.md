@@ -527,16 +527,24 @@ rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/predictions /mnt/dat
 
 ## Results
 
+### Verify that I can overfit to the training dataset
+
+I'm going to create a dataset with just the tasks that were solved without data augmentation and finetune the model on those. I should see the loss dropping fast because the training samples should be a few, and on inference the effect should be very visible.
+
+TODO:
+
 ### LoRA rank
 
 First trainings do not show any effect on the training metrics when changing the LoRA rank. Maybe I should
 train for longer?
 
-https://wandb.ai/guillermobarbadillo/2025-08-26-lora-rank/panel/wtf8lzs87?nw=nwuserguillermobarbadillo
+https://wandb.ai/guillermobarbadillo/2025-08-26-lora-rank
 
 ### Training steps
 
 Let's fix the lora rank to 32 and use different number of training steps.
+
+https://wandb.ai/guillermobarbadillo/2025-08-27-training-steps
 
 TODO:
 

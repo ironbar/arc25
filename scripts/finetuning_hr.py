@@ -144,14 +144,16 @@ def random_prompt_generator(dataset_filepath, tokenizer, max_seq_len, shard, ver
     set_random_seed(shard)
 
     with open(dataset_filepath, 'r') as f:
-        tasks = json.load(f)
-    task_ids = list(tasks.keys())
+        dataset = json.load(f)
+    task_ids = list(dataset.keys())
     random.shuffle(task_ids)
+    for tasks in dataset.values():
+        random.shuffle(tasks)
     prompt_idx = random.randint(0, 1000)
     while True:
         for task_id in task_ids:
-            hr_tasks = tasks[task_id]
-            prompt = hr_tasks[prompt_idx % len(hr_tasks)]
+            tasks = dataset[task_id]
+            prompt = tasks[prompt_idx % len(tasks)]
             # TODO: better implement this
             if prompt_distribution_logger is not None: prompt_distribution_logger.add_prompt(prompt)
             if len(tokenizer.encode(prompt)) > max_seq_len:
@@ -162,5 +164,3 @@ def random_prompt_generator(dataset_filepath, tokenizer, max_seq_len, shard, ver
 
 if __name__ == '__main__':
     fine_tuning_main()
-
-

@@ -17,6 +17,7 @@ from vllm.lora.request import LoRARequest
 
 from arc25.logging import logging, configure_logging, log_execution_time
 from arc25.utils import get_timestamp, load_arc_dataset_with_solutions
+from arc25.encoders import create_grid_encoder
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ logger = logging.getLogger(__name__)
 class Config:
     base_mode_path: str
     dataset_path: str
+    output_folder: str
     lora_path: Optional[str] = None
     use_4bit_quantization: bool = False
     tensor_parallel_size: int = 1
@@ -42,10 +44,12 @@ def main():
         lora_request = LoRARequest('LoRA', 1, adapter_path=cfg.lora_path)
     else:
         lora_request = None
+    grid_encoder = create_grid_encoder('ColorNameEncoder()')
     dataset = load_arc_dataset_with_solutions(cfg.dataset_path)
     task_ids = list(dataset.keys())
 
     sampling_params = SamplingParams(n=cfg.batch_size, temperature=1.0, top_p=0.95, max_tokens=2048)
+    os.makedirs(cfg.output_folder, exist_ok=True)
     for _ in [cfg.n_predictions]:
         prompts, data_augmentation_params = [], []
         for task_id in task_ids:
@@ -77,8 +81,7 @@ def main():
                 'data_augmentation_params': params,
             }
 
-        output_filepath = f'/mnt/hdd0/Kaggle/arc25/predictions/{experiment_name}/{dataset}_{sampling_params.n}preds_{get_timestamp()}_predictions.json'
-        os.makedirs(os.path.dirname(output_filepath), exist_ok=True)
+        output_filepath = f'{cfg.output_folder}/{sampling_params.n}preds_{get_timestamp()}_predictions.json'
         with open(output_filepath, 'w') as f:
             json.dump(predictions, f, indent=2)
         print(f"Predictions saved to {output_filepath}")

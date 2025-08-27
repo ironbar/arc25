@@ -506,3 +506,4 @@ in the results between the variants?
   - [ ] Move all possible functionality to the library, and add tests.
   - [ ] Including evaluation of the predictions, otherwise I have to do it on my computer.
 - [ ] Find best training hyperparameters (learning rate, batch size, lora rank)
+- [ ] Check training data: the order should be random

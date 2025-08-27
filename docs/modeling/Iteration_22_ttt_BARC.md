@@ -287,7 +287,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 #### Lora rank sweep
 
 ```bash
-export LORA_RANK=64
+export LORA_RANK=128
 export N_GPUS=2
 export LEARNING_RATE=1e-4
 export MAXSEQLEN=8192
@@ -311,6 +311,8 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --lora-r ${LORA_RANK} \
 --no-use-dora \
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-lora-rank /mnt/data/MEGA/TEMP --exclude wandb/* --exclude *.pt
 ```
 
 ### QLoRA is saving the whole model

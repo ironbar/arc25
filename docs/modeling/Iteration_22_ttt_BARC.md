@@ -555,6 +555,7 @@ TODO:
 - [x] Which LoRA parameters are compatible with VLLM? rsLoRA is compatible, DoRA isn't
 - [x] Fix issue with qlora model saving the complete model
 - [x] Train the model on the cluster
+- [ ] Verify that I can overfit on a small dataset
 - [ ] Script for inference
   - [x] With support for LoRA
   - [ ] Add tests for data augmentation
@@ -563,5 +564,7 @@ TODO:
   - [x] Try the script on the cluster
   - [x] There might be a problem with `os.environ['CUDA_VISIBLE_DEVICES'] = str(get_least_used_gpu_index())` on the cluster or on my computer. Probably it should only do changes if the variable is not set.
 - [ ] Find best training hyperparameters (learning rate, batch size, lora rank, training steps)
+  - [x] Lora rank
+  - [ ] Training steps
+  - [ ] Learning rate/batch size
 - [x] Check training data: the order should be random
-- [ ] Verify that I can overfit on a small dataset

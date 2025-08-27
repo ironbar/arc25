@@ -54,7 +54,7 @@ def main():
 
     sampling_params = SamplingParams(n=cfg.batch_size, temperature=1.0, top_p=0.95, max_tokens=2048)
     os.makedirs(cfg.output_folder, exist_ok=True)
-    for _ in range(cfg.n_predictions):
+    for prediction_idx in range(cfg.n_predictions):
         prompts, data_augmentation_params = [], []
         for task_id in task_ids:
             task = dataset[task_id]
@@ -72,6 +72,7 @@ def main():
         text_predictions = llm.generate(prompts, sampling_params, lora_request=lora_request)
         total_tokens = sum(sum(len(_output.token_ids) for _output in output.outputs) for output in text_predictions)
         inference_time = time.time() - t0
+        logger.info(f'Prediction round {prediction_idx + 1}/{cfg.n_predictions} completed.')
         logger.info(f"Total tokens generated: {total_tokens}")
         logger.info(f"Time taken: {inference_time:.2f} seconds")
         logger.info(f"Average time per task: {inference_time / len(text_predictions):.2f} seconds")

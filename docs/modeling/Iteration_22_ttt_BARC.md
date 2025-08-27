@@ -480,7 +480,19 @@ I believe then I should use rsLoRA and don't use DoRA for the following experime
 ### Inference script
 
 ```bash
-python scripts/inference_with_BARC.py --base-model-path /home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B --dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-08-27_first-finetuning-steps --lora-path /mnt/hdd0/MEGA/TEMP/2025-08-26-lora-rank/2xA6000--1000steps-8192msl-1e-4lr-lora32/checkpoint-1000
+python scripts/inference_with_BARC.py \
+--base-model-path /home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-08-27_first-finetuning-steps \
+--lora-path /mnt/hdd0/MEGA/TEMP/2025-08-26-lora-rank/2xA6000--1000steps-8192msl-1e-4lr-lora32/checkpoint-1000
+
+
+condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
+--base-model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-26-lora-rank/2xA6000--1000steps-8192msl-1e-4lr-lora32 \
+--lora-path /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-lora-rank/2xA6000--1000steps-8192msl-1e-4lr-lora32/checkpoint-1000" -append request_gpus=1 -append request_cpus=4
 ```
 
 ## Results
@@ -512,5 +524,6 @@ in the results between the variants?
   - [ ] Move all possible functionality to the library, and add tests.
   - [ ] Including evaluation of the predictions, otherwise I have to do it on my computer.
   - [ ] Try the script on the cluster
+  - [ ] There might be a problem with `os.environ['CUDA_VISIBLE_DEVICES'] = str(get_least_used_gpu_index())` on the cluster or on my computer. Probably it should only do changes if the variable is not set.
 - [ ] Find best training hyperparameters (learning rate, batch size, lora rank)
 - [ ] Check training data: the order should be random

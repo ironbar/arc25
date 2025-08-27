@@ -54,7 +54,7 @@ def main():
 
     sampling_params = SamplingParams(n=cfg.batch_size, temperature=1.0, top_p=0.95, max_tokens=2048)
     os.makedirs(cfg.output_folder, exist_ok=True)
-    for _ in [cfg.n_predictions]:
+    for _ in range(cfg.n_predictions):
         prompts, data_augmentation_params = [], []
         for task_id in task_ids:
             task = dataset[task_id]

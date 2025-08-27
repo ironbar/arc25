@@ -72,11 +72,11 @@ def main():
         text_predictions = llm.generate(prompts, sampling_params, lora_request=lora_request)
         total_tokens = sum(sum(len(_output.token_ids) for _output in output.outputs) for output in text_predictions)
         inference_time = time.time() - t0
-        print(f"Total tokens generated: {total_tokens}")
-        print(f"Time taken: {inference_time:.2f} seconds")
-        print(f"Average time per task: {inference_time / len(text_predictions):.2f} seconds")
-        print(f"Average tokens per task: {total_tokens / len(text_predictions) / sampling_params.n:.2f} tokens")
-        print(f"Average tokens per second: {total_tokens / inference_time:.2f} tokens/second")
+        logger.info(f"Total tokens generated: {total_tokens}")
+        logger.info(f"Time taken: {inference_time:.2f} seconds")
+        logger.info(f"Average time per task: {inference_time / len(text_predictions):.2f} seconds")
+        logger.info(f"Average tokens per task: {total_tokens / len(text_predictions) / sampling_params.n:.2f} tokens")
+        logger.info(f"Average tokens per second: {total_tokens / inference_time:.2f} tokens/second")
 
         predictions = dict()
         for task_id, output, params in zip(task_ids, text_predictions, data_augmentation_params):
@@ -88,7 +88,7 @@ def main():
         output_filepath = f'{cfg.output_folder}/{sampling_params.n}preds_{get_timestamp()}_predictions.json'
         with open(output_filepath, 'w') as f:
             json.dump(predictions, f, indent=2)
-        print(f"Predictions saved to {output_filepath}")
+        logger.info(f"Predictions saved to {output_filepath}")
 
 
 @log_execution_time

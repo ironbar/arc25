@@ -508,8 +508,9 @@ in the results between the variants?
 - [x] Fix issue with qlora model saving the complete model
 - [x] Train the model on the cluster
 - [ ] Script for inference
-  - [ ] With support for LoRA
+  - [x] With support for LoRA
   - [ ] Move all possible functionality to the library, and add tests.
   - [ ] Including evaluation of the predictions, otherwise I have to do it on my computer.
+  - [ ] Try the script on the cluster
 - [ ] Find best training hyperparameters (learning rate, batch size, lora rank)
 - [ ] Check training data: the order should be random

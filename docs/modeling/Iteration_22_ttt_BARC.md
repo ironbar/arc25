@@ -315,6 +315,35 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-lora-rank /mnt/data/MEGA/TEMP --exclude *.pt --include checkpoint-*000* --exclude checkpoint* --exclude wandb*
 ```
 
+#### Influence of the number of training steps
+
+```bash
+export LORA_RANK=32
+export N_GPUS=2
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=100
+condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-27-training-steps/${N_GPUS}xA6000-${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-lora${LORA_RANK} \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+```
+
 ### QLoRA is saving the whole model
 
 It seems that when using QLoRA the whole quantized model is saved instead of just the adapter. I might
@@ -499,12 +528,18 @@ rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/predictions /mnt/dat
 
 ## Results
 
-### Speed tests
+### LoRA rank
 
-### LoRA variants
+First trainings do not show any effect on the training metrics when changing the LoRA rank. Maybe I should
+train for longer?
 
-It seems that VLLM does not support DoRA, so ideally we would use LoRA or rsLoRA for training. Is there any difference
-in the results between the variants?
+https://wandb.ai/guillermobarbadillo/2025-08-26-lora-rank/panel/wtf8lzs87?nw=nwuserguillermobarbadillo
+
+### Training steps
+
+Let's fix the lora rank to 32 and use different number of training steps.
+
+TODO:
 
 ## Conclusion
 
@@ -523,7 +558,8 @@ in the results between the variants?
 - [x] Train the model on the cluster
 - [ ] Script for inference
   - [x] With support for LoRA
-  - [ ] Move all possible functionality to the library, and add tests.
+  - [ ] Add tests for data augmentation
+  - [ ] Think if moving the prompt has sense
   - [ ] Including evaluation of the predictions, otherwise I have to do it on my computer.
   - [x] Try the script on the cluster
   - [x] There might be a problem with `os.environ['CUDA_VISIBLE_DEVICES'] = str(get_least_used_gpu_index())` on the cluster or on my computer. Probably it should only do changes if the variable is not set.

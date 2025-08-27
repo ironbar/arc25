@@ -1,10 +1,10 @@
-import os
-from arc25.utils import get_least_used_gpu_index
-from arc25.logging import logging, configure_logging, log_execution_time
+from arc25.utils import set_cuda_visible_devices_to_least_used_gpu_if_undefined
+from arc25.logging import configure_logging
 
 configure_logging()
-os.environ['CUDA_VISIBLE_DEVICES'] = str(get_least_used_gpu_index())
+set_cuda_visible_devices_to_least_used_gpu_if_undefined()
 
+import os
 import time
 from dataclasses import dataclass
 from typing import Optional
@@ -16,7 +16,7 @@ from transformers import AutoTokenizer
 from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
 
-from arc25.logging import logging, configure_logging, log_execution_time
+from arc25.logging import logging, log_execution_time
 from arc25.utils import get_timestamp, load_arc_dataset_with_solutions
 from arc25.encoders import create_grid_encoder
 from arc25.data_augmentation import apply_data_augmentation, get_random_data_augmentation_params

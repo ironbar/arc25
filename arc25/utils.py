@@ -22,6 +22,15 @@ def set_random_seed(random_seed):
     np.random.seed(random_seed)
 
 
+def set_cuda_visible_devices_to_least_used_gpu_if_undefined():
+    if 'CUDA_VISIBLE_DEVICES' in os.environ:
+        logger.info(f'CUDA_VISIBLE_DEVICES is already set to {os.environ["CUDA_VISIBLE_DEVICES"]}, not changing it.')
+        return
+    index = get_least_used_gpu_index()
+    logger.info(f'Setting CUDA_VISIBLE_DEVICES to {index}')
+    os.environ['CUDA_VISIBLE_DEVICES'] = str(index)
+
+
 def get_least_used_gpu_index():
     # TODO: now uses the GPU memory as a criteria, expand to other metrics
     pynvml.nvmlInit()

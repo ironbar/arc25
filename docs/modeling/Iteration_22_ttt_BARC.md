@@ -527,5 +527,5 @@ in the results between the variants?
   - [ ] Including evaluation of the predictions, otherwise I have to do it on my computer.
   - [x] Try the script on the cluster
   - [x] There might be a problem with `os.environ['CUDA_VISIBLE_DEVICES'] = str(get_least_used_gpu_index())` on the cluster or on my computer. Probably it should only do changes if the variable is not set.
-- [ ] Find best training hyperparameters (learning rate, batch size, lora rank)
-- [ ] Check training data: the order should be random
+- [ ] Find best training hyperparameters (learning rate, batch size, lora rank, training steps)
+- [x] Check training data: the order should be random

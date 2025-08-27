@@ -1,11 +1,13 @@
 """
 Functions commonly used in the challenge
 """
+import os
 import random
 import time
 import numpy as np
 import pynvml
 import logging
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -41,3 +43,38 @@ def get_least_used_gpu_index():
     pynvml.nvmlShutdown()
     logger.info(f"Least used GPU: {best_gpu_index} with {min_utilization:.2%} utilization")
     return best_gpu_index
+
+
+def load_arc_dataset_with_solutions(filepath):
+    with open(filepath, 'r') as f:
+        data = json.load(f)
+    solutions_filepath = filepath.replace('challenges.json', 'solutions.json')
+    assert solutions_filepath != filepath
+    if os.path.exists(solutions_filepath):
+        with open(solutions_filepath, 'r') as f:
+            solutions = json.load(f)
+        for sample_id, task in data.items():
+            for idx, sample in enumerate(task['test']):
+                sample['output'] = solutions[sample_id][idx]
+    else:
+        logger.warning(f'Solutions file not found: {solutions_filepath}, loading dataset without solutions')
+    _verify_that_all_dataset_samples_have_output(data)
+    return data
+
+
+def _verify_that_all_dataset_samples_have_output(data):
+    for task in data.values():
+        if isinstance(task, dict):
+            _verify_that_all_task_samples_have_outputs(task)
+        elif isinstance(task, list):
+            for subtask in task:
+                _verify_that_all_task_samples_have_outputs(subtask)
+
+
+def _verify_that_all_task_samples_have_outputs(task):
+    for partition, samples in task.items():
+        if partition not in ['train', 'test']:
+            continue
+        for sample in samples:
+            if 'output' not in sample:
+                raise ValueError('Not all samples have output')

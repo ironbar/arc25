@@ -16,7 +16,7 @@ from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
 
 from arc25.logging import logging, configure_logging, log_execution_time
-from arc25.utils import get_timestamp
+from arc25.utils import get_timestamp, load_arc_dataset_with_solutions
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class Config:
     n_predictions: int = 8
 
 
-def main(args=None):
+def main():
     cfg = tyro.cli(Config, description="Inference with BARC models")
     llm, tokenizer = load_vllm_model_and_tokenizer(
         cfg.base_mode_path, use_4bit_quantization=cfg.use_4bit_quantization,
@@ -42,13 +42,15 @@ def main(args=None):
         lora_request = LoRARequest('LoRA', 1, adapter_path=cfg.lora_path)
     else:
         lora_request = None
+    dataset = load_arc_dataset_with_solutions(cfg.dataset_path)
+    task_ids = list(dataset.keys())
 
     sampling_params = SamplingParams(n=cfg.batch_size, temperature=1.0, top_p=0.95, max_tokens=2048)
     for _ in [cfg.n_predictions]:
         prompts, data_augmentation_params = [], []
         for task_id in task_ids:
-            task = get_task(task_id)
-            if use_data_augmentation:
+            task = dataset[task_id]
+            if cfg.use_data_augmentation:
                 params = get_random_data_augmentation_params()
                 task = apply_data_augmentation(task, **params)
             else:

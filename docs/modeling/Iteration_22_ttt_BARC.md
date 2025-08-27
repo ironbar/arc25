@@ -322,14 +322,13 @@ export LORA_RANK=32
 export N_GPUS=2
 export LEARNING_RATE=1e-4
 export MAXSEQLEN=8192
-export STEPS=100
-condor_submit train.condor command=" 
+export STEPS=4000; condor_submit train.condor command=" 
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--max-steps ${STEPS} \
 --train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
 --model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-27-training-steps/${N_GPUS}xA6000-${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-lora${LORA_RANK} \
---max-steps ${STEPS} \
 --device-map None \
 --n-gpus ${N_GPUS} \
 --learning-rate ${LEARNING_RATE} \
@@ -565,3 +564,4 @@ TODO:
   - [x] There might be a problem with `os.environ['CUDA_VISIBLE_DEVICES'] = str(get_least_used_gpu_index())` on the cluster or on my computer. Probably it should only do changes if the variable is not set.
 - [ ] Find best training hyperparameters (learning rate, batch size, lora rank, training steps)
 - [x] Check training data: the order should be random
+- [ ] Verify that I can overfit on a small dataset

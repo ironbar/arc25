@@ -502,4 +502,6 @@ in the results between the variants?
 - [x] Fix issue with qlora model saving the complete model
 - [x] Train the model on the cluster
 - [ ] Script for inference
+  - [ ] With support for LoRA
+  - [ ] Including evaluation of the predictions, otherwise I have to do it on my computer.
 - [ ] Find best training hyperparameters (learning rate, batch size, lora rank)

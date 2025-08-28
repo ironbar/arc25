@@ -125,6 +125,7 @@ def _is_valid_output(output):
 def safe_code_execution(code: str, inputs: list, func_name: str = 'task',
                         timeout_duration: int = 1, dsl: Optional[ModuleType] = None):
     check_code_is_safe(code)
+    check_code_is_deterministic(code)
     _set_timeout_alarm(timeout_duration)
     namespace = globals() # TODO: restrict the globals
     namespace['input_grids'] = inputs

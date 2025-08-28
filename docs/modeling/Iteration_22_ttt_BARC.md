@@ -545,6 +545,13 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py
 --output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-26-lora-rank/2xA6000--1000steps-8192msl-1e-4lr-lora32 \
 --lora-path /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-lora-rank/2xA6000--1000steps-8192msl-1e-4lr-lora32/checkpoint-1000" -append request_gpus=1 -append request_cpus=4
 
+condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
+--n-predictions 1024 \
+--base-model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation" -append request_gpus=1 -append request_cpus=4
+
 rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/predictions /mnt/data/MEGA/TEMP
 ```
 

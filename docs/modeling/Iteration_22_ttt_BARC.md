@@ -561,6 +561,22 @@ python scripts/inference_with_BARC.py \
 
 ## Results
 
+### Speed tests
+
+| GPU     | n GPUs | 4bit quantization | batch time (s) |
+|---------|--------|-------------------|----------------|
+| RTX3090 | 2      | TRUE              | 46.7           |
+| A6000   | 1      | TRUE              | 71.6           |
+| A6000   | 2      | TRUE              | 41.5           |
+| A6000   | 4      | TRUE              | 26.8           |
+| A6000   | 2      | FALSE             | 28             |
+| H100    | 2      | TRUE              | 15.4           |
+| H100    | 2      | FALSE             | 9.2            |
+
+In the cluster is better to use the models unquantized since the GPUs have enough memory and it is
+much faster.
+
+
 ### Verify that I can overfit to the training dataset
 
 I'm going to create a dataset with just the tasks that were solved without data augmentation and finetune the model on those. I should see the loss dropping fast because the training samples should be a few, and on inference the effect should be very visible.

@@ -663,3 +663,4 @@ TODO:
   - [ ] Training steps
   - [ ] Learning rate/batch size
 - [x] Check training data: the order should be random
+- [ ] Evaluation is not deterministic. Investigate the source of variability.

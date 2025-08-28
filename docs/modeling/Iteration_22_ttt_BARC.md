@@ -589,7 +589,6 @@ I have to investigate the sources of variability.
 - The timeout exception is one source of variability. However if properly implemented should not be a problem.
 - Another source of variability was that the model was using random functions.
 - However the problem is that it seems that the order in which I do the predictions affects the result
-- TODO: I need more observability of the code execution
 
 After adding more observability it seems that the Color object has been modified.
 
@@ -597,6 +596,9 @@ After adding more observability it seems that the Color object has been modified
 00dbd492 AttributeError type object 'Color' has no attribute 'GREEN'
 05a7bcf2 AttributeError type object 'Color' has no attribute 'YELLOW'
 ```
+
+I have fixed the execution of the code so on each execution the dsl is imported. This solves the problem
+that the dsl was being modified by some rogue solution.
 
 ## Results
 
@@ -679,4 +681,4 @@ TODO:
   - [ ] Training steps
   - [ ] Learning rate/batch size
 - [x] Check training data: the order should be random
-- [ ] Evaluation is not deterministic. Investigate the source of variability.
+- [x] Evaluation is not deterministic. Investigate the source of variability.

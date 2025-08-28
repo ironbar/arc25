@@ -537,6 +537,12 @@ python scripts/inference_with_BARC.py \
 --output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-08-27_first-finetuning-steps \
 --lora-path /mnt/hdd0/MEGA/TEMP/2025-08-26-lora-rank/2xA6000--1000steps-8192msl-1e-4lr-lora32/checkpoint-1000
 
+python scripts/inference_with_BARC.py \
+--n-predictions 1024 \
+--base-model-path /home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-08-28-base-model/evaluation
+
 
 condor_submit train.condor command=" 
 python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \

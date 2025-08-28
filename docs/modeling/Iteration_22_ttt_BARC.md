@@ -578,6 +578,8 @@ solve all the training samples.
 
 This validates that using a small dataset the model is able to overfit to it.
 
+https://wandb.ai/guillermobarbadillo/2025-08-27-overfit
+
 ### LoRA rank
 
 First trainings do not show any effect on the training metrics when changing the LoRA rank. Maybe I should

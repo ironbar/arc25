@@ -591,6 +591,13 @@ I have to investigate the sources of variability.
 - However the problem is that it seems that the order in which I do the predictions affects the result
 - TODO: I need more observability of the code execution
 
+After adding more observability it seems that the Color object has been modified.
+
+```
+00dbd492 AttributeError type object 'Color' has no attribute 'GREEN'
+05a7bcf2 AttributeError type object 'Color' has no attribute 'YELLOW'
+```
+
 ## Results
 
 ### Speed tests

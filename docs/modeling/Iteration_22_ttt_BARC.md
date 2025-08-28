@@ -582,6 +582,15 @@ python scripts/inference_with_BARC.py \
 --n-predictions 1
 ```
 
+### Evaluation is not deterministic
+
+I have to investigate the sources of variability.
+
+- The timeout exception is one source of variability. However if properly implemented should not be a problem.
+- Another source of variability was that the model was using random functions.
+- However the problem is that it seems that the order in which I do the predictions affects the result
+- TODO: I need more observability of the code execution
+
 ## Results
 
 ### Speed tests

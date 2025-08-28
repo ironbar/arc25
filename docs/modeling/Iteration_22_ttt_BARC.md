@@ -344,7 +344,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
 
 export N_GPUS=2
-export LEARNING_RATE=1e-4
+export LEARNING_RATE=1e-5
 export MAXSEQLEN=8192
 export STEPS=8000; condor_submit train_h100.condor command=" 
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
@@ -361,7 +361,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --max-seq-len ${MAXSEQLEN} \
 --dataloader_num_workers ${N_GPUS} \
 --logging-steps 1 \
---save-steps 100 \
+--save-steps 500 \
 --no-use-4bit-quantization \
 --no-use-lora" -append request_gpus=${N_GPUS} -append request_cpus=8
 ```

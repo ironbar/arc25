@@ -662,6 +662,8 @@ TODO:
 
 ## Conclusion
 
+- Changing some parameters of the training such as the save steps does not allow to continue training afterwards.
+
 ## Next steps
 
 - Do multiple iterations of search and learn

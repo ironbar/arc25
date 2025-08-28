@@ -525,13 +525,58 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py
 rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/predictions /mnt/data/MEGA/TEMP
 ```
 
+### Overfit experiment
+
+```bash
+export LORA_RANK=32
+export N_GPUS=2
+export STEPS=100
+export MAXSEQLEN=8192
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-27-overfit/LoRA${LORA_RANK}_${STEPS}steps \
+--train-dataset-path /mnt/hdd0/Kaggle/arc25/data/hindsight_relabeled/2025-08-25_evaluation-no-data-augmentation-77.json \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers ${N_GPUS} \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora \
+--use-4bit-quantization
+
+python scripts/inference_with_BARC.py \
+--base-model-path /home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-08-27_overfit \
+--lora-path /mnt/hdd0/Kaggle/arc25/trainings/2025-08-27-overfit/LoRA32_100steps/checkpoint-100 \
+--no-use-data-augmentation \
+--n-predictions 1
+```
+
 ## Results
 
 ### Verify that I can overfit to the training dataset
 
 I'm going to create a dataset with just the tasks that were solved without data augmentation and finetune the model on those. I should see the loss dropping fast because the training samples should be a few, and on inference the effect should be very visible.
 
-TODO:
+The model was trained with 77 samples (19.25% of the evaluation set). The training loss clearly shows
+that the model is learning and the evaluation also shows a clear difference, although it does not
+solve all the training samples.
+
+![alt text](res/1756356315709_image.png)
+
+| dataset              | experiment      | n_preds | valid code | valid outputs | unique outputs | pixel similarity | correct grids | train_pass_rate | train_pass@n | pass_rate | pass@n |
+|----------------------|-----------------|---------|------------|---------------|----------------|------------------|---------------|-----------------|--------------|-----------|--------|
+| evaluation-arg-agi-1 | baseline        | 8       | 99.47%     | 77.81%        | 71.28%         | 57.48%           | 2.82%         | 1.74%           | 5.75%        | 1.70%     | 5.50%  |
+| evaluation-arg-agi-1 | overfited model | 8       | 100.00%    | 75.20%        | 49.80%         | 63.40%           | 13.30%        | 12.60%          | 16.00%       | 12.60%    | 16.00% |
+
+This validates that using a small dataset the model is able to overfit to it.
 
 ### LoRA rank
 
@@ -563,7 +608,7 @@ TODO:
 - [x] Which LoRA parameters are compatible with VLLM? rsLoRA is compatible, DoRA isn't
 - [x] Fix issue with qlora model saving the complete model
 - [x] Train the model on the cluster
-- [ ] Verify that I can overfit on a small dataset
+- [x] Verify that I can overfit on a small dataset
 - [ ] Script for inference
   - [x] With support for LoRA
   - [ ] Add tests for data augmentation

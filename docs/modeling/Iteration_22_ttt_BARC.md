@@ -558,6 +558,13 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
 --output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation" -append request_gpus=1 -append request_cpus=4
 
+condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
+--n-predictions 512 \
+--base-model-path /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-27-training-steps/2xH100-8000steps-8192msl-1e-5lr-full-finetuning-continue/checkpoint-8000 \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-27-training-steps/2xH100-8000steps-8192msl-1e-5lr-full-finetuning-continue/evaluation" -append request_gpus=1 -append request_cpus=4
+
 rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/predictions /mnt/data/MEGA/TEMP
 rsync -P -r /mnt/hdd0/MEGA/TEMP/predictions/* /mnt/hdd0/Kaggle/arc25/predictions
 ```

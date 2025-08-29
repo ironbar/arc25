@@ -22,61 +22,63 @@ def _(task: dict, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> dict:
 
 @apply_data_augmentation.register
 def _(grid: np.ndarray, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> np.ndarray:
-    grid = geometric_augmentation(grid, hflip, n_rot90)
+    grid = _geometric_augmentation(grid, hflip, n_rot90)
     if color_map is not None:
-        grid = apply_colormap(grid, color_map)
-    return np.array(grid)
+        grid = _apply_colormap(grid, color_map)
+    return grid
 
 @apply_data_augmentation.register
 def _(grid: list, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> np.ndarray:
-    return apply_data_augmentation(np.array(grid), hflip, n_rot90, color_map)
+    if isinstance(grid[0], list):
+        return apply_data_augmentation(np.array(grid), hflip, n_rot90, color_map)
+    elif isinstance(grid[0], np.ndarray):
+        return [apply_data_augmentation(g, hflip, n_rot90, color_map) for g in grid]
+    else:
+        raise TypeError(f"Unsupported list element type: {grid}")
 
 
-def revert_data_augmentation(grid, hflip, n_rot90, color_map=None):
-    grid = revert_geometric_augmentation(grid, hflip, n_rot90)
+def revert_data_augmentation(grid: np.ndarray, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> np.ndarray:
+    grid = _revert_geometric_augmentation(grid, hflip, n_rot90)
     if color_map is not None:
-        grid = revert_color_swap(grid, color_map)
+        grid = _revert_colormap(grid, color_map)
     return grid
 
 
-def geometric_augmentation(grid, hflip, n_rot90):
-    grid = np.array(grid)
+def get_random_data_augmentation_params():
+    params = _get_random_geometric_augmentation_params()
+    params['color_map'] = _get_random_color_map()
+    return params
+
+
+def _geometric_augmentation(grid: np.ndarray, hflip: bool, n_rot90: int) -> np.ndarray:
     if hflip:
         grid = np.flip(grid, axis=1)
     grid = np.rot90(grid, k=n_rot90)
     return grid
 
 
-def revert_geometric_augmentation(grid, hflip, n_rot90):
-    grid = np.array(grid)
+def _revert_geometric_augmentation(grid: np.ndarray, hflip: bool, n_rot90: int) -> np.ndarray:
     grid = np.rot90(grid, k=-n_rot90)
     if hflip:
         grid = np.flip(grid, axis=1)
     return grid
 
 
-def revert_color_swap(grid, color_map):
-    reverse_color_map = {v: int(k) for k, v in color_map.items()}
-    vectorized_mapping = np.vectorize(reverse_color_map.get)
-    return vectorized_mapping(grid)
-
-
-def apply_colormap(grid, color_map):
+def _apply_colormap(grid: np.ndarray, color_map: dict[int, int]) -> np.ndarray:
     vectorized_mapping = np.vectorize(color_map.get)
     return vectorized_mapping(grid)
 
 
-def get_random_data_augmentation_params():
-    params = get_random_geometric_augmentation_params()
-    params['color_map'] = get_random_color_map()
-    return params
+def _revert_colormap(grid: np.ndarray, color_map: dict[int, int]) -> np.ndarray:
+    reverse_color_map = {v: int(k) for k, v in color_map.items()}
+    return _apply_colormap(grid, reverse_color_map)
 
 
-def get_random_geometric_augmentation_params():
+def _get_random_geometric_augmentation_params() -> dict:
     return dict(hflip=random.choice([True, False]), n_rot90=random.choice([0, 1, 2, 3]))
 
 
-def get_random_color_map(change_background_probability=0.1):
+def _get_random_color_map(change_background_probability: float = 0.1) -> dict[int, int]:
     colors = list(range(10))
     if random.random() < change_background_probability:
         new_colors = list(range(10))

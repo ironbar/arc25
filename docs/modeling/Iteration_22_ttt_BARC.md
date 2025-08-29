@@ -698,6 +698,12 @@ is not a good metric.
 Thus when selecting samples for training or when doing reinforcement learning we should use the correct
 grid ratio.
 
+### Training on smaller datasets
+
+I have created datasets with just 8 task variations (compared to previous experiments with more than 400). Using a batch size of 32 it would take on average 100 steps to see the whole dataset.
+
+TODO:
+
 ## Conclusion
 
 - Changing some parameters of the training such as the save steps does not allow to continue training afterwards.
@@ -730,7 +736,8 @@ grid ratio.
   - [ ] Learning rate/batch size
 - [x] Check training data: the order should be random
 - [x] Evaluation is not deterministic. Investigate the source of variability.
-- [ ] Select a small number of samples per training
-  - [ ] Can I unify the evaluation script
-  - [ ] How to select the samples?
+- [x] Select a small number of samples per training
+  - [x] Can I unify the evaluation script
+  - [x] How to select the samples?
+  - [ ] Train and evaluate
 - [ ] Error when trying to evaluate a lot of predictions

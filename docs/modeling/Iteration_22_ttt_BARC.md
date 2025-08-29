@@ -559,6 +559,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py
 --output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation" -append request_gpus=1 -append request_cpus=4
 
 rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/predictions /mnt/data/MEGA/TEMP
+rsync -P -r /mnt/hdd0/MEGA/TEMP/predictions/* /mnt/hdd0/Kaggle/arc25/predictions
 ```
 
 ### Overfit experiment
@@ -664,7 +665,7 @@ Let's fix the lora rank to 32 and use different number of training steps.
 
 https://wandb.ai/guillermobarbadillo/2025-08-27-training-steps
 
-TODO:
+TODO: Training for longer is giving better results at least in training metrics
 
 ## Conclusion
 
@@ -673,6 +674,7 @@ TODO:
 ## Next steps
 
 - Do multiple iterations of search and learn
+- Study which metrics can indicate if a task is solvable
 
 ## TODO
 
@@ -697,3 +699,7 @@ TODO:
   - [ ] Learning rate/batch size
 - [x] Check training data: the order should be random
 - [x] Evaluation is not deterministic. Investigate the source of variability.
+- [ ] Select a small number of samples per training
+  - [ ] Can I unify the evaluation script
+  - [ ] How to select the samples?
+- [ ] Error when trying to evaluate a lot of predictions

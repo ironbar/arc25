@@ -66,6 +66,8 @@ from arc25.dsl import create_img
     return img""",),
 ])
 def test_validate_code_returns_validated_code(inputs, input_code, output_code):
+    input_code = 'from arc25.dsl import *\n' + input_code
+    output_code = 'from arc25.dsl import *\n' + output_code
     validated_code = validate_code(input_code, inputs)
     assert validated_code == output_code
 

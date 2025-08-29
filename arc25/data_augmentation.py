@@ -6,19 +6,30 @@ and 'output' grids.
 """
 import random
 import numpy as np
+from functools import singledispatch
+from typing import Optional, Union
 
 
-def apply_data_augmentation(task, hflip, n_rot90, color_map=None):
-    augmented_task = {partition: [{key: apply_data_augmentation_to_grid(grid, hflip, n_rot90, color_map) for key, grid in sample.items()} \
+@singledispatch
+def apply_data_augmentation(task, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> dict:
+    raise TypeError(f"Unsupported: {type(task).__name__}")
+
+@apply_data_augmentation.register
+def _(task: dict, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> dict:
+    augmented_task = {partition: [{key: apply_data_augmentation(grid, hflip, n_rot90, color_map) for key, grid in sample.items()} \
                  for sample in samples] for partition, samples in task.items()}
     return augmented_task
 
-
-def apply_data_augmentation_to_grid(grid, hflip, n_rot90, color_map=None):
+@apply_data_augmentation.register
+def _(grid: np.ndarray, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> np.ndarray:
     grid = geometric_augmentation(grid, hflip, n_rot90)
     if color_map is not None:
         grid = apply_colormap(grid, color_map)
     return np.array(grid)
+
+@apply_data_augmentation.register
+def _(grid: list, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> np.ndarray:
+    return apply_data_augmentation(np.array(grid), hflip, n_rot90, color_map)
 
 
 def revert_data_augmentation(grid, hflip, n_rot90, color_map=None):

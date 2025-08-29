@@ -621,6 +621,11 @@ After adding more observability it seems that the Color object has been modified
 I have fixed the execution of the code so on each execution the dsl is imported. This solves the problem
 that the dsl was being modified by some rogue solution.
 
+### Create a smaller training dataset
+
+Since I have seen that the model is able to overfit to a small dataset, and does not seem to learn
+from a huge dataset, I believe we should try training on a smaller selected samples.
+
 ## Results
 
 ### Speed tests
@@ -673,6 +678,25 @@ Let's fix the lora rank to 32 and use different number of training steps.
 https://wandb.ai/guillermobarbadillo/2025-08-27-training-steps
 
 TODO: Training for longer is giving better results at least in training metrics
+
+### The right metrics
+
+![mean_pixel_score](res/1756453485652_image.png)
+
+![correct_grids_ratio](res/1756453501303_image.png)
+
+This plots show the distribution of scores for the unique solutions for all the ARC-AGI-1 evaluation set.
+This is evidence that the pixel score is not a good guiding metric, in fact it seems that tasks that
+weren't solved have higher scores.
+In the other hand we can see a clear separation between the two groups when inspecting the correct grids
+ratio. Since the beginning we see that solved tasks have higher scores.
+
+This has sense because ARC tasks are all or nothing, the metric used in the competition is binary.
+For each grid we need all the pixels to be correct. Thus simply measuring how many pixels are correct
+is not a good metric.
+
+Thus when selecting samples for training or when doing reinforcement learning we should use the correct
+grid ratio.
 
 ## Conclusion
 

@@ -779,7 +779,7 @@ TODO:
 - [x] Verify that I can overfit on a small dataset
 - [ ] Script for inference
   - [x] With support for LoRA
-  - [ ] Add tests for data augmentation
+  - [x] Add tests for data augmentation
   - [ ] Think if moving the prompt has sense
   - [ ] Including evaluation of the predictions, otherwise I have to do it on my computer.
   - [x] Try the script on the cluster
@@ -795,3 +795,4 @@ TODO:
   - [x] How to select the samples?
   - [ ] Train and evaluate
 - [ ] Error when trying to evaluate a lot of predictions
+  - [ ] What is the best and safest way to execute a lot of code in parallel?

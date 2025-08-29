@@ -36,12 +36,20 @@ def _(grid: list, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> np.nd
     else:
         raise TypeError(f"Unsupported list element type: {grid}")
 
+@singledispatch
+def revert_data_augmentation(grid, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> np.ndarray:
+    raise TypeError(f"Unsupported: {type(grid).__name__}")
 
-def revert_data_augmentation(grid: np.ndarray, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> np.ndarray:
+@revert_data_augmentation.register
+def _(grid: np.ndarray, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> np.ndarray:
     grid = _revert_geometric_augmentation(grid, hflip, n_rot90)
     if color_map is not None:
         grid = _revert_colormap(grid, color_map)
     return grid
+
+@revert_data_augmentation.register
+def _(grid: list, hflip: bool, n_rot90: int, color_map: Optional[dict]) -> np.ndarray:
+    return [revert_data_augmentation(g, hflip, n_rot90, color_map) for g in grid]
 
 
 def get_random_data_augmentation_params():

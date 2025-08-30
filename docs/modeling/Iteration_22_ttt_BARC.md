@@ -426,7 +426,7 @@ export LORA_RANK=32
 export N_GPUS=2
 export LEARNING_RATE=1e-4
 export MAXSEQLEN=8192
-export STEPS=100; condor_submit train.condor command=" 
+export STEPS=200; condor_submit train.condor command=" 
 accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
 /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
 --max-steps ${STEPS} \
@@ -446,6 +446,26 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --lora-r ${LORA_RANK} \
 --no-use-dora \
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+export FOLDER=2025-08-29-smaller-datasets/2xA6000-${STEPS}steps-8192msl-1e-4lr-lora32
+export STEPS=100; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
+--n-predictions 512 \
+--base-model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--lora-path /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/checkpoint-${STEPS} \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--use-data-augmentation \
+--output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/${FOLDER}/evaluation" -append request_gpus=1 -append request_cpus=4
+
+export FOLDER=2025-08-29-smaller-datasets-no-data-augmentation/2xA6000-${STEPS}steps-8192msl-1e-4lr-lora32
+export STEPS=100; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
+--n-predictions 512 \
+--base-model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--lora-path /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/checkpoint-${STEPS} \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--no-use-data-augmentation \
+--output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/${FOLDER}/evaluation" -append request_gpus=1 -append request_cpus=4
 ```
 
 ### QLoRA is saving the whole model

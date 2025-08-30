@@ -70,7 +70,7 @@ class Config:
     lr_scheduler_type: str = "linear" #linear, constant_with_warmup, cosine, cosine_with_restarts
     lr_num_cycles: int = 4 # only applicable for cosine_with_restarts
     max_grad_norm: float = 1.0
-    optim: str = "paged_adamw_8bit" # "paged_adamw_8bit"
+    optim: str = "adamw_torch_fused" # "paged_adamw_8bit", "adamw_torch_fused"
     torch_dtype: str = "bfloat16" # "bfloat16" or "float16", float16 causes divergence when training on my PC, but it is 4x faster on Kaggle
     packing: bool = False # multiple short examples are packed in the same input sequence to increase training efficiency
     use_liger_kernel: bool = True # reduces memory usage by 60% and in theory increase speed by 20%

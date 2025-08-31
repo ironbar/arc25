@@ -845,3 +845,8 @@ TODO:
   - [ ] Train and evaluate
 - [ ] Error when trying to evaluate a lot of predictions
   - [ ] What is the best and safest way to execute a lot of code in parallel?
+  - [ ] Subprocess could be the way
+  - [ ] Or maybe there is some way to parallelize that is safe to crashes
+- [ ] Evaluate experiments and close iteration
+  - [ ] Full fine-tuned model
+  - [ ] Models trained on small data

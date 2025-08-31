@@ -448,7 +448,7 @@ accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision b
 --use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
 
 
-export STEPS=100; export FOLDER=2025-08-29-smaller-datasets/2xA6000-${STEPS}steps-8192msl-1e-4lr-lora32; condor_submit train_h100.condor command=" 
+export STEPS=1000; export FOLDER=2025-08-29-smaller-datasets/2xA6000-${STEPS}steps-8192msl-1e-4lr-lora32-adamw-fused; condor_submit train_h100.condor command=" 
 python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
 --n-predictions 512 \
 --base-model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \

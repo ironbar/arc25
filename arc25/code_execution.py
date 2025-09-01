@@ -124,6 +124,16 @@ def _is_valid_output(output):
 
 
 def safe_code_execution(code: str, inputs: list[np.ndarray], func_name: str = 'task',
+                        timeout_duration: int = 1, execution_method='exec', dsl: Optional[ModuleType] = None):
+    if execution_method == 'exec':
+        return _safe_code_execution_exec(code, inputs, func_name, timeout_duration, dsl)
+    elif execution_method == 'subprocess':
+        return _safe_code_execution_subprocess(code, inputs, func_name, timeout_duration, dsl)
+    else:
+        raise ValueError(f"Unknown execution method: {execution_method}")
+
+
+def _safe_code_execution_exec(code: str, inputs: list[np.ndarray], func_name: str = 'task',
                         timeout_duration: int = 1, dsl: Optional[ModuleType] = None):
     check_code_is_safe(code)
     check_code_is_deterministic(code)
@@ -160,8 +170,7 @@ def timeout_handler(signum, frame):
     raise TimeoutException("Code execution exceeded time limit!")
 
 
-
-def safe_code_execution_subprocess(
+def _safe_code_execution_subprocess(
     code: str,
     inputs: list[np.ndarray],
     func_name: str = "task",

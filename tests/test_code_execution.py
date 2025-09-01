@@ -3,7 +3,6 @@ import numpy as np
 
 from arc25.code_execution import (
     safe_code_execution,
-    safe_code_execution_subprocess,
     validate_code,
     check_code_is_safe,
     check_code_is_deterministic,
@@ -104,6 +103,7 @@ def test_check_code_is_deterministic_raises_exception_if_code_is_non_determinist
         check_code_is_deterministic(non_deterministic_code)
 
 
+@pytest.mark.parametrize("execution_method", ['exec', 'subprocess'])
 @pytest.mark.parametrize("code, expected_outputs", [
     ("""def task(img):
      return img * 2""",
@@ -112,9 +112,9 @@ def test_check_code_is_deterministic_raises_exception_if_code_is_non_determinist
      return img + 1""",
         [np.array([[2, 1], [1, 2]])]),
 ])
-def test_safe_code_execution_returns_expected_output(code, expected_outputs):
+def test_safe_code_execution_returns_expected_output(code, expected_outputs, execution_method):
     inputs = [np.eye(2)]
-    outputs = safe_code_execution_subprocess(code, inputs)
+    outputs = safe_code_execution(code, inputs, execution_method=execution_method)
     assert len(outputs) == len(expected_outputs)
     for output, expected_output in zip(outputs, expected_outputs):
         assert output.shape == expected_output.shape

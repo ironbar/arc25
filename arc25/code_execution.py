@@ -119,7 +119,7 @@ def _is_valid_output(output):
     return np.min(output.shape) >= 1 and np.max(output.shape) <= 30
 
 
-def safe_code_execution(code: str, inputs: list, func_name: str = 'task',
+def safe_code_execution(code: str, inputs: list[np.ndarray], func_name: str = 'task',
                         timeout_duration: int = 1, dsl: Optional[ModuleType] = None):
     check_code_is_safe(code)
     check_code_is_deterministic(code)

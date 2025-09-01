@@ -728,6 +728,19 @@ that the dsl was being modified by some rogue solution.
 Since I have seen that the model is able to overfit to a small dataset, and does not seem to learn
 from a huge dataset, I believe we should try training on a smaller selected samples.
 
+### Make code execution more robust to crashes
+
+My current code execution works perfectly most of the time but sometimes it crashes. This is currently
+preventing me from evaluating one of the fine-tuned models so I have to fix it. The crash is not
+deterministic, if I run the evaluation multiple times the crash does not happen at the same moment.
+
+As far as I understand it seems that I need to use subprocess instead of exec so the code run
+on a separate process that won't affect the main process if it crashes.
+
+[Possible solution proposed by GPT5-thinking](https://chatgpt.com/share/68b587ab-2f08-8012-94a5-f1e7cb790c91)
+
+I have to implement tests for the current function, then verify that the same tests run on the new one.
+
 ## Results
 
 ### Speed tests

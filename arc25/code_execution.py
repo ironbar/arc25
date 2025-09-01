@@ -1,6 +1,10 @@
 import signal
 import numpy as np
 import logging
+import sys
+import os
+import pickle
+import subprocess
 from typing import Optional
 from types import ModuleType
 
@@ -154,3 +158,88 @@ class TimeoutException(Exception):
 
 def timeout_handler(signum, frame):
     raise TimeoutException("Code execution exceeded time limit!")
+
+
+
+def safe_code_execution_subprocess(
+    code: str,
+    inputs: list[np.ndarray],
+    func_name: str = "task",
+    timeout_duration: int = 2,
+    dsl: Optional[ModuleType] = None,
+):
+    check_code_is_safe(code)
+    check_code_is_deterministic(code)
+
+    payload = {
+        "inputs": inputs,
+        "code": code,
+        "func_name": func_name,
+        "dsl_module_name": (dsl.__name__ if dsl is not None else None),
+    }
+
+    launcher = r"""
+import sys, pickle, importlib, numpy as np
+
+def main():
+    data = pickle.load(sys.stdin.buffer)
+    inputs = data["inputs"]
+    code = data["code"]
+    func_name = data["func_name"]
+    dsl_name = data["dsl_module_name"]
+
+    # Keep a raw binary handle to real stdout for the pickle.
+    raw_stdout = sys.stdout.buffer
+    # Route user prints to stderr so they don't corrupt the pickle stream.
+    sys.stdout = sys.stderr
+
+    ns = {"__builtins__": __builtins__, "input_grids": inputs}
+    if dsl_name:
+        ns["dsl"] = importlib.import_module(dsl_name)
+
+    exec(code, ns)
+    fn = ns.get(func_name)
+    if not callable(fn):
+        raise RuntimeError(f"Function '{func_name}' not found or not callable")
+
+    outputs = [fn(arr.copy()) for arr in inputs]
+    pickle.dump(outputs, raw_stdout, protocol=pickle.HIGHEST_PROTOCOL)
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception:
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+"""
+
+    # Launch the child in isolated mode (-I) and without site imports (-S).
+    # start_new_session=True puts it in its own process group so we can kill everything it spawns.
+    proc = subprocess.Popen(
+        [sys.executable, "-I", "-c", launcher],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        start_new_session=True,
+    )
+
+    try:
+        stdout, stderr = proc.communicate(
+            input=pickle.dumps(payload, protocol=pickle.HIGHEST_PROTOCOL),
+            timeout=timeout_duration,
+        )
+    except subprocess.TimeoutExpired:
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except Exception:
+            pass
+        proc.wait()
+        raise TimeoutException("Code execution exceeded time limit!")
+
+    if proc.returncode != 0:
+        err = stderr.decode("utf-8", "ignore").strip() or "Subprocess failed."
+        raise RuntimeError(err)
+
+    # stdout contains a clean pickle (no user prints).
+    return pickle.loads(stdout)

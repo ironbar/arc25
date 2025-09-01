@@ -1,6 +1,8 @@
 import pytest
+import numpy as np
 
 from arc25.code_execution import (
+    safe_code_execution,
     validate_code,
     check_code_is_safe,
     check_code_is_deterministic,
@@ -99,3 +101,20 @@ def test_check_code_is_safe_raises_exception_if_code_is_unsafe(unsafe_code):
 def test_check_code_is_deterministic_raises_exception_if_code_is_non_deterministic(non_deterministic_code):
     with pytest.raises(NonDeterministicCode):
         check_code_is_deterministic(non_deterministic_code)
+
+
+@pytest.mark.parametrize("code, expected_outputs", [
+    ("""def task(img):
+     return img * 2""",
+        [np.array([[2, 0], [0, 2]])]),
+    ("""def task(img):
+     return img + 1""",
+        [np.array([[2, 1], [1, 2]])]),
+])
+def test_safe_code_execution_returns_expected_output(code, expected_outputs):
+    inputs = [np.eye(2)]
+    outputs = safe_code_execution(code, inputs)
+    assert len(outputs) == len(expected_outputs)
+    for output, expected_output in zip(outputs, expected_outputs):
+        assert output.shape == expected_output.shape
+        assert np.all(output == expected_output)

@@ -758,7 +758,7 @@ I have to implement tests for the current function, then verify that the same te
 In the cluster is better to use the models unquantized since the GPUs have enough memory and it is
 much faster.
 
-With the H100 I'm able to fully finetune the model and that takes around 11.5s per batch (slightly slower than LoRA).
+With the H100 I'm able to fully finetune the model and that takes around 11.5s per batch of 32 samples (slightly slower than LoRA).
 
 ### Verify that I can overfit to the training dataset
 
@@ -792,7 +792,8 @@ Let's fix the lora rank to 32 and use different number of training steps.
 
 https://wandb.ai/guillermobarbadillo/2025-08-27-training-steps
 
-TODO: Training for longer is giving better results at least in training metrics
+Training for longer is giving better results at least in training metrics. This result suggest
+that I'm using a too big dataset for this experiment (I used around 480 predictions from each task).
 
 ### The right metrics
 
@@ -817,9 +818,35 @@ grid ratio.
 
 I have created datasets with just 8 task variations (compared to previous experiments with more than 400). Using a batch size of 32 it would take on average 100 steps to see the whole dataset.
 
-TODO:
+![alt text](res/1756814578668_image.png)
+
+The plot shows that for this dataset of 8 predictions per task the optimal finetuning steps is 1000. Training
+for longer seems to overfit and does not generalize well. The best finetuned model was able to solve 29.25%
+of the evaluation tasks compared to 22.25% from the baseline. It's quite a nice improvement considering
+that we have done a single iteration of search and learn, we could do many more.
+
+| dataset    | training steps | n_preds | valid code | valid outputs | unique outputs | pixel similarity | correct grids | train_pass_rate | train_pass@n | pass_rate | pass@n     |
+|------------|----------------|---------|------------|---------------|----------------|------------------|---------------|-----------------|--------------|-----------|------------|
+| evaluation | baseline (0)   | 480     | 100.00%    | 71.15%        | 43.93%         | 56.57%           | 2.94%         | 2.03%           | 23.00%       | 2.00%     | 22.25%     |
+| evaluation | 20             | 512     | 100.00%    | 75.31%        | 45.52%         | 57.90%           | 3.60%         | 2.39%           | 24.75%       | 2.36%     | 23.75%     |
+| evaluation | 50             | 512     | 100.00%    | 75.40%        | 45.83%         | 57.90%           | 3.45%         | 2.30%           | 26.75%       | 2.27%     | 25.00%     |
+| evaluation | 100            | 512     | 100.00%    | 76.02%        | 46.12%         | 58.53%           | 3.63%         | 2.42%           | 26.50%       | 2.38%     | 25.75%     |
+| evaluation | 200            | 512     | 100.00%    | 78.08%        | **46.67%**     | 59.41%           | 4.06%         | 2.71%           | 26.00%       | 2.64%     | 25.25%     |
+| evaluation | 400            | 512     | 100.00%    | 77.93%        | 44.89%         | 60.80%           | 4.89%         | 3.27%           | 29.25%       | 3.12%     | 28.00%     |
+| evaluation | 1000           | 512     | 100.00%    | 80.40%        | 42.54%         | 62.88%           | 6.00%         | 3.65%           | **31.00%**   | 3.39%     | **29.25%** |
+| evaluation | 2000           | 512     | 100.00%    | **82.53%**    | 40.19%         | **64.22%**       | **6.82%**     | **3.91%**       | 28.00%       | **3.60%** | 27.00%     |
+
+<details>
+  <summary>Click to see the same results without data augmentation</summary>
+
+![alt text](res/1756814521219_image.png)
+
+</details>
 
 ## Conclusion
+
+Now I have evidence that test-time training using hindsight relabelling can boost the accuracy of a model
+that uses code to solve ARC tasks. This is a huge deal.
 
 - Changing some parameters of the training such as the save steps does not allow to continue training afterwards.
 - I have seen errors when trying to resume the training. They might be caused by the optimizer being `paged_adamw_8bit` but I'm not sure. I will be using `adamw_torch_fused` from now on.
@@ -848,18 +875,19 @@ TODO:
   - [x] There might be a problem with `os.environ['CUDA_VISIBLE_DEVICES'] = str(get_least_used_gpu_index())` on the cluster or on my computer. Probably it should only do changes if the variable is not set.
 - [ ] Find best training hyperparameters (learning rate, batch size, lora rank, training steps)
   - [x] Lora rank
-  - [ ] Training steps
+  - [x] Training steps
   - [ ] Learning rate/batch size
 - [x] Check training data: the order should be random
 - [x] Evaluation is not deterministic. Investigate the source of variability.
 - [x] Select a small number of samples per training
   - [x] Can I unify the evaluation script
   - [x] How to select the samples?
-  - [ ] Train and evaluate
-- [ ] Error when trying to evaluate a lot of predictions
+  - [x] Train and evaluate
+- [x] Error when trying to evaluate a lot of predictions
   - [ ] What is the best and safest way to execute a lot of code in parallel?
   - [ ] Subprocess could be the way
   - [ ] Or maybe there is some way to parallelize that is safe to crashes
-- [ ] Evaluate experiments and close iteration
-  - [ ] Full fine-tuned model
-  - [ ] Models trained on small data
+  - [ ] Save execution results to disk so I can repeat evaluations faster
+- [x] Evaluate experiments and close iteration
+  - [x] Full fine-tuned model
+  - [x] Models trained on small data

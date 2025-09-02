@@ -42,6 +42,10 @@ of my solution for the 2025 challenge.
   training service, an inference service and a master service that redirects the traffic between
   the two.
 
+### Trying unsloth
+
+[Documentation](https://docs.unsloth.ai/) is awesome.
+
 ## Results
 
 ## Conclusion
@@ -50,4 +54,5 @@ of my solution for the 2025 challenge.
 
 ## TODO
 
-- [ ]
+- [ ] Try unsloth for both training and inference
+- [ ] Compare unsloth speed against trl and VLLM

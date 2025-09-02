@@ -843,6 +843,35 @@ that we have done a single iteration of search and learn, we could do many more.
 
 </details>
 
+### Are the improvements legit
+
+Let's describe the experiment that we have just done:
+
+1. Make ~512 predictions with the base BARC model for the 400 evaluation tasks from ARC-AGI-1
+2. Select 8 unique predictions that have the highest correct grid score
+3. Finetune the BARC model on those predictions for 1000 steps, using hindsight relabeling
+4. Make 512 predictions with the finetuned model
+
+That increased the solved tasks from 22.25% to 29.25%.
+
+However we could criticise that the finetuned model has done 1024 predictions in total, and that it saw
+already solved tasks during its training. To check if this concerns are real I have made more than 6k
+predictions with the base model. That way I could better characterize the difficulty of each task for the
+base model, that is simply the pass rate for each task.
+
+This is what I have found:
+
+- 117 tasks were solved by the finetuned model, from those 88 were already solved by the base model and
+  were using for training. That is 22% of the tasks, so almost all the solved tasks by the base model (22.25%)
+  were solved again by the finetuned model.
+- We are interested in the remaining 29 tasks that were newly solved.
+
+![alt text](res/1756815499666_image.png)
+
+The fine-tuned model using TTT was able to solve tasks that on average require more than 1024 predictions to be solved (72% of the newly solved tasks). In fact 17% of the tasks were not solved after doing more than 6000 predictions, they are shown in the plot as requiring more than 10k predictions per task, but that is simply an estimate to represent them.
+
+Thus I believe that we can say that test-time training increased the inference efficiency of the model, in some tasks by more than 10 times.
+
 ## Conclusion
 
 Now I have evidence that test-time training using hindsight relabelling can boost the accuracy of a model

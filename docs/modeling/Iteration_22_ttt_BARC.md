@@ -886,6 +886,7 @@ Other learnings:
 ## Next steps
 
 - Do multiple iterations of search and learn
+- There is a bug in the estimation of the solve rate probability that overestimates it.
 
 ## TODO
 

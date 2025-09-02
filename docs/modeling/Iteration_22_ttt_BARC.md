@@ -843,7 +843,7 @@ that we have done a single iteration of search and learn, we could do many more.
 
 </details>
 
-### Are the improvements legit
+### Are the improvements legit?
 
 Let's describe the experiment that we have just done:
 
@@ -875,15 +875,17 @@ Thus I believe that we can say that test-time training increased the inference e
 ## Conclusion
 
 Now I have evidence that test-time training using hindsight relabelling can boost the accuracy of a model
-that uses code to solve ARC tasks. This is a huge deal.
+that uses code to solve ARC tasks. This is a huge deal. Starting from a model that solved 22.25% of the evaluation tasks with ~500 predictions we were able to finetune a model that solved 29.25% of the tasks with the same inference budget. For some of the solved tasks the inference efficiency was increased more than 10 times.
 
+Other learnings:
+
+- Pixel accuracy does not seem to be a good metric, is better to check how many grids are completely correct.
 - Changing some parameters of the training such as the save steps does not allow to continue training afterwards.
 - I have seen errors when trying to resume the training. They might be caused by the optimizer being `paged_adamw_8bit` but I'm not sure. I will be using `adamw_torch_fused` from now on.
 
 ## Next steps
 
 - Do multiple iterations of search and learn
-- Study which metrics can indicate if a task is solvable
 
 ## TODO
 

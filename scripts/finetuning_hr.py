@@ -36,7 +36,7 @@ from arc25.utils import set_random_seed
 from finetuning import (
     get_model, get_tokenizer, get_lora_model, get_data_collator,
     save_train_conf, is_checkpoint_available, get_training_arguments,
-    PromptTokenDistributionLogger
+    PromptTokenDistributionLogger, get_torch_dtype
 )
 
 
@@ -163,7 +163,7 @@ def get_unsloth_model_and_tokenizer(cfg):
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name = cfg.model_path,
         max_seq_length = cfg.max_seq_len,
-        dtype = cfg.torch_dtype,
+        dtype = get_torch_dtype(cfg.torch_dtype),
         load_in_4bit = cfg.use_4bit_quantization
     )
     tokenizer.pad_token = '<|finetune_right_pad_id|>' # dirty patch

@@ -99,26 +99,6 @@ python scripts/finetuning_hr.py \
 --use-rslora \
 --use-4bit-quantization \
 --use-unsloth
-
-python scripts/finetuning_hr.py \
---output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-03-speed-tests/LoRA${LORA_RANK}_${STEPS}steps_unsloth-remove-liger \
---train-dataset-path /mnt/hdd0/Kaggle/arc25/data/hindsight_relabeled/2025-08-25_evaluation-no-data-augmentation-77.json \
---device-map None \
---max-steps ${STEPS} \
---n-gpus ${N_GPUS} \
---per-device-train-batch-size 1 \
---batch-size 1 \
---learning-rate 1e-5 \
---max-seq-len ${MAXSEQLEN} \
---logging-steps 1 \
---save-steps 1000 \
---dataloader_num_workers ${N_GPUS} \
---lora-r ${LORA_RANK} \
---no-use-dora \
---use-rslora \
---use-4bit-quantization \
---no-use-liger-kernel \
---use-unsloth
 ```
 
 - The baseline trains 0.468 samples per second.
@@ -126,6 +106,8 @@ python scripts/finetuning_hr.py \
 - When loading unsloth at the top of the script, speed improves to 0.615 samples per second
 - Removing dropout from LoRA improves the speed to 0.629 samples per second
 - Not using liger kernel seems to slow down to 0.618, but change is small3
+- Using 8 bit quantization instead of 4 bit gets 0.605 samples per second
+- Using an unquantized model improves the speed to 0.672 samples per second, 43% faster than the baseline.
 
 So far we are seeing an speedup of 34% and a 50% reduction in VRAM usage when using unsloth. It might
 be possible to trade that VRAM reduction for speed.

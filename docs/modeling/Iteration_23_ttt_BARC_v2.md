@@ -112,6 +112,21 @@ python scripts/finetuning_hr.py \
 So far we are seeing an speedup of 34% and a 50% reduction in VRAM usage when using unsloth. It might
 be possible to trade that VRAM reduction for speed.
 
+### Inference speed test
+
+unsloth has a faster startup of 54s vs 1m51s for VLLM.
+
+The table below shows the inference speed in tokens/s when generating 100 tokens per prompt.
+
+| method \ n predictions | 8   | 32  | 128  | 512  |
+|------------------------|-----|-----|------|------|
+| VLLM                   | 140 | 512 | 1476 | 1992 |
+| unsloth                | 138 | 510 | 1454 | 1464 |
+
+They are very similar except from the last column, where I believe VLLM is using more VRAM memory than
+unsloth. This is promising because it opens the door to use unsloth both for training and inference
+in the same process.
+
 ## Results
 
 ## Conclusion

@@ -15,11 +15,17 @@ from itertools import islice
 from dataclasses import dataclass, asdict, field
 import tyro
 
+try:
+    # unsloth needs to be imported at the top to be effective
+    from unsloth import FastLanguageModel
+except ImportError:
+    print("WARNING: Unsloth is not installed")
+
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from peft import LoraConfig, PeftModel, prepare_model_for_kbit_training, get_peft_model
 from trl import SFTTrainer, DataCollatorForCompletionOnlyLM, SFTConfig
-from datasets import Dataset, IterableDataset
+from datasets import Dataset, IterableDataset, Features, Value
 
 from accelerate.logging import get_logger
 from accelerate import Accelerator
@@ -128,6 +134,15 @@ def fine_tuning_main():
         gen_kwargs={"shard": [current_process_seed + i for i in range(max(cfg.dataloader_num_workers, 1))],
                     "verbose": [True] + [False] * (cfg.dataloader_num_workers - 1)})
 
+    if cfg.use_unsloth:
+        # otherwise there is an error in unsloth
+        logger.info("Mapping train dataset to have 'text' field due to unsloth needs")
+        train_dataset = train_dataset.map(
+            lambda batch: batch,
+            batched=True,
+            batch_size=100, # A reasonable batch size for mapping operations.
+            features=Features({'text': Value(dtype='string')}),
+        )
 
     training_arguments = get_training_arguments(cfg)
     trainer = SFTTrainer(
@@ -142,7 +157,6 @@ def fine_tuning_main():
 
 
 def get_unsloth_model_and_tokenizer(cfg):
-    from unsloth import FastLanguageModel
     logger.info('Using Unsloth for training')
     assert cfg.n_gpus == 1, "Unsloth currently only supports single GPU training"
     assert os.path.basename(cfg.model_path) == 'Llama-3.1-ARC-Potpourri-Induction-8B'
@@ -159,7 +173,7 @@ def get_unsloth_model_and_tokenizer(cfg):
             r = cfg.lora_r, # Choose any number > 0 ! Suggested 8, 16, 32, 64, 128
             target_modules = ['k_proj', 'q_proj', 'v_proj', 'o_proj'],
             lora_alpha = 64,
-            lora_dropout = 0.1, # Supports any, but = 0 is optimized
+            lora_dropout = 0, # Supports any, but = 0 is optimized
             bias = "none",    # Supports any, but = "none" is optimized
             # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
             use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context

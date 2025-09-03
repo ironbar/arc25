@@ -11,3 +11,4 @@ dist/*
 notebooks/*.csv
 notebooks/temp.json
 notebooks/unsloth_compiled_cache/Unsloth*.py
+unsloth_compiled_cache/Unsloth*.py

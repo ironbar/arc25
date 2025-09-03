@@ -81,6 +81,8 @@ class Config:
     use_dora: bool = False # Currently it is not supported by VLLM
     lora_r: int = 16
     lora_weight_initialization: str = 'default' # 'gaussian', 'olora', 'pissa', 'pissa_niter_[number of iters]', 'loftq', 'default'
+    # unsloth
+    use_unsloth: bool = False
 
 
 @log_execution_time
@@ -101,15 +103,18 @@ def fine_tuning_main():
         accelerator = Accelerator()
     logger.info(f'Train configuration: {asdict(cfg)}')
 
-    model = get_model(cfg.model_path, torch_dtype=cfg.torch_dtype,
-                      use_4bit_quantization=cfg.use_4bit_quantization, device_map=cfg.device_map,
-                      use_gradient_checkpointing=cfg.gradient_checkpointing)
-    tokenizer = get_tokenizer(cfg.model_path, model, cfg.grid_encoder)
-    if cfg.use_lora:
-        model = get_lora_model(model, cfg.adapter_path, cfg.lora_r, cfg.use_rslora,
-                               cfg.use_dora, cfg.lora_weight_initialization)
+    if cfg.use_unsloth:
+        model, tokenizer = get_unsloth_model_and_tokenizer(cfg)
     else:
-        logger.info('Not using LoRA, full model will be fine-tuned')
+        model = get_model(cfg.model_path, torch_dtype=cfg.torch_dtype,
+                        use_4bit_quantization=cfg.use_4bit_quantization, device_map=cfg.device_map,
+                        use_gradient_checkpointing=cfg.gradient_checkpointing)
+        tokenizer = get_tokenizer(cfg.model_path, model, cfg.grid_encoder)
+        if cfg.use_lora:
+            model = get_lora_model(model, cfg.adapter_path, cfg.lora_r, cfg.use_rslora,
+                                cfg.use_dora, cfg.lora_weight_initialization)
+        else:
+            logger.info('Not using LoRA, full model will be fine-tuned')
 
 
     if cfg.random_seed is not None:
@@ -134,6 +139,35 @@ def fine_tuning_main():
     )
     trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
     # torch.distributed.destroy_process_group()
+
+
+def get_unsloth_model_and_tokenizer(cfg):
+    from unsloth import FastLanguageModel
+    logger.info('Using Unsloth for training')
+    assert cfg.n_gpus == 1, "Unsloth currently only supports single GPU training"
+    assert os.path.basename(cfg.model_path) == 'Llama-3.1-ARC-Potpourri-Induction-8B'
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name = cfg.model_path,
+        max_seq_length = cfg.max_seq_len,
+        dtype = cfg.torch_dtype,
+        load_in_4bit = cfg.use_4bit_quantization
+    )
+    tokenizer.pad_token = '<|finetune_right_pad_id|>' # dirty patch
+    if cfg.use_lora:
+        model = FastLanguageModel.get_peft_model(
+            model,
+            r = cfg.lora_r, # Choose any number > 0 ! Suggested 8, 16, 32, 64, 128
+            target_modules = ['k_proj', 'q_proj', 'v_proj', 'o_proj'],
+            lora_alpha = 64,
+            lora_dropout = 0.1, # Supports any, but = 0 is optimized
+            bias = "none",    # Supports any, but = "none" is optimized
+            # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
+            use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
+            random_state = 3407,
+            use_rslora = cfg.use_rslora,  # We support rank stabilized LoRA
+            loftq_config = None, # And LoftQ
+        )
+    return model, tokenizer
 
 
 def random_prompt_generator(dataset_filepath, tokenizer, max_seq_len, shard, verbose=False):

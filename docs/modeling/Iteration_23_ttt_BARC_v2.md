@@ -46,6 +46,38 @@ of my solution for the 2025 challenge.
 
 [Documentation](https://docs.unsloth.ai/) is awesome.
 
+### Training speed experiment
+
+```bash
+# baseline with huggingface and trl
+export CUDA_VISIBLE_DEVICES=0
+export LORA_RANK=32
+export N_GPUS=1
+export STEPS=100
+export MAXSEQLEN=8192
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-03-speed-tests/LoRA${LORA_RANK}_${STEPS}steps_baseline \
+--train-dataset-path /mnt/hdd0/Kaggle/arc25/data/hindsight_relabeled/2025-08-25_evaluation-no-data-augmentation-77.json \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--learning-rate 1e-5 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers ${N_GPUS} \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora \
+--use-4bit-quantization
+
+# repeat with unsloth
+```
+
+The baseline trains 0.468 samples per second.
+
 ## Results
 
 ## Conclusion

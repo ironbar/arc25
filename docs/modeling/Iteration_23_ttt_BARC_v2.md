@@ -46,6 +46,10 @@ of my solution for the 2025 challenge.
 
 [Documentation](https://docs.unsloth.ai/) is awesome.
 
+I have verified that I can do fast inference and fast training in the same process with unsloth. Thus
+I'm going to implement the algorithm with unsloth and unless I see performance problems I will stick
+with it until the end of the challenge.
+
 ### Training speed experiment
 
 ```bash
@@ -126,6 +130,25 @@ The table below shows the inference speed in tokens/s when generating 100 tokens
 They are very similar except from the last column, where I believe VLLM is using more VRAM memory than
 unsloth. This is promising because it opens the door to use unsloth both for training and inference
 in the same process.
+
+### Search and Learn algorithm
+
+This is how one epoch of the search and learn algorithm would look like, the algorithm works on a single task:
+
+1. Make n predictions with the model. Use data augmentation to increase the diversity of the predictions.
+2. Parse the code from the predictions and execute the code to get the output grids
+3. Evaluate the outputs on the training samples of the task
+4. There could be some stopping criteria, for example if I have two different solutions that solve
+   all the training tasks.
+5. Prepare the data for training. I could sort them by the number of correct grids or other metrics.
+   I could remove already predicted solutions on previous epochs. Using hindsight relabelling we
+   generate new tasks for training.
+6. Finetune the model
+7. Repeat until the stop criteria is met or the number of maximum epochs is reached
+8. Select the predictions for submission
+
+Using a smaller number of predictions could be more efficient, according to [previous experiments with toy tasks](./Iteration_08_improve_HER.md#number-of-generations). Once the algorithm is implemented I will have
+to tune all the hyperparameters. On Kaggle I will have 12 minutes per task when running the algorithm in parallel on the 4 GPUs.
 
 ## Results
 

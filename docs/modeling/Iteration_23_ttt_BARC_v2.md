@@ -152,6 +152,13 @@ to tune all the hyperparameters. On Kaggle I will have 12 minutes per task when 
 
 ## Results
 
+### Unsloth/VLLM inference throughput
+
+![alt text](res/1756991831223_image.png)
+
+Making more predictions has higher throughput, also using a bigger batch size has higher throughput but at the cost of lowering prompt diversity.
+I would need to tune this hyperparameters.
+
 ## Conclusion
 
 ## Next steps
@@ -160,3 +167,5 @@ to tune all the hyperparameters. On Kaggle I will have 12 minutes per task when 
 
 - [ ] Try unsloth for both training and inference
 - [ ] Compare unsloth speed against trl and VLLM
+- [ ] Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer
+- [ ] Check the lora modules parameters, I'm using them without understanding

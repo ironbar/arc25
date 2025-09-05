@@ -31,3 +31,4 @@ deepspeed
 pynvml
 opencv-python
 liger-kernel
+unsloth

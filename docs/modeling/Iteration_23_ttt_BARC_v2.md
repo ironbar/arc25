@@ -206,5 +206,8 @@ I would need to tune this hyperparameters.
 
 - [x] Try unsloth for both training and inference
 - [x] Compare unsloth speed against trl and VLLM
+- [ ] Move code to script
 - [ ] Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer
+  - [ ] `pip install flashinfer-python`
+  - [ ] FileNotFoundError: [Errno 2] No such file or directory: 'nvcc'
 - [ ] Check the lora modules parameters, I'm using them without understanding

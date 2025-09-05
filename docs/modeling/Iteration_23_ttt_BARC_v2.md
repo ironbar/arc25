@@ -150,6 +150,45 @@ This is how one epoch of the search and learn algorithm would look like, the alg
 Using a smaller number of predictions could be more efficient, according to [previous experiments with toy tasks](./Iteration_08_improve_HER.md#number-of-generations). Once the algorithm is implemented I will have
 to tune all the hyperparameters. On Kaggle I will have 12 minutes per task when running the algorithm in parallel on the 4 GPUs.
 
+#### Validate inference
+
+I have done experiments on the training dataset to validate that the inference is correct and gives
+the same results as in previous iterations.
+
+```bash
+# 400 training tasks, 20m49
+n_preds	valid code	valid outputs	unique outputs	train_pixel_score	train_correct_grids	train_pass_rate	train_is_correct	test_pixel_score	test_correct_grids	test_pass_rate	test_is_correct	is_correct
+MEAN	8.0	1.0	0.774	0.616	0.484	0.121	0.107	0.26	0.474	0.113	0.112	0.278	0.258
+# this validates the inference pipeline, results are very similar as the shown below
+
+# baseline, runtime around 21 minutes with batch size 8
+	n_preds	valid code	valid outputs	unique outputs	pixel similarity	correct grids	train_pass_rate	train_pass@n	pass_rate	pass@n
+MEAN	8.0	1.0	0.753125	0.6175	0.594594	0.129178	0.105435	0.2225	0.104452	0.2175
+MEAN	8.0	1.0	0.758125	0.625313	0.602329	0.12629	0.103494	0.2625	0.101396	0.26
+MEAN	8.0	1.0	0.765625	0.615938	0.611174	0.148103	0.12081	0.27	0.11822	0.265
+MEAN	8.0	1.0	0.761875	0.614688	0.595542	0.130861	0.113375	0.2625	0.111104	0.2625
+```
+
+#### Effect of 4 bit quantization at inference
+
+```bash
+# training
+# unquantized, 20m49
+# same but with 4 bit quantization, 24m24
+n_preds	valid code	valid outputs	unique outputs	train_pixel_score	train_correct_grids	train_pass_rate	train_is_correct	test_pixel_score	test_correct_grids	test_pass_rate	test_is_correct	is_correct
+MEAN	8.0	1.0	0.774	0.616	0.484	0.121	0.107	0.26	0.474	0.113	0.112	0.278	0.258
+MEAN	8.0	1.0	0.771	0.63	0.468	0.103	0.088	0.248	0.457	0.095	0.095	0.285	0.242
+
+# evaluation
+# unquantized 29m15
+# 4bit quantization, 34m36
+	n_preds	valid code	valid outputs	unique outputs	train_pixel_score	train_correct_grids	train_pass_rate	train_is_correct	test_pixel_score	test_correct_grids	test_pass_rate	test_is_correct	is_correct
+MEAN	8.0	1.0	0.709	0.633	0.413	0.021	0.013	0.058	0.402	0.016	0.016	0.07	0.058
+MEAN	8.0	1.0	0.708	0.634	0.415	0.022	0.015	0.058	0.404	0.018	0.018	0.068	0.058
+```
+
+It seems that quantization makes inference slower, but accuracy seems to be the same.
+
 ## Results
 
 ### Unsloth/VLLM inference throughput
@@ -165,7 +204,7 @@ I would need to tune this hyperparameters.
 
 ## TODO
 
-- [ ] Try unsloth for both training and inference
-- [ ] Compare unsloth speed against trl and VLLM
+- [x] Try unsloth for both training and inference
+- [x] Compare unsloth speed against trl and VLLM
 - [ ] Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer
 - [ ] Check the lora modules parameters, I'm using them without understanding

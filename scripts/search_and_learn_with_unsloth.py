@@ -405,6 +405,8 @@ def aggregate_metrics(results):
             df.loc[task_id, f'{partition}_correct_grids'] = np.mean([result.get(f'{partition}_correct_grids', 0) for result in task_results])
             df.loc[task_id, f'{partition}_pass_rate'] = sum(result.get(f'{partition}_is_correct', 0) for result in task_results)/n_preds
             df.loc[task_id, f'{partition}_is_correct'] = int(any(result.get(f'{partition}_is_correct', 0) for result in task_results))
+    if 'test_is_correct' in df.columns:
+        df['is_correct'] = df['train_is_correct'] * df['test_is_correct']
     df.loc['MEAN'] = df.mean(axis=0)
     return df.astype(float)
 

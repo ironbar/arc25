@@ -73,7 +73,6 @@ class Config:
 
 def main():
     cfg = tyro.cli(Config, description="Search and learn with unsloth")
-    assert cfg.predictions_per_epoch % cfg.inference_batch_size == 0
     accelerator = Accelerator() # seems to need to do this if I want to use logging
     if cfg.log_to_wandb:
         wandb.init(project=os.path.basename(os.path.dirname(cfg.output_dir)),

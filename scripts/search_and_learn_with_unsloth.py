@@ -33,7 +33,7 @@ from tqdm.auto import tqdm
 from accelerate import Accelerator
 
 from arc25.encoders import create_grid_encoder
-from arc25.utils import load_arc_dataset_with_solutions
+from arc25.utils import load_arc_dataset_with_solutions, set_random_seed
 from arc25.data_augmentation import apply_data_augmentation, revert_data_augmentation, get_random_data_augmentation_params
 from arc25.code_execution import safe_code_execution
 from arc25.prompting import create_prompt_from_task, parse_python_code_from_response, pretty_print_prompt
@@ -147,6 +147,7 @@ def create_peft_model(llm, lora_r, use_rslora, model=None):
 
 def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
               inference_batch_size, n_predictions, use_data_augmentation):
+    set_random_seed(None)
     prompts, data_augmentation_params, inference_task_ids = [], [], []
     for task_id in task_ids:
         task = dataset[task_id]

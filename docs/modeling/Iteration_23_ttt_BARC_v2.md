@@ -223,3 +223,4 @@ I would need to tune this hyperparameters.
 Collecting flashinfer-python==0.2.5+cu124torch2.6`
   - Should revisit on a future iteration because it could give faster inference for free
 - [ ] Check the lora modules parameters, I'm using them without understanding
+- [ ] Learning rate sweep. Using a small learning rate should be equivalent to just doing search. Using a too big lr should result in degraded metrics. There should be a sweet spot.

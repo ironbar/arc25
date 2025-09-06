@@ -34,7 +34,7 @@ from arc25.encoders import create_grid_encoder
 from arc25.utils import load_arc_dataset_with_solutions
 from arc25.data_augmentation import apply_data_augmentation, revert_data_augmentation, get_random_data_augmentation_params
 from arc25.code_execution import safe_code_execution
-from arc25.prompting import pretty_print_prompt, Template
+from arc25.prompting import create_prompt_from_task, parse_python_code_from_response, pretty_print_prompt
 from arc25.metrics import pixel_similarity_score
 
 from finetuning import get_data_collator # TODO: move to arc25 package
@@ -58,9 +58,10 @@ class Config:
     max_epochs: int = 1
     use_data_augmentation: bool = True
     inference_batch_size: int = 4
-    initial_predictions: int = 16
-    predictions_per_epoch: int = 16
+    initial_predictions: int = 8
+    predictions_per_epoch: int = 8
     training_batch_size: int = 1
+
 
 def main():
     cfg = tyro.cli(Config, description="Search and learn with unsloth")
@@ -71,7 +72,7 @@ def main():
 
 
     dataset = load_arc_dataset_with_solutions(cfg.dataset_path)
-    task_ids = list(dataset.keys())[:4]
+    task_ids = list(dataset.keys())[:2]
     print(f"Loaded {len(dataset)} tasks from {cfg.dataset_path}")
 
 
@@ -96,6 +97,7 @@ def main():
                 task, grid_encoder=grid_encoder, tokenizer=tokenizer, shuffle_train_samples=True)
             prompts.append(prompt)
             inference_task_ids.extend([task_id] * cfg.inference_batch_size)
+    pretty_print_prompt(prompts[0])
 
     sampling_params = SamplingParams(n=cfg.inference_batch_size, temperature=1.0, top_p=0.95, max_tokens=2048)
     generations = llm.fast_generate(prompts, sampling_params)
@@ -214,61 +216,6 @@ def main():
     print(aggregate_metrics(results))
 
 
-# TODO: maybe move this to the prompting module
-# https://huggingface.co/barc0/Llama-3.1-ARC-Potpourri-Induction-8B
-system_prompt = """You are a world-class puzzle solver with exceptional pattern recognition skills and expertise in Python programming. Your task is to analyze puzzles and provide Python solutions."""
-
-prompt_template_text = """Given input-output grid pairs as reference examples, carefully observe the patterns to predict the output grid for new test input. Each pair follows the same transformation rule. Grids are 2D arrays represented as strings, with cells (colors) separated by spaces and rows by newlines.
-Here are the input and output grids for the reference examples:
-{% for sample in train_samples %}Example {{ loop.index }}
-Input:
-{{ sample.input }}
-
-Output:
-{{ sample.output }}
-
-{% endfor %}
-Here is the input grid for the test example:
-{{ test }}
-
-Write a Python function `transform` that can convert any given input grid to its corresponding output grid based on the pattern observed in the reference examples.
-"""
-
-# I have verified that all responses start with this prefix
-common_prefix = "Let's solve this puzzle using Python code with the common library functions. We'll first reason about the problem and then write the code to solve it. The `transform` function will take the input grid and return the output grid. Here is the Python code with the comments describing how to solve the problem:\n" #```python\nfrom common import *\n"
-
-prompt_template = Template(prompt_template_text)
-
-def create_prompt_from_task(task, grid_encoder, tokenizer, shuffle_train_samples=True):
-    train_samples = [{'input': grid_encoder.to_text(sample['input']), 'output': grid_encoder.to_text(sample['output'])} for sample in task['train']]
-    if shuffle_train_samples:
-        random.shuffle(train_samples)
-    test_sample = random.choice(task['test'])
-    render_kwargs = dict(train_samples=train_samples, test=grid_encoder.to_text(test_sample['input']))
-    messages = [{"role": "system", "content": system_prompt},
-                {"role": "user", "content": prompt_template.render(**render_kwargs)},
-                {"role": "assistant", "content": common_prefix}]
-    prompt = tokenizer.apply_chat_template(messages,
-                                            tokenize=False,
-                                            add_generation_prompt=False,
-                                            continue_final_message=True,
-                                            # enable_thinking=False,
-                                            )
-    return prompt
-
-
-def parse_python_code(text):
-    # Extract Python code from the text
-    if '```python' not in text:
-        return ''
-    code = text.split('```python')[1]
-    if not '```' in code:
-        return ''
-
-    code = code.split('```')[0].strip()
-    return code
-
-
 def curate_python_code(code):
     remove_line_keywords = ['import dsl', 'from dsl import ', 'print(', 'from common import *']
     code = '\n'.join(line for line in code.split('\n') if not any(keyword in line for keyword in remove_line_keywords))
@@ -334,7 +281,7 @@ def run_code_from_predictions(dataset, task_ids, text_predictions, data_augmenta
 
 
 def _run_one(text_prediction, task, task_id, data_augmentation_params):
-    code = parse_python_code(text_prediction)
+    code = parse_python_code_from_response(text_prediction)
     if not code:
         return dict(error_type="ParsingCodeFailed", error_message='', text_prediction=text_prediction,
                     task_id=task_id)
@@ -457,6 +404,7 @@ def create_training_prompts(relabeled_tasks, grid_encoder, tokenizer):
         prompt += task['text_prediction'] + tokenizer.eos_token
         prompts.append(prompt)
     return prompts
+
 
 if __name__ == '__main__':
     main()

@@ -1,80 +1,6 @@
 from jinja2 import Template
+import random
 from termcolor import colored
-
-
-def parse_grid_from_response(text, grid_encoder):
-    return grid_encoder.to_grid('```grid' + text)
-
-
-def create_prompt_from_task(task, grid_encoder, tokenizer,
-                            is_train_prompt=True, prompt_version='code-from-examples-v3'):
-    system_prompt, prompt_template, answer_template = get_prompt_templates(prompt_version)
-    train_samples = [{'input': grid_encoder.to_text(grid), 'output': grid_encoder.to_text(output)} for grid, output in zip(task.inputs, task.outputs)]
-
-    render_kwargs = dict(train_samples=train_samples)
-    if prompt_version.startswith('output-from-code'):
-        render_kwargs['code'] = task['code']
-
-    user_message = prompt_template.render(**render_kwargs)
-    if is_train_prompt:
-        if prompt_version.startswith('code-from-examples'):
-            output = '```python\n' + task.code + '\n```'
-        else:
-            raise ValueError(f'Unknown prompt version {prompt_version}')
-    else:
-        if prompt_version.startswith('code-from-examples'):
-            output = '```python\n'
-        else:
-            output = '```grid'
-    messages = [{"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_message},
-                {"role": "assistant", "content": answer_template.render(output=output)}]
-    prompt = tokenizer.apply_chat_template(messages,
-                                            tokenize=False,
-                                            add_generation_prompt=False)
-    if not is_train_prompt:
-        prompt = remove_assistant_ending(prompt)
-    return prompt
-
-
-
-def remove_assistant_ending(text):
-    """
-phi-3
-
-```
-<|assistant|>
-### Output
-```grid
-<|end|>
-<|endoftext|>
-```
-
-llama 3.1
-
-```
-<|eot_id|><|start_header_id|>assistant<|end_header_id|>
-
-### Output
-```grid<|eot_id|><|start_header_id|>assistant<|end_header_id|>
-```
-    """
-    if '<|eot_id|>' in text: # llama
-        split_text = '<|eot_id|>'
-    elif '<|im_end|>' in text: # qwen
-        split_text = '<|im_end|>'
-    elif '<|end|>' in text:
-        split_text = '<|end|>' # phi-3
-    else:
-        NotImplementedError('Unknown chat template')
-    return split_text.join(text.split(split_text)[:-1])
-
-
-def pretty_print_smallest_prompt(prompts):
-    smallest_prompt = sorted(prompts, key=lambda x: len(x))[0]
-    print('\n\nSmaller prompt:')
-    pretty_print_prompt(smallest_prompt)
-    print('\n\n')
 
 
 def pretty_print_prompt(text, default_color='black'):
@@ -103,59 +29,52 @@ def pretty_print_prompt(text, default_color='black'):
     print('-'*80)
 
 
-def get_prompt_templates(prompt_version):
-    """
-    Given a string defining the prompt version returns the system, prompt and answer templates.
-
-    This are the planned prompt versions to release:
-
-    output-from-examples
-    input-from-inputs
-    output-from-outputs
-    code-from-examples
-    output-from-code
-    input-from-code
-    code-from-inputs
-    """
-    if prompt_version == 'code-from-examples-v3':
-        return system_prompt_v1, prompt_template_code_from_examples_v3, answer_template_code_from_examples_v2
-    else:
-        raise ValueError(f'Unknown prompt version {prompt_version}')
+def create_prompt_from_task(task, grid_encoder, tokenizer, shuffle_train_samples=True):
+    train_samples = [{'input': grid_encoder.to_text(sample['input']), 'output': grid_encoder.to_text(sample['output'])} for sample in task['train']]
+    if shuffle_train_samples:
+        random.shuffle(train_samples)
+    test_sample = random.choice(task['test'])
+    render_kwargs = dict(train_samples=train_samples, test=grid_encoder.to_text(test_sample['input']))
+    messages = [{"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt_template.render(**render_kwargs)},
+                {"role": "assistant", "content": common_prefix}]
+    prompt = tokenizer.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=False, continue_final_message=True)
+    return prompt
 
 
-# v1 reduce the number of prompt tokens from 292 to 88, freeing 200 tokens
-system_prompt_v1 = "You are a helpful assistant."
+# https://huggingface.co/barc0/Llama-3.1-ARC-Potpourri-Induction-8B
+system_prompt = """You are a world-class puzzle solver with exceptional pattern recognition skills and expertise in Python programming. Your task is to analyze puzzles and provide Python solutions."""
 
-answer_template_code_from_examples_v2 = Template("""## Code
-
-This is the Python function that implements the transformation logic:
-
-{{ output }}""")
-
-prompt_template_code_from_examples_v3 = Template("""You are tasked with solving a transformation problem from the Abstraction and Reasoning Challenge (ARC).
-The goal is to generate a Python function called `task` that receives a 2D numpy array, `img`, and transforms it to match the desired output.
-
-Below are several input-output examples that illustrate the transformation. Your function should generalize the pattern from these examples to solve any input following the same logic.
-
-## Key Priors:
-
-- **Objectness**: Consider the grid as containing objects (groups of connected cells) rather than just individual pixels.
-- **Goal-Directed**: The transformation should achieve a specific goal, such as creating symmetry or changing the color of specific objects.
-- **Numbers & Counting**: Keep track of the number of objects, sizes, and their relative positions.
-- **Geometry & Topology**: Use spatial relationships such as adjacency, enclosure, or symmetry.
-
-Carefully analyze the examples and find the underlying transformation logic.
-
-## Examples
-{% for sample in train_samples %}
-### Example {{ loop.index }}
-
-#### Input
-
+prompt_template_text = """Given input-output grid pairs as reference examples, carefully observe the patterns to predict the output grid for new test input. Each pair follows the same transformation rule. Grids are 2D arrays represented as strings, with cells (colors) separated by spaces and rows by newlines.
+Here are the input and output grids for the reference examples:
+{% for sample in train_samples %}Example {{ loop.index }}
+Input:
 {{ sample.input }}
 
-#### Output
-
+Output:
 {{ sample.output }}
+
 {% endfor %}
-""")
+Here is the input grid for the test example:
+{{ test }}
+
+Write a Python function `transform` that can convert any given input grid to its corresponding output grid based on the pattern observed in the reference examples.
+"""
+
+# I have verified that all responses start with this prefix
+common_prefix = "Let's solve this puzzle using Python code with the common library functions. We'll first reason about the problem and then write the code to solve it. The `transform` function will take the input grid and return the output grid. Here is the Python code with the comments describing how to solve the problem:\n" #```python\nfrom common import *\n"
+
+prompt_template = Template(prompt_template_text)
+
+
+def parse_python_code_from_response(text):
+    # Extract Python code from the text
+    if '```python' not in text:
+        return ''
+    code = text.split('```python')[1]
+    if not '```' in code:
+        return ''
+
+    code = code.split('```')[0].strip()
+    return code

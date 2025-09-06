@@ -210,9 +210,9 @@ I would need to tune this hyperparameters.
 - [x] Try unsloth for both training and inference
 - [x] Compare unsloth speed against trl and VLLM
 - [ ] Move code to script
-  - [ ] Move current notebook to script
+  - [x] Move current notebook to script
   - [ ] Refactor
-  - [ ] Move code to library modules
+  - [x] Move code to library modules
   - [ ] Save results to disk
   - [ ] Log to wandb. Tables, runtime...
   - [ ] All parameters should be on the configuration

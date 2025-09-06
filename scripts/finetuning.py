@@ -25,6 +25,7 @@ from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 from arc25.logging import log_execution_time, configure_logging
 from arc25.training_tasks import training_tasks_generator
 from arc25.utils import set_random_seed
+from arc25.collator import get_data_collator
 
 
 logger = get_logger(__name__)
@@ -421,33 +422,6 @@ def get_gradient_accumulation_steps(batch_size, per_device_train_batch_size, n_g
         accumulation_steps = batch_size//per_device_train_batch_size
     logger.info(f'Using {accumulation_steps} gradient accumulation steps')
     return accumulation_steps
-
-
-def get_data_collator(tokenizer):
-    if '<|start_header_id|>' in tokenizer.chat_template and '<|end_header_id|>' in tokenizer.chat_template:
-        logger.info('Using llama template for collator')
-        data_collator = DataCollatorForCompletionOnlyLM(
-            tokenizer=tokenizer,
-            instruction_template='<|start_header_id|>user<|end_header_id|>',
-            response_template='<|start_header_id|>assistant<|end_header_id|>',
-        )
-    elif '<|im_start|>' in tokenizer.chat_template:
-        logger.info('Using SmolLM\Qwen template for collator')
-        data_collator = DataCollatorForCompletionOnlyLM(
-            tokenizer=tokenizer,
-            instruction_template='<|im_start|>user',
-            response_template='<|im_start|>assistant',
-        )
-    elif '<|user|>' in tokenizer.chat_template and '<|assistant|>' in tokenizer.chat_template:
-        logger.info('Using Phi-3 template for collator')
-        data_collator = DataCollatorForCompletionOnlyLM(
-            tokenizer=tokenizer,
-            instruction_template='<|user|>',
-            response_template='<|assistant|>'
-        )
-    else:
-        raise NotImplementedError(f'Tokenizer chat template not recognized: {tokenizer.chat_template}')
-    return data_collator
 
 
 def is_checkpoint_available(output_dir):

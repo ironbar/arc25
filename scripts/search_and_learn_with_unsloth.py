@@ -37,12 +37,9 @@ from arc25.code_execution import safe_code_execution
 from arc25.prompting import create_prompt_from_task, parse_python_code_from_response, pretty_print_prompt
 from arc25.metrics import get_metrics, aggregate_metrics, error_analysis
 from arc25.validation import validate_outputs
-
-from finetuning import get_data_collator # TODO: move to arc25 package
+from arc25.collator import get_data_collator
 
 logger = logging.getLogger(__name__)
-
-accelerator = Accelerator() # seems to need to do this if I want to logging
 
 
 @dataclass
@@ -65,6 +62,7 @@ class Config:
 
 def main():
     cfg = tyro.cli(Config, description="Search and learn with unsloth")
+    accelerator = Accelerator() # seems to need to do this if I want to use logging
     logger.info(f'Running search and learn with config: {cfg}')
 
 
@@ -218,7 +216,7 @@ def main():
 
 
 
-
+# run code functions, probably should be moved to module
 def run_code_from_predictions(dataset, task_ids, text_predictions, data_augmentation_params, n_jobs=-1):
     work = list(zip(text_predictions, [dataset[task_id] for task_id in task_ids], task_ids, data_augmentation_params))
     # sort the work by prediction index first and the task id second, I believe this will improve resource allocation
@@ -302,7 +300,7 @@ def fingerprint(output_grids : list[np.ndarray]) -> str:
         h.update(grid.tobytes())
     return h.hexdigest()
 
-
+# hindsight relabeling functions, probably should be moved to module
 def create_hindsight_relabeled_tasks(results, task):
     # TODO: strategies to avoid repetitions
     # sort the tasks, placing the best ones last

@@ -117,7 +117,7 @@ def main():
     save_results(results, cfg.output_dir, cfg.log_to_wandb)
     if cfg.log_to_wandb:
         wandb.log({"execution_time": time.time() - t0})
-        log_metrics_evolution(results, cfg.predictions_per_epoch)
+        log_metrics_evolution(results)
 
 
 def create_peft_model(llm, lora_r, use_rslora, model=None):
@@ -221,7 +221,7 @@ def save_results(results, output_dir, log_to_wandb):
         json.dump(results, f, indent=2)
 
 
-def log_metrics_evolution(results, step):
+def log_metrics_evolution(results, step=8):
     for n_predictions in range(step, max(len(v) for v in results.values()) + 1, step):
         partial_results = {task_id: task_results[:n_predictions] for task_id, task_results in results.items()}
         partial_metrics = aggregate_metrics(partial_results)

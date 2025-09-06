@@ -65,52 +65,22 @@ class Config:
 
 def main():
     cfg = tyro.cli(Config, description="Search and learn with unsloth")
+    assert cfg.predictions_per_epoch % cfg.inference_batch_size == 0
     accelerator = Accelerator() # seems to need to do this if I want to use logging
     logger.info(f'Running search and learn with config: {cfg}')
 
-
-    assert cfg.predictions_per_epoch % cfg.inference_batch_size == 0
-
-
     dataset = load_arc_dataset_with_solutions(cfg.dataset_path)
     task_ids = list(dataset.keys())[:2]
-    print(f"Loaded {len(dataset)} tasks from {cfg.dataset_path}")
-
+    logger.info(f"Loaded {len(dataset)} tasks from {cfg.dataset_path}")
 
     llm, tokenizer = FastLanguageModel.from_pretrained(
         cfg.model_path, load_in_4bit=cfg.load_in_4bit, max_seq_length=cfg.max_seq_length,
         fast_inference=True, gpu_memory_utilization=cfg.gpu_memory_utilization)
     grid_encoder = create_grid_encoder(cfg.grid_encoder)
 
-
-    # on a first step, run inference on all tasks because it has more throughput
-    prompts, data_augmentation_params, inference_task_ids = [], [], []
-    for task_id in task_ids:
-        task = dataset[task_id]
-        for _ in range(cfg.initial_predictions // cfg.inference_batch_size):
-            if cfg.use_data_augmentation:
-                params = get_random_data_augmentation_params()
-                task = apply_data_augmentation(task, **params)
-            else:
-                params = None
-            data_augmentation_params.extend([params] * cfg.inference_batch_size)
-            prompt = create_prompt_from_task(
-                task, grid_encoder=grid_encoder, tokenizer=tokenizer, shuffle_train_samples=True)
-            prompts.append(prompt)
-            inference_task_ids.extend([task_id] * cfg.inference_batch_size)
-    pretty_print_prompt(prompts[0])
-
-    sampling_params = SamplingParams(n=cfg.inference_batch_size, temperature=1.0, top_p=0.95, max_tokens=2048)
-    generations = llm.fast_generate(prompts, sampling_params)
-    text_predictions = []
-    for generation in generations:
-        for output in generation.outputs:
-            text_predictions.append(output.text)
-
-
-    results = run_code_from_predictions(dataset, inference_task_ids, text_predictions, data_augmentation_params)
-
-
+    results = inference(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request=None,
+        inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
+        use_data_augmentation=cfg.use_data_augmentation)
     print(aggregate_metrics(results))
 
     model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora) # initialize peft model
@@ -119,7 +89,6 @@ def main():
         logger.info(f'Search and learn for task {task_id}')
         task = dataset[task_id]
         model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora, model=model) # reset the LoRA weights for each task
-        sampling_params = SamplingParams(n=cfg.inference_batch_size, temperature=1.0, top_p=0.95, max_tokens=2048) # TODO: move parameters to cfg
         task_results = results[task_id]
         for epoch in range(1, cfg.max_epochs + 1):
             logger.info(f'Prepare training data for epoch {epoch}')
@@ -156,27 +125,9 @@ def main():
             lora_request = model.load_lora("/mnt/hdd0/Kaggle/arc25/trainings/2025-09-05-debug-unsloth/lora")
 
             logger.info(f'Generating predictions for epoch {epoch}')
-            prompts, data_augmentation_params = [], []
-            for _ in range(cfg.predictions_per_epoch // cfg.inference_batch_size):
-                if cfg.use_data_augmentation:
-                    params = get_random_data_augmentation_params()
-                    task = apply_data_augmentation(task, **params)
-                else:
-                    params = None
-                data_augmentation_params.extend([params] * cfg.inference_batch_size)
-                prompt = create_prompt_from_task(
-                    task, grid_encoder=grid_encoder, tokenizer=tokenizer, shuffle_train_samples=True)
-                prompts.append(prompt)
-            generations = llm.fast_generate(prompts, sampling_params, lora_request=lora_request)
-
-            text_predictions = []
-            for generation in generations:
-                for output in generation.outputs:
-                    text_predictions.append(output.text)
-            assert len(text_predictions) == cfg.predictions_per_epoch
-
-            # run code and compute metrics
-            task_results = run_code_from_predictions(dataset, [task_id]*len(text_predictions), text_predictions, data_augmentation_params)
+            task_results = inference(dataset, [task_id], llm, tokenizer, grid_encoder, lora_request,
+                inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
+                use_data_augmentation=cfg.use_data_augmentation)
             print(aggregate_metrics(task_results).head(1).round(3))
             task_results = task_results[task_id]
             results[task_id].extend(task_results)
@@ -204,6 +155,35 @@ def create_peft_model(llm, lora_r, use_rslora, model=None):
     )
     return model
 
+
+def inference(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
+              inference_batch_size, n_predictions, use_data_augmentation):
+    prompts, data_augmentation_params, inference_task_ids = [], [], []
+    for task_id in task_ids:
+        task = dataset[task_id]
+        for _ in range(n_predictions // inference_batch_size):
+            if use_data_augmentation:
+                params = get_random_data_augmentation_params()
+                task = apply_data_augmentation(task, **params)
+            else:
+                params = None
+            data_augmentation_params.extend([params] * inference_batch_size)
+            prompt = create_prompt_from_task(
+                task, grid_encoder=grid_encoder, tokenizer=tokenizer, shuffle_train_samples=True)
+            prompts.append(prompt)
+            inference_task_ids.extend([task_id] * inference_batch_size)
+
+    if lora_request is None: pretty_print_prompt(prompts[0])
+
+    sampling_params = SamplingParams(n=inference_batch_size, temperature=1.0, top_p=0.95, max_tokens=2048) # TODO: move parameters to cfg
+    generations = llm.fast_generate(prompts, sampling_params, lora_request=lora_request)
+    text_predictions = []
+    for generation in generations:
+        for output in generation.outputs:
+            text_predictions.append(output.text)
+
+    results = run_code_from_predictions(dataset, inference_task_ids, text_predictions, data_augmentation_params)
+    return results
 
 
 # run code functions, probably should be moved to module

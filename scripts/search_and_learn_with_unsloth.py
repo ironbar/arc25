@@ -50,6 +50,9 @@ class Config:
     max_seq_length: int = 12000
     grid_encoder: str = 'ColorNameEncoder()'
     gpu_memory_utilization: float = 0.90
+    # LoRA
+    lora_r: int = 16
+    use_rslora: bool = True
     # dataset
     dataset_path: str = "/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_training_challenges.json"
     max_epochs: int = 1
@@ -110,41 +113,12 @@ def main():
 
     print(aggregate_metrics(results))
 
-
-
-    model = FastLanguageModel.get_peft_model(
-        llm,
-        r = 8, # Choose any number > 0 ! Suggested 8, 16, 32, 64, 128
-        target_modules = ['k_proj', 'q_proj', 'v_proj', 'o_proj'],
-        lora_alpha = 64,
-        lora_dropout = 0, # Supports any, but = 0 is optimized
-        bias = "none",    # Supports any, but = "none" is optimized
-        # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
-        use_gradient_checkpointing = False, # True or "unsloth" for very long context
-        use_rslora = True,  # We support rank stabilized LoRA
-        loftq_config = None, # And LoftQ
-    )
-    print(model.peft_config.keys())
-    print(model.active_adapter)
-
-
+    model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora) # initialize peft model
     for task_id in tqdm(task_ids, desc="Tasks", unit="task"):
         print('\n'*2 + '='*80 + f'\nTask {task_id}\n' + '='*80)
         logger.info(f'Search and learn for task {task_id}')
         task = dataset[task_id]
-        model.unload()
-        model = FastLanguageModel.get_peft_model(
-            llm,
-            r = 8, # Choose any number > 0 ! Suggested 8, 16, 32, 64, 128
-            target_modules = ['k_proj', 'q_proj', 'v_proj', 'o_proj'],
-            lora_alpha = 64,
-            lora_dropout = 0, # Supports any, but = 0 is optimized
-            bias = "none",    # Supports any, but = "none" is optimized
-            # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
-            use_gradient_checkpointing = False, # True or "unsloth" for very long context
-            use_rslora = True,  # We support rank stabilized LoRA
-            loftq_config = None, # And LoftQ
-        )
+        model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora, model=model) # reset the LoRA weights for each task
         sampling_params = SamplingParams(n=cfg.inference_batch_size, temperature=1.0, top_p=0.95, max_tokens=2048) # TODO: move parameters to cfg
         task_results = results[task_id]
         for epoch in range(1, cfg.max_epochs + 1):
@@ -213,6 +187,22 @@ def main():
 
     print(aggregate_metrics(results))
 
+
+def create_peft_model(llm, lora_r, use_rslora, model=None):
+    if model is not None: model.unload()
+    model = FastLanguageModel.get_peft_model(
+        llm,
+        r = lora_r, # Choose any number > 0 ! Suggested 8, 16, 32, 64, 128
+        target_modules = ['k_proj', 'q_proj', 'v_proj', 'o_proj'], # TODO: learn more about which modules to choose
+        lora_alpha = 64,
+        lora_dropout = 0, # Supports any, but = 0 is optimized
+        bias = "none",    # Supports any, but = "none" is optimized
+        # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
+        use_gradient_checkpointing = False, # True or "unsloth" for very long context # TODO: maybe I have to enable this
+        use_rslora = use_rslora,  # We support rank stabilized LoRA
+        loftq_config = None, # And LoftQ
+    )
+    return model
 
 
 

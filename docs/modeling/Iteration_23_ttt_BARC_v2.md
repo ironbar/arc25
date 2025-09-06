@@ -191,6 +191,8 @@ It seems that quantization makes inference slower, but accuracy seems to be the 
 
 ### Cluster experiments
 
+#### First steps
+
 ```bash
 export FOLDER=2025-09-06-search-and-learn
 export N_PREDICTIONS=128; condor_submit train_h100.condor command=" 
@@ -210,10 +212,24 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 --initial-predictions 64 \
 --predictions-per-epoch 64 \
 --learning-rate ${LEARNING_RATE} \
---max-epochs 0 \
+--max-epochs 1 \
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/partitions2_${N_PREDICTIONS}_lr${LEARNING_RATE}" -append request_gpus=1 -append request_cpus=8
+```
+
+#### Debugging
+
+```bash
+export FOLDER=2025-09-06-debug-search
+export BATCH_SIZE=8; export N_PREDICTIONS=128; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions ${N_PREDICTIONS} \
+--max-epochs 0 \
+--inference-batch-size ${BATCH_SIZE} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/baseline_${N_PREDICTIONS}preds_${BATCH_SIZE}batch" -append request_gpus=1 -append request_cpus=16
 ```
 
 ## Results

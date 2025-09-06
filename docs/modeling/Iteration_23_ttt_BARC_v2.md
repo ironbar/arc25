@@ -214,7 +214,11 @@ I would need to tune this hyperparameters.
   - [x] Refactor
   - [x] Move code to library modules
   - [x] Save results to disk
-  - [ ] Log to wandb. Tables, runtime...
+  - [ ] Log to wandb.
+    - [x] Tables, runtime...
+    - [ ] Task evolution
+    - [ ] Summary
+    - [ ] The goal is to be able to compare runs very easily with wandb. And also ideally to diagnose hyperparameter problems.
   - [ ] All parameters should be on the configuration
 - [ ] Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer
   - `pip install flashinfer-python`

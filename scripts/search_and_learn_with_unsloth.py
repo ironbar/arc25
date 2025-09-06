@@ -22,8 +22,9 @@ from tqdm_joblib import tqdm_joblib
 from joblib import Parallel, delayed
 import hashlib
 
-import pandas as pd
+import time
 import json
+import wandb
 from datasets import Dataset
 import tyro
 from vllm import  SamplingParams
@@ -56,7 +57,7 @@ class Config:
     use_rslora: bool = True
     # dataset
     dataset_path: str = "/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_training_challenges.json"
-    output_dir: str = "/mnt/hdd0/Kaggle/arc25/trainings/2025-09-06-debug-unsloth"
+    output_dir: str = "/mnt/hdd0/Kaggle/arc25/trainings/2025-09-06-debug-unsloth/first-steps"
     max_epochs: int = 1
     use_data_augmentation: bool = True
     inference_batch_size: int = 4
@@ -69,6 +70,9 @@ def main():
     cfg = tyro.cli(Config, description="Search and learn with unsloth")
     assert cfg.predictions_per_epoch % cfg.inference_batch_size == 0
     accelerator = Accelerator() # seems to need to do this if I want to use logging
+    wandb.init(project=os.path.basename(os.path.dirname(cfg.output_dir)), name=os.path.basename(cfg.output_dir), config=cfg, reinit=True,
+               dir=cfg.output_dir, save_code=True)
+    t0 = time.time()
     logger.info(f'Running search and learn with config: {cfg}')
 
     dataset = load_arc_dataset_with_solutions(cfg.dataset_path)
@@ -108,6 +112,7 @@ def main():
             # TODO: stop criteria
     # TODO: select best predictions and prepare submission
     save_results(results, cfg.output_dir)
+    wandb.log({"execution_time": time.time() - t0})
 
 
 def create_peft_model(llm, lora_r, use_rslora, model=None):
@@ -195,8 +200,9 @@ def save_results(results, output_dir):
     os.makedirs(output_dir, exist_ok=True)
     logger.info(f'Saving results to {output_dir}')
     metrics = aggregate_metrics(results)
-    metrics.to_csv(f'{output_dir}/metrics.csv', index_name='task_id')
+    metrics.to_csv(f'{output_dir}/metrics.csv', index_label='task_id')
     print(metrics.tail(1))
+    wandb.log({"task_metrics": wandb.Table(dataframe=metrics)})
     # convert numpy arrays to lists for json serialization
     for task_id, task_results in results.items():
         for result in task_results:

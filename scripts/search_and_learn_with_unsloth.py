@@ -83,7 +83,7 @@ def main():
     logger.info(f'Running search and learn with config: {cfg}')
 
     dataset = load_arc_dataset_with_solutions(cfg.dataset_path)
-    task_ids = list(dataset.keys())[:2]
+    task_ids = list(dataset.keys())
     logger.info(f"Loaded {len(dataset)} tasks from {cfg.dataset_path}")
 
     llm, tokenizer = FastLanguageModel.from_pretrained(

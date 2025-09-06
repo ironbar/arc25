@@ -98,6 +98,8 @@ def main():
 
     model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora) # initialize peft model
     for task_id in tqdm(task_ids, desc="Tasks", unit="task"):
+        if not cfg.max_epochs:
+            continue
         print('\n'*2 + '='*80 + f'\nTask {task_id}\n' + '='*80)
         logger.info(f'Search and learn for task {task_id}')
         task = dataset[task_id]

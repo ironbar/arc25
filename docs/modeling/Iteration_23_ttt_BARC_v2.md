@@ -189,6 +189,31 @@ MEAN	8.0	1.0	0.708	0.634	0.415	0.022	0.015	0.058	0.404	0.018	0.018	0.068	0.058
 
 It seems that quantization makes inference slower, but accuracy seems to be the same.
 
+### Cluster experiments
+
+```bash
+export FOLDER=2025-09-06-search-and-learn
+export N_PREDICTIONS=128; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions ${N_PREDICTIONS} \
+--max-epochs 0 \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/baseline_${N_PREDICTIONS}" -append request_gpus=1 -append request_cpus=8
+
+export FOLDER=2025-09-06-search-and-learn
+export N_PREDICTIONS=128
+export LEARNING_RATE=1e-5; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions 64 \
+--predictions-per-epoch 64 \
+--learning-rate ${LEARNING_RATE} \
+--max-epochs 0 \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/partitions2_${N_PREDICTIONS}_lr${LEARNING_RATE}" -append request_gpus=1 -append request_cpus=8
+```
+
 ## Results
 
 ### Unsloth/VLLM inference throughput

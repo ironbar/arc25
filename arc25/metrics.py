@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 
 def pixel_similarity_score(ground_truth: np.ndarray, reference: np.ndarray) -> float:
@@ -66,3 +67,43 @@ def correct_grids_score(outputs, preds):
             else:
                 scores.append(0.0)
     return np.mean(scores)
+
+
+def aggregate_metrics(results):
+    df = pd.DataFrame()
+    for task_id, task_results in results.items():
+        n_preds = len(task_results)
+        df.loc[task_id, 'n_preds'] = n_preds
+        df.loc[task_id, 'valid code'] = (len([1 for result in task_results if 'code' in result]))/n_preds
+        df.loc[task_id, 'valid outputs'] = (len([1 for result in task_results if 'error_type' not in result]))/n_preds
+        df.loc[task_id, 'unique outputs'] = len(set(result['fingerprint'] for result in task_results if 'fingerprint' in result))/n_preds
+        for partition in ['train', 'test']:
+            df.loc[task_id, f'{partition}_pixel_score'] = np.mean([result.get(f'{partition}_pixel_score', 0) for result in task_results])
+            df.loc[task_id, f'{partition}_correct_grids'] = np.mean([result.get(f'{partition}_correct_grids', 0) for result in task_results])
+            df.loc[task_id, f'{partition}_pass_rate'] = sum(result.get(f'{partition}_is_correct', 0) for result in task_results)/n_preds
+            df.loc[task_id, f'{partition}_is_correct'] = int(any(result.get(f'{partition}_is_correct', 0) for result in task_results))
+    if 'test_is_correct' in df.columns:
+        df['is_correct'] = df['train_is_correct'] * df['test_is_correct']
+    df.loc['MEAN'] = df.mean(axis=0)
+    return df.astype(float)
+
+
+def error_analysis(results):
+    errors_to_check = ['TimeoutException', 'NonDeterministicCode', 'UnsafeCode', 'ParsingCodeFailed']
+
+    df = pd.DataFrame(columns=['n_preds', 'error_rate'] + errors_to_check)
+    all_errors = []
+    for task_id, task_results in results.items():
+        task_errors = [result['error_type'] for result in task_results if 'error_type' in result]
+        all_errors.extend(task_errors)
+        df.loc[task_id, 'n_preds'] = len(task_results)
+        df.loc[task_id, 'error_rate'] = len(task_errors) / len(task_results) if task_results else 0.0
+        for error_type in errors_to_check:
+            df.loc[task_id, error_type] = sum(1 for error in task_errors if error == error_type) / len(task_results) if task_results else 0.0
+    df.loc['MEAN'] = df.mean(axis=0)
+
+    error_counts = pd.Series(all_errors).value_counts()
+    print("Most common errors:")
+    print(error_counts.head(20))
+    return df.astype(float)
+

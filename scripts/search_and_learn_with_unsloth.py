@@ -35,7 +35,7 @@ from arc25.utils import load_arc_dataset_with_solutions
 from arc25.data_augmentation import apply_data_augmentation, revert_data_augmentation, get_random_data_augmentation_params
 from arc25.code_execution import safe_code_execution
 from arc25.prompting import create_prompt_from_task, parse_python_code_from_response, pretty_print_prompt
-from arc25.metrics import pixel_similarity_score
+from arc25.metrics import pixel_similarity_score, aggregate_metrics, error_analysis
 
 from finetuning import get_data_collator # TODO: move to arc25 package
 
@@ -337,45 +337,6 @@ def _compute_metrics(task, predicted_grids):
         metrics[f'{partition}_correct_grids'] = float(np.mean(pixel_scores == 1))
         metrics[f'{partition}_is_correct'] = int(all(pixel_scores == 1))
     return metrics
-
-
-def aggregate_metrics(results):
-    df = pd.DataFrame()
-    for task_id, task_results in results.items():
-        n_preds = len(task_results)
-        df.loc[task_id, 'n_preds'] = n_preds
-        df.loc[task_id, 'valid code'] = (len([1 for result in task_results if 'code' in result]))/n_preds
-        df.loc[task_id, 'valid outputs'] = (len([1 for result in task_results if 'error_type' not in result]))/n_preds
-        df.loc[task_id, 'unique outputs'] = len(set(result['fingerprint'] for result in task_results if 'fingerprint' in result))/n_preds
-        for partition in ['train', 'test']:
-            df.loc[task_id, f'{partition}_pixel_score'] = np.mean([result.get(f'{partition}_pixel_score', 0) for result in task_results])
-            df.loc[task_id, f'{partition}_correct_grids'] = np.mean([result.get(f'{partition}_correct_grids', 0) for result in task_results])
-            df.loc[task_id, f'{partition}_pass_rate'] = sum(result.get(f'{partition}_is_correct', 0) for result in task_results)/n_preds
-            df.loc[task_id, f'{partition}_is_correct'] = int(any(result.get(f'{partition}_is_correct', 0) for result in task_results))
-    if 'test_is_correct' in df.columns:
-        df['is_correct'] = df['train_is_correct'] * df['test_is_correct']
-    df.loc['MEAN'] = df.mean(axis=0)
-    return df.astype(float)
-
-
-def error_analysis(results):
-    errors_to_check = ['TimeoutException', 'NonDeterministicCode', 'UnsafeCode', 'ParsingCodeFailed']
-
-    df = pd.DataFrame(columns=['n_preds', 'error_rate'] + errors_to_check)
-    all_errors = []
-    for task_id, task_results in results.items():
-        task_errors = [result['error_type'] for result in task_results if 'error_type' in result]
-        all_errors.extend(task_errors)
-        df.loc[task_id, 'n_preds'] = len(task_results)
-        df.loc[task_id, 'error_rate'] = len(task_errors) / len(task_results) if task_results else 0.0
-        for error_type in errors_to_check:
-            df.loc[task_id, error_type] = sum(1 for error in task_errors if error == error_type) / len(task_results) if task_results else 0.0
-    df.loc['MEAN'] = df.mean(axis=0)
-
-    error_counts = pd.Series(all_errors).value_counts()
-    print("Most common errors:")
-    display(error_counts.head(20))
-    return df.astype(float)
 
 
 def create_hindsight_relabeled_tasks(results, task):

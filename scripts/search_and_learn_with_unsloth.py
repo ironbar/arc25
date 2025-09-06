@@ -35,7 +35,7 @@ from arc25.utils import load_arc_dataset_with_solutions
 from arc25.data_augmentation import apply_data_augmentation, revert_data_augmentation, get_random_data_augmentation_params
 from arc25.code_execution import safe_code_execution
 from arc25.prompting import create_prompt_from_task, parse_python_code_from_response, pretty_print_prompt
-from arc25.metrics import pixel_similarity_score, aggregate_metrics, error_analysis
+from arc25.metrics import get_metrics, aggregate_metrics, error_analysis
 from arc25.validation import validate_outputs
 
 from finetuning import get_data_collator # TODO: move to arc25 package
@@ -216,22 +216,7 @@ def main():
     print(aggregate_metrics(results))
 
 
-def curate_python_code(code):
-    remove_line_keywords = ['import dsl', 'from dsl import ', 'print(', 'from common import *']
-    code = '\n'.join(line for line in code.split('\n') if not any(keyword in line for keyword in remove_line_keywords))
-    # code = 'from arc25.BARC_dsl import *\n' + code  # Ensure BARC_dsl is imported
-    return code.strip()
 
-
-def add_additional_imports(code):
-    additional_imports = [
-        'from typing import List, Tuple',
-        'import numpy as np',
-        'import numpy',
-        'from arc25.BARC_dsl import *',
-    ]
-    imports = '\n'.join(additional_imports)
-    return imports + '\n' + code if code else imports
 
 
 def run_code_from_predictions(dataset, task_ids, text_predictions, data_augmentation_params, n_jobs=-1):
@@ -267,7 +252,7 @@ def _run_one(text_prediction, task, task_id, data_augmentation_params):
         if data_augmentation_params is not None:
             input_grids = apply_data_augmentation(input_grids, **data_augmentation_params)
         output_grids = safe_code_execution(
-            add_additional_imports(curate_python_code(code)),
+            add_additional_imports(remove_unnecessary_lines(code)),
             input_grids,
             func_name="transform",
         )
@@ -280,40 +265,42 @@ def _run_one(text_prediction, task, task_id, data_augmentation_params):
                       input_grids=input_grids, text_prediction=text_prediction,
                       fingerprint=fingerprint(original_output_grids),
                       task_id=task_id)
-        result.update(_compute_metrics(task, original_output_grids))
+        result.update(get_metrics(task, original_output_grids))
         return result
     except Exception as e:
         return dict(code=code, error_type=type(e).__name__, error_message=str(e), task_id=task_id)
 
 
-def fingerprint(prediction):
+def remove_unnecessary_lines(code):
+    remove_line_keywords = ['print(', 'from common import *']
+    code = '\n'.join(line for line in code.split('\n') if not any(keyword in line for keyword in remove_line_keywords))
+    return code.strip()
+
+
+def add_additional_imports(code):
+    additional_imports = [
+        'from typing import List, Tuple',
+        'import numpy as np',
+        'import numpy',
+        'from arc25.BARC_dsl import *',
+    ]
+    imports = '\n'.join(additional_imports)
+    return imports + '\n' + code if code else imports
+
+
+def fingerprint(output_grids : list[np.ndarray]) -> str:
     """
     Create a compact hash for a list of matrices.
     Includes shape & dtype to distinguish e.g. (2×2) from (4×1).
     """
     h = hashlib.sha256()
-    for m in prediction:
+    for grid in output_grids:
         # incorporate shape and dtype in a reproducible way
-        h.update(str(m.shape).encode())
-        h.update(m.dtype.str.encode())
+        h.update(str(grid.shape).encode())
+        h.update(grid.dtype.str.encode())
         # raw data bytes
-        h.update(m.tobytes())
+        h.update(grid.tobytes())
     return h.hexdigest()
-
-
-def _compute_metrics(task, predicted_grids):
-    metrics = {}
-    for partition in ['train', 'test']:
-        if not 'output' in task[partition][0]:
-            continue # we won't have the output when making submissions
-        gt_grids = [sample['output'] for sample in task[partition]]
-        n_samples = len(gt_grids)
-        partition_predicted_grids = predicted_grids[:n_samples] if partition == 'train' else predicted_grids[-n_samples:]
-        pixel_scores = np.array([pixel_similarity_score(pred, gt) for pred, gt in zip(partition_predicted_grids, gt_grids)])
-        metrics[f"{partition}_pixel_score"] = float(np.mean(pixel_scores))
-        metrics[f'{partition}_correct_grids'] = float(np.mean(pixel_scores == 1))
-        metrics[f'{partition}_is_correct'] = int(all(pixel_scores == 1))
-    return metrics
 
 
 def create_hindsight_relabeled_tasks(results, task):

@@ -2,6 +2,24 @@ import numpy as np
 import pandas as pd
 
 
+def get_metrics(task: dict, predicted_grids: list[np.ndarray]) -> dict:
+    """
+    Compute multiple evaluation metrics for a single ARC task given the predicted output grids.
+    """
+    metrics = {}
+    for partition in ['train', 'test']:
+        if not 'output' in task[partition][0]:
+            continue # we won't have the output when making submissions
+        gt_grids = [sample['output'] for sample in task[partition]]
+        n_samples = len(gt_grids)
+        partition_predicted_grids = predicted_grids[:n_samples] if partition == 'train' else predicted_grids[-n_samples:]
+        pixel_scores = np.array([pixel_similarity_score(pred, gt) for pred, gt in zip(partition_predicted_grids, gt_grids)])
+        metrics[f"{partition}_pixel_score"] = float(np.mean(pixel_scores))
+        metrics[f'{partition}_correct_grids'] = float(np.mean(pixel_scores == 1))
+        metrics[f'{partition}_is_correct'] = int(all(pixel_scores == 1))
+    return metrics
+
+
 def pixel_similarity_score(ground_truth: np.ndarray, reference: np.ndarray) -> float:
     """
     Compute a pixel-wise similarity score between two 2D integer matrices.

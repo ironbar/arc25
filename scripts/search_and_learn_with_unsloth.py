@@ -58,10 +58,11 @@ class Config:
     # dataset
     dataset_path: str = "/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_training_challenges.json"
     output_dir: str = "/mnt/hdd0/Kaggle/arc25/trainings/2025-09-06-debug-unsloth/first-steps"
-    max_epochs: int = 1
+    log_to_wandb: bool = True
+    max_epochs: int = 0
     use_data_augmentation: bool = True
-    inference_batch_size: int = 4
-    initial_predictions: int = 8
+    inference_batch_size: int = 8
+    initial_predictions: int = 32
     predictions_per_epoch: int = 8
     training_batch_size: int = 1
 
@@ -70,8 +71,10 @@ def main():
     cfg = tyro.cli(Config, description="Search and learn with unsloth")
     assert cfg.predictions_per_epoch % cfg.inference_batch_size == 0
     accelerator = Accelerator() # seems to need to do this if I want to use logging
-    wandb.init(project=os.path.basename(os.path.dirname(cfg.output_dir)), name=os.path.basename(cfg.output_dir), config=cfg, reinit=True,
-               dir=cfg.output_dir, save_code=True)
+    if cfg.log_to_wandb:
+        wandb.init(project=os.path.basename(os.path.dirname(cfg.output_dir)),
+                   name=os.path.basename(cfg.output_dir), config=cfg, reinit=True,
+                   dir=cfg.output_dir, save_code=True)
     t0 = time.time()
     logger.info(f'Running search and learn with config: {cfg}')
 
@@ -111,8 +114,10 @@ def main():
             results[task_id].extend(task_results)
             # TODO: stop criteria
     # TODO: select best predictions and prepare submission
-    save_results(results, cfg.output_dir)
-    wandb.log({"execution_time": time.time() - t0})
+    save_results(results, cfg.output_dir, cfg.log_to_wandb)
+    if cfg.log_to_wandb:
+        wandb.log({"execution_time": time.time() - t0})
+        log_metrics_evolution(results, cfg.predictions_per_epoch)
 
 
 def create_peft_model(llm, lora_r, use_rslora, model=None):
@@ -196,13 +201,16 @@ def learn(training_prompts, model, tokenizer, output_dir):
     return lora_request
 
 
-def save_results(results, output_dir):
+def save_results(results, output_dir, log_to_wandb):
     os.makedirs(output_dir, exist_ok=True)
     logger.info(f'Saving results to {output_dir}')
     metrics = aggregate_metrics(results)
     metrics.to_csv(f'{output_dir}/metrics.csv', index_label='task_id')
     print(metrics.tail(1))
-    wandb.log({"task_metrics": wandb.Table(dataframe=metrics)})
+    if log_to_wandb:
+        wandb.log({"task_metrics": wandb.Table(dataframe=metrics.tail(1))})
+        metrics_summary = metrics.loc['MEAN'].to_dict()
+        wandb.log(metrics_summary)
     # convert numpy arrays to lists for json serialization
     for task_id, task_results in results.items():
         for result in task_results:
@@ -212,6 +220,14 @@ def save_results(results, output_dir):
     with open(f'{output_dir}/results.json', 'w') as f:
         json.dump(results, f, indent=2)
 
+
+def log_metrics_evolution(results, step):
+    for n_predictions in range(step, max(len(v) for v in results.values()) + 1, step):
+        partial_results = {task_id: task_results[:n_predictions] for task_id, task_results in results.items()}
+        partial_metrics = aggregate_metrics(partial_results)
+        partial_metrics_summary = partial_metrics.loc['MEAN'].to_dict()
+        partial_metrics_summary = {f"evolution/{k}": v for k, v in partial_metrics_summary.items()}
+        wandb.log(partial_metrics_summary, step=n_predictions)
 
 # run code functions, probably should be moved to module
 def run_code_from_predictions(dataset, task_ids, text_predictions, data_augmentation_params, n_jobs=-1):

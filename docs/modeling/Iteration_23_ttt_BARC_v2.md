@@ -214,13 +214,13 @@ I would need to tune this hyperparameters.
   - [x] Refactor
   - [x] Move code to library modules
   - [x] Save results to disk
-  - [ ] Log to wandb.
+  - [x] Log to wandb.
     - [x] Tables, runtime...
-    - [ ] Task evolution
-    - [ ] Summary
-    - [ ] The goal is to be able to compare runs very easily with wandb. And also ideally to diagnose hyperparameter problems.
+    - [x] Task evolution
+    - [x] Summary
+    - [x] The goal is to be able to compare runs very easily with wandb. And also ideally to diagnose hyperparameter problems.
   - [ ] All parameters should be on the configuration
-- [ ] Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer
+- [x] Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer
   - `pip install flashinfer-python`
   - FileNotFoundError: [Errno 2] No such file or directory: 'nvcc'
   - Tried with prebuilt wheel but freezes when starting inference. `pip install https://github.com/flashinfer-ai/flashinfer/releases/download/v0.2.5/flashinfer_python-0.2.5+cu124torch2.6-cp38-abi3-linux_x86_64.whl#sha256=43d767b912c0c43a04be99595e0123eab9385fc72530a2874b5fb08e3145c0be

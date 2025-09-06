@@ -219,7 +219,7 @@ I would need to tune this hyperparameters.
     - [x] Task evolution
     - [x] Summary
     - [x] The goal is to be able to compare runs very easily with wandb. And also ideally to diagnose hyperparameter problems.
-  - [ ] All parameters should be on the configuration
+  - [x] All parameters should be on the configuration
 - [x] Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer
   - `pip install flashinfer-python`
   - FileNotFoundError: [Errno 2] No such file or directory: 'nvcc'

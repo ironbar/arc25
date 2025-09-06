@@ -65,6 +65,10 @@ class Config:
     initial_predictions: int = 32
     predictions_per_epoch: int = 8
     training_batch_size: int = 1
+    # training hyperparameters
+    learning_rate: float = 1e-5
+    lr_scheduler_type: str = 'constant_with_warmup'
+    train_max_seq_length: int = 10000
 
 
 def main():
@@ -103,7 +107,9 @@ def main():
             logger.info(f'Prepare training data for epoch {epoch}')
             relabeled_tasks = create_hindsight_relabeled_tasks(task_results, task)
             training_prompts = create_training_prompts(relabeled_tasks, grid_encoder, tokenizer)
-            lora_request = learn(training_prompts, model, tokenizer, cfg.output_dir)
+            lora_request = learn(training_prompts, model, tokenizer, cfg.output_dir,
+                                 learning_rate=cfg.learning_rate, lr_scheduler_type=cfg.lr_scheduler_type,
+                                 max_seq_length=cfg.train_max_seq_length)
 
             logger.info(f'Searching solutions for epoch {epoch}')
             task_results = search(dataset, [task_id], llm, tokenizer, grid_encoder, lora_request,
@@ -167,7 +173,8 @@ def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
     return results
 
 
-def learn(training_prompts, model, tokenizer, output_dir):
+def learn(training_prompts, model, tokenizer, output_dir, learning_rate, lr_scheduler_type,
+          max_seq_length):
     train_dataset = Dataset.from_dict({'text': training_prompts})
     logger.info(f'Training on {len(train_dataset)} samples')
     trainer = SFTTrainer(
@@ -175,7 +182,7 @@ def learn(training_prompts, model, tokenizer, output_dir):
         tokenizer = tokenizer,
         train_dataset = train_dataset,
         dataset_text_field = "text",
-        max_seq_length = 8192,
+        max_seq_length = max_seq_length,
         packing = False, # Can make training 5x faster for short sequences.
         data_collator=get_data_collator(tokenizer),
         args = SFTConfig(
@@ -184,11 +191,11 @@ def learn(training_prompts, model, tokenizer, output_dir):
             warmup_ratio=0.1,
             num_train_epochs=1,
             save_strategy='no',
-            learning_rate = 1e-5,
+            learning_rate = learning_rate,
             logging_steps = 1,
             optim = "adamw_torch_fused",
             weight_decay = 0.01,
-            lr_scheduler_type = 'constant_with_warmup',
+            lr_scheduler_type = lr_scheduler_type,
             # seed = 3407,
             output_dir = output_dir,
             report_to = "none", # Use this for WandB etc

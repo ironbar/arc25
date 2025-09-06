@@ -211,9 +211,9 @@ I would need to tune this hyperparameters.
 - [x] Compare unsloth speed against trl and VLLM
 - [ ] Move code to script
   - [x] Move current notebook to script
-  - [ ] Refactor
+  - [x] Refactor
   - [x] Move code to library modules
-  - [ ] Save results to disk
+  - [x] Save results to disk
   - [ ] Log to wandb. Tables, runtime...
   - [ ] All parameters should be on the configuration
 - [ ] Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer

@@ -23,6 +23,7 @@ from joblib import Parallel, delayed
 import hashlib
 
 import pandas as pd
+import json
 from datasets import Dataset
 import tyro
 from vllm import  SamplingParams
@@ -55,6 +56,7 @@ class Config:
     use_rslora: bool = True
     # dataset
     dataset_path: str = "/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_training_challenges.json"
+    output_dir: str = "/mnt/hdd0/Kaggle/arc25/trainings/2025-09-06-debug-unsloth"
     max_epochs: int = 1
     use_data_augmentation: bool = True
     inference_batch_size: int = 4
@@ -78,7 +80,7 @@ def main():
         fast_inference=True, gpu_memory_utilization=cfg.gpu_memory_utilization)
     grid_encoder = create_grid_encoder(cfg.grid_encoder)
 
-    results = inference(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request=None,
+    results = search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request=None,
         inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
         use_data_augmentation=cfg.use_data_augmentation)
     print(aggregate_metrics(results))
@@ -94,49 +96,18 @@ def main():
             logger.info(f'Prepare training data for epoch {epoch}')
             relabeled_tasks = create_hindsight_relabeled_tasks(task_results, task)
             training_prompts = create_training_prompts(relabeled_tasks, grid_encoder, tokenizer)
-            train_dataset = Dataset.from_dict({'text': training_prompts})
-            logger.info(f'Training on {len(train_dataset)} samples')
-            trainer = SFTTrainer(
-                model = model,
-                tokenizer = tokenizer,
-                train_dataset = train_dataset,
-                dataset_text_field = "text",
-                max_seq_length = 8192,
-                packing = False, # Can make training 5x faster for short sequences.
-                data_collator=get_data_collator(tokenizer),
-                args = SFTConfig(
-                    per_device_train_batch_size = 1,
-                    gradient_accumulation_steps = 1,
-                    warmup_ratio=0.1,
-                    num_train_epochs=1,
-                    save_strategy='no',
-                    learning_rate = 1e-5,
-                    logging_steps = 1,
-                    optim = "adamw_torch_fused",
-                    weight_decay = 0.01,
-                    lr_scheduler_type = 'constant_with_warmup',
-                    # seed = 3407,
-                    output_dir = "/mnt/hdd0/Kaggle/arc25/trainings/2025-09-04-debug-unsloth",
-                    report_to = "none", # Use this for WandB etc
-                ),
-            )
-            trainer_stats = trainer.train()
-            model.save_lora("/mnt/hdd0/Kaggle/arc25/trainings/2025-09-05-debug-unsloth/lora")
-            lora_request = model.load_lora("/mnt/hdd0/Kaggle/arc25/trainings/2025-09-05-debug-unsloth/lora")
+            lora_request = learn(training_prompts, model, tokenizer, cfg.output_dir)
 
-            logger.info(f'Generating predictions for epoch {epoch}')
-            task_results = inference(dataset, [task_id], llm, tokenizer, grid_encoder, lora_request,
+            logger.info(f'Searching solutions for epoch {epoch}')
+            task_results = search(dataset, [task_id], llm, tokenizer, grid_encoder, lora_request,
                 inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
                 use_data_augmentation=cfg.use_data_augmentation)
             print(aggregate_metrics(task_results).head(1).round(3))
             task_results = task_results[task_id]
             results[task_id].extend(task_results)
             # TODO: stop criteria
-
     # TODO: select best predictions and prepare submission
-
-
-    print(aggregate_metrics(results))
+    save_results(results, cfg.output_dir)
 
 
 def create_peft_model(llm, lora_r, use_rslora, model=None):
@@ -156,7 +127,7 @@ def create_peft_model(llm, lora_r, use_rslora, model=None):
     return model
 
 
-def inference(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
+def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
               inference_batch_size, n_predictions, use_data_augmentation):
     prompts, data_augmentation_params, inference_task_ids = [], [], []
     for task_id in task_ids:
@@ -184,6 +155,56 @@ def inference(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
 
     results = run_code_from_predictions(dataset, inference_task_ids, text_predictions, data_augmentation_params)
     return results
+
+
+def learn(training_prompts, model, tokenizer, output_dir):
+    train_dataset = Dataset.from_dict({'text': training_prompts})
+    logger.info(f'Training on {len(train_dataset)} samples')
+    trainer = SFTTrainer(
+        model = model,
+        tokenizer = tokenizer,
+        train_dataset = train_dataset,
+        dataset_text_field = "text",
+        max_seq_length = 8192,
+        packing = False, # Can make training 5x faster for short sequences.
+        data_collator=get_data_collator(tokenizer),
+        args = SFTConfig(
+            per_device_train_batch_size = 1,
+            gradient_accumulation_steps = 1,
+            warmup_ratio=0.1,
+            num_train_epochs=1,
+            save_strategy='no',
+            learning_rate = 1e-5,
+            logging_steps = 1,
+            optim = "adamw_torch_fused",
+            weight_decay = 0.01,
+            lr_scheduler_type = 'constant_with_warmup',
+            # seed = 3407,
+            output_dir = output_dir,
+            report_to = "none", # Use this for WandB etc
+        ),
+    )
+    trainer_stats = trainer.train()
+    lora_filepath = os.path.join(output_dir, "LoRA")
+    model.save_lora(lora_filepath)
+    lora_request = model.load_lora(lora_filepath)
+    return lora_request
+
+
+def save_results(results, output_dir):
+    os.makedirs(output_dir, exist_ok=True)
+    logger.info(f'Saving results to {output_dir}')
+    metrics = aggregate_metrics(results)
+    metrics.to_csv(f'{output_dir}/metrics.csv', index_name='task_id')
+    print(metrics.tail(1))
+    # convert numpy arrays to lists for json serialization
+    for task_id, task_results in results.items():
+        for result in task_results:
+            for key in ['input_grids', 'output_grids']:
+                if key in result:
+                    result[key] = [grid.tolist() for grid in result[key]]
+    with open(f'{output_dir}/results.json', 'w') as f:
+        json.dump(results, f, indent=2)
 
 
 # run code functions, probably should be moved to module

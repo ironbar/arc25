@@ -69,7 +69,7 @@ def correct_grids_score(outputs, preds):
     return np.mean(scores)
 
 
-def aggregate_metrics(results):
+def aggregate_metrics(results): #TODO: rename function
     df = pd.DataFrame()
     for task_id, task_results in results.items():
         n_preds = len(task_results)

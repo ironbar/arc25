@@ -36,6 +36,7 @@ from arc25.data_augmentation import apply_data_augmentation, revert_data_augment
 from arc25.code_execution import safe_code_execution
 from arc25.prompting import create_prompt_from_task, parse_python_code_from_response, pretty_print_prompt
 from arc25.metrics import pixel_similarity_score, aggregate_metrics, error_analysis
+from arc25.validation import validate_outputs
 
 from finetuning import get_data_collator # TODO: move to arc25 package
 
@@ -54,7 +55,6 @@ class Config:
     gpu_memory_utilization: float = 0.90
     # dataset
     dataset_path: str = "/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_training_challenges.json"
-    # dataset_path: str = "/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json"
     max_epochs: int = 1
     use_data_augmentation: bool = True
     inference_batch_size: int = 4
@@ -232,29 +232,6 @@ def add_additional_imports(code):
     ]
     imports = '\n'.join(additional_imports)
     return imports + '\n' + code if code else imports
-
-
-def validate_outputs(outputs):
-    if not outputs:
-        raise ValueError("Outputs list is empty")
-    return [_validate_output(output) for output in outputs]
-
-
-def _validate_output(output):
-    if output is None:
-        raise ValueError("Output is None")
-    output = np.array(output, dtype=int) # otherwise I see weird outputs that mix list and numpy arrays
-    if output.ndim != 2:
-        raise ValueError(f"Output is not a 2D array. Output shape: {output.shape}")
-    if max(output.shape) > 35:
-        raise ValueError(f"Output is too large, the maximum allowed shape is 30x30. Output shape: {output.shape}")
-    if min(output.shape) == 0:
-        raise ValueError(f"Output has zero dimension, it is empty. Output shape: {output.shape}")
-    if np.max(output) > 9 or np.min(output) < 0:
-        raise ValueError(f"Output contains invalid values, expected values in range [0, 9]. Output max: {np.max(output)}, min: {np.min(output)}")
-    # if not np.issubdtype(output.dtype, np.integer):
-    #     raise ValueError(f"Output contains non-integer values, expected integer values. Output dtype: {output.dtype}")
-    return output
 
 
 def run_code_from_predictions(dataset, task_ids, text_predictions, data_augmentation_params, n_jobs=-1):

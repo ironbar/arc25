@@ -103,14 +103,18 @@ def main():
         logger.info(f'Search and learn for task {task_id}')
         task = dataset[task_id]
         model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora, model=model) # reset the LoRA weights for each task
+        lora_request = None
         task_results = results[task_id]
         for epoch in range(1, cfg.max_epochs + 1):
             logger.info(f'Prepare training data for epoch {epoch}')
             relabeled_tasks = create_hindsight_relabeled_tasks(task_results, task)
             training_prompts = create_training_prompts(relabeled_tasks, grid_encoder, tokenizer)
-            lora_request = learn(training_prompts, model, tokenizer, cfg.output_dir,
-                                 learning_rate=cfg.learning_rate, lr_scheduler_type=cfg.lr_scheduler_type,
-                                 max_seq_length=cfg.train_max_seq_length)
+            if not training_prompts:
+                logger.info(f'No valid predictions to learn from for task {task_id} at epoch {epoch}')
+            else:
+                lora_request = learn(
+                    training_prompts, model, tokenizer, cfg.output_dir, learning_rate=cfg.learning_rate,
+                    lr_scheduler_type=cfg.lr_scheduler_type, max_seq_length=cfg.train_max_seq_length)
 
             logger.info(f'Searching solutions for epoch {epoch}')
             task_results = search(dataset, [task_id], llm, tokenizer, grid_encoder, lora_request,

@@ -194,18 +194,18 @@ It seems that quantization makes inference slower, but accuracy seems to be the 
 #### First steps
 
 ```bash
-export FOLDER=2025-09-06-search-and-learn
+export FOLDER=2025-09-07-search-and-learn
 export N_PREDICTIONS=128; condor_submit train_h100.condor command=" 
 python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
 --initial-predictions ${N_PREDICTIONS} \
 --max-epochs 0 \
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/baseline_${N_PREDICTIONS}" -append request_gpus=1 -append request_cpus=8
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/baseline_${N_PREDICTIONS}" -append request_gpus=1 -append request_cpus=32
 ```
 
 ```bash
-export FOLDER=2025-09-06-search-and-learn
+export FOLDER=2025-09-07-search-and-learn
 export N_PREDICTIONS=128
 export LEARNING_RATE=1e-5; condor_submit train_h100.condor command=" 
 python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
@@ -215,7 +215,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 --max-epochs 1 \
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/partitions2_${N_PREDICTIONS}_lr${LEARNING_RATE}" -append request_gpus=1 -append request_cpus=8
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/2partitions_${N_PREDICTIONS}_lr${LEARNING_RATE}" -append request_gpus=1 -append request_cpus=32
 ```
 
 #### Debugging

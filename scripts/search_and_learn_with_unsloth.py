@@ -206,6 +206,9 @@ def learn(training_prompts, model, tokenizer, output_dir, learning_rate, lr_sche
             # seed = 3407,
             output_dir = output_dir,
             report_to = "none", # Use this for WandB etc
+            # added to fix this error: https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/sqydbbim/logs
+            dataloader_num_workers = 4,
+            dataloader_persistent_workers = True,
         ),
     )
     trainer_stats = trainer.train()

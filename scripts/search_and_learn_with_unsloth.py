@@ -56,7 +56,7 @@ class Config:
     lora_r: int = 16
     use_rslora: bool = True
     # dataset
-    dataset_path: str = "/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_training_challenges.json"
+    dataset_path: str = "/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json"
     output_dir: str = "/mnt/hdd0/Kaggle/arc25/trainings/2025-09-06-debug-unsloth/first-steps"
     log_to_wandb: bool = True
     max_epochs: int = 0
@@ -121,6 +121,7 @@ def main():
             results[task_id].extend(task_results)
             # TODO: stop criteria
     # TODO: select best predictions and prepare submission
+    error_analysis(results)
     save_results(results, cfg.output_dir, cfg.log_to_wandb)
     if cfg.log_to_wandb:
         wandb.log({"execution_time": time.time() - t0})
@@ -149,8 +150,8 @@ def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
     set_random_seed(None)
     prompts, data_augmentation_params, inference_task_ids = [], [], []
     for task_id in task_ids:
-        task = dataset[task_id]
         for _ in range(n_predictions // inference_batch_size):
+            task = dataset[task_id]
             if use_data_augmentation:
                 params = get_random_data_augmentation_params()
                 task = apply_data_augmentation(task, **params)
@@ -241,11 +242,6 @@ def log_metrics_evolution(results, step=8):
 # run code functions, probably should be moved to module
 def run_code_from_predictions(dataset, task_ids, text_predictions, data_augmentation_params, n_jobs=-1):
     work = list(zip(text_predictions, [dataset[task_id] for task_id in task_ids], task_ids, data_augmentation_params))
-    # sort the work by prediction index first and the task id second, I believe this will improve resource allocation
-    # because some tasks are more resource intensive than others
-    # work.sort(key=lambda x: (x[1], ))
-
-    # with tqdm_joblib(tqdm(total=len(work), desc="Executing predictions", unit="pred")):
     with tqdm_joblib(total=len(work), desc="Executing code from predictions", unit="runs", smoothing=0):
         results = Parallel(
             n_jobs=n_jobs,

@@ -221,7 +221,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 #### Debugging
 
 ```bash
-export FOLDER=2025-09-06-debug-search
+export FOLDER=2025-09-07-debug-search
 export BATCH_SIZE=8; export N_PREDICTIONS=128; condor_submit train_h100.condor command=" 
 python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
 --initial-predictions ${N_PREDICTIONS} \
@@ -231,6 +231,30 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/baseline_${N_PREDICTIONS}preds_${BATCH_SIZE}batch" -append request_gpus=1 -append request_cpus=16
 ```
+
+### Local experiments
+
+#### Debugging degradation of scores
+
+I have observed a degradation in the number of valid outputs when using more than one batch. Let's run
+some experiments to try to better understand the problem.
+
+```bash
+python scripts/search_and_learn_with_unsloth.py \
+--initial-predictions 32 \
+--inference-batch-size 8 \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-07-debug-unsloth-local/batch8
+
+python scripts/search_and_learn_with_unsloth.py \
+--initial-predictions 32 \
+--inference-batch-size 8 \
+--no-use-data-augmentation \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-07-debug-unsloth-local/no-data-augmentation-batch8-b
+```
+
+First experiments suggests that it is related to data augmentation.
+I believe I have found and fixed the bug. It seemed that I was applying data augmentation
+over and over on the same task, thus losing the traceability of the applied data augmentation.
 
 ## Results
 

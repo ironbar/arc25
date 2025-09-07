@@ -110,7 +110,7 @@ def main():
             relabeled_tasks = create_hindsight_relabeled_tasks(task_results, task)
             training_prompts = create_training_prompts(relabeled_tasks, grid_encoder, tokenizer)
             if not training_prompts:
-                logger.info(f'No valid predictions to learn from for task {task_id} at epoch {epoch}')
+                logger.warning(f'No valid predictions to learn from for task {task_id} at epoch {epoch}')
             else:
                 lora_request = learn(
                     training_prompts, model, tokenizer, cfg.output_dir, learning_rate=cfg.learning_rate,

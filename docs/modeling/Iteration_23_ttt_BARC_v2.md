@@ -292,8 +292,9 @@ python scripts/search_and_learn_with_unsloth.py \
 --inference-batch-size 8 \
 --max-epochs 3 \
 --predictions-per-epoch 32 \
---output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-08-debug-runtime/batch8_32preds_3epochs \
---dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/mini-arc-agi_evaluation_challenges.json
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/mini-arc-agi_evaluation_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-08-debug-runtime/batch8_32preds_3epochs
+
 ```
 
 ## Results

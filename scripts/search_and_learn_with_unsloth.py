@@ -101,13 +101,13 @@ def main():
         if not cfg.max_epochs:
             continue
         print('\n'*2 + '='*80 + f'\nTask {task_id}\n' + '='*80)
-        logger.info(f'Search and learn for task {task_id}')
+        logger.info(f'Search and learn for task {task_id} ({task_ids.index(task_id)+1}/{len(task_ids)})')
         task = dataset[task_id]
         model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora, model=model) # reset the LoRA weights for each task
         lora_request = None
         task_results = results[task_id]
         for epoch in range(1, cfg.max_epochs + 1):
-            logger.info(f'Prepare training data for epoch {epoch}')
+            logger.info(f'Prepare training data for task {task_id} epoch {epoch}/{cfg.max_epochs}')
             relabeled_tasks = create_hindsight_relabeled_tasks(task_results, task)
             training_prompts = create_training_prompts(relabeled_tasks, grid_encoder, tokenizer)
             if not training_prompts:
@@ -186,13 +186,15 @@ def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
 @log_execution_time
 def learn(training_prompts, model, tokenizer, output_dir, learning_rate, lr_scheduler_type,
           max_seq_length):
-    train_dataset = Dataset.from_dict({'text': training_prompts})
+    # train_dataset = Dataset.from_dict({'text': training_prompts})
+    train_dataset = Dataset.from_dict(tokenizer(training_prompts))
     logger.info(f'Training on {len(train_dataset)} samples')
     trainer = SFTTrainer(
         model = model,
         tokenizer = tokenizer,
         train_dataset = train_dataset,
-        dataset_text_field = "text",
+        # dataset_text_field = "text",
+        dataset_text_field = "input_ids",
         max_seq_length = max_seq_length,
         packing = False, # Can make training 5x faster for short sequences.
         data_collator=get_data_collator(tokenizer),

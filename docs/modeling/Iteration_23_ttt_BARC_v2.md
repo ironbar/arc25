@@ -324,9 +324,71 @@ Tasks:  70%|██████▉   | 279/400 [5:23:04<2:25:52, 72.33s/task]2025
 
 #30 seconds seem to be training startup, half of the time.
 
+# effect of the number of search and learn steps: [1, 3, 7]
+Tasks:  70%|██████▉   | 279/400 [5:23:04<2:25:52, 72.33s/task]2025-09-08 06:15:54,100 - __main__ - INFO - main -
+
+Tasks:   6%|▋         | 26/400 [57:03<13:05:33, 126.02s/task]2025-09-08 13:59:13,056 - __main__ - INFO - main - Search and learn for task 136b0064
+Tasks:   3%|▎         | 12/400 [44:55<24:35:11, 228.12s/task]2025-09-08 13:56:54,181 - __main__ - INFO - main - Search and learn for task 0a2355a6
 
 
 ```
+
+### Analyze inefficiencies in approach
+
+The total amount of compute should be independent of the number of search and learn iterations that I
+do per task, but the runtime is being heavily affected:
+
+- 1 iteration: 72s/task
+- 3 iterations: 126s/task
+- 7 iterations: 228s/task
+
+Let's analyze why this is happening
+
+```bash
+# 3 iterations 0b17323b, Total: 122s
+Reset PEFT weights: 5s
+Prepare training data: 3s
+Training startup: 14s
+Train: 15s
+Inference: 7s
+Prepare training data: 2s
+Training startup: 15s
+Inference: 7s
+Prepare training data: 2s
+Training startup: 16s
+Train: 15s
+Inference: 9s
+Total: 122s
+# 7 iterations 0b17323b, Total 245s
+Reset PEFT weights: 6s
+Prepare training data: 1, 2, 2
+Training startup: 10, 10, 11
+Train: 7, 7, 7
+Inference: 8, 11, 7
+# 1 iteration ff72ca3e, 86s
+Reset PEFT weights: 10
+Prepare training data: 5
+Training startup: 22
+Train: 27
+Inference: 14
+```
+
+Training startup time is not constant, that is weird. Maybe I'm not measuring it correctly and it has
+something to do with the data.
+
+This is a summary table for the 3 iterations.
+
+* **Total time (all entries): 125 s** (2 min 2 s)
+
+| Task                  | Count | Average time |
+| --------------------- | ----: | -----------: |
+| Reset PEFT weights    |     1 |       5.00 s |
+| Prepare training data |     3 |       2.33 s |
+| Training startup      |     3 |      15.00 s |
+| Train                 |     3 |      15.00 s |
+| Inference             |     3 |       7.67 s |
+
+I need to do more experiments and better log the execution time.
 
 ## Conclusion
 

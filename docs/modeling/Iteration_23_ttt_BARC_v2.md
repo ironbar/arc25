@@ -273,7 +273,32 @@ https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn
 - Each search and learn iteration is taking around 72 seconds. But half of the time seems to go prepare the model for training. I need to log that.
 - Training takes around 20s per task
 - Inference around 10s per taks, but is twice as slower as when doing the inference of all the tasks together
-- Thus I estimate that an efficient implementation could do the same in 12000 seconds (`30*400`).
+- Thus I estimate that an efficient implementation could do the same in 12000 
+seconds (`30*400`).
+
+```bash
+#Baseline just inference
+Processed prompts: 100%|██████████| 51200/51200 [1:17:57<00:00, 10.95it/s, est. speed input: 21508.87 toks/s, output: 4414.70 toks/s]
+
+
+https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/xceyyl8q/logs
+#training
+{'train_runtime': 19.3244, 'train_samples_per_second': 2.432, 'train_steps_per_second': 2.432, 'train_loss': 0.2810402642539207, 'epoch': 1.0}
+{'train_runtime': 23.5279, 'train_samples_per_second': 1.488, 'train_steps_per_second': 1.488, 'train_loss': 0.25343174253191264, 'epoch': 1.0}
+{'train_runtime': 18.2541, 'train_samples_per_second': 1.972, 'train_steps_per_second': 1.972, 'train_loss': 0.27254368571771515, 'epoch': 1.0}
+
+#inference
+Processed prompts: 100%|██████████| 64/64 [00:10<00:00,  5.94it/s, est. speed input: 6103.78 toks/s, output: 2366.72 toks/s]
+Processed prompts: 100%|██████████| 64/64 [00:11<00:00,  5.53it/s, est. speed input: 15778.11 toks/s, output: 2169.40 toks/s]
+Processed prompts: 100%|██████████| 64/64 [00:12<00:00,  5.10it/s, est. speed input: 9888.11 toks/s, output: 2197.39 toks/s]
+
+Tasks:  70%|██████▉   | 279/400 [5:23:04<2:25:52, 72.33s/task]2025-09-08 06:15:54,100 - __main__ - INFO - main -
+
+#30 seconds seem to be training startup, half of the time.
+
+
+
+```
 
 ## Conclusion
 

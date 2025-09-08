@@ -265,6 +265,16 @@ over and over on the same task, thus losing the traceability of the applied data
 Making more predictions has higher throughput, also using a bigger batch size has higher throughput but at the cost of lowering prompt diversity.
 I would need to tune this hyperparameters.
 
+### First experiments
+
+https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn
+
+- Execution time with two partitions is 6x the baseline (5300s vs 31000)
+- Each search and learn iteration is taking around 72 seconds. But half of the time seems to go prepare the model for training. I need to log that.
+- Training takes around 20s per task
+- Inference around 10s per taks, but is twice as slower as when doing the inference of all the tasks together
+- Thus I estimate that an efficient implementation could do the same in 12000 seconds (`30*400`).
+
 ## Conclusion
 
 ## Next steps
@@ -276,6 +286,7 @@ I would need to tune this hyperparameters.
 
 - [x] Try unsloth for both training and inference
 - [x] Compare unsloth speed against trl and VLLM
+- [ ] Create a smaller version of the dataset for faster experimentation
 - [ ] Move code to script
   - [x] Move current notebook to script
   - [x] Refactor
@@ -287,6 +298,7 @@ I would need to tune this hyperparameters.
     - [x] Summary
     - [x] The goal is to be able to compare runs very easily with wandb. And also ideally to diagnose hyperparameter problems.
   - [x] All parameters should be on the configuration
+  - [ ] Log search vs learn time
 - [x] Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer
   - `pip install flashinfer-python`
   - FileNotFoundError: [Errno 2] No such file or directory: 'nvcc'
@@ -300,3 +312,4 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
       - [ ] https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/0iswo84s/logs
   - [ ] Sometimes raises exception
     - [ ] https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/kd4qttau/logs
+- [ ] Investigate the time lost on training startup

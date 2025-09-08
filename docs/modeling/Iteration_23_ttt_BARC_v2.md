@@ -403,6 +403,14 @@ This is a summary table for the 3 iterations.
 
 I need to do more experiments and better log the execution time.
 
+#### Tokenize before training
+
+On a local experiment I have been able to reduce the execution time from 960s to 914s by tokenizing the dataset before training.
+
+I have the feeling that training startup at H100 is longer than 3090, and also since training and inference on 3090 is around 4 times slower than on the H100, the startup time has a smaller effect.
+
+It has taken around 228s per task on the 3090 (although I only used 4 tasks.) I was doing 128 predictions, so I could likely be doing 512 predictions on Kaggle.
+
 ## Conclusion
 
 ## Next steps
@@ -414,7 +422,7 @@ I need to do more experiments and better log the execution time.
 
 - [x] Try unsloth for both training and inference
 - [x] Compare unsloth speed against trl and VLLM
-- [ ] Create a smaller version of the dataset for faster experimentation
+- [x] Create a smaller version of the dataset for faster experimentation
 - [ ] Move code to script
   - [x] Move current notebook to script
   - [x] Refactor
@@ -426,7 +434,7 @@ I need to do more experiments and better log the execution time.
     - [x] Summary
     - [x] The goal is to be able to compare runs very easily with wandb. And also ideally to diagnose hyperparameter problems.
   - [x] All parameters should be on the configuration
-  - [ ] Log search vs learn time
+  - [x] Log search vs learn time
 - [x] Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer
   - `pip install flashinfer-python`
   - FileNotFoundError: [Errno 2] No such file or directory: 'nvcc'
@@ -441,3 +449,4 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
   - [ ] Sometimes raises exception
     - [ ] https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/kd4qttau/logs
 - [ ] Investigate the time lost on training startup
+- [ ] Experiment on Kaggle

@@ -284,6 +284,18 @@ First experiments suggests that it is related to data augmentation.
 I believe I have found and fixed the bug. It seemed that I was applying data augmentation
 over and over on the same task, thus losing the traceability of the applied data augmentation.
 
+#### Debug runtime
+
+```bash
+python scripts/search_and_learn_with_unsloth.py \
+--initial-predictions 32 \
+--inference-batch-size 8 \
+--max-epochs 3 \
+--predictions-per-epoch 32 \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-08-debug-runtime/batch8_32preds_3epochs \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/mini-arc-agi_evaluation_challenges.json
+```
+
 ## Results
 
 ### Unsloth/VLLM inference throughput

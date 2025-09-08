@@ -40,6 +40,7 @@ from arc25.prompting import create_prompt_from_task, parse_python_code_from_resp
 from arc25.metrics import get_metrics, aggregate_metrics, error_analysis
 from arc25.validation import validate_outputs
 from arc25.collator import get_data_collator
+from arc25.logging import log_execution_time
 
 logger = logging.getLogger(__name__)
 
@@ -132,6 +133,7 @@ def main():
         log_metrics_evolution(results)
 
 
+@log_execution_time
 def create_peft_model(llm, lora_r, use_rslora, model=None):
     if model is not None: model.unload()
     model = FastLanguageModel.get_peft_model(
@@ -149,6 +151,7 @@ def create_peft_model(llm, lora_r, use_rslora, model=None):
     return model
 
 
+@log_execution_time
 def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
               inference_batch_size, n_predictions, use_data_augmentation):
     set_random_seed(None)
@@ -180,6 +183,7 @@ def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
     return results
 
 
+@log_execution_time
 def learn(training_prompts, model, tokenizer, output_dir, learning_rate, lr_scheduler_type,
           max_seq_length):
     train_dataset = Dataset.from_dict({'text': training_prompts})

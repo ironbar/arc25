@@ -65,9 +65,9 @@ def load_arc_dataset_with_solutions(filepath):
         for sample_id, task in dataset.items():
             for idx, sample in enumerate(task['test']):
                 sample['output'] = solutions[sample_id][idx]
+        _verify_that_all_dataset_samples_have_output(dataset)
     else:
         logger.warning(f'Solutions file not found: {solutions_filepath}, loading dataset without solutions')
-    _verify_that_all_dataset_samples_have_output(dataset)
     # convert all grids to numpy arrays
     for task_id, task in dataset.items():
         dataset[task_id] = {partition: [{key: np.array(value) for key, value in sample.items()} for sample in samples] for partition, samples in task.items()}

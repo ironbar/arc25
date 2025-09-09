@@ -450,3 +450,9 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
     - [ ] https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/kd4qttau/logs
 - [ ] Investigate the time lost on training startup
 - [ ] Experiment on Kaggle
+  - [x] Upload the model. https://www.kaggle.com/models/ironbar/barc0llama-3.1-arc-potpourri-induction-8b
+  - [ ] Create a notebook with the requirements
+  - [ ] Upload the code
+  - [ ] Split the data in 4, each for a GPU
+  - [ ] Collect the results to make a submission
+  - [ ] How efficient is the current implementation?

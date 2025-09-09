@@ -50,7 +50,6 @@ class ResourceMonitor:
 
     def plot(self):
         plt.figure(figsize=(14, 8))
-
         # Plot CPU usage
         plt.subplot(2, 1, 1)
         plt.plot(self.timestamps, self.cpu_usage, label="CPU Usage (%)")
@@ -70,6 +69,7 @@ class ResourceMonitor:
         plt.show()
 
         # Plot GPU usage for each GPU
+        plt.figure(figsize=(14, 10))
         n_gpus = len(self.gpu_usage)
         for gpu_id, usage in self.gpu_usage.items():
             plt.subplot(n_gpus, 1, gpu_id + 1)

@@ -297,6 +297,17 @@ python scripts/search_and_learn_with_unsloth.py \
 
 ```
 
+### How trl GRPOTrainer works
+
+- https://huggingface.co/docs/trl/en/vllm_integration
+- https://github.com/huggingface/trl/blob/659d2c1284e06862efbbccf64cd4310bcee4f200/trl/trainer/grpo_trainer.py#L54
+- https://github.com/huggingface/trl/blob/main/trl/extras/vllm_client.py#L46
+- https://chatgpt.com/share/68c050f0-2ecc-8012-831d-29f7084ae526
+
+> When using vLLM, ensure the GPUs assigned for training and generation are separate to avoid NCCL communication conflicts.
+
+It seems that trl implements a custom VLLM that allows changing the weights.
+
 ## Results
 
 ### Unsloth/VLLM inference throughput
@@ -345,6 +356,20 @@ Tasks:   3%|▎         | 12/400 [44:55<24:35:11, 228.12s/task]2025-09-08 13:56:
 
 
 ```
+
+| learning rate            | is_correct | valid outputs | unique outputs |
+|--------------------------|------------|---------------|----------------|
+| baseline (no finetuning) | 16.90%     | 70.80%        | 49.50%         |
+| 1.00E-03                 | 14.75%     | 35.50%        | 28.11%         |
+| 1.00E-04                 | _17.50%_   | **74.91%**    | **51.01%**     |
+| 1.00E-05                 | **18.25%** | _72.42%_      | 49.18%         |
+| 1.00E-06                 | 17.25%     | 68.33%        | 47.89%         |
+| 1.00E-07                 | 16.00%     | 70.98%        | _49.70%_       |
+
+First experiments show a small but noticeable improvement when doing search and learn. Notice that
+only one iteration of search and learn was done. So the baseline just did 128 predictions, and the
+other experiments did 64 predictions, learned from those and did 64 additional predictions with the
+finetuned model.
 
 ### Analyze inefficiencies in approach
 

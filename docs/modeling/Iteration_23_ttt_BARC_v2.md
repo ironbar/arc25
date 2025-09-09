@@ -456,3 +456,4 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
   - [ ] Split the data in 4, each for a GPU
   - [ ] Collect the results to make a submission
   - [ ] How efficient is the current implementation?
+- [ ] Check implementation of RL and how it alternates between training and inference

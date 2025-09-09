@@ -52,7 +52,7 @@ class ResourceMonitor:
         plt.figure(figsize=(14, 8))
 
         # Plot CPU usage
-        plt.subplot(3, 1, 1)
+        plt.subplot(2, 1, 1)
         plt.plot(self.timestamps, self.cpu_usage, label="CPU Usage (%)")
         plt.xlabel("Time (s)")
         plt.ylabel("CPU Usage (%)")
@@ -60,22 +60,23 @@ class ResourceMonitor:
         plt.grid(True)
 
         # Plot RAM usage
-        plt.subplot(3, 1, 2)
+        plt.subplot(2, 1, 2)
         plt.plot(self.timestamps, self.ram_usage, label="RAM Usage (%)", color='orange')
         plt.xlabel("Time (s)")
         plt.ylabel("RAM Usage (%)")
         plt.title("RAM Usage Over Time")
         plt.grid(True)
+        plt.tight_layout()
+        plt.show()
 
         # Plot GPU usage for each GPU
-        plt.subplot(3, 1, 3)
+        n_gpus = len(self.gpu_usage)
         for gpu_id, usage in self.gpu_usage.items():
+            plt.subplot(n_gpus, 1, gpu_id + 1)
             plt.plot(self.timestamps, usage, label=f"GPU {gpu_id} Usage (%)")
-        plt.xlabel("Time (s)")
-        plt.ylabel("GPU Usage (%)")
-        plt.title("GPU Usage Over Time")
-        plt.legend(loc="upper right")
-        plt.grid(True)
-
+            plt.xlabel("Time (s)")
+            plt.ylabel(f"GPU {gpu_id} Usage (%)")
+            plt.title(f"GPU {gpu_id} Usage Over Time")
+            plt.grid(True)
         plt.tight_layout()
         plt.show()

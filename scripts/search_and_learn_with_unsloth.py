@@ -237,7 +237,7 @@ def save_results(results, output_dir, log_to_wandb):
     # convert numpy arrays to lists for json serialization
     for task_id, task_results in results.items():
         for result in task_results:
-            for key in ['input_grids', 'output_grids']:
+            for key in ['input_grids', 'output_grids', 'original_output_grids']:
                 if key in result:
                     result[key] = [grid.tolist() for grid in result[key]]
     with open(f'{output_dir}/results.json', 'w') as f:
@@ -293,6 +293,7 @@ def _run_one(text_prediction, task, task_id, data_augmentation_params):
         result = dict(code=code, output_grids=output_grids,
                       input_grids=input_grids, text_prediction=text_prediction,
                       fingerprint=fingerprint(original_output_grids),
+                      original_output_grids=original_output_grids,
                       task_id=task_id)
         result.update(get_metrics(task, original_output_grids))
         return result

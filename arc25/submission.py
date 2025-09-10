@@ -59,3 +59,17 @@ def sort_predictions_with_majority_voting_and_code_length(task_results, n_test):
         unique_predictions = sorted(unique_predictions.values(), key=lambda x: (-x['votes'], x['mean_code_length']))
         sorted_predictions.append(unique_predictions)
     return sorted_predictions
+
+
+def evaluate_submission(ground_truth, submission):
+    comparison = dict()
+    for key, predictions in submission.items():
+        comparison[key] = []
+        solutions = ground_truth[key]
+        for idx, solution in enumerate(solutions):
+            comparison[key].append(any(prediction == solution for prediction in predictions[idx].values()))
+    task_scores = {key: np.mean(values) for key, values in comparison.items()}
+    print(f'Mean score: {np.mean(list(task_scores.values())):.1%}')
+    task_above_zero = {key: values for key, values in task_scores.items() if np.mean(values) > 0}
+    print(f'Tasks with non-zero score {len(task_above_zero)}: {task_above_zero}')
+    return task_scores

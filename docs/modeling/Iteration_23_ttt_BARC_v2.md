@@ -495,6 +495,7 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
   - [ ] Collect the results to make a submission
   - [ ] How efficient is the current implementation?
   - [x] Getting OOM cuda errors when training on the longer tasks
-  - [ ] Create python module to do the submission, with tests
+  - [x] Create python module to do the submission, with tests
   - [ ] Need a way to evaluate the submission once it's created
+  - [ ] Disable internet
 - [ ] Check implementation of RL and how it alternates between training and inference(trl, GRPO)

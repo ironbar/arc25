@@ -54,23 +54,27 @@ def get_least_used_gpu_index():
     return best_gpu_index
 
 
-def load_arc_dataset_with_solutions(filepath):
+def load_json(filepath):
     with open(filepath, 'r') as f:
-        dataset = json.load(f)
+        data = json.load(f)
+    return data
+
+
+def load_arc_dataset_with_solutions(filepath, convert_to_numpy=True):
+    dataset = load_json(filepath)
     solutions_filepath = filepath.replace('challenges.json', 'solutions.json')
     assert solutions_filepath != filepath
     if os.path.exists(solutions_filepath):
-        with open(solutions_filepath, 'r') as f:
-            solutions = json.load(f)
+        solutions = load_json(solutions_filepath)
         for sample_id, task in dataset.items():
             for idx, sample in enumerate(task['test']):
                 sample['output'] = solutions[sample_id][idx]
         _verify_that_all_dataset_samples_have_output(dataset)
     else:
         logger.warning(f'Solutions file not found: {solutions_filepath}, loading dataset without solutions')
-    # convert all grids to numpy arrays
-    for task_id, task in dataset.items():
-        dataset[task_id] = {partition: [{key: np.array(value) for key, value in sample.items()} for sample in samples] for partition, samples in task.items()}
+    if convert_to_numpy:
+        for task_id, task in dataset.items():
+            dataset[task_id] = {partition: [{key: np.array(value) for key, value in sample.items()} for sample in samples] for partition, samples in task.items()}
     return dataset
 
 

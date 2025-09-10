@@ -53,7 +53,7 @@ class ResourceMonitor:
         plt.figure(figsize=(14, 8))
         # Plot CPU usage
         plt.subplot(2, 1, 1)
-        _plot_with_moving_mean(self.timestamps, self.cpu_usage)
+        _plot_with_moving_mean(self.timestamps, self.cpu_usage, color='blue')
         plt.xlabel("Time (s)")
         plt.ylabel("CPU Usage (%)")
         plt.title("CPU Usage Over Time. Mean: {:.1f}%".format(sum(self.cpu_usage)/len(self.cpu_usage)))

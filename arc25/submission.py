@@ -9,7 +9,7 @@ def create_submission(results: dict, dataset: dict, sorting_metric: str = 'train
     submission = {}
     for task_id, task_results in results.items():
         n_test = len(dataset[task_id]['test'])
-        valid_results = [result for result in task_results if 'original_output_grids' in result]
+        valid_results = [result for result in task_results if 'test_output_grids' in result]
         if not valid_results:
             submission[task_id] = [{'attempt_1': [], 'attempt_2': [],} for _ in range(n_test)]
             continue
@@ -48,7 +48,7 @@ def sort_predictions_with_majority_voting_and_code_length(task_results, n_test):
     for idx in range(n_test):
         unique_predictions = dict()
         for result in task_results:
-            prediction = result['original_output_grids'][-n_test + idx]
+            prediction = result['test_output_grids'][idx]
             key = hash(tuple(map(tuple, prediction))) # str(prediction)
             if key not in unique_predictions:
                 unique_predictions[key] = dict(pred=prediction, votes=0, code_lengths=[])

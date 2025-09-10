@@ -5,19 +5,19 @@ from arc25.submission import sort_predictions_with_majority_voting_and_code_leng
 def test_sort_predictions_with_majority_voting_and_code_length_returns_most_voted_task():
     task_results = [
         {
-            'original_output_grids': [[[1]], [[2]], [[1]]],
+            'test_output_grids': [[[1]], [[2]], [[1]]],
             'code': 'print(1)',
         },
         {
-            'original_output_grids': [[[3]], [[2]], [[1]]],
+            'test_output_grids': [[[3]], [[2]], [[1]]],
             'code': 'print(2)',
         },
         {
-            'original_output_grids': [[[3]], [[2]], [[4]]],
+            'test_output_grids': [[[3]], [[2]], [[4]]],
             'code': 'print(3)',
         },
         {
-            'original_output_grids': [[[5]], [[6]], [[7]]],
+            'test_output_grids': [[[5]], [[6]], [[7]]],
             'code': 'print(4)',
         },
     ]
@@ -30,19 +30,19 @@ def test_sort_predictions_with_majority_voting_and_code_length_returns_most_vote
 def test_sort_predictions_with_majority_voting_and_code_length_returns_shortest_task_when_tied():
     task_results = [
         {
-            'original_output_grids': [[[1]], [[2]], [[3]]],
+            'test_output_grids': [[[1]], [[2]], [[3]]],
             'code': 'print()',
         },
         {
-            'original_output_grids': [[[3]], [[4]], [[3]]],
+            'test_output_grids': [[[3]], [[4]], [[3]]],
             'code': 'print(2)',
         },
         {
-            'original_output_grids': [[[4]], [[4]], [[4]]],
+            'test_output_grids': [[[4]], [[4]], [[4]]],
             'code': 'print(3)',
         },
         {
-            'original_output_grids': [[[5]], [[6]], [[7]]],
+            'test_output_grids': [[[5]], [[6]], [[7]]],
             'code': 'print(4)',
         },
     ]
@@ -52,19 +52,19 @@ def test_sort_predictions_with_majority_voting_and_code_length_returns_shortest_
 
     task_results = [
         {
-            'original_output_grids': [[[1]], [[2]], [[1]]],
+            'test_output_grids': [[[1]], [[2]], [[1]]],
             'code': 'print(2)',
         },
         {
-            'original_output_grids': [[[3]], [[4]], [[3]]],
+            'test_output_grids': [[[3]], [[4]], [[3]]],
             'code': 'print()',
         },
         {
-            'original_output_grids': [[[4]], [[4]], [[4]]],
+            'test_output_grids': [[[4]], [[4]], [[4]]],
             'code': 'print(3)',
         },
         {
-            'original_output_grids': [[[5]], [[6]], [[7]]],
+            'test_output_grids': [[[5]], [[6]], [[7]]],
             'code': 'print(4)',
         },
     ]

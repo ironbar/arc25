@@ -40,7 +40,7 @@ from arc25.prompting import create_prompt_from_task, parse_python_code_from_resp
 from arc25.metrics import get_metrics, aggregate_metrics, error_analysis
 from arc25.validation import validate_outputs
 from arc25.collator import get_data_collator
-from arc25.logging import log_execution_time
+from arc25.logging import log_execution_time, configure_logging
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +75,7 @@ class Config:
 def main():
     cfg = tyro.cli(Config, description="Search and learn with unsloth")
     accelerator = Accelerator() # seems to need to do this if I want to use logging
+    configure_logging()
     if cfg.log_to_wandb:
         wandb.init(project=os.path.basename(os.path.dirname(cfg.output_dir)),
                    name=os.path.basename(cfg.output_dir), config=cfg, reinit=True,
@@ -110,12 +111,10 @@ def main():
             logger.info(f'Prepare training data for task {task_id} epoch {epoch}/{cfg.max_epochs}')
             relabeled_tasks = create_hindsight_relabeled_tasks(task_results, task)
             training_prompts = create_training_prompts(relabeled_tasks, grid_encoder, tokenizer)
-            if not training_prompts:
-                logger.warning(f'No valid predictions to learn from for task {task_id} at epoch {epoch}')
-            else:
-                lora_request = learn(
-                    training_prompts, model, tokenizer, cfg.output_dir, learning_rate=cfg.learning_rate,
-                    lr_scheduler_type=cfg.lr_scheduler_type, max_seq_length=cfg.train_max_seq_length)
+            lora_request = learn(
+                training_prompts, model, tokenizer, cfg.output_dir, learning_rate=cfg.learning_rate,
+                lr_scheduler_type=cfg.lr_scheduler_type, max_seq_length=cfg.train_max_seq_length,
+                previous_lora_request=lora_request)
 
             logger.info(f'Searching solutions for epoch {epoch}')
             task_results = search(dataset, [task_id], llm, tokenizer, grid_encoder, lora_request,
@@ -185,10 +184,15 @@ def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
 
 @log_execution_time
 def learn(training_prompts, model, tokenizer, output_dir, learning_rate, lr_scheduler_type,
-          max_seq_length):
+          max_seq_length, previous_lora_request):
     # train_dataset = Dataset.from_dict({'text': training_prompts})
-    train_dataset = Dataset.from_dict(tokenizer(training_prompts))
+    if not training_prompts:
+        logger.warning('No training prompts provided, skipping learning step')
+        return previous_lora_request
+    training_tokens = tokenizer(training_prompts)
+    train_dataset = Dataset.from_dict(training_tokens)
     logger.info(f'Training on {len(train_dataset)} samples')
+    logger.info(f'Training sequence lengths: {[len(ids) for ids in training_tokens["input_ids"]]}')
     trainer = SFTTrainer(
         model = model,
         tokenizer = tokenizer,
@@ -217,10 +221,16 @@ def learn(training_prompts, model, tokenizer, output_dir, learning_rate, lr_sche
             dataloader_persistent_workers = True,
         ),
     )
-    trainer_stats = trainer.train()
-    lora_filepath = os.path.join(output_dir, "LoRA")
-    model.save_lora(lora_filepath)
-    lora_request = model.load_lora(lora_filepath)
+    try:
+        trainer_stats = trainer.train()
+        logger.info(f'Trainer stats: {trainer_stats}')
+        lora_filepath = os.path.join(output_dir, "LoRA")
+        model.save_lora(lora_filepath)
+        lora_request = model.load_lora(lora_filepath)
+    except Exception as e:
+        logger.error(f'Error during training: {e}', exc_info=True)
+        logger.warning('Skipping learning step due to error')
+        return previous_lora_request
     return lora_request
 
 

@@ -312,6 +312,14 @@ python scripts/search_and_learn_with_unsloth.py \
 - Examples using unsloth and GRPO do not enable VLLM, maybe GRPO patches it to use fast_generate.
 - Trl code is very long, covering a lot of edge cases and difficult to understand
 
+### OOM errors on Kaggle
+
+When training on the longer tasks I'm getting OOM errors on Kaggle (24GB GPU).
+
+```bash
+[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 248.00 MiB. GPU 0 has a total capacity of 22.28 GiB of which 33.38 MiB is free. Process 6314 has 22.23 GiB memory in use. Of the allocated memory 20.60 GiB is allocated by PyTorch, with 199.88 MiB allocated in private pools (e.g., CUDA Graphs), and 171.43 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+```
+
 ## Results
 
 ### Unsloth/VLLM inference throughput

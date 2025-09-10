@@ -498,4 +498,5 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
   - [x] Create python module to do the submission, with tests
   - [x] Need a way to evaluate the submission once it's created
   - [x] Disable internet
+  - [x] Implement dry run
 - [ ] Check implementation of RL and how it alternates between training and inference(trl, GRPO)

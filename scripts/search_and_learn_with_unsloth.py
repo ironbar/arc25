@@ -94,7 +94,7 @@ def main():
 
     results = search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request=None,
         inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
-        use_data_augmentation=cfg.use_data_augmentation)
+        use_data_augmentation=cfg.use_data_augmentation, print_first_prompt=True)
     print(aggregate_metrics(results))
 
     model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora) # initialize peft model
@@ -152,7 +152,8 @@ def create_peft_model(llm, lora_r, use_rslora, model=None):
 
 @log_execution_time
 def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
-              inference_batch_size, n_predictions, use_data_augmentation):
+           inference_batch_size, n_predictions, use_data_augmentation,
+           print_first_prompt=False):
     set_random_seed(None)
     prompts, data_augmentation_params, inference_task_ids = [], [], []
     for task_id in task_ids:
@@ -169,7 +170,7 @@ def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
             prompts.append(prompt)
             inference_task_ids.extend([task_id] * inference_batch_size)
 
-    if lora_request is None: pretty_print_prompt(prompts[0])
+    if print_first_prompt: pretty_print_prompt(prompts[0])
 
     sampling_params = SamplingParams(n=inference_batch_size, temperature=1.0, top_p=0.95, max_tokens=2048) # TODO: move parameters to cfg
     generations = llm.fast_generate(prompts, sampling_params, lora_request=lora_request)

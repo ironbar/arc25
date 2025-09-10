@@ -472,6 +472,7 @@ It has taken around 228s per task on the 3090 (although I only used 4 tasks.) I 
     - [x] The goal is to be able to compare runs very easily with wandb. And also ideally to diagnose hyperparameter problems.
   - [x] All parameters should be on the configuration
   - [x] Log search vs learn time
+  - [ ] Only save original outputs for test (that's what I need for the submission)
 - [x] Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer
   - `pip install flashinfer-python`
   - FileNotFoundError: [Errno 2] No such file or directory: 'nvcc'
@@ -489,9 +490,11 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
 - [ ] Experiment on Kaggle
   - [x] Upload the model. https://www.kaggle.com/models/ironbar/barc0llama-3.1-arc-potpourri-induction-8b
   - [x] Upload the code. https://www.kaggle.com/datasets/ironbar/arc25-source-code
-  - [ ] Create a notebook with the requirements. https://www.kaggle.com/code/ironbar/search-and-learn
-  - [ ] Split the data in 4, each for a GPU
+  - [x] Create a notebook with the requirements. https://www.kaggle.com/code/ironbar/search-and-learn
+  - [x] Split the data in 4, each for a GPU
   - [ ] Collect the results to make a submission
   - [ ] How efficient is the current implementation?
-  - [ ] Getting OOM cuda errors when training on the longer tasks
-- [ ] Check implementation of RL and how it alternates between training and inference
+  - [x] Getting OOM cuda errors when training on the longer tasks
+  - [ ] Create python module to do the submission, with tests
+  - [ ] Need a way to evaluate the submission once it's created
+- [ ] Check implementation of RL and how it alternates between training and inference(trl, GRPO)

@@ -11,6 +11,7 @@ set_cuda_visible_devices_to_least_used_gpu_if_undefined()
 # Add VLLM specific environment variables to avoid common issues
 os.environ['VLLM_USE_MODELSCOPE'] = 'False'
 os.environ['VLLM_WORKER_MULTIPROC_METHOD'] = 'spawn'
+os.environ['TOKENIZERS_PARALLELISM'] = 'false' # to avoid warnings, so far I haven't seen any slowdown
 
 from unsloth import FastLanguageModel
 

@@ -175,6 +175,7 @@ def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
 
     sampling_params = SamplingParams(n=inference_batch_size, temperature=1.0, top_p=0.95, max_tokens=2048) # TODO: move parameters to cfg
     generations = llm.fast_generate(prompts, sampling_params, lora_request=lora_request)
+    logger.info(f'Generated {len(generations)} generations with batch size {inference_batch_size}')
     text_predictions = []
     for generation in generations:
         for output in generation.outputs:

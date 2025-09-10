@@ -29,6 +29,13 @@ def create_submission(results: dict, sorting_metric: str = 'train_correct_grids'
 
 
 def sort_predictions_with_majority_voting_and_code_length(task_results, n_test):
+    """
+    Sort predictions based on majority voting and code length.
+
+    Returns a list of length n_test, where each element is a list of unique predictions
+    sorted by number of votes (descending) and mean code length (ascending).
+    Each unique prediction is represented as a dictionary with keys: 'pred', 'votes', 'mean_code_length', 'code_lengths'.
+    """
     sorted_predictions = []
     for idx in range(n_test):
         unique_predictions = dict()

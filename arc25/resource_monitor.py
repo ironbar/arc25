@@ -83,7 +83,7 @@ class ResourceMonitor:
         plt.show()
 
 
-def _plot_with_moving_mean(x, y, color, window_size=60):
+def _plot_with_moving_mean(x, y, color, window_size=61):
     plt.plot(x, y, color=color, alpha=0.3)
     y_smooth = _moving_mean(np.array(y), window_size)
     plt.plot(x, y_smooth, color=color, linestyle='--')

@@ -302,11 +302,15 @@ python scripts/search_and_learn_with_unsloth.py \
 - https://huggingface.co/docs/trl/en/vllm_integration
 - https://github.com/huggingface/trl/blob/659d2c1284e06862efbbccf64cd4310bcee4f200/trl/trainer/grpo_trainer.py#L54
 - https://github.com/huggingface/trl/blob/main/trl/extras/vllm_client.py#L46
+- https://github.com/huggingface/trl/blob/main/trl/trainer/grpo_config.py#L22
 - https://chatgpt.com/share/68c050f0-2ecc-8012-831d-29f7084ae526
+- https://huggingface.co/learn/llm-course/en/chapter12/6
 
 > When using vLLM, ensure the GPUs assigned for training and generation are separate to avoid NCCL communication conflicts.
 
-It seems that trl implements a custom VLLM that allows changing the weights.
+- It seems that trl implements a custom VLLM that allows changing the weights.
+- Examples using unsloth and GRPO do not enable VLLM, maybe GRPO patches it to use fast_generate.
+- Trl code is very long, covering a lot of edge cases and difficult to understand
 
 ## Results
 
@@ -481,4 +485,5 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
   - [ ] Split the data in 4, each for a GPU
   - [ ] Collect the results to make a submission
   - [ ] How efficient is the current implementation?
+  - [ ] Getting OOM cuda errors when training on the longer tasks
 - [ ] Check implementation of RL and how it alternates between training and inference

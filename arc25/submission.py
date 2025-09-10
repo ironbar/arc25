@@ -1,7 +1,11 @@
 import numpy as np
 
 
-def create_submission(results: dict, sorting_metric: str = 'train_correct_grids') -> dict:
+def create_submission(results: dict, dataset: dict, sorting_metric: str = 'train_correct_grids') -> dict:
+    """
+    Create a submission dictionary from results and dataset.
+    Follows the ARC25 submission format.
+    """
     submission = {}
     for task_id, task_results in results.items():
         n_test = len(dataset[task_id]['test'])
@@ -23,9 +27,13 @@ def create_submission(results: dict, sorting_metric: str = 'train_correct_grids'
 
             if all(len(attempts) == 2 for attempts in task_submission):
                 break
-        # TODO: what to do if there aren't 2 attempts?
+        # Ensure each case has 2 attempts
+        for attempt in task_submission:
+            if len(attempt) < 2:
+                attempt.extend([{'pred': []}] * (2 - len(attempt)))
         task_submission = [{f'attempt_{idx}': value['pred']} for attempt in task_submission for idx, value in enumerate(attempt, 1)]
         submission[task_id] = task_submission
+    return submission
 
 
 def sort_predictions_with_majority_voting_and_code_length(task_results, n_test):

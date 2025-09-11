@@ -260,6 +260,35 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/baseline_${N_PREDICTIONS}preds_${BATCH_SIZE}batch" -append request_gpus=1 -append request_cpus=16
 ```
 
+#### Experiments with 512 predictions
+
+```bash
+export FOLDER=2025-09-11-search-and-learn
+export N_PREDICTIONS=512; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions ${N_PREDICTIONS} \
+--max-epochs 0 \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${N_PREDICTIONS}i_baseline" -append request_gpus=1 -append request_cpus=32
+```
+
+```bash
+export FOLDER=2025-09-11-search-and-learn
+export INITIAL_PREDICTIONS=256
+export EPOCHS=1
+export PREDICTIONS_PER_EPOCH=256
+export LEARNING_RATE=1e-5; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions ${INITIAL_PREDICTIONS} \
+--predictions-per-epoch ${PREDICTIONS_PER_EPOCH} \
+--learning-rate ${LEARNING_RATE} \
+--max-epochs ${EPOCHS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}" -append request_gpus=1 -append request_cpus=32
+```
+
 ### Local experiments
 
 #### Debugging degradation of scores
@@ -554,3 +583,4 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
   - [ ] Remove duplicates
   - [ ] Filter cases with lower scores (as I did)
   - [ ] How fast is inference compared to training?
+  - [ ] Train for multiple epochs

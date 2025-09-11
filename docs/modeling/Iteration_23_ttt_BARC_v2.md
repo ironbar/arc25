@@ -459,7 +459,29 @@ the training time, that would be the time for just making predictions. A more co
 would be 256 predictions per task, or even less. Thus we need a much stronger model than the BARC one
 to be able to reach 85% accuracy.
 
+### Is the current implementation efficient enough?
+
+#### Kaggle L4
+
+TODO: I'm currently running tests on Kaggle to measure GPU usage and throughput. https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&range=A783
+
+#### H100
+
+TODO: 128 preds
+
+TODO: 512 preds
+
+### Do I have clear evidence that the approach works?
+
+TODO: Kaggle
+TODO: Cluster
+
 ## Conclusion
+
+TODO:
+
+- Do I have clear evidence that the approach works?
+- Is the current implementation efficient enough?
 
 ## Next steps
 

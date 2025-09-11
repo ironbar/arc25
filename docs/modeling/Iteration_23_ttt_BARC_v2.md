@@ -543,3 +543,14 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
     - [x] 2.3x https://chatgpt.com/share/68c1d348-89a4-8012-8135-a58a82bbef4d
     - [x] With current implementation I won't be able to make more than 512 predictions on a submission
 - [ ] Check implementation of RL and how it alternates between training and inference(trl, GRPO)
+- [ ] Analyze clusters results with 128 predictions. 
+  - [ ] Learning rate
+  - [ ] efficiency
+  - [ ] improvements
+- [ ] GPU efficiency and throughtput experiments on Kaggle
+- [ ] Run experiments in the cluster with 512 predictions.
+- [ ] How to improve efficiency? Maybe on a different iteration.
+  - [ ] Do not train on all the cases
+  - [ ] Remove duplicates
+  - [ ] Filter cases with lower scores (as I did)
+  - [ ] How fast is inference compared to training?

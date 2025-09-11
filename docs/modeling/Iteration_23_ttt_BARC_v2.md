@@ -448,6 +448,17 @@ I have the feeling that training startup at H100 is longer than 3090, and also s
 
 It has taken around 228s per task on the 3090 (although I only used 4 tasks.) I was doing 128 predictions, so I could likely be doing 512 predictions on Kaggle.
 
+### L4 is slower than I thought, half as fast as the 3090
+
+When making inference for the ARC-AGI-2 evaluation set I get around 340 token/s of throughput with Kaggle's L4 GPUs. In comparison I can get around 650 token/s with my 3090 GPUs. So L4 is around half as fast as the 3090.
+
+Notice that the 3090 was launched in September 2020, and the L4 was launched on March 2023. Quite surprising.
+
+On average each prediction is taking around 1.26 seconds on Kaggle. That implies that **I won't be able to do more than 512 predictions per task on a submission using the current model.** And that is without considering
+the training time, that would be the time for just making predictions. A more conservative approach
+would be 256 predictions per task, or even less. Thus we need a much stronger model than the BARC one
+to be able to reach 85% accuracy.
+
 ## Conclusion
 
 ## Next steps
@@ -500,13 +511,13 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
   - [x] Disable internet
   - [x] Implement dry run
   - [ ] Can I leave logs and keep making submissions?
-  - [ ] Speed seems to be lower than 3090, `1.26s/it, est. speed input: 2163.11 toks/s, output: 343.46 toks/s`
-    - [ ] Speed test on 3090.
+  - [x] Speed seems to be lower than 3090, `1.26s/it, est. speed input: 2163.11 toks/s, output: 343.46 toks/s`
+    - [x] Speed test on 3090.
       - [ ] 960 preds,  1.23it/s, est. speed input: 3389.69 toks/s, output: 547.71 toks/s
       - [ ] 960 preds unquantized, 1.42it/s, est. speed input: 3943.22 toks/s, output: 652.53 toks/s
       - [ ] 3840 preds, 1.47it/s, est. speed input: 4081.55 toks/s, output: 650.98 toks/s
       - [ ] Yes, seems to be around twice as fast
-    - [ ] 3x https://technical.city/en/video/GeForce-RTX-3090-vs-L4
-    - [ ] 2.3x https://chatgpt.com/share/68c1d348-89a4-8012-8135-a58a82bbef4d
-    - [ ] With current implementation I won't be able to make more than 512 predictions on a submission
+    - [x] 3x https://technical.city/en/video/GeForce-RTX-3090-vs-L4
+    - [x] 2.3x https://chatgpt.com/share/68c1d348-89a4-8012-8135-a58a82bbef4d
+    - [x] With current implementation I won't be able to make more than 512 predictions on a submission
 - [ ] Check implementation of RL and how it alternates between training and inference(trl, GRPO)

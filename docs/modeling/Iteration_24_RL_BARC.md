@@ -1,6 +1,6 @@
 # Iteration 2x. Using RL to improve BARC induction model
 
-_27-08-2025_
+_11-09-2025_
 
 <!---
 The work is done using short iterations. Each iteration needs to have a very
@@ -35,6 +35,10 @@ Ideas for the reward function:
 On a first step I could try with a single training task. Then I could move to use all the training tasks.
 I would measure the improvement on the training and the evaluation dataset. Finally if the technique
 is helpful, I would move to using the synthetic dataset in a following iteration.
+
+An additional motivation is that I have found that I would be able to make 512 predictions at maximum
+for task on the Kaggle submission. That would solve just 22% of the ARC-AGI-1 evaluation
+tasks. I need a model with a higher pass rate. RL is the way to get that.
 
 ## Development
 

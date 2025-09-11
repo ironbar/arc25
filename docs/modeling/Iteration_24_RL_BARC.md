@@ -63,9 +63,21 @@ tasks. I need a model with a higher pass rate. RL is the way to get that.
 This is very likely related to the probability of solving the task correctly, or at least to have
 differences in the reward between the prompts.
 
+- [Official documentation](https://huggingface.co/docs/trl/main/en/grpo_trainer)
+- [TRL VLLM server](https://huggingface.co/docs/trl/en/vllm_integration)
+
 Examples of reward functions:
 
 - https://huggingface.co/learn/llm-course/en/chapter12/6?fw=pt#defining-reward-functions
+
+#### Launching the server
+
+```bash
+# one gpu
+export CUDA_VISIBLE_DEVICES=0; trl vllm-serve --max_model_len 12000 --model /home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B
+# multiple gpus
+export CUDA_VISIBLE_DEVICES=0,1; trl vllm-serve --max_model_len 12000 --model /home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B --data-parallel-size 2
+```
 
 ## Results
 
@@ -77,3 +89,5 @@ Examples of reward functions:
 
 - [ ] How to pass the responses to the reward function? It seems that the data should be provided as a field in the dictionary
 - [ ] If I understand correctly each step a single problem is seen
+- [ ] Should I modify the tokenizer directly in the model to avoid problems?
+- [ ] What is the max prompt length for all the datasets available? -> Use that to better set the max_model_len of VLLM

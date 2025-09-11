@@ -499,4 +499,14 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
   - [x] Need a way to evaluate the submission once it's created
   - [x] Disable internet
   - [x] Implement dry run
+  - [ ] Can I leave logs and keep making submissions?
+  - [ ] Speed seems to be lower than 3090, `1.26s/it, est. speed input: 2163.11 toks/s, output: 343.46 toks/s`
+    - [ ] Speed test on 3090.
+      - [ ] 960 preds,  1.23it/s, est. speed input: 3389.69 toks/s, output: 547.71 toks/s
+      - [ ] 960 preds unquantized, 1.42it/s, est. speed input: 3943.22 toks/s, output: 652.53 toks/s
+      - [ ] 3840 preds, 1.47it/s, est. speed input: 4081.55 toks/s, output: 650.98 toks/s
+      - [ ] Yes, seems to be around twice as fast
+    - [ ] 3x https://technical.city/en/video/GeForce-RTX-3090-vs-L4
+    - [ ] 2.3x https://chatgpt.com/share/68c1d348-89a4-8012-8135-a58a82bbef4d
+    - [ ] With current implementation I won't be able to make more than 512 predictions on a submission
 - [ ] Check implementation of RL and how it alternates between training and inference(trl, GRPO)

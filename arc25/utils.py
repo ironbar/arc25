@@ -8,6 +8,7 @@ import numpy as np
 import pynvml
 import logging
 import json
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +60,10 @@ def load_json(filepath):
         data = json.load(f)
     return data
 
+def write_json(data, filepath):
+    with open(filepath, 'w') as f:
+        json.dump(data, f)
+
 
 def load_arc_dataset_with_solutions(filepath, convert_to_numpy=True):
     dataset = load_json(filepath)
@@ -94,3 +99,27 @@ def _verify_that_all_task_samples_have_outputs(task):
         for sample in samples:
             if 'output' not in sample:
                 raise ValueError('Not all samples have output')
+
+
+def create_dataset_partitions(dataset_path, output_dir='dataset', n_partitions=4, max_tasks_per_partition: Optional[int]=None):
+    logger.info(f'Creating {n_partitions} partitions from {dataset_path} into {output_dir}')
+    dataset = load_arc_dataset_with_solutions(dataset_path, convert_to_numpy=False)
+    task_ids = list(dataset.keys())
+    task_ids = sorted(task_ids, key=lambda x: len(str(dataset[x])), reverse=True)
+    partitions = [[] for _ in range(n_partitions)]
+    partition_length = [0, 0, 0, 0]
+    for task_id in task_ids:
+        chosen_partition = np.argmin(partition_length)
+        partitions[chosen_partition].append(task_id)
+        partition_length[chosen_partition] += len(str(dataset[task_id]))
+    logger.info(f'Partitions length: {partition_length}')
+    logger.info(f'Number of tasks per partition: {[len(partition) for partition in partitions]}')
+    assert len([task_id for partition in partitions for task_id in partition]) == len(dataset)
+    os.makedirs(output_dir, exist_ok=True)
+    for idx, partition in enumerate(partitions):
+        if max_tasks_per_partition is not None:
+            subset = {key: dataset[key] for key in partition[::-1][:max_tasks_per_partition]}
+        else:
+            subset = {key: dataset[key] for key in partition[::-1]}
+        filepath = f'{output_dir}/partition{idx}_challenges.json'
+        write_json(subset, filepath)

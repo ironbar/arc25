@@ -53,7 +53,7 @@ class Config:
     load_in_4bit: bool = False
     max_seq_length: int = 12000
     grid_encoder: str = 'ColorNameEncoder()'
-    gpu_memory_utilization: float = 0.90
+    gpu_memory_utilization: float = 0.8 # best value for Kaggle L4 GPU
     # LoRA
     lora_r: int = 16
     use_rslora: bool = True

@@ -266,15 +266,20 @@ def log_metrics_evolution(results, step=8):
         wandb.log(partial_metrics_summary, step=n_predictions)
 
 # run code functions, probably should be moved to module
-def run_code_from_predictions(dataset, task_ids, text_predictions, data_augmentation_params, n_jobs=-1):
+def run_code_from_predictions(dataset, task_ids, text_predictions, data_augmentation_params,
+                              n_jobs=-1, batch_size=32000):
     work = list(zip(text_predictions, [dataset[task_id] for task_id in task_ids], task_ids, data_augmentation_params))
-    with tqdm_joblib(total=len(work), desc="Executing code from predictions", unit="runs", smoothing=0):
-        results = Parallel(
-            n_jobs=n_jobs,
-            backend="loky",
-            prefer="processes",
-            batch_size='auto',
-        )(delayed(_run_one)(*args) for args in work)
+    results = []
+    for i in tqdm(range(0, len(work), batch_size), desc="Executing predictions", unit="batch"):
+        batch = work[i:i+batch_size]
+        with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size}", unit="pred", smoothing=0):
+            batch_results = Parallel(
+                n_jobs=n_jobs,
+                backend="loky",
+                prefer="processes",
+                batch_size='auto',
+            )(delayed(_run_one)(*args) for args in batch)
+            results.extend(batch_results)
     grouped_results = {}
     for result in results:
         task_id = result.pop('task_id')

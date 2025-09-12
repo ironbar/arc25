@@ -22,7 +22,7 @@ def run_code_from_predictions(tasks, task_ids, text_predictions, data_augmentati
                 n_jobs=n_jobs,
                 backend="loky",
                 prefer="processes",
-                batch_size=1, #'auto', I believe this gives weird results on the cluster machine
+                batch_size='auto', #1, 'auto'
             )(delayed(_run_one)(*args) for args in batch)
             results.extend(batch_results)
     if not group_results_by_task:

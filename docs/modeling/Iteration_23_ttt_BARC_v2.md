@@ -349,6 +349,27 @@ When training on the longer tasks I'm getting OOM errors on Kaggle (24GB GPU).
 [rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 248.00 MiB. GPU 0 has a total capacity of 22.28 GiB of which 33.38 MiB is free. Process 6314 has 22.23 GiB memory in use. Of the allocated memory 20.60 GiB is allocated by PyTorch, with 199.88 MiB allocated in private pools (e.g., CUDA Graphs), and 171.43 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
 ```
 
+### Making code execution robust
+
+This was the problem. Sometimes execution hangs and no exception is thrown:
+
+- https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/0iswo84s/logs
+- https://wandb.ai/guillermobarbadillo/2025-09-11-search-and-learn/runs/xldcleic/logs
+
+Sometimes raises exception:
+
+- https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/kd4qttau/logs
+
+Thus I have made many code changes to improve robustness, following suggestions by [ChatGPT](https://chatgpt.com/share/68c3ae7d-9cb4-8012-9950-9dd93606283e).
+
+On my pc it executes very fast: `400/400 [00:02<00:00, 152.92pred/s]`
+
+But in the cluster I'm seeing very slow executions:
+
+- `12800/12800 [50:22<00:00,  4.24pred/s]`  [Experiment](https://wandb.ai/guillermobarbadillo/2025-09-12-search-and-learn/runs/19gni2he/logs)
+- `51200/51200 [03:28<00:00, 245.29runs/s]` [Older experiment with good speed](https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/zdkkfzdv/logs)
+
+
 ## Results
 
 ### Unsloth/VLLM inference throughput

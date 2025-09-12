@@ -297,6 +297,7 @@ def _run_one(text_prediction, task, task_id, data_augmentation_params):
             add_additional_imports(remove_unnecessary_lines(code)),
             input_grids,
             func_name="transform",
+            execution_method='exec',
         )
         output_grids = validate_outputs(output_grids)
         if data_augmentation_params is not None:

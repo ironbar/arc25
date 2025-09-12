@@ -138,8 +138,7 @@ def _safe_code_execution_exec(code: str, inputs: list[np.ndarray], func_name: st
     check_code_is_safe(code)
     check_code_is_deterministic(code)
     _set_timeout_alarm(timeout_duration)
-    namespace = globals() # TODO: restrict the globals
-    namespace['input_grids'] = inputs
+    namespace={'__builtins__': __builtins__, 'input_grids': inputs}
     if dsl is not None: namespace['dsl'] = dsl
 
     code = code + f'\n\noutput_grids = [{func_name}(input.copy()) for input in input_grids]'

@@ -8,6 +8,7 @@ import numpy as np
 import pynvml
 import logging
 import json
+import gzip
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -56,13 +57,26 @@ def get_least_used_gpu_index():
 
 
 def load_json(filepath):
-    with open(filepath, 'r') as f:
-        data = json.load(f)
+    if filepath.endswith('.gz'):
+        with gzip.open(filepath, 'rt', encoding='utf-8') as f:
+            data = json.load(f)
+    elif filepath.endswith('.json'):
+        with open(filepath, 'r') as f:
+            data = json.load(f)
+    else:
+        raise ValueError(f'Unsupported file extension: {filepath}')
     return data
 
+
 def write_json(data, filepath):
-    with open(filepath, 'w') as f:
-        json.dump(data, f)
+    if filepath.endswith('.json.gz'):
+        with gzip.open(filepath, 'wt', encoding='utf-8') as f:
+            json.dump(data, f, indent=2)
+    elif filepath.endswith('.json'):
+        with open(filepath, 'w') as f:
+            json.dump(data, f, indent=2)
+    else:
+        raise ValueError(f'Unsupported file extension: {filepath}')
 
 
 def load_arc_dataset_with_solutions(filepath, convert_to_numpy=True):

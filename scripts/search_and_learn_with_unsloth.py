@@ -16,15 +16,12 @@ os.environ['TOKENIZERS_PARALLELISM'] = 'false' # to avoid warnings, so far I hav
 from unsloth import FastLanguageModel
 
 from dataclasses import dataclass
-import sys
-import random
 import numpy as np
 from tqdm_joblib import tqdm_joblib
 from joblib import Parallel, delayed
 import hashlib
 
 import time
-import json
 import wandb
 from datasets import Dataset
 import tyro
@@ -34,7 +31,7 @@ from tqdm.auto import tqdm
 from accelerate import Accelerator
 
 from arc25.encoders import create_grid_encoder
-from arc25.utils import load_arc_dataset_with_solutions, set_random_seed
+from arc25.utils import load_arc_dataset_with_solutions, set_random_seed, write_json
 from arc25.data_augmentation import apply_data_augmentation, revert_data_augmentation, get_random_data_augmentation_params
 from arc25.code_execution import safe_code_execution
 from arc25.prompting import create_prompt_from_task, parse_python_code_from_response, pretty_print_prompt
@@ -253,8 +250,7 @@ def save_results(results, output_dir, log_to_wandb):
             for key in ['input_grids', 'output_grids', 'test_output_grids']:
                 if key in result:
                     result[key] = [grid.tolist() for grid in result[key]]
-    with open(f'{output_dir}/results.json', 'w') as f:
-        json.dump(results, f, indent=2)
+    write_json(results, f'{output_dir}/results.json.gz')
 
 
 def log_metrics_evolution(results, step=8):

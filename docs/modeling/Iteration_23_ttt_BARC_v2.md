@@ -549,6 +549,7 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
       - [ ] https://wandb.ai/guillermobarbadillo/2025-09-11-search-and-learn/runs/xldcleic/logs
   - [ ] Sometimes raises exception
     - [ ] https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/kd4qttau/logs
+  - [x] Made many changes to improve robustness: https://chatgpt.com/share/68c3ae7d-9cb4-8012-9950-9dd93606283e
 - [ ] Investigate the time lost on training startup
 - [ ] Experiment on Kaggle
   - [x] Upload the model. https://www.kaggle.com/models/ironbar/barc0llama-3.1-arc-potpourri-induction-8b

@@ -7,7 +7,8 @@ import pickle
 import subprocess
 from typing import Optional
 from types import ModuleType
-
+from contextlib import redirect_stdout, redirect_stderr
+import io
 
 logger = logging.getLogger(__name__)
 
@@ -143,9 +144,11 @@ def _safe_code_execution_exec(code: str, inputs: list[np.ndarray], func_name: st
 
     code = code + f'\n\noutput_grids = [{func_name}(input.copy()) for input in input_grids]'
     try:
-        exec(code, namespace)
+        buf = io.StringIO()
+        with redirect_stdout(buf), redirect_stderr(buf):
+            exec(code, namespace)
         return namespace['output_grids']
-    except Exception as e:
+    except BaseException as e:
         logger.debug(f"Error during code execution: {e}")
         raise e
     except TimeoutException as e:

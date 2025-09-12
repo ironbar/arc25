@@ -79,6 +79,15 @@ export CUDA_VISIBLE_DEVICES=0; trl vllm-serve --max_model_len 12000 --model /hom
 export CUDA_VISIBLE_DEVICES=0,1; trl vllm-serve --max_model_len 12000 --model /home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B --data-parallel-size 2
 ```
 
+### Modify pad token in the tokenizer configuration
+
+Simply replace the following line on `Llama-3.1-ARC-Potpourri-Induction-8B/tokenizer_config.json`:
+
+```bash
+- "pad_token": "<|eot_id|>",
++ "pad_token": "<|finetune_right_pad_id|>",
+```
+
 ## Results
 
 ## Conclusion

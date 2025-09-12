@@ -310,7 +310,7 @@ def _run_one(text_prediction, task, task_id, data_augmentation_params):
                       task_id=task_id)
         result.update(get_metrics(task, original_output_grids))
         return result
-    except Exception as e:
+    except BaseException as e:
         return dict(code=code, error_type=type(e).__name__, error_message=str(e), task_id=task_id)
 
 

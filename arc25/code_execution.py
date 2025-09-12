@@ -145,12 +145,15 @@ def _safe_code_execution_exec(code: str, inputs: list[np.ndarray], func_name: st
     code = code + f'\n\noutput_grids = [{func_name}(input.copy()) for input in input_grids]'
     try:
         exec(code, namespace)
-        _disable_timeout_alarm()
         return namespace['output_grids']
     except Exception as e:
         logger.debug(f"Error during code execution: {e}")
-        _disable_timeout_alarm()
         raise e
+    except TimeoutException as e:
+        logger.debug(f"Timeout during code execution: {e}")
+        raise e
+    finally:
+        _disable_timeout_alarm()
 
 
 def _set_timeout_alarm(timeout_duration):
@@ -162,7 +165,7 @@ def _disable_timeout_alarm():
     signal.alarm(0)
 
 
-class TimeoutException(Exception):
+class TimeoutException(BaseException):
     pass
 
 

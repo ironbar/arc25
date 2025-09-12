@@ -273,7 +273,7 @@ def run_code_from_predictions(dataset, task_ids, text_predictions, data_augmenta
             n_jobs=n_jobs,
             backend="loky",
             prefer="processes",
-            batch_size=1,
+            batch_size='auto',
         )(delayed(_run_one)(*args) for args in work)
     grouped_results = {}
     for result in results:

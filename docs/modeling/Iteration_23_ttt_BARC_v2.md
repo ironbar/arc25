@@ -546,6 +546,7 @@ Collecting flashinfer-python==0.2.5+cu124torch2.6`
 - [ ] Code execution is not robust.
   - [ ] Sometimes execution hangs and no exception is thrown
       - [ ] https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/0iswo84s/logs
+      - [ ] https://wandb.ai/guillermobarbadillo/2025-09-11-search-and-learn/runs/xldcleic/logs
   - [ ] Sometimes raises exception
     - [ ] https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/kd4qttau/logs
 - [ ] Investigate the time lost on training startup

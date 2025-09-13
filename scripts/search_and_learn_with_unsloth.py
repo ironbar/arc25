@@ -59,6 +59,7 @@ class Config:
     predictions_per_epoch: int = 8
     training_batch_size: int = 1
     n_jobs: int = -1
+    timeout_duration: int = 5 # seconds for code execution timeout
     # training hyperparameters
     learning_rate: float = 1e-5
     lr_scheduler_type: str = 'constant_with_warmup'
@@ -87,7 +88,8 @@ def main():
 
     results = search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request=None,
         inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
-        use_data_augmentation=cfg.use_data_augmentation, print_first_prompt=True, n_jobs=cfg.n_jobs)
+        use_data_augmentation=cfg.use_data_augmentation, print_first_prompt=True, n_jobs=cfg.n_jobs,
+        timeout_duration=cfg.timeout_duration)
     print(aggregate_metrics(results))
 
     model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora) # initialize peft model
@@ -112,7 +114,8 @@ def main():
             logger.info(f'Searching solutions for epoch {epoch}')
             task_results = search(dataset, [task_id], llm, tokenizer, grid_encoder, lora_request,
                 inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
-                use_data_augmentation=cfg.use_data_augmentation, n_jobs=cfg.n_jobs)
+                use_data_augmentation=cfg.use_data_augmentation, n_jobs=cfg.n_jobs,
+                timeout_duration=cfg.timeout_duration)
             print(aggregate_metrics(task_results).head(1).round(3))
             task_results = task_results[task_id]
             results[task_id].extend(task_results)
@@ -146,7 +149,7 @@ def create_peft_model(llm, lora_r, use_rslora, model=None):
 @log_execution_time
 def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
            inference_batch_size, n_predictions, use_data_augmentation,
-           print_first_prompt=False, n_jobs=-1):
+           print_first_prompt=False, n_jobs=-1, timeout_duration=5):
     set_random_seed(None)
     prompts, data_augmentation_params, inference_task_ids = [], [], []
     for task_id in task_ids:
@@ -175,7 +178,7 @@ def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
 
     results = run_code_from_predictions(
         [dataset[task_id] for task_id in inference_task_ids], inference_task_ids,
-        text_predictions, data_augmentation_params, n_jobs=n_jobs)
+        text_predictions, data_augmentation_params, n_jobs=n_jobs, timeout_duration=timeout_duration)
     return results
 
 

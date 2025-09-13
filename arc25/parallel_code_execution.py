@@ -17,29 +17,19 @@ logger = logging.getLogger(__name__)
 
 def run_code_from_predictions(tasks, task_ids, text_predictions, data_augmentation_params,
                               n_jobs=-1, batch_size=32000, group_results_by_task=True, timeout_duration=5):
-    work = list(zip(text_predictions, tasks, task_ids, data_augmentation_params))
     results = []
-    for i in tqdm(range(0, len(work), batch_size), desc="Executing predictions", unit="batch", disable=len(work)<=batch_size):
-        batch = work[i:i+batch_size]
+    parallel_kwargs = dict(n_jobs=n_jobs, backend="loky", prefer="processes", batch_size=1)
+    for i in tqdm(range(0, len(tasks), batch_size), desc="Executing predictions", unit="batch", disable=len(tasks)<=batch_size):
+        batch = list(zip(text_predictions[i:i+batch_size], tasks[i:i+batch_size], task_ids[i:i+batch_size], data_augmentation_params[i:i+batch_size]))
         try:
-            with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size}", unit="run", smoothing=0):
-                batch_results = Parallel(
-                    n_jobs=n_jobs,
-                    backend="loky",
-                    prefer="processes",
-                    batch_size=1, #1, 'auto'
-                )(delayed(_run_one)(*args, timeout_duration=timeout_duration, execution_method='exec') for args in batch)
-                results.extend(batch_results)
+            extra_kwargs = dict(timeout_duration=timeout_duration, execution_method='exec')
+            with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size} with exec", unit="run", smoothing=0):
+                results.extend(Parallel(**parallel_kwargs)(delayed(_run_one)(*args, **extra_kwargs) for args in batch))
         except TerminatedWorkerError:
             logger.warning("TerminatedWorkerError encountered with 'exec' method, retrying with 'subprocess' method.")
-            with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size}", unit="run", smoothing=0):
-                batch_results = Parallel(
-                    n_jobs=n_jobs,
-                    backend="loky",
-                    prefer="processes",
-                    batch_size=1, #1, 'auto'
-                )(delayed(_run_one)(*args, timeout_duration=timeout_duration, execution_method='subprocess') for args in batch)
-                results.extend(batch_results)
+            extra_kwargs = dict(timeout_duration=timeout_duration, execution_method='subprocess')
+            with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size} with subprocess", unit="run", smoothing=0):
+                results.extend(Parallel(**parallel_kwargs)(delayed(_run_one)(*args, **extra_kwargs) for args in batch))
     if not group_results_by_task:
         return results
     grouped_results = {}

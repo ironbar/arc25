@@ -398,7 +398,28 @@ TODO:
 I have done a quick test trying to evaluate around ~6000 predictions per task and I have seen that
 the code hangs.
 
-TODO: does it hang if the evaluations are done sequentially, file by file?
+If the evaluations are done sequentially, file by file, there is no problem except for this two files that produce consistent hangs:
+
+- /mnt/hdd0/Kaggle/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_08_31_09_47_48_predictions.json, 252
+- /mnt/hdd0/Kaggle/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_01_13_46_42_predictions.json, 670
+
+Each file has 3200 tasks, so I could use that as reference.
+
+Investigating those tasks I see that both tasks have a general except clause that might be causing
+the problems:
+
+```python
+while True:
+    try:
+        expand_star(center_x, center_y, star_color, center_color, distance)
+        distance += 1
+    except:
+        break
+```
+
+TODO: investigate this two files to try to understand what is causing the error.
+TODO: investigate the case where subprocess needs to be used
+TODO: can I solve the whole dataset after fixing this problems?
 
 ## Results
 

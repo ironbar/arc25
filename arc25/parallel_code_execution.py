@@ -15,7 +15,7 @@ def run_code_from_predictions(tasks, task_ids, text_predictions, data_augmentati
                               n_jobs=-1, batch_size=32000, group_results_by_task=True, timeout_duration=5):
     work = list(zip(text_predictions, tasks, task_ids, data_augmentation_params))
     results = []
-    for i in tqdm(range(0, len(work), batch_size), desc="Executing predictions", unit="batch"):
+    for i in tqdm(range(0, len(work), batch_size), desc="Executing predictions", unit="batch", disable=len(work)<=batch_size):
         batch = work[i:i+batch_size]
         with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size}", unit="run", smoothing=0):
             batch_results = Parallel(

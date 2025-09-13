@@ -369,6 +369,29 @@ But in the cluster I'm seeing very slow executions:
 - `12800/12800 [50:22<00:00,  4.24pred/s]`  [Experiment](https://wandb.ai/guillermobarbadillo/2025-09-12-search-and-learn/runs/19gni2he/logs)
 - `51200/51200 [03:28<00:00, 245.29runs/s]` [Older experiment with good speed](https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/zdkkfzdv/logs)
 
+#### Reverting to old code
+
+I have tried reverting back to commit 1557726a0e184d1a4e0b0490eec44bde7dde304e, from 8 september when I logged fast execution times. However the problem persisted:
+
+- 4 cpus -> 41.67runs/s
+- 8 cpus -> 61.31runs/s
+- 20 cpus -> 56.75runs/s
+- 64 cpus -> 9.51runs/s
+- 128 cpus -> 9.41 runs/s
+
+I have also tried running on other machine (calculon19 instead of calculon21) but did not get better results:
+
+- 8 -> 74.22runs/s
+- 16 -> 86.01runs/s
+
+#### Simpler script
+
+Iterations have been slow because I'm doing inference with the model first. That makes that each
+execution takes around 30 minutes. I need to create a script that allows me to see results much faster.
+That way I will run the same script with the same data in the different settings and get more information
+about the problem faster.
+
+TODO:
 
 ## Results
 

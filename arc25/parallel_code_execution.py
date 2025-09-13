@@ -22,7 +22,7 @@ def run_code_from_predictions(tasks, task_ids, text_predictions, data_augmentati
                 n_jobs=n_jobs,
                 backend="loky",
                 prefer="processes",
-                batch_size='auto', #1, 'auto'
+                batch_size=1, #1, 'auto'
             )(delayed(_run_one)(*args, timeout_duration=timeout_duration) for args in batch)
             results.extend(batch_results)
     if not group_results_by_task:

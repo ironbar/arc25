@@ -1,7 +1,9 @@
+import logging
 import numpy as np
 from tqdm.auto import tqdm
 from tqdm_joblib import tqdm_joblib
 from joblib import Parallel, delayed
+from joblib.externals.loky.process_executor import TerminatedWorkerError
 import hashlib
 
 from arc25.code_execution import safe_code_execution
@@ -10,6 +12,8 @@ from arc25.metrics import get_metrics
 from arc25.validation import validate_outputs
 from arc25.data_augmentation import apply_data_augmentation, revert_data_augmentation
 
+logger = logging.getLogger(__name__)
+
 
 def run_code_from_predictions(tasks, task_ids, text_predictions, data_augmentation_params,
                               n_jobs=-1, batch_size=32000, group_results_by_task=True, timeout_duration=5):
@@ -17,14 +21,25 @@ def run_code_from_predictions(tasks, task_ids, text_predictions, data_augmentati
     results = []
     for i in tqdm(range(0, len(work), batch_size), desc="Executing predictions", unit="batch", disable=len(work)<=batch_size):
         batch = work[i:i+batch_size]
-        with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size}", unit="run", smoothing=0):
-            batch_results = Parallel(
-                n_jobs=n_jobs,
-                backend="loky",
-                prefer="processes",
-                batch_size=1, #1, 'auto'
-            )(delayed(_run_one)(*args, timeout_duration=timeout_duration) for args in batch)
-            results.extend(batch_results)
+        try:
+            with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size}", unit="run", smoothing=0):
+                batch_results = Parallel(
+                    n_jobs=n_jobs,
+                    backend="loky",
+                    prefer="processes",
+                    batch_size=1, #1, 'auto'
+                )(delayed(_run_one)(*args, timeout_duration=timeout_duration, execution_method='exec') for args in batch)
+                results.extend(batch_results)
+        except TerminatedWorkerError:
+            logger.warning("TerminatedWorkerError encountered with 'exec' method, retrying with 'subprocess' method.")
+            with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size}", unit="run", smoothing=0):
+                batch_results = Parallel(
+                    n_jobs=n_jobs,
+                    backend="loky",
+                    prefer="processes",
+                    batch_size=1, #1, 'auto'
+                )(delayed(_run_one)(*args, timeout_duration=timeout_duration, execution_method='subprocess') for args in batch)
+                results.extend(batch_results)
     if not group_results_by_task:
         return results
     grouped_results = {}
@@ -36,7 +51,8 @@ def run_code_from_predictions(tasks, task_ids, text_predictions, data_augmentati
     return grouped_results
 
 
-def _run_one(text_prediction, task, task_id, data_augmentation_params, timeout_duration=5):
+def _run_one(text_prediction, task, task_id, data_augmentation_params,
+             timeout_duration=5, execution_method='exec'):
     code = parse_python_code_from_response(text_prediction)
     if not code:
         return dict(error_type="ParsingCodeFailed", error_message='', text_prediction=text_prediction,
@@ -49,7 +65,7 @@ def _run_one(text_prediction, task, task_id, data_augmentation_params, timeout_d
             add_additional_imports(remove_unnecessary_lines(code)),
             input_grids,
             func_name="transform",
-            execution_method='exec',
+            execution_method=execution_method,
             timeout_duration=timeout_duration,
         )
         output_grids = validate_outputs(output_grids)

@@ -393,6 +393,13 @@ about the problem faster.
 
 TODO:
 
+#### The code isn't robust yet
+
+I have done a quick test trying to evaluate around ~6000 predictions per task and I have seen that
+the code hangs.
+
+TODO: does it hang if the evaluations are done sequentially, file by file?
+
 ## Results
 
 ### Unsloth/VLLM inference throughput

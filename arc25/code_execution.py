@@ -111,6 +111,12 @@ def check_code_is_safe(code):
         if f'{func}(' in code:
             raise UnsafeCode(f"The code uses a forbidden function: {func}\nCode: {code}")
 
+    forbidden_strings = ['except:']
+    for s in forbidden_strings:
+        if s in code:
+            raise UnsafeCode(f"The code uses a forbidden string: {s}\nCode: {code}")
+
+
 
 def check_code_is_deterministic(code):
     forbidden_modules = ['random']

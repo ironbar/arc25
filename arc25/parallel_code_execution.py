@@ -16,19 +16,23 @@ logger = logging.getLogger(__name__)
 
 
 def run_code_from_predictions(tasks, task_ids, text_predictions, data_augmentation_params,
-                              n_jobs=-1, batch_size=5000, group_results_by_task=True, timeout_duration=1):
+                              n_jobs=-1, batch_size=5000, group_results_by_task=True, timeout_duration=1,
+                              disable_tqdm=False):
     results = []
     parallel_kwargs = dict(n_jobs=n_jobs, backend="loky", prefer="processes", batch_size='auto')
-    for i in tqdm(range(0, len(tasks), batch_size), desc="Executing predictions", unit="batch", disable=len(tasks)<=batch_size, smoothing=0):
+    for i in tqdm(range(0, len(tasks), batch_size), desc="Executing predictions", unit="batch",
+                  disable=len(tasks)<=batch_size or disable_tqdm, smoothing=0):
         batch = list(zip(text_predictions[i:i+batch_size], tasks[i:i+batch_size], task_ids[i:i+batch_size], data_augmentation_params[i:i+batch_size]))
         try:
             extra_kwargs = dict(timeout_duration=timeout_duration, execution_method='exec')
-            with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size} with exec", unit="run", smoothing=0):
+            with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size} with exec",
+                             unit="run", smoothing=0, disable=disable_tqdm):
                 results.extend(Parallel(**parallel_kwargs)(delayed(_run_one)(*args, **extra_kwargs) for args in batch))
         except TerminatedWorkerError:
             logger.warning("TerminatedWorkerError encountered with 'exec' method, retrying with 'subprocess' method.")
             extra_kwargs = dict(timeout_duration=timeout_duration, execution_method='subprocess')
-            with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size} with subprocess", unit="run", smoothing=0):
+            with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size} with subprocess",
+                             unit="run", smoothing=0, disable=disable_tqdm):
                 results.extend(Parallel(**parallel_kwargs)(delayed(_run_one)(*args, **extra_kwargs) for args in batch))
     if not group_results_by_task:
         return results

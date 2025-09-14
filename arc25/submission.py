@@ -31,8 +31,10 @@ def create_submission(results: dict, dataset: dict, sorting_metric: str = 'train
         for attempt in task_submission:
             if len(attempt) < 2:
                 attempt.extend([{'pred': []}] * (2 - len(attempt)))
-        task_submission = [{f'attempt_{idx}': value['pred']} for attempt in task_submission for idx, value in enumerate(attempt, 1)]
-        submission[task_id] = task_submission
+        formatted_task_submission = []
+        for attempt in task_submission:
+            formatted_task_submission.append({f'attempt_{idx}': value['pred'] for idx, value in enumerate(attempt, 1)})
+        submission[task_id] = formatted_task_submission
     return submission
 
 

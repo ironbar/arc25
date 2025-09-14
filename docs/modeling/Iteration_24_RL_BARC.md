@@ -96,7 +96,14 @@ Simply replace the following line on `Llama-3.1-ARC-Potpourri-Induction-8B/token
 
 ## TODO
 
-- [ ] How to pass the responses to the reward function? It seems that the data should be provided as a field in the dictionary
-- [ ] If I understand correctly each step a single problem is seen
+- [x] How to pass the responses to the reward function? It seems that the data should be provided as a field in the dictionary
+- [x] If I understand correctly each step a single problem is seen
 - [ ] Should I modify the tokenizer directly in the model to avoid problems?
+- [ ] Create RL training script
+  - [ ] Generator for the prompts
+  - [ ] Add verbose option to code evaluation
+  - [ ] More smooth reward, combine test and train
+- [ ] Training experiments
+  - [ ] What is the configuration that better uses the hardware
+  - [ ] Best learning rate
 - [ ] What is the max prompt length for all the datasets available? -> Use that to better set the max_model_len of VLLM

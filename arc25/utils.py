@@ -93,8 +93,12 @@ def load_arc_dataset_with_solutions(filepath, convert_to_numpy=True):
         logger.warning(f'Solutions file not found: {solutions_filepath}, loading dataset without solutions')
     if convert_to_numpy:
         for task_id, task in dataset.items():
-            dataset[task_id] = {partition: [{key: np.array(value) for key, value in sample.items()} for sample in samples] for partition, samples in task.items()}
+            dataset[task_id] = convert_task_to_numpy(task)
     return dataset
+
+
+def convert_task_to_numpy(task):
+    return {partition: [{key: np.array(value) for key, value in sample.items()} for sample in samples] for partition, samples in task.items()}
 
 
 def _verify_that_all_dataset_samples_have_output(data):

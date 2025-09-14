@@ -369,6 +369,8 @@ But in the cluster I'm seeing very slow executions:
 - `12800/12800 [50:22<00:00,  4.24pred/s]`  [Experiment](https://wandb.ai/guillermobarbadillo/2025-09-12-search-and-learn/runs/19gni2he/logs)
 - `51200/51200 [03:28<00:00, 245.29runs/s]` [Older experiment with good speed](https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/zdkkfzdv/logs)
 
+However in Kaggle is also fast: `960/960 [00:03<00:00, 265.18pred/s]`
+
 #### Reverting to old code
 
 I have tried reverting back to commit 1557726a0e184d1a4e0b0490eec44bde7dde304e, from 8 september when I logged fast execution times. However the problem persisted:

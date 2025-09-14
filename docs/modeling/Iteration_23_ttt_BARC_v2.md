@@ -417,9 +417,7 @@ while True:
         break
 ```
 
-TODO: investigate this two files to try to understand what is causing the error.
-TODO: investigate the case where subprocess needs to be used
-TODO: can I solve the whole dataset after fixing this problems?
+After fixing that I have been able to evaluate the 6064 predictions per task in one run without problems.
 
 ## Results
 

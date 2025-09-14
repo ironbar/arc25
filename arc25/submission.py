@@ -11,7 +11,7 @@ def create_submission(results: dict, dataset: dict, sorting_metric: str = 'train
         n_test = len(dataset[task_id]['test'])
         valid_results = [result for result in task_results if 'test_output_grids' in result]
         if not valid_results:
-            submission[task_id] = [{'attempt_1': [], 'attempt_2': [],} for _ in range(n_test)]
+            submission[task_id] = [{'attempt_1': [[0]], 'attempt_2': [[0]],} for _ in range(n_test)]
             continue
         scores = [result[sorting_metric] for result in valid_results]
         unique_scores = sorted(set(scores), reverse=True)

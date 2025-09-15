@@ -162,3 +162,4 @@ data augmentation for this experiment.
   - [ ] Add tests for create submission
   - [ ] Check problems on existing submission
   - [ ] Change priority to dataset (there might be missing tasks)
+  - [ ] Maybe I'm using numpy instead of float?

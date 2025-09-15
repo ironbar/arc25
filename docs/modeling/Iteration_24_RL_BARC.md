@@ -117,6 +117,7 @@ What could be explaining that the reward is not improving (model not learning):
 - Maybe the reward is not good enough
 - I might have to wait for longer
 - Maybe the model needs more capacity, I could increase the LoRA size.
+- Some parameter might be hurting, such as `completion_only_loss=True,`
 
 TODO: I'm going to use a very high learning rate to try to destroy the policy.
 

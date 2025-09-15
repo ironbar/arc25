@@ -88,6 +88,14 @@ Simply replace the following line on `Llama-3.1-ARC-Potpourri-Induction-8B/token
 + "pad_token": "<|finetune_right_pad_id|>",
 ```
 
+### Max sequence length
+
+I have studied all the datasets and the longest prompt is always 8635 tokens, corresponding to
+tasks with 4 train samples with inputs and outputs of 30x30, and a test sample with the same input
+shape.
+
+Thus if I don't want to generate more than 2000 tokens, the max sequence length would be 10635 tokens.
+
 ## Results
 
 ### Debug training

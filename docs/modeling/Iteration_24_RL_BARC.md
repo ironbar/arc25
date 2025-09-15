@@ -129,6 +129,14 @@ TODO: play with the smallest possible task so I can check if it works:
 1. Unsloth without server
 2. TRL with server
 
+Solution: It seems that unsloth does not support the trl server, and wasn't update the server. I have
+been able to train on one of the smallest task with unsloth and without server and it is clearly learning
+because if I use a small learning rate the average reward stays flat, but if I use a proper learning
+rate raises. I can see that with just 20 training steps, because I'm using the same task and no
+data augmentation for this experiment.
+
+![alt text](res/1757951689198_image.png)
+
 ## Conclusion
 
 ## Next steps

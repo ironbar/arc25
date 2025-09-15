@@ -90,6 +90,17 @@ Simply replace the following line on `Llama-3.1-ARC-Potpourri-Induction-8B/token
 
 ## Results
 
+### Debug training
+
+<https://wandb.ai/guillermobarbadillo/2025-09-14-debug-grpo>
+
+On a first step I'm training on a single task to see if the reward improves over training.
+
+![alt text](res/1757909812849_image.png)
+
+Sadly reward doesn't seem to change. Maybe I'm using a too small learning rate. Let's use a
+constant with warmup schedule and try different learning rates.
+
 ## Conclusion
 
 ## Next steps

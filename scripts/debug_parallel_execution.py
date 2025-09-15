@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-import tyro
+import argparse
 import glob
 from tqdm import tqdm
 
@@ -7,17 +6,23 @@ from arc25.parallel_code_execution import run_code_from_predictions
 from arc25.metrics import aggregate_metrics, error_analysis
 from arc25.utils import load_arc_dataset_with_solutions, load_json
 
-@dataclass
-class Config:
-    dataset_path: str = "/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json"
-    prediction_path: str = "/mnt/hdd0/Kaggle/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_08_31_09_47_48_predictions.json"
-    n_jobs: int = -1
-    timeout_duration: int = 1
-    batch_size: int = 5000
-
 
 def main(args=None):
-    config = tyro.cli(Config)
+    parser = argparse.ArgumentParser(description="Debug parallel execution")
+    parser.add_argument("--dataset_path", type=str, 
+                       default="/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json",
+                       help="Path to the dataset file")
+    parser.add_argument("--prediction_path", type=str,
+                       default="/mnt/hdd0/Kaggle/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_08_31_09_47_48_predictions.json",
+                       help="Path to the prediction file")
+    parser.add_argument("--n_jobs", type=int, default=-1,
+                       help="Number of parallel jobs")
+    parser.add_argument("--timeout_duration", type=int, default=1,
+                       help="Timeout duration in seconds")
+    parser.add_argument("--batch_size", type=int, default=5000,
+                       help="Batch size for processing")
+    
+    config = parser.parse_args(args)
     dataset = load_arc_dataset_with_solutions(config.dataset_path)
 
     predictions = load_all_predictions(config.prediction_path)

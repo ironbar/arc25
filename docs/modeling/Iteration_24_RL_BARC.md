@@ -98,7 +98,7 @@ Thus if I don't want to generate more than 2000 tokens, the max sequence length 
 
 ## Results
 
-### Debug training
+### Reward is not improving
 
 <https://wandb.ai/guillermobarbadillo/2025-09-14-debug-grpo>
 
@@ -108,6 +108,17 @@ On a first step I'm training on a single task to see if the reward improves over
 
 Sadly reward doesn't seem to change. Maybe I'm using a too small learning rate. Let's use a
 constant with warmup schedule and try different learning rates.
+
+What could be explaining that the reward is not improving (model not learning):
+
+- Learning rate might be too small.
+- Maybe unsloth does not work well when using server model. However I have tried without a server and got OOM error.
+- Data augmentation could be making the problem harder
+- Maybe the reward is not good enough
+- I might have to wait for longer
+- Maybe the model needs more capacity, I could increase the LoRA size.
+
+TODO: I'm going to use a very high learning rate to try to destroy the policy.
 
 ## Conclusion
 

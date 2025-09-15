@@ -7,12 +7,12 @@ tqdm-joblib
 torch
 torchvision
 torchaudio
-vllm==0.8.5
-accelerate==1.7.0
+vllm==0.10.1.1
+accelerate==1.10.1
 wandb
 transformers
 peft
-trl==0.18.0
+trl==0.23.0
 datasets
 bitsandbytes
 GPUtil
@@ -31,4 +31,4 @@ deepspeed
 pynvml
 opencv-python
 liger-kernel
-unsloth
+unsloth==2025.9.3

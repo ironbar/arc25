@@ -120,6 +120,14 @@ What could be explaining that the reward is not improving (model not learning):
 - Some parameter might be hurting, such as `completion_only_loss=True,`
 
 TODO: I'm going to use a very high learning rate to try to destroy the policy.
+However it did not have any effect.
+
+Then I have tried using trl without unsloth. Then I have noticed problems in the server, it does not
+seem to support LoRA. My hypothesis is that unsloth was not trying to modify the weights.
+
+TODO: play with the smallest possible task so I can check if it works:
+1. Unsloth without server
+2. TRL with server
 
 ## Conclusion
 
@@ -138,3 +146,4 @@ TODO: I'm going to use a very high learning rate to try to destroy the policy.
   - [ ] What is the configuration that better uses the hardware
   - [ ] Best learning rate
 - [ ] What is the max prompt length for all the datasets available? -> Use that to better set the max_model_len of VLLM
+- [ ] GPU usage is not efficient with server mode: https://huggingface.co/blog/vllm-colocate

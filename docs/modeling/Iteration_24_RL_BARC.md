@@ -107,6 +107,8 @@ Thus if I don't want to generate more than 2000 tokens, the max sequence length 
 python scripts/validate_submission.py --submission-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/sample_submission.json --dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_test_challenges.json
 
 python scripts/validate_submission.py --submission-path /mnt/hdd0/Kaggle/arc25/submissions/evaluation_2025_invalid_submission.json --dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2025/arc-agi_evaluation_challenges.json
+
+python scripts/validate_submission.py --submission-path /mnt/hdd0/Kaggle/arc25/submissions/test_2025_invalid_submission.json --dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2025/arc-agi_test_challenges.json
 ```
 
 ## Results
@@ -172,6 +174,7 @@ data augmentation for this experiment.
 - [x] What is the max prompt length for all the datasets available? -> 8635
 - [ ] GPU usage is not efficient with server mode: https://huggingface.co/blog/vllm-colocate
 - [ ] Kaggle scoring error
+  - [x] Create validate submission script
   - [ ] Add tests for create submission
   - [ ] Check problems on existing submission
   - [ ] Change priority to dataset (there might be missing tasks)

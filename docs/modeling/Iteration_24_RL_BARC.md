@@ -98,6 +98,17 @@ shape.
 
 Thus if I don't want to generate more than 2000 tokens, the max sequence length would be 10635 tokens.
 
+### Kaggle scoring error
+
+- [Valid submission](https://www.kaggle.com/code/ironbar/the-architects-baseline-with-4-gpus/output?scriptVersionId=230202814)
+- [Invalid submission](https://www.kaggle.com/code/ironbar/search-and-learn/output?scriptVersionId=261813255)
+
+```bash
+python scripts/validate_submission.py --submission-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/sample_submission.json --dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_test_challenges.json
+
+python scripts/validate_submission.py --submission-path /mnt/hdd0/Kaggle/arc25/submissions/evaluation_2025_invalid_submission.json --dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2025/arc-agi_evaluation_challenges.json
+```
+
 ## Results
 
 ### Reward is not improving

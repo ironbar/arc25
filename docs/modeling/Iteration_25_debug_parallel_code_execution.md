@@ -145,8 +145,9 @@ Again, this is very fast.
 
 python3 -m venv cached-environments/debug
 source cached-environments/debug/bin/activate
-pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml
 export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml
+
 
 python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json
 # calculon01, 12 cores
@@ -172,11 +173,33 @@ Name: count, dtype: int64
 MEAN      8.0         1.0       0.325625        0.288438  ...            0.015469           0.015            0.055        0.05
 # not bad, considering that it had other workloads at the same time
 
+## calculon18, 64 cores
+n_jobs=-1, 114.21run/s]
+n_jobs=2, 82.98run/s
+n_jobs=5, 153.94run/s
+n_jobs=10, 171.64run/s
+n_jobs=20, 151.97run/s
+n_jobs=60, 140.57run/s
+n_jobs=-1, 140.47run/s
+# there is like a big startup time that does not happen on my machine
+
+## calculon13, 20 cores
+n_jobs=-1, 222.78run/s
+n_jobs=5, 175.63run/s
+n_jobs=10, 206.38run/s
+n_jobs=20, 238.54run/s
+# there is a weird startup time, and sometimes ending time
+
 ## calculon21, 252cores
 Loaded 400 tasks with 8 predictions each.
 Executing predictions for batch 0 with exec: 100%|████████████████████████████████████| 3200/3200 [00:36<00:00, 87.61run/s]
 # It might be the problem of the machine. Need to try on different machines with different number of cores
 # Notice that Kaggle machines have 48 cores. https://cloud.google.com/compute/docs/gpus#l4-gpus
+
+n_jobs=-1, 138.33run/s
+n_jobs=5, 162.16run/s
+n_jobs=10, 172.60run/s
+n_jobs=20, 180.29run/s
 ```
 
 ## Results

@@ -169,8 +169,10 @@ data augmentation for this experiment.
     - [x] Add verbose option to code evaluation
     - [ ] More smooth reward, combine test and train
 - [ ] Training experiments
+  - [ ] How many epochs does the model need to learn all the tasks?
   - [ ] What is the configuration that better uses the hardware
   - [ ] Best learning rate
+  - [ ] How much the model improves after training?
 - [x] What is the max prompt length for all the datasets available? -> 8635
 - [ ] GPU usage is not efficient with server mode: https://huggingface.co/blog/vllm-colocate
 - [ ] Kaggle scoring error

@@ -84,6 +84,8 @@ export CUDA_VISIBLE_DEVICES=0,1; trl vllm-serve --max_model_len 12000 --model /h
 Simply replace the following line on `Llama-3.1-ARC-Potpourri-Induction-8B/tokenizer_config.json`:
 
 ```bash
+sed -i 's/"pad_token": "<|eot_id|>"/"pad_token": "<|finetune_right_pad_id|>"/' file.json
+
 - "pad_token": "<|eot_id|>",
 + "pad_token": "<|finetune_right_pad_id|>",
 ```
@@ -147,9 +149,9 @@ data augmentation for this experiment.
 - [x] If I understand correctly each step a single problem is seen
 - [ ] Should I modify the tokenizer directly in the model to avoid problems?
 - [ ] 24GB of VRAM is not enough to do RL training with the sequence lengths of ARC -> Need to go to H100
-  - [ ] Update environment
+  - [x] Update environment
   - [ ] Update tokenizer conf
-  - [ ] Create RL training script
+  - [x] Create RL training script
     - [ ] Generator for the prompts
     - [x] Add verbose option to code evaluation
     - [ ] More smooth reward, combine test and train

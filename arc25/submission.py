@@ -7,8 +7,9 @@ def create_submission(results: dict, dataset: dict, sorting_metric: str = 'train
     Follows the ARC25 submission format.
     """
     submission = {}
-    for task_id, task_results in results.items():
+    for task_id in dataset:
         n_test = len(dataset[task_id]['test'])
+        task_results = results.get(task_id, [])
         valid_results = [result for result in task_results if 'test_output_grids' in result]
         if not valid_results:
             submission[task_id] = [{'attempt_1': [[0]], 'attempt_2': [[0]],} for _ in range(n_test)]

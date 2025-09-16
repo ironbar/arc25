@@ -1,7 +1,7 @@
 import numpy as np
+from typing import List
 
-
-def validate_outputs(outputs: list[np.ndarray]) -> list[np.ndarray]:
+def validate_outputs(outputs: List[np.ndarray]) -> List[np.ndarray]:
     """
     Validate a list of output grids. Each output should be a 2D numpy array
     with integer values in range [0, 9], shape not larger than 30x30, and not empty.

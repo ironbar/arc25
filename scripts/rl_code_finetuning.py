@@ -109,10 +109,10 @@ def main():
         max_prompt_length=None,
         temperature=1.0,
         top_p=0.95,
+        dataloader_num_workers=1,
         # wandb
         report_to='wandb',
         run_name=os.path.basename(cfg.output_dir),
-        # project=os.path.basename(os.path.dirname(cfg.output_dir)),
     )
     os.environ["WANDB_PROJECT"] = os.path.basename(os.path.dirname(cfg.output_dir))
     os.environ["WANDB_DIR"] = cfg.output_dir

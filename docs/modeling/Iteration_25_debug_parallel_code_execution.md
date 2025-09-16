@@ -138,6 +138,28 @@ MEAN      8.0         1.0       0.320625        0.285938           0.184007     
 
 Again, this is very fast.
 
+### Experiments on cluster without condor
+
+```bash
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+
+python3 -m venv cached-environments/debug
+source cached-environments/debug/bin/activate
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml
+
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json
+Traceback (most recent call last):
+  File "arc25/scripts/debug_parallel_execution.py", line 5, in <module>
+    from arc25.parallel_code_execution import run_code_from_predictions
+  File "/mnt/scratch/users/gbarbadillo/arc25/arc25/arc25/parallel_code_execution.py", line 9, in <module>
+    from arc25.code_execution import safe_code_execution
+  File "/mnt/scratch/users/gbarbadillo/arc25/arc25/arc25/code_execution.py", line 133, in <module>
+    def safe_code_execution(code: str, inputs: list[np.ndarray], func_name: str = 'task',
+TypeError: 'type' object is not subscriptable
+
+#This would need to use List from typing
+```
+
 ## Results
 
 ## Conclusion

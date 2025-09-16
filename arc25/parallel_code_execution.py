@@ -1,5 +1,6 @@
 import logging
 import numpy as np
+from typing import List
 from tqdm.auto import tqdm
 from tqdm_joblib import tqdm_joblib
 from joblib import Parallel, delayed
@@ -95,7 +96,7 @@ def add_additional_imports(code):
     return imports + '\n' + code if code else imports
 
 
-def fingerprint(output_grids : list[np.ndarray]) -> str:
+def fingerprint(output_grids : List[np.ndarray]) -> str:
     """
     Create a compact hash for a list of matrices.
     Includes shape & dtype to distinguish e.g. (2×2) from (4×1).

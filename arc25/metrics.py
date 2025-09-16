@@ -1,8 +1,9 @@
 import numpy as np
+from typing import List
 import pandas as pd
 
 
-def get_metrics(task: dict, predicted_grids: list[np.ndarray]) -> dict:
+def get_metrics(task: dict, predicted_grids: List[np.ndarray]) -> dict:
     """
     Compute multiple evaluation metrics for a single ARC task given the predicted output grids.
     """

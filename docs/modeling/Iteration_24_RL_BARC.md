@@ -147,18 +147,18 @@ data augmentation for this experiment.
 
 - [x] How to pass the responses to the reward function? It seems that the data should be provided as a field in the dictionary
 - [x] If I understand correctly each step a single problem is seen
-- [ ] Should I modify the tokenizer directly in the model to avoid problems?
+- [x] Should I modify the tokenizer directly in the model to avoid problems?
 - [ ] 24GB of VRAM is not enough to do RL training with the sequence lengths of ARC -> Need to go to H100
   - [x] Update environment
-  - [ ] Update tokenizer conf
+  - [x] Update tokenizer conf
   - [x] Create RL training script
-    - [ ] Generator for the prompts
+    - [x] ~~Generator for the prompts~~ Not necessary, dataset is small
     - [x] Add verbose option to code evaluation
     - [ ] More smooth reward, combine test and train
 - [ ] Training experiments
   - [ ] What is the configuration that better uses the hardware
   - [ ] Best learning rate
-- [ ] What is the max prompt length for all the datasets available? -> Use that to better set the max_model_len of VLLM
+- [x] What is the max prompt length for all the datasets available? -> 8635
 - [ ] GPU usage is not efficient with server mode: https://huggingface.co/blog/vllm-colocate
 - [ ] Kaggle scoring error
   - [ ] Add tests for create submission

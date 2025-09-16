@@ -176,6 +176,7 @@ data augmentation for this experiment.
 - [ ] Kaggle scoring error
   - [x] Create validate submission script
   - [ ] Add tests for create submission
-  - [ ] Check problems on existing submission
-  - [ ] Change priority to dataset (there might be missing tasks)
-  - [ ] Maybe I'm using numpy instead of float?
+  - [x] Check problems on existing submission
+  - [x] Change priority to dataset (there might be missing tasks)
+  - [x] Maybe I'm using numpy instead of float?
+  - [x] https://www.kaggle.com/code/ironbar/validate-arc25-submission?scriptVersionId=262170501

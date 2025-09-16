@@ -176,6 +176,7 @@ MEAN      8.0         1.0       0.325625        0.288438  ...            0.01546
 Loaded 400 tasks with 8 predictions each.
 Executing predictions for batch 0 with exec: 100%|████████████████████████████████████| 3200/3200 [00:36<00:00, 87.61run/s]
 # It might be the problem of the machine. Need to try on different machines with different number of cores
+# Notice that Kaggle machines have 48 cores. https://cloud.google.com/compute/docs/gpus#l4-gpus
 ```
 
 ## Results

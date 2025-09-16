@@ -42,7 +42,7 @@ class Config:
     # base model
     model_path: str = "/home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B"
     load_in_4bit: bool = False
-    max_seq_length: int = 12000 # 8635 + output tokens
+    max_seq_length: int = 9670 # 8635 + output tokens
     grid_encoder: str = 'ColorNameEncoder()'
     gpu_memory_utilization: float = 0.8 # best value for Kaggle L4 GPU
     # LoRA
@@ -63,11 +63,11 @@ class Config:
     # training hyperparameters
     learning_rate: float = 1e-5
     lr_scheduler_type: str = 'constant_with_warmup'
-    train_max_seq_length: int = 10000
+    train_max_seq_length: int = 9670
     # sampling hyperparameters
     temperature: float = 1.0
     top_p: float = 0.95
-    max_output_tokens: int = 2048
+    max_output_tokens: int = 1024
     # other
     log_to_wandb: bool = True
 

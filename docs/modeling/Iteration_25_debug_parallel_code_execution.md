@@ -141,12 +141,12 @@ Again, this is very fast.
 ### Experiments on cluster without condor
 
 ```bash
-export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+
 
 python3 -m venv cached-environments/debug
 source cached-environments/debug/bin/activate
 pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml
-
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
 
 python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json
 # calculon01
@@ -171,6 +171,11 @@ Name: count, dtype: int64
       n_preds  valid code  valid outputs  unique outputs  ...  test_correct_grids  test_pass_rate  test_is_correct  is_correct
 MEAN      8.0         1.0       0.325625        0.288438  ...            0.015469           0.015            0.055        0.05
 # not bad, considering that it had other workloads at the same time
+
+## calculon21
+Loaded 400 tasks with 8 predictions each.
+Executing predictions for batch 0 with exec: 100%|████████████████████████████████████| 3200/3200 [00:36<00:00, 87.61run/s]
+# It might be the problem of the machine. Need to try on different machines with different number of cores
 ```
 
 ## Results

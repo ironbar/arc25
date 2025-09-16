@@ -22,4 +22,5 @@ to validate my approach.
 
 ## TODO
 
-- [ ]
+- [ ] Can I simplify the problem so I can easily debug on the different environments?
+- [ ] Maybe it could be as simple as changing the method that parallelizes the work

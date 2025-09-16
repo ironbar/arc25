@@ -108,6 +108,36 @@ MEAN      8.0         1.0         0.3375        0.300625            0.19509     
 # there is a weird ModuleNotFoundError but execution is very fast
 ```
 
+### Experiments on laptop
+
+```bash
+export PYTHONPATH=/mnt/data/other/code/arc25
+python scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json
+
+Loaded 400 tasks with 8 predictions each.
+Executing predictions for batch 0 with exec: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3200/3200 [00:12<00:00, 258.22run/s]
+Most common errors:
+ModuleNotFoundError     1671
+NonDeterministicCode     204
+ValueError               107
+IndexError                77
+AssertionError            39
+TimeoutException          34
+TypeError                 14
+AttributeError            12
+UnboundLocalError          4
+SyntaxError                4
+UnsafeCode                 3
+KeyError                   3
+NameError                  1
+ZeroDivisionError          1
+Name: count, dtype: int64
+      n_preds  valid code  valid outputs  unique outputs  train_pixel_score  train_correct_grids  train_pass_rate  train_is_correct  test_pixel_score  test_correct_grids  test_pass_rate  test_is_correct  is_correct
+MEAN      8.0         1.0       0.320625        0.285938           0.184007             0.016169         0.010937            0.0475          0.180193            0.013281        0.012812           0.0525      0.0475
+```
+
+Again, this is very fast.
+
 ## Results
 
 ## Conclusion

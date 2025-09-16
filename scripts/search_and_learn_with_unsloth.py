@@ -42,7 +42,7 @@ class Config:
     # base model
     model_path: str = "/home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B"
     load_in_4bit: bool = False
-    max_seq_length: int = 12000
+    max_seq_length: int = 12000 # 8635 + output tokens
     grid_encoder: str = 'ColorNameEncoder()'
     gpu_memory_utilization: float = 0.8 # best value for Kaggle L4 GPU
     # LoRA
@@ -51,9 +51,9 @@ class Config:
     # dataset
     dataset_path: str = "/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json"
     output_dir: str = "/mnt/hdd0/Kaggle/arc25/trainings/2025-09-06-debug-unsloth/first-steps"
-    log_to_wandb: bool = True
-    max_epochs: int = 0
+    # search and learn hyperparameters
     use_data_augmentation: bool = True
+    max_epochs: int = 0
     inference_batch_size: int = 8
     initial_predictions: int = 32
     predictions_per_epoch: int = 8
@@ -64,6 +64,12 @@ class Config:
     learning_rate: float = 1e-5
     lr_scheduler_type: str = 'constant_with_warmup'
     train_max_seq_length: int = 10000
+    # sampling hyperparameters
+    temperature: float = 1.0
+    top_p: float = 0.95
+    max_output_tokens: int = 2048
+    # other
+    log_to_wandb: bool = True
 
 
 def main():
@@ -89,7 +95,8 @@ def main():
     results = search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request=None,
         inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
         use_data_augmentation=cfg.use_data_augmentation, print_first_prompt=True, n_jobs=cfg.n_jobs,
-        timeout_duration=cfg.timeout_duration)
+        timeout_duration=cfg.timeout_duration, max_tokens=cfg.max_output_tokens,
+        temperature=cfg.temperature, top_p=cfg.top_p)
     print(aggregate_metrics(results))
 
     model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora) # initialize peft model
@@ -115,7 +122,8 @@ def main():
             task_results = search(dataset, [task_id], llm, tokenizer, grid_encoder, lora_request,
                 inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
                 use_data_augmentation=cfg.use_data_augmentation, n_jobs=cfg.n_jobs,
-                timeout_duration=cfg.timeout_duration)
+                timeout_duration=cfg.timeout_duration, max_tokens=cfg.max_output_tokens,
+                temperature=cfg.temperature, top_p=cfg.top_p)
             print(aggregate_metrics(task_results).head(1).round(3))
             task_results = task_results[task_id]
             results[task_id].extend(task_results)
@@ -149,7 +157,8 @@ def create_peft_model(llm, lora_r, use_rslora, model=None):
 @log_execution_time
 def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
            inference_batch_size, n_predictions, use_data_augmentation,
-           print_first_prompt=False, n_jobs=-1, timeout_duration=5):
+           print_first_prompt=False, n_jobs=-1, timeout_duration=5,
+           max_tokens=2048, temperature=1.0, top_p=0.95):
     set_random_seed(None)
     prompts, data_augmentation_params, inference_task_ids = [], [], []
     for task_id in task_ids:
@@ -168,7 +177,8 @@ def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
 
     if print_first_prompt: pretty_print_prompt(prompts[0])
 
-    sampling_params = SamplingParams(n=inference_batch_size, temperature=1.0, top_p=0.95, max_tokens=2048) # TODO: move parameters to cfg
+    sampling_params = SamplingParams(n=inference_batch_size, temperature=temperature,
+                                     top_p=top_p, max_tokens=max_tokens)
     generations = llm.fast_generate(prompts, sampling_params, lora_request=lora_request)
     logger.info(f'Generated {len(generations)} generations with batch size {inference_batch_size}')
     text_predictions = []

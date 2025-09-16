@@ -182,3 +182,7 @@ data augmentation for this experiment.
   - [x] Change priority to dataset (there might be missing tasks)
   - [x] Maybe I'm using numpy instead of float?
   - [x] https://www.kaggle.com/code/ironbar/validate-arc25-submission?scriptVersionId=262170501
+  - [ ] First sucessful submission. https://www.kaggle.com/code/ironbar/search-and-learn?scriptVersionId=262195260
+  - [ ] I suspect the problem is there were missing tasks. Can I simulate that?
+    - [ ] -> Lower gpu_memory and see what happens.
+    - [ ] Better adjustment of model hyperparameters

@@ -7,7 +7,7 @@ and 'output' grids.
 import random
 import numpy as np
 from functools import singledispatch
-from typing import Optional, Union
+from typing import Optional, Dict
 
 
 @singledispatch
@@ -72,12 +72,12 @@ def _revert_geometric_augmentation(grid: np.ndarray, hflip: bool, n_rot90: int) 
     return grid
 
 
-def _apply_colormap(grid: np.ndarray, color_map: dict[int, int]) -> np.ndarray:
+def _apply_colormap(grid: np.ndarray, color_map: Dict[int, int]) -> np.ndarray:
     vectorized_mapping = np.vectorize(color_map.get)
     return vectorized_mapping(grid)
 
 
-def _revert_colormap(grid: np.ndarray, color_map: dict[int, int]) -> np.ndarray:
+def _revert_colormap(grid: np.ndarray, color_map: Dict[int, int]) -> np.ndarray:
     reverse_color_map = {v: int(k) for k, v in color_map.items()}
     return _apply_colormap(grid, reverse_color_map)
 
@@ -86,7 +86,7 @@ def _get_random_geometric_augmentation_params() -> dict:
     return dict(hflip=random.choice([True, False]), n_rot90=random.choice([0, 1, 2, 3]))
 
 
-def _get_random_color_map(change_background_probability: float = 0.1) -> dict[int, int]:
+def _get_random_color_map(change_background_probability: float = 0.1) -> Dict[int, int]:
     colors = list(range(10))
     if random.random() < change_background_probability:
         new_colors = list(range(10))

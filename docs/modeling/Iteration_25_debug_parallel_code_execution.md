@@ -147,17 +147,30 @@ python3 -m venv cached-environments/debug
 source cached-environments/debug/bin/activate
 pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml
 
-python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json
-Traceback (most recent call last):
-  File "arc25/scripts/debug_parallel_execution.py", line 5, in <module>
-    from arc25.parallel_code_execution import run_code_from_predictions
-  File "/mnt/scratch/users/gbarbadillo/arc25/arc25/arc25/parallel_code_execution.py", line 9, in <module>
-    from arc25.code_execution import safe_code_execution
-  File "/mnt/scratch/users/gbarbadillo/arc25/arc25/arc25/code_execution.py", line 133, in <module>
-    def safe_code_execution(code: str, inputs: list[np.ndarray], func_name: str = 'task',
-TypeError: 'type' object is not subscriptable
 
-#This would need to use List from typing
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json
+# calculon01
+Loaded 400 tasks with 8 predictions each.
+Executing predictions for batch 0 with exec: 100%|███████████████████████████████████| 3200/3200 [00:21<00:00, 150.08run/s]
+Most common errors:
+ModuleNotFoundError     1671
+NonDeterministicCode     204
+ValueError               101
+IndexError                77
+AssertionError            39
+TimeoutException          24
+TypeError                 14
+AttributeError            12
+SyntaxError                4
+UnboundLocalError          4
+UnsafeCode                 3
+KeyError                   3
+NameError                  1
+ZeroDivisionError          1
+Name: count, dtype: int64
+      n_preds  valid code  valid outputs  unique outputs  ...  test_correct_grids  test_pass_rate  test_is_correct  is_correct
+MEAN      8.0         1.0       0.325625        0.288438  ...            0.015469           0.015            0.055        0.05
+# not bad, considering that it had other workloads at the same time
 ```
 
 ## Results

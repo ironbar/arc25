@@ -83,32 +83,34 @@ The speed seems to be the same, so probably wasn't using previously because arra
 ```bash
 docker run -ti -v /mnt/hdd0:/mnt/hdd0 gbarbadillo/cuda-python:python3.10-cuda14.1
 cd /mnt/hdd0/MEGA/AI/22_Kaggle/arc25
-pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml scipy
 export PYTHONPATH=/mnt/hdd0/MEGA/AI/22_Kaggle/arc25
 python3 scripts/debug_parallel_execution.py
 
 Loaded 400 tasks with 8 predictions each.
-Executing predictions for batch 0 with exec: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3200/3200 [00:07<00:00, 420.28run/s]
+Executing predictions for batch 0 with exec: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3200/3200 [00:09<00:00, 354.43run/s]
 Most common errors:
-ModuleNotFoundError     1609
-NonDeterministicCode     222
-ValueError               105
-IndexError                88
-AssertionError            39
-TimeoutException          29
-TypeError                 11
-UnsafeCode                 5
-SyntaxError                4
-AttributeError             4
-UnboundLocalError          2
-KeyError                   1
-NameError                  1
+NonDeterministicCode    222
+ValueError              214
+IndexError              202
+AssertionError          181
+TimeoutException         49
+AttributeError           21
+TypeError                17
+UnboundLocalError         7
+UnsafeCode                5
+KeyError                  4
+SyntaxError               4
+StopIteration             4
+NameError                 4
+ZeroDivisionError         2
+RecursionError            1
 Name: count, dtype: int64
       n_preds  valid code  valid outputs  unique outputs  train_pixel_score  train_correct_grids  train_pass_rate  train_is_correct  test_pixel_score  test_correct_grids  test_pass_rate  test_is_correct  is_correct
-MEAN      8.0         1.0         0.3375        0.300625            0.19509             0.017259         0.011875            0.0375          0.190944            0.013594        0.013437           0.0475      0.0375
-
-# there is a weird ModuleNotFoundError but execution is very fast
+MEAN      8.0         1.0       0.707187        0.629375           0.415056             0.022014          0.01375            0.0425          0.404481            0.016719        0.016563             0.06        0.04
 ```
+
+Runs as fast as without docker when using my machine.
 
 ### Experiments on laptop
 

@@ -46,7 +46,6 @@ That way I will run the same script with the same data in the different settings
 about the problem faster.
 
 I have prepared the script and I cannot understand the problem. Could it be a problem with the environment?
-TODO: repeat experiments when updating the environment
 
 ```bash
 python scripts/debug_parallel_execution.py
@@ -75,6 +74,9 @@ MEAN      8.0         1.0       0.706875        0.629062           0.415273     
 
 export N_CPUS=8; condor_submit train.condor command=" python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/debug_parallel_execution.py \ --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \ --prediction-path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json" -append request_cpus=${N_CPUS} -append request_gpus=0
 ```
+
+Notice that I get fast execution on my PC also if I disable memmapping: `max_nbytes=None, mmap_mode=None)`.
+The speed seems to be the same, so probably wasn't using previously because arrays are very small.
 
 ### Doing the experiment with docker on my machine
 

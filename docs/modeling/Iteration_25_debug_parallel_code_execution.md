@@ -272,6 +272,50 @@ export TMPDIR=/dev/shm JOBLIB_TEMP_FOLDER=/dev/shm LOKY_TEMP=/dev/shm
 This shows that the problem only happens when using docker on the cluster. Docker has access to all the cpus, 
 we can set a big enough shm size, we can disable memmapping, but the execution is still slow.
 
+### The problem seems to be related to the environment!
+
+```bash
+sudo sudo docker run -ti -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+cd /mnt/scratch/users/gbarbadillo/arc25
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml scipy
+
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+
+Executing predictions for batch 0 with exec: 100%|███████████████████████████████████| 3200/3200 [00:10<00:00, 307.04run/s]
+Most common errors:
+ValueError              211
+NonDeterministicCode    204
+IndexError              186
+AssertionError          172
+TimeoutException         42
+TypeError                28
+AttributeError           25
+UnboundLocalError         9
+KeyError                  5
+SyntaxError               4
+ZeroDivisionError         4
+UnsafeCode                3
+NameError                 3
+StopIteration             2
+Name: count, dtype: int64
+      n_preds  valid code  valid outputs  unique outputs  ...  test_correct_grids  test_pass_rate  test_is_correct  is_correct
+MEAN      8.0         1.0       0.719375         0.63875  ...            0.020313        0.019688           0.0725      0.0575
+
+# however if I activate the environment
+source cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/activate
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+1.11s/run
+
+# create a new environment
+deactivate
+python3 -m venv cached-environments/debug-2
+source cached-environments/debug-2/bin/activate
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml scipy
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+127.53run/s
+```
+
 ### Trying to understand the problem
 
 https://joblib.readthedocs.io/en/latest/developing.html

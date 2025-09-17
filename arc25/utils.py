@@ -2,6 +2,7 @@
 Functions commonly used in the challenge
 """
 import os
+import glob
 import random
 import time
 import numpy as np
@@ -141,3 +142,12 @@ def create_dataset_partitions(dataset_path, output_dir='dataset', n_partitions=4
             subset = {key: dataset[key] for key in partition[::-1]}
         filepath = f'{output_dir}/partition{idx}_challenges.json'
         write_json(subset, filepath)
+
+
+def is_checkpoint_available(output_dir):
+    is_checkpoint_available = len(glob.glob(os.path.join(output_dir, 'checkpoint-*'))) > 0
+    if is_checkpoint_available:
+        logger.info('Checkpoint found, resuming training')
+    else:
+        logger.info('No checkpoint found, starting training from scratch')
+    return is_checkpoint_available

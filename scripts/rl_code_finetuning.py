@@ -16,7 +16,7 @@ from tqdm.auto import tqdm
 from trl import GRPOConfig, GRPOTrainer
 
 from arc25.encoders import create_grid_encoder
-from arc25.utils import load_arc_dataset_with_solutions, convert_task_to_numpy, set_random_seed
+from arc25.utils import load_arc_dataset_with_solutions, convert_task_to_numpy, set_random_seed, is_checkpoint_available
 from arc25.data_augmentation import apply_data_augmentation, get_random_data_augmentation_params
 from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 from arc25.logging import configure_logging, logging
@@ -49,6 +49,7 @@ class Config:
     learning_rate: float = 1e-5
     lr_scheduler_type: str = 'constant_with_warmup'
     use_data_augmentation: bool = True
+    resume_from_checkpoint: bool = True
 
 
 def main():
@@ -127,7 +128,7 @@ def main():
         train_dataset=grpo_dataset,
         completion_only_loss=True,
     )
-    trainer.train()
+    trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
 
 
 def arc_reward(completions, tasks, completion_ids, **kwargs):

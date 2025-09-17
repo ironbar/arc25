@@ -76,7 +76,7 @@ MEAN      8.0         1.0       0.706875        0.629062           0.415273     
 export N_CPUS=8; condor_submit train.condor command=" python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/debug_parallel_execution.py \ --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \ --prediction-path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json" -append request_cpus=${N_CPUS} -append request_gpus=0
 ```
 
-### Doing the experiment with docker
+### Doing the experiment with docker on my machine
 
 ```bash
 docker run -ti -v /mnt/hdd0:/mnt/hdd0 gbarbadillo/cuda-python:python3.10-cuda14.1
@@ -138,18 +138,19 @@ MEAN      8.0         1.0       0.320625        0.285938           0.184007     
 
 Again, this is very fast.
 
-### Experiments on cluster without condor
+### Experiments on cluster without condor or docker
 
 ```bash
-
-
+# create environment
 python3 -m venv cached-environments/debug
 source cached-environments/debug/bin/activate
-export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
 pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml
 
+# launch script
+source cached-environments/debug/bin/activate
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
 
-python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json
 # calculon01, 12 cores
 Loaded 400 tasks with 8 predictions each.
 Executing predictions for batch 0 with exec: 100%|███████████████████████████████████| 3200/3200 [00:21<00:00, 150.08run/s]
@@ -202,6 +203,37 @@ n_jobs=10, 172.60run/s
 n_jobs=20, 180.29run/s
 ```
 
+### Experiments on cluster with docker
+
+```bash
+
+sudo sudo docker run -ti -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+cd /mnt/scratch/users/gbarbadillo/arc25
+source cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/activate
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+
+## calculon21, 252cores
+Executing predictions for batch 0 with exec:  13%|████▋                                | 401/3200 [04:26<30:57,  1.51run/s]
+n_jobs=20, 1.51run/s
+
+# try increasing shm
+sudo sudo docker run -ti --shm-size=2g -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+
+## calculon21, 252cores
+n_jobs=2, 1.25run/s
+n_jobs=5, 1.48run/s
+n_jobs=20, 1.55run/s
+
+
+# try using /dev/shm
+sudo docker run -ti --ipc=host --shm-size=2g \
+  -e TMPDIR=/dev/shm -e JOBLIB_TEMP_FOLDER=/dev/shm -e LOKY_TEMP=/dev/shm \
+  -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 \
+  gbarbadillo/cuda-python:python3.10-cuda14.1
+n_jobs=20, 1.39run/s
+```
+
 ## Results
 
 ## Conclusion
@@ -210,9 +242,11 @@ n_jobs=20, 180.29run/s
 
 ## TODO
 
-- [ ] Can I simplify the problem so I can easily debug on the different environments?
+- [x] Can I simplify the problem so I can easily debug on the different environments?
 - [ ] Maybe it could be as simple as changing the method that parallelizes the work
-- [ ] Experiments I would like to do:
-  - [ ] Try on laptop
-  - [ ] Try on Docker
-  - [ ] Try on a cluster machine without using condor
+- [x] Experiments I would like to do:
+  - [x] Try on laptop
+  - [x] Try on Docker
+  - [x] Try on a cluster machine without using condor
+  - [x] Try on a cluster machine with docker but without condor
+

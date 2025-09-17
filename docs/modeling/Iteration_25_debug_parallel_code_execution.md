@@ -151,7 +151,7 @@ pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml
 # launch script
 source cached-environments/debug/bin/activate
 export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
-python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20 --bath_size 100
 
 # calculon01, 12 cores
 Loaded 400 tasks with 8 predictions each.
@@ -234,13 +234,50 @@ sudo docker run -ti --ipc=host --shm-size=2g \
   -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 \
   gbarbadillo/cuda-python:python3.10-cuda14.1
 n_jobs=20, 1.39run/s
+
+### confirm cpu limits inside the docker
+sudo sudo docker run -ti -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+# cgroup v2 (common on modern kernels)
+$ cat /sys/fs/cgroup/cpu.max 2>/dev/null || true
+$ # cgroup v1 (older)
+$ cat /sys/fs/cgroup/cpu/cpu.cfs_quota_us 2>/dev/null || true
+-1
+$ cat /sys/fs/cgroup/cpu/cpu.cfs_period_us 2>/dev/null || true
+100000
+$ 
+$ # Are we being throttled?
+$ cat /sys/fs/cgroup/cpu.stat 2>/dev/null || cat /sys/fs/cgroup/cpu/cpu.stat 2>/dev/null || true
+nr_periods 0
+nr_throttled 0
+throttled_time 0
+$ 
+$ # How many CPUs are we actually allowed to run on?
+$ grep Cpus_allowed_list /proc/self/status
+Cpus_allowed_list:	0-255
+$ nproc
+256
+
+## I have also tried setting environment flags without success
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+       NUMEXPR_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 BLIS_NUM_THREADS=1
+export TMPDIR=/dev/shm JOBLIB_TEMP_FOLDER=/dev/shm LOKY_TEMP=/dev/shm
 ```
+
+This shows that the problem only happens when using docker on the cluster. Docker has access to all the cpus, 
+we can set a big enough shm size, we can disable memmapping, but the execution is still slow.
 
 ### Trying to understand the problem
 
 https://joblib.readthedocs.io/en/latest/developing.html
 
 > The automatic array memory mapping feature of Parallel does no longer use /dev/shm if it is too small (less than 2 GB). In particular in docker containers /dev/shm is only 64 MB by default which would cause frequent failures when running joblib in Docker containers.
+
+https://joblib.readthedocs.io/en/latest/parallel.html
+
+Here there is a description of the Parallel method from joblib and all its parameters.
+
+This [conversation](https://chatgpt.com/share/68cabe24-e734-8012-a409-f9e14dfa9b32) with GPT5 suggests
+that signal+joblib+loky seems to be the best option.
 
 ## Results
 

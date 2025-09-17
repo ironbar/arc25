@@ -108,6 +108,10 @@ RecursionError            1
 Name: count, dtype: int64
       n_preds  valid code  valid outputs  unique outputs  train_pixel_score  train_correct_grids  train_pass_rate  train_is_correct  test_pixel_score  test_correct_grids  test_pass_rate  test_is_correct  is_correct
 MEAN      8.0         1.0       0.707187        0.629375           0.415056             0.022014          0.01375            0.0425          0.404481            0.016719        0.016563             0.06        0.04
+
+# I can restrict shm size and speed is not affected
+docker run -ti --shm-size=64M -v /mnt/hdd0:/mnt/hdd0 gbarbadillo/cuda-python:python3.10-cuda14.1
+353.00run/s
 ```
 
 Runs as fast as without docker when using my machine.

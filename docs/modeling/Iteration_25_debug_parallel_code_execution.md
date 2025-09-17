@@ -152,7 +152,7 @@ Again, this is very fast.
 # create environment
 python3 -m venv cached-environments/debug
 source cached-environments/debug/bin/activate
-pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml scipy
 
 # launch script
 source cached-environments/debug/bin/activate

@@ -27,8 +27,8 @@ nvidia-ml-py3
 wheel
 setuptools
 cmake
-deepspeed
-pynvml
+# deepspeed
+nvidia-ml-py
 opencv-python
 liger-kernel
 unsloth==2025.9.3

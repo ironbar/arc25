@@ -234,6 +234,12 @@ sudo docker run -ti --ipc=host --shm-size=2g \
 n_jobs=20, 1.39run/s
 ```
 
+### Trying to understand the problem
+
+https://joblib.readthedocs.io/en/latest/developing.html
+
+> The automatic array memory mapping feature of Parallel does no longer use /dev/shm if it is too small (less than 2 GB). In particular in docker containers /dev/shm is only 64 MB by default which would cause frequent failures when running joblib in Docker containers.
+
 ## Results
 
 ## Conclusion

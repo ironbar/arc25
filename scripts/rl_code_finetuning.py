@@ -12,6 +12,7 @@ from unsloth import FastLanguageModel
 from dataclasses import dataclass
 from datasets import Dataset
 from tqdm.auto import tqdm
+from functools import partial, update_wrapper
 
 from trl import GRPOConfig, GRPOTrainer
 
@@ -20,7 +21,7 @@ from arc25.utils import load_arc_dataset_with_solutions, convert_task_to_numpy, 
 from arc25.data_augmentation import apply_data_augmentation, get_random_data_augmentation_params
 from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 from arc25.logging import configure_logging, logging
-from arc25.parallel_code_execution import run_code_from_predictions
+from arc25.parallel_code_execution import CodeRunner
 
 configure_logging()
 logger = logging.getLogger(__name__)
@@ -50,6 +51,8 @@ class Config:
     lr_scheduler_type: str = 'constant_with_warmup'
     use_data_augmentation: bool = True
     resume_from_checkpoint: bool = True
+    # others
+    n_jobs: int = -1
 
 
 def main():
@@ -119,11 +122,14 @@ def main():
     os.environ["WANDB_PROJECT"] = os.path.basename(os.path.dirname(cfg.output_dir))
     os.environ["WANDB_DIR"] = cfg.output_dir
 
+    code_runner = CodeRunner(n_jobs=cfg.n_jobs)
+    reward_func = partial(arc_reward, code_runner=code_runner)
+    update_wrapper(reward_func, arc_reward)
 
     trainer = GRPOTrainer(
         model=model,
         processing_class=tokenizer,
-        reward_funcs=arc_reward, #reward_num_unique_letters,
+        reward_funcs=reward_func, #reward_num_unique_letters,
         # data_collator=get_data_collator(tokenizer),
         args=training_args,
         train_dataset=grpo_dataset,
@@ -132,16 +138,16 @@ def main():
     trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
 
 
-def arc_reward(completions, tasks, completion_ids, **kwargs):
+def arc_reward(completions, tasks, completion_ids, code_runner, **kwargs):
     """
     Reward function that rewards completions based on how many test cases they pass.
 
     As input seems to be receiving: completions, prompts, ground_truth and completion_ids
     """
     numpy_tasks = [convert_task_to_numpy(task) for task in tasks]
-    results = run_code_from_predictions(numpy_tasks, list(range(len(completions))), completions,
-                                        [None]*len(completions), group_results_by_task=False,
-                                        disable_tqdm=True)
+    results = code_runner.run(
+        numpy_tasks, list(range(len(completions))), completions,
+        [None]*len(completions), group_results_by_task=False, disable_tqdm=True)
     logger.info(f'Completions length: {[len(c) for c in completion_ids]}')
 
     rewards = []

@@ -35,6 +35,10 @@ class Config:
     use_data_augmentation: bool = True
     batch_size: int = 8
     n_predictions: int = 8
+    # model parameters
+    max_model_len: int = 10700
+    max_output_tokens: int = 2048
+    gpu_memory_utilization: float = 0.85
 
 
 def main():
@@ -43,7 +47,8 @@ def main():
     llm, tokenizer = load_vllm_model_and_tokenizer(
         cfg.base_model_path, use_4bit_quantization=cfg.use_4bit_quantization,
         tensor_parallel_size=cfg.tensor_parallel_size,
-        enable_lora=cfg.lora_path is not None, max_model_len=16000, max_lora_rank=32)
+        enable_lora=cfg.lora_path is not None, max_model_len=cfg.max_model_len, max_lora_rank=32,
+        gpu_memory_utilization=cfg.gpu_memory_utilization)
     if cfg.lora_path is not None:
         lora_request = LoRARequest(lora_name='LoRA', lora_int_id=1, lora_path=cfg.lora_path)
     else:
@@ -52,7 +57,7 @@ def main():
     dataset = load_arc_dataset_with_solutions(cfg.dataset_path)
     task_ids = list(dataset.keys())
 
-    sampling_params = SamplingParams(n=cfg.batch_size, temperature=1.0, top_p=0.95, max_tokens=2048)
+    sampling_params = SamplingParams(n=cfg.batch_size, temperature=1.0, top_p=0.95, max_tokens=cfg.max_output_tokens)
     os.makedirs(cfg.output_folder, exist_ok=True)
     n_rounds = cfg.n_predictions//cfg.batch_size
     for round_idx in range(n_rounds):
@@ -95,7 +100,8 @@ def main():
 
 @log_execution_time
 def load_vllm_model_and_tokenizer(model_path: str, use_4bit_quantization: bool=False, tensor_parallel_size: int=1,
-               max_model_len: Optional[int]=None, enable_lora: bool=False, max_lora_rank: int=16):
+               max_model_len: Optional[int]=None, enable_lora: bool=False, max_lora_rank: int=16,
+               gpu_memory_utilization: float=0.92):
     logger.info(f"Loading model from {model_path}")
     additional_kwargs = {}
     if max_model_len is not None:
@@ -104,7 +110,7 @@ def load_vllm_model_and_tokenizer(model_path: str, use_4bit_quantization: bool=F
         additional_kwargs['max_lora_rank'] = max_lora_rank
     llm = LLM(
         model=model_path,
-        gpu_memory_utilization=0.92,  # Use less GPU memory
+        gpu_memory_utilization=gpu_memory_utilization,  # Use less GPU memory
         trust_remote_code=True,
         dtype="bfloat16",  # Use float16 to save memory
         tensor_parallel_size=tensor_parallel_size,  # Single GPU

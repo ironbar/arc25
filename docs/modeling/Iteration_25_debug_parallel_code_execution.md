@@ -274,6 +274,8 @@ we can set a big enough shm size, we can disable memmapping, but the execution i
 
 ### The problem seems to be related to the environment!
 
+#### Experiments on cluster with different environments
+
 ```bash
 sudo sudo docker run -ti -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
 cd /mnt/scratch/users/gbarbadillo/arc25
@@ -281,6 +283,7 @@ export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
 pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml scipy
 
 python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+# 307.04run/s
 
 Executing predictions for batch 0 with exec: 100%|███████████████████████████████████| 3200/3200 [00:10<00:00, 307.04run/s]
 Most common errors:
@@ -305,7 +308,7 @@ MEAN      8.0         1.0       0.719375         0.63875  ...            0.02031
 # however if I activate the environment
 source cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/activate
 python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
-1.11s/run
+# 1.11s/run
 
 # create a new environment
 deactivate
@@ -313,7 +316,31 @@ python3 -m venv cached-environments/debug-2
 source cached-environments/debug-2/bin/activate
 pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml scipy
 python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
-127.53run/s
+# 127.53run/s
+```
+
+These results show that there is something wrong with `venv_0e8c9c65f4e428eaa5db41171ac52335` that makes execution very slow.
+
+One weird thing is that they all have the same versions of the python libraries:
+
+```bash
+python3 - <<'PY'
+import joblib, numpy, scipy, pandas
+
+print("joblib:", joblib.__version__)
+print("numpy:", numpy.__version__)
+print("scipy:", scipy.__version__)
+print("pandas:", pandas.__version__)
+from joblib.externals import loky
+print("loky version:", getattr(loky, "__version__", "vendored"))
+PY
+
+
+joblib: 1.5.2
+numpy: 2.2.6
+scipy: 1.15.3
+pandas: 2.3.2
+loky version: 3.5.6
 ```
 
 #### Recreate environment at home PC

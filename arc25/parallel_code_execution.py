@@ -20,6 +20,7 @@ class CodeRunner():
     def __init__(self, n_jobs=-1):
         self.n_jobs = n_jobs
         self.parallel = None
+        self.start_parallel()
 
     def start_parallel(self):
         self.parallel = Parallel(n_jobs=self.n_jobs, backend="loky", prefer="processes", batch_size='auto')
@@ -51,7 +52,7 @@ class CodeRunner():
                 grouped_results[task_id] = []
             grouped_results[task_id].append(result)
         return grouped_results
-    
+
 
 def run_code_from_predictions(tasks, task_ids, text_predictions, data_augmentation_params,
                               n_jobs=-1, batch_size=5000, group_results_by_task=True, timeout_duration=1,

@@ -111,6 +111,16 @@ python scripts/validate_submission.py --submission-path /mnt/hdd0/Kaggle/arc25/s
 python scripts/validate_submission.py --submission-path /mnt/hdd0/Kaggle/arc25/submissions/test_2025_invalid_submission.json --dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2025/arc-agi_test_challenges.json
 ```
 
+### Inference to measure the improvement
+
+```bash
+python scripts/inference_with_BARC.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions2025-09-15-debug-grpo/lr1e-5_small-dataset_80epochs_16gens_continue/training \
+--lora-path /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr1e-5_small-dataset_80epochs_16gens_continue/checkpoint-5360 \
+--n-predictions 128
+```
+
 ## Results
 
 ### Reward is not improving

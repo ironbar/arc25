@@ -26,9 +26,9 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class Config:
-    base_model_path: str
-    dataset_path: str
     output_folder: str
+    base_model_path: str = "/home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B"
+    dataset_path: str = '/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_training_challenges.json'
     lora_path: Optional[str] = None
     use_4bit_quantization: bool = False
     tensor_parallel_size: int = 1

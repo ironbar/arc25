@@ -343,6 +343,80 @@ pandas: 2.3.2
 loky version: 3.5.6
 ```
 
+Other tests suggested by GPT5 also show the same outputs:
+
+```bash
+python3 - <<'PY'
+import os, tempfile, glob, time, joblib, numpy as np
+print("which python:", os.popen("which python").read().strip())
+print("TMPDIR:", os.getenv("TMPDIR"))
+print("JOBLIB_TEMP_FOLDER:", os.getenv("JOBLIB_TEMP_FOLDER"))
+print("LOKY_TEMP:", os.getenv("LOKY_TEMP"))
+print("loky dirs now:", glob.glob("/dev/shm/loky-*")[:3])
+
+from joblib import Parallel, delayed
+def f(x): return x*x
+
+start=time.time()
+Parallel(n_jobs=20, backend="loky", batch_size="auto")(delayed(f)(i) for i in range(20000))
+print("Parallel microbench elapsed:", round(time.time()-start,3), "s")
+PY
+
+which python: 
+TMPDIR: None
+JOBLIB_TEMP_FOLDER: None
+LOKY_TEMP: None
+loky dirs now: []
+Parallel microbench elapsed: 2.437 s
+
+which python: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/debug-2/bin/python
+TMPDIR: None
+JOBLIB_TEMP_FOLDER: None
+LOKY_TEMP: None
+loky dirs now: []
+Parallel microbench elapsed: 4.954 s
+
+which python: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/python
+TMPDIR: None
+JOBLIB_TEMP_FOLDER: None
+LOKY_TEMP: None
+loky dirs now: []
+Parallel microbench elapsed: 80.421 s
+```
+
+```bash
+python3 - <<'PY'
+import os, multiprocessing as mp, joblib
+print("python:", os.popen("which python").read().strip())
+print("mp start method:", mp.get_start_method(allow_none=True))
+# joblib/loky usually uses 'loky' context internally, but this reveals if something forced 'spawn'
+import joblib.externals.loky.backend.context as lctx
+print("loky default context:", lctx.get_context().get_start_method())
+PY
+
+They are all equal:
+
+python: 
+mp start method: None
+loky default context: loky
+
+python: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/debug-2/bin/python
+mp start method: None
+loky default context: loky
+
+python: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/python
+mp start method: None
+loky default context: loky
+```
+
+However one weird thing is that launching the python terminal is much slower in
+the slow environment.
+
+```bash
+time python -c "pass"
+# The slow environment takes 4s to start, the fast environment 0.5s
+```
+
 #### Recreate environment at home PC
 
 Let's see if recreating the environment at home results on slow execution.

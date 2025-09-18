@@ -66,6 +66,7 @@ for the training samples. The main differences between this methods is how the m
 - [Summary of the progress in the public leaderboard in 2024](https://arcprize.org/blog/2024-progress-arc-agi-pub)
 - [Jeremy Berman](https://jeremyberman.substack.com/p/how-i-got-a-record-536-on-arc-agi) uses an approach similar to [FunSearch](https://deepmind.google/discover/blog/funsearch-making-new-discoveries-in-mathematical-sciences-using-large-language-models/)
 - [Ryan Greenblatt](https://redwoodresearch.substack.com/p/getting-50-sota-on-arc-agi-with-gpt) was the first to show that this approach could work and how it scaled with the number of predictions.
+- [Eric Pang](https://ctpang.substack.com/p/arc-agi-2-sota-efficient-evolutionary) scored 77.1% on ARC-AGI-1 and 26% on ARC-AGI-2 using a code generation approach similar to FunSearch.
 
 ### [Inference-Time Scaling and Collective Intelligence for Frontier AI](https://sakana.ai/ab-mcts/)
 

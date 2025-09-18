@@ -51,6 +51,7 @@ class Config:
     lr_scheduler_type: str = 'constant_with_warmup'
     use_data_augmentation: bool = True
     resume_from_checkpoint: bool = True
+    warmup_ratio: float = 0.1
     # others
     n_jobs: int = -1
 
@@ -105,10 +106,10 @@ def main():
         per_device_train_batch_size=cfg.num_generations, # this is forced by unsloth
         num_generations=cfg.num_generations,
         gradient_accumulation_steps=cfg.training_prompts_per_step,
-        warmup_ratio = 0.1,
+        warmup_ratio=cfg.warmup_ratio,
         learning_rate=cfg.learning_rate,
         lr_scheduler_type=cfg.lr_scheduler_type,
-        max_grad_norm = 0.1,
+        max_grad_norm=0.1,
         max_completion_length=cfg.max_completion_length,
         max_prompt_length=None,
         temperature=1.0,

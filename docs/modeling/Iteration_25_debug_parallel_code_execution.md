@@ -489,6 +489,68 @@ PY
 time python -c "pass"
 ```
 
+The following lines are useful to run the tests in different environments
+
+```bash
+sudo sudo docker run -ti -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+source /mnt/scratch/users/gbarbadillo/arc25/cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/activate
+source /mnt/scratch/users/gbarbadillo/arc25/cached-environments/debug/bin/activate
+source /mnt/scratch/users/gbarbadillo/arc25/cached-environments/debug-2/bin/activate
+source /mnt/scratch/users/gbarbadillo/arc25/cached-environments/debug-big/bin/activate
+```
+
+The more the workers the higher the benchmark time. Maybe one work around would be to adjust the number
+of workers to the number of predictions. For example use a single worker when the number of tasks is small.
+
+```
+# calculon21
+njobs, benchmark time
+1, 0.105
+2, 15.763
+4, 21.011
+8, 33,5
+20, 80.97
+```
+
+Let's rewrite the code.
+
+```bash
+python3 - <<'PY'
+import time
+import sys
+from tqdm_joblib import tqdm_joblib
+from joblib import Parallel, delayed
+start = time.time()
+parallel = Parallel(n_jobs=20, backend="loky", batch_size="auto")
+execution_time = time.time() - start
+print(f"Creating the parallel object took {round(execution_time,3)}s")
+print('Starting parallel microbench...')
+def f(x): return x*x
+start = time.time()
+n = 20000
+with tqdm_joblib(total=n):
+    parallel(delayed(f)(i) for i in range(n))
+execution_time = time.time() - start
+print(f"Parallel microbench elapsed {round(execution_time,3)}s for python path: {sys.executable}")
+start = time.time()
+n = 20000
+with tqdm_joblib(total=n):
+    parallel(delayed(f)(i) for i in range(n))
+execution_time = time.time() - start
+print(f"Parallel microbench second round elapsed {round(execution_time,3)}s for python path: {sys.executable}")
+PY
+
+Creating the parallel object took 0.0s
+Starting parallel microbench...
+100%|███████████████████████████████████████████████████████████████████████████████| 20000/20000 [00:59<00:00, 337.62it/s]
+Parallel microbench elapsed 59.242s for python path: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/python3
+100%|█████████████████████████████████████████████████████████████████████████████| 20000/20000 [00:00<00:00, 37853.86it/s]
+Parallel microbench second round elapsed 0.529s for python path: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/ven
+```
+
+This shows that if we reuse the parallel object the second run is really fast. That is the solution to our problem.
+And that explains why runs where fast when I was not using batches in the cluster. 
+
 ### Trying to understand the problem
 
 https://joblib.readthedocs.io/en/latest/developing.html

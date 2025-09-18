@@ -11,6 +11,7 @@ from typing import Optional
 import tyro
 import json
 import random
+from tqdm.auto import tqdm
 
 from transformers import AutoTokenizer
 from vllm import LLM, SamplingParams
@@ -60,7 +61,7 @@ def main():
     sampling_params = SamplingParams(n=cfg.batch_size, temperature=1.0, top_p=0.95, max_tokens=cfg.max_output_tokens)
     os.makedirs(cfg.output_folder, exist_ok=True)
     n_rounds = cfg.n_predictions//cfg.batch_size
-    for round_idx in range(n_rounds):
+    for round_idx in tqdm(range(n_rounds), desc="Prediction rounds", unit="round", smoothing=0):
         prompts, data_augmentation_params = [], []
         for task_id in task_ids:
             task = dataset[task_id]

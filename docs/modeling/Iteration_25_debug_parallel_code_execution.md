@@ -586,6 +586,7 @@ Why solving this problem was so difficult? Because there could be a lot of possi
 - Problems with cluster disk 
 - At the beginning iteration was very slow because it was coupled with inference
 - The problem happened only on the cluster, making testing more difficult
+- Different joblib parameters
 
 ## Results
 

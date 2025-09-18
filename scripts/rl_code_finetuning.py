@@ -111,6 +111,7 @@ def main():
         temperature=1.0,
         top_p=0.95,
         dataloader_num_workers=1,
+        save_steps=100,
         # wandb
         report_to='wandb',
         run_name=os.path.basename(cfg.output_dir),

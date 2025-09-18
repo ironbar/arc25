@@ -130,8 +130,7 @@ def main():
     trainer = GRPOTrainer(
         model=model,
         processing_class=tokenizer,
-        reward_funcs=reward_func, #reward_num_unique_letters,
-        # data_collator=get_data_collator(tokenizer),
+        reward_funcs=reward_func,
         args=training_args,
         train_dataset=grpo_dataset,
         completion_only_loss=True,

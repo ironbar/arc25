@@ -319,7 +319,8 @@ python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/us
 # 127.53run/s
 ```
 
-These results show that there is something wrong with `venv_0e8c9c65f4e428eaa5db41171ac52335` that makes execution very slow.
+These results show that there is something wrong with `venv_0e8c9c65f4e428eaa5db41171ac52335` that makes execution very slow. Notice that the filesystem doesn't seem to be the problem because we have created a new environment
+on the same folder and it is much faster.
 
 One weird thing is that they all have the same versions of the python libraries:
 
@@ -417,6 +418,30 @@ time python -c "pass"
 # The slow environment takes 4s to start, the fast environment 0.5s
 ```
 
+Let's try to find the root of the problem
+
+```bash
+sudo sudo docker run -ti -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+cd /mnt/scratch/users/gbarbadillo/arc25
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+source cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/activate
+source cached-environments/debug-2/bin/activate
+
+```
+
+What if I create a big environment? Could the problem be size-related?
+
+```bash
+python3 -m venv cached-environments/debug-big
+source cached-environments/debug-big/bin/activate
+pip install -r arc25/requirements.txt
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+# ~1 run/s
+```
+
+
+
 #### Recreate environment at home PC
 
 Let's see if recreating the environment at home results on slow execution.
@@ -441,6 +466,28 @@ python3 scripts/debug_parallel_execution.py
 
 On my PC I can't replicate the problem, at least with the latest version of the requirements execution
 time is fast in both cases.
+
+### Simplying the code to diagnose the problem
+
+This could be a minimal code snippet to reproduce the problem.
+
+```bash
+python3 - <<'PY'
+import time
+import sys
+from tqdm_joblib import tqdm_joblib
+from joblib import Parallel, delayed
+print('Starting parallel microbench...')
+def f(x): return x*x
+start = time.time()
+n = 20000
+with tqdm_joblib(total=n):
+    Parallel(n_jobs=20, backend="loky", batch_size="auto")(delayed(f)(i) for i in range(n))
+execution_time = time.time() - start
+print(f"Parallel microbench elapsed {round(execution_time,3)}s for python path: {sys.executable}")
+PY
+time python -c "pass"
+```
 
 ### Trying to understand the problem
 

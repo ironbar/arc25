@@ -316,6 +316,31 @@ python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/us
 127.53run/s
 ```
 
+#### Recreate environment at home PC
+
+Let's see if recreating the environment at home results on slow execution.
+
+```bash
+docker run -ti -v /mnt/hdd0:/mnt/hdd0 gbarbadillo/cuda-python:python3.10-cuda14.1
+python3 -m venv /mnt/hdd0/TEMP/cached-environment-from-requirements
+source /mnt/hdd0/TEMP/cached-environment-from-requirements/bin/activate
+cd /mnt/hdd0/MEGA/AI/22_Kaggle/arc25
+pip install -r requirements.txt
+export PYTHONPATH=/mnt/hdd0/MEGA/AI/22_Kaggle/arc25
+python3 scripts/debug_parallel_execution.py
+#267-350 run/s
+
+python3 -m venv /mnt/hdd0/TEMP/cached-environment-simple
+source /mnt/hdd0/TEMP/cached-environment-simple/bin/activate
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas nvidia-ml-py scipy
+export PYTHONPATH=/mnt/hdd0/MEGA/AI/22_Kaggle/arc25
+python3 scripts/debug_parallel_execution.py
+# 331-350 run/s
+```
+
+On my PC I can't replicate the problem, at least with the latest version of the requirements execution
+time is fast in both cases.
+
 ### Trying to understand the problem
 
 https://joblib.readthedocs.io/en/latest/developing.html

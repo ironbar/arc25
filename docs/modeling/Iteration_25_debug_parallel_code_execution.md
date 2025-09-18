@@ -564,6 +564,29 @@ Here there is a description of the Parallel method from joblib and all its param
 This [conversation](https://chatgpt.com/share/68cabe24-e734-8012-a409-f9e14dfa9b32) with GPT5 suggests
 that signal+joblib+loky seems to be the best option.
 
+### Explanation of the problem
+
+When we use joblib and loky to parallelize python execution, it creates n workers. 
+I don't know the reason, but in the cluster when we use a big python environment, the creation of a python environment is slow. It can take 3-5 seconds or even more.
+
+Thus if we span 20 workers, it will take 60 seconds (3*20) to create those workers. The more the workers the bigger the startup time. That does not happen on my machine or Kaggle, it is almost instantenous to span workers. It is probably related to using a slow distributed filesystem.
+
+On my first implementation I run all the jobs at once, and for tasks that took
+around 10-20 minutes to execute the startup time was not important. 
+
+But my second implementation used smaller batches, that could take 10-15 seconds to run. In that case the startup time dominates.
+
+What is the solution? I have to reuse the parallel object between different runs. That way I only pay the startup time once (If there are execution errors I might have to regenerate the object, but that's a separate issue). Thus I have to encapsulate the execution function inside an object, that stores the parallel object.
+
+Why solving this problem was so difficult? Because there could be a lot of possible causes:
+
+- Changes in the environment
+- Changes in the code
+- Changes in the cluster
+- Problems with cluster disk 
+- At the beginning iteration was very slow because it was coupled with inference
+- The problem happened only on the cluster, making testing more difficult
+
 ## Results
 
 ## Conclusion

@@ -95,6 +95,23 @@ on ARC we have sparse rewards. AlphaEvolve requires the continuous metric to be 
 
 Finally they use multiple prompts to increase diversity in the responses.
 
+### [Jeremy Berman high score on ARC-AGI-2](https://jeremyberman.substack.com/p/how-i-got-the-highest-score-on-arc-agi-again)
+
+The [code](https://github.com/jerber/arc-lang-public) is public.
+
+> score_instructions_on_challenge records per-example results, calculates a simple cell-wise similarity score
+
+I'm not sure if cell-wise similarity is a good guiding metrics. I believe that checking if a grid
+is correct is a better option, however if none of the grids are correct it might be useful.
+
+> I used the same Evolutionary Test-Time Compute architecture as my v1 solution but replaced Python functions with plain English instructions.
+> My original solution used language models to generate Python functions to solve tasks. This approach had a key advantage: functions are deterministic and testable. I could generate hundreds of candidate functions, rank them by their performance on training examples, and evolve better solutions from the highest-scoring ones.
+> This strategy hits a wall with ARC v2. The transformations are often too complex to express elegantly in Python—they require nuanced pattern recognition and contextual understanding that would result in unwieldy, brittle code. So I turned to a language much older than Python: English.
+
+When we use natural language the model becomes the "python interpreter". If we have access to a model
+like Grok-4 that might be an option, but I don't believe we have a similar small open-source model.
+I still believe that python code with the right set of primitive functions is the way to go.
+
 ## Reasoning, code and RL
 
 ### [Self-Improving Language Models for Evolutionary Program Synthesis: A Case Study on ARC-AGI](https://icml.cc/virtual/2025/poster/43499)

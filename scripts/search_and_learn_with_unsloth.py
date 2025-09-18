@@ -32,7 +32,7 @@ from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 from arc25.metrics import aggregate_metrics, error_analysis
 from arc25.collator import get_data_collator
 from arc25.logging import log_execution_time, configure_logging
-from arc25.parallel_code_execution import run_code_from_predictions
+from arc25.parallel_code_execution import CodeRunner
 
 logger = logging.getLogger(__name__)
 
@@ -91,12 +91,13 @@ def main():
         cfg.model_path, load_in_4bit=cfg.load_in_4bit, max_seq_length=cfg.max_seq_length,
         fast_inference=True, gpu_memory_utilization=cfg.gpu_memory_utilization)
     grid_encoder = create_grid_encoder(cfg.grid_encoder)
+    code_runner = CodeRunner(n_jobs=cfg.n_jobs)
 
     results = search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request=None,
         inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
-        use_data_augmentation=cfg.use_data_augmentation, print_first_prompt=True, n_jobs=cfg.n_jobs,
+        use_data_augmentation=cfg.use_data_augmentation, print_first_prompt=True,
         timeout_duration=cfg.timeout_duration, max_tokens=cfg.max_output_tokens,
-        temperature=cfg.temperature, top_p=cfg.top_p)
+        temperature=cfg.temperature, top_p=cfg.top_p, code_runner=code_runner)
     print(aggregate_metrics(results))
 
     model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora) # initialize peft model
@@ -121,9 +122,9 @@ def main():
             logger.info(f'Searching solutions for epoch {epoch}')
             task_results = search(dataset, [task_id], llm, tokenizer, grid_encoder, lora_request,
                 inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
-                use_data_augmentation=cfg.use_data_augmentation, n_jobs=cfg.n_jobs,
+                use_data_augmentation=cfg.use_data_augmentation,
                 timeout_duration=cfg.timeout_duration, max_tokens=cfg.max_output_tokens,
-                temperature=cfg.temperature, top_p=cfg.top_p)
+                temperature=cfg.temperature, top_p=cfg.top_p, code_runner=code_runner)
             print(aggregate_metrics(task_results).head(1).round(3))
             task_results = task_results[task_id]
             results[task_id].extend(task_results)
@@ -156,8 +157,8 @@ def create_peft_model(llm, lora_r, use_rslora, model=None):
 
 @log_execution_time
 def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
-           inference_batch_size, n_predictions, use_data_augmentation,
-           print_first_prompt=False, n_jobs=-1, timeout_duration=5,
+           inference_batch_size, n_predictions, use_data_augmentation, code_runner,
+           print_first_prompt=False, timeout_duration=5,
            max_tokens=2048, temperature=1.0, top_p=0.95):
     set_random_seed(None)
     prompts, data_augmentation_params, inference_task_ids = [], [], []
@@ -186,9 +187,9 @@ def search(dataset, task_ids, llm, tokenizer, grid_encoder, lora_request,
         for output in generation.outputs:
             text_predictions.append(output.text)
 
-    results = run_code_from_predictions(
+    results = code_runner.run(
         [dataset[task_id] for task_id in inference_task_ids], inference_task_ids,
-        text_predictions, data_augmentation_params, n_jobs=n_jobs, timeout_duration=timeout_duration)
+        text_predictions, data_augmentation_params, timeout_duration=timeout_duration)
     return results
 
 

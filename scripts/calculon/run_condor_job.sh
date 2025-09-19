@@ -36,7 +36,7 @@ else
     pip3 install -r "$REQUIREMENTS_FILE"
     MAX_JOBS=2 pip3 install flash-attn==2.6.3 --no-build-isolation
     # fix torch dataloader (detect python version inside venv)
-    PYVER=$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+    PYVER=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
     DL_PATH="$LOCAL_ENV_DIR/lib/python$PYVER/site-packages/torch/utils/data/dataloader.py"
     if [ -f "$DL_PATH" ]; then
       sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multiprocessing_context='fork',/" "$DL_PATH"
@@ -44,7 +44,9 @@ else
     log "Creating environment cache tar at $ENV_TAR ..."
     tar -czf "$ENV_TAR" -C "$LOCAL_ENV_DIR" .
 fi
-log "Environment ready. Running command:"
+log "Environment ready"
+which python
+which python3
 
 $COMMAND
 deactivate

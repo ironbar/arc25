@@ -588,7 +588,7 @@ Why solving this problem was so difficult? Because there could be a lot of possi
 - The problem happened only on the cluster, making testing more difficult
 - Different joblib parameters
 
-### The problem is still not solved
+### Terrible news: The problem is still not solved
 
 These logs from RL fine-tuning show that the problem is not solved. Executing the reward function
 should be almost instantaneous:
@@ -613,8 +613,19 @@ should be almost instantaneous:
 2025-09-19 09:18:36,881 - arc25.logging - INFO - wrapper - Executed arc_reward in 49.1656 seconds
 ```
 
-I need to check the use of tar.gz files for the python environment that are copied to the machine
-at the start of the run.
+Even after updating the python environment to be copied to the local memory of the machine, the problem persists.
+
+- [First run with coderunner](https://wandb.ai/guillermobarbadillo/2025-09-15-rl-first-steps/runs/ha5nesfm/logs)
+- [Run with tar.gz environment](https://wandb.ai/guillermobarbadillo/2025-09-15-rl-first-steps/runs/4h2to9tc/logs)
+
+
+It seems that I solved the toy problem: initialization of the parallel object, but execution is also slow.
+So initialization wasn't the only problem...
+Additionally I'm seeing weird RAM usages in the rl finetuning (more than 200GB.)
+
+I have to recover the debug_parallel_execution script to use the code runner and run more tests.
+
+
 
 ## Results
 
@@ -625,7 +636,7 @@ at the start of the run.
 ## TODO
 
 - [x] Can I simplify the problem so I can easily debug on the different environments?
-- [ ] Maybe it could be as simple as changing the method that parallelizes the work
+- [x] Maybe it could be as simple as changing the method that parallelizes the work, no because I use signal for timeouts.
 - [x] Experiments I would like to do:
   - [x] Try on laptop
   - [x] Try on Docker

@@ -588,6 +588,34 @@ Why solving this problem was so difficult? Because there could be a lot of possi
 - The problem happened only on the cluster, making testing more difficult
 - Different joblib parameters
 
+### The problem is still not solved
+
+These logs from RL fine-tuning show that the problem is not solved. Executing the reward function
+should be almost instantaneous:
+
+```
+2025-09-19 09:14:29,893 - arc25.logging - INFO - wrapper - Executed arc_reward in 98.5315 seconds
+  0%|          | 1/40000 [02:20<1557:46:20, 140.20s/it]2025-09-19 09:15:09,095 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 09:15:29,255 - __main__ - INFO - arc_reward - Completions length: [379, 268, 290, 261, 258, 426, 529, 230, 321, 411, 315, 416, 369, 215, 222, 293, 269, 407, 430, 274, 603, 277, 303, 269, 329, 425, 528, 460, 287, 347, 383, 430]
+2025-09-19 09:15:29,256 - __main__ - INFO - arc_reward - Rewards: [1.0171387073347857, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.194082455235095, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.3031590413943355, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+2025-09-19 09:15:29,257 - arc25.logging - INFO - wrapper - Executed arc_reward in 20.1615 seconds
+  0%|          | 2/40000 [03:27<1079:56:44, 97.20s/it]2025-09-19 09:16:11,448 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 09:16:12,491 - __main__ - INFO - arc_reward - Completions length: [321, 317, 292, 372, 312, 309, 265, 290, 310, 363, 289, 324, 333, 248, 359, 223, 334, 393, 305, 307, 356, 451, 288, 308, 350, 284, 363, 318, 318, 269, 401, 313]
+2025-09-19 09:16:12,492 - __main__ - INFO - arc_reward - Rewards: [0.0, 1.540509259259259, 1.2694444444444444, 1.5388888888888888, 0.0, 10.0, 1.25, 1.25, 1.2694444444444444, 1.5447089947089947, 1.5849074074074072, 1.3285069444444444, 0.0, 1.413287037037037, 0.0, 4.4944444444444445, 1.6450396825396827, 1.2327548912075497, 1.4410404410404412, 0.0, 1.413287037037037, 0.0, 0.0, 1.8173611111111114, 1.381875, 0.0, 1.5, 1.4372685185185186, 1.0869675925925926, 1.1830555555555555, 1.5, 1.8173611111111114]
+2025-09-19 09:16:12,493 - arc25.logging - INFO - wrapper - Executed arc_reward in 1.0444 seconds
+  0%|          | 3/40000 [03:48<694:53:10, 62.54s/it]2025-09-19 09:16:40,261 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 09:17:09,099 - __main__ - INFO - arc_reward - Completions length: [459, 472, 536, 394, 502, 450, 371, 762, 368, 380, 525, 482, 339, 439, 379, 353, 415, 528, 317, 469, 541, 425, 326, 488, 424, 447, 421, 443, 391, 419, 422, 482]
+2025-09-19 09:17:09,101 - __main__ - INFO - arc_reward - Rewards: [1.6681249999999999, 0.0, 0.0, 1.65875, 0.0, 0.0, 0.0, 0.0, 0.0, 1.9325, 0.0, 0.0, 1.92, 0.0, 0.0, 1.758125, 1.7893750000000002, 0.0, 1.9325, 0.0, 1.788125, 0.0, 1.930625, 0.0, 0.0, 1.67625, 0.0, 0.0, 0.0, 1.87625, 0.0, 0.0]
+2025-09-19 09:17:09,103 - arc25.logging - INFO - wrapper - Executed arc_reward in 28.8413 seconds
+  0%|          | 4/40000 [05:04<752:27:40, 67.73s/it]2025-09-19 09:17:47,714 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 09:18:36,878 - __main__ - INFO - arc_reward - Completions length: [220, 353, 217, 287, 244, 333, 245, 221, 229, 227, 283, 226, 221, 220, 222, 260, 222, 196, 237, 311, 230, 231, 259, 325, 409, 210, 257, 268, 397, 224, 304, 278]
+2025-09-19 09:18:36,879 - __main__ - INFO - arc_reward - Rewards: [0.0, 0.0, 0.0, 0.0, 0.0, 1.79, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.79, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.79, 0.0]
+2025-09-19 09:18:36,881 - arc25.logging - INFO - wrapper - Executed arc_reward in 49.1656 seconds
+```
+
+I need to check the use of tar.gz files for the python environment that are copied to the machine
+at the start of the run.
+
 ## Results
 
 ## Conclusion

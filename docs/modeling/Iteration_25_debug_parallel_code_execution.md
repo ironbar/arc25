@@ -641,11 +641,12 @@ However the solution has come by copying the python environment to the local mem
 
 Now code execution is blazingly fast, and runtimes are shorter despite being run on A6000 compared to H100 from the previous snippet.
 
-
-
-## Results
-
 ## Conclusion
+
+Execution of code is fast again in the cluster after a lot of pain. I did two things to solve the problem:
+
+1. Create a code runner object that stores the Parallel object (and avoids the penalty of creating it over and over)
+2. Move the python environment to local memory
 
 ## Next steps
 

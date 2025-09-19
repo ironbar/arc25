@@ -20,7 +20,7 @@ from arc25.encoders import create_grid_encoder
 from arc25.utils import load_arc_dataset_with_solutions, convert_task_to_numpy, set_random_seed, is_checkpoint_available
 from arc25.data_augmentation import apply_data_augmentation, get_random_data_augmentation_params
 from arc25.prompting import create_prompt_from_task, pretty_print_prompt
-from arc25.logging import configure_logging, logging
+from arc25.logging import configure_logging, logging, log_execution_time
 from arc25.parallel_code_execution import CodeRunner
 
 configure_logging()
@@ -116,6 +116,7 @@ def main():
         top_p=0.95,
         dataloader_num_workers=1,
         save_steps=100,
+        mask_truncated_completions=True, #  When enabled, truncated completions are excluded from the loss calculation, preventing them from being incorrectly penalized and introducing noise during training. According to the DAPO paper, this is a good practice for training stability.
         # wandb
         report_to='wandb',
         run_name=os.path.basename(cfg.output_dir),
@@ -138,6 +139,7 @@ def main():
     trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
 
 
+@log_execution_time
 def arc_reward(completions, tasks, completion_ids, code_runner, **kwargs):
     """
     Reward function that rewards completions based on how many test cases they pass.

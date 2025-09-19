@@ -225,3 +225,4 @@ data augmentation for this experiment.
     - [ ] -> Lower gpu_memory and see what happens.
     - [ ] Better adjustment of model hyperparameters
 - [ ] Train with the new reward and verify that is able to learn
+- [ ] Not sure if completion_only_loss is working

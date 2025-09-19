@@ -168,6 +168,10 @@ def _individual_arc_reward(result, task):
     1 + 8*correct_grids + pixel_score: code produces valid results with accuracy
 
     Reward is in range [-1, 10]
+
+    We should be using a factor of 12 instead of 8 to always give more importance to correct grids than pixel score, because the maximum number of samples per task is 12. However there are only
+    20 tasks with more than 8 training samples, and a reward with a maximum value of 10 is more
+    intuitive.
     """
     if 'code' not in result: # code was not parsed correctly
         reward = -1.0

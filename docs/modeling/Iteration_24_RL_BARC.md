@@ -205,7 +205,7 @@ data augmentation for this experiment.
   - [x] Create RL training script
     - [x] ~~Generator for the prompts~~ Not necessary, dataset is small
     - [x] Add verbose option to code evaluation
-    - [ ] More smooth reward, combine test and train
+    - [xz] More smooth reward, combine test and train
 - [ ] Training experiments
   - [ ] How many epochs does the model need to learn all the tasks?
   - [ ] What is the configuration that better uses the hardware
@@ -213,7 +213,7 @@ data augmentation for this experiment.
   - [ ] How much the model improves after training?
 - [x] What is the max prompt length for all the datasets available? -> 8635
 - [ ] GPU usage is not efficient with server mode: https://huggingface.co/blog/vllm-colocate
-- [ ] Kaggle scoring error
+- [x] Kaggle scoring error
   - [x] Create validate submission script
   - [ ] Add tests for create submission
   - [x] Check problems on existing submission
@@ -224,3 +224,4 @@ data augmentation for this experiment.
   - [ ] I suspect the problem is there were missing tasks. Can I simulate that?
     - [ ] -> Lower gpu_memory and see what happens.
     - [ ] Better adjustment of model hyperparameters
+- [ ] Train with the new reward and verify that is able to learn

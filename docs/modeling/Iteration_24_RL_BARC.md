@@ -119,7 +119,19 @@ python scripts/inference_with_BARC.py \
 --output-folder /mnt/hdd0/Kaggle/arc25/predictions2025-09-15-debug-grpo/lr1e-5_small-dataset_80epochs_16gens_continue/training \
 --lora-path /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr1e-5_small-dataset_80epochs_16gens_continue/checkpoint-5360 \
 --n-predictions 128
+
+python scripts/inference_with_BARC.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions2025-09-15-debug-grpo/lr1e-5_small-dataset_80epochs_16gens_continue/evaluation \
+--lora-path /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr1e-5_small-dataset_80epochs_16gens_continue/checkpoint-5360 \
+--n-predictions 128
 ```
+
+### Number of samples per task
+
+![alt text](res/1758261277970_image.png)
+
+The task with the maximum number of grids is 12.
 
 ## Results
 

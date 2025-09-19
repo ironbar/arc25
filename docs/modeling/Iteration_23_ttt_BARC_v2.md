@@ -263,8 +263,8 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 #### Experiments with 512 predictions
 
 ```bash
-export FOLDER=2025-09-11-search-and-learn
-export N_PREDICTIONS=512; condor_submit train_h100.condor command=" 
+export FOLDER=2025-09-18-search-and-learn
+export N_PREDICTIONS=64; condor_submit train.condor command=" 
 python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
 --initial-predictions ${N_PREDICTIONS} \
 --max-epochs 0 \
@@ -274,7 +274,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 ```
 
 ```bash
-export FOLDER=2025-09-11-search-and-learn
+export FOLDER=2025-09-18-search-and-learn
 export INITIAL_PREDICTIONS=256
 export EPOCHS=1
 export PREDICTIONS_PER_EPOCH=256
@@ -284,6 +284,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 --predictions-per-epoch ${PREDICTIONS_PER_EPOCH} \
 --learning-rate ${LEARNING_RATE} \
 --max-epochs ${EPOCHS} \
+--gpu_memory_utilization 0.5 \
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}" -append request_gpus=1 -append request_cpus=32

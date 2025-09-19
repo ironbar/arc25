@@ -117,7 +117,6 @@ def main():
         dataloader_num_workers=1,
         save_steps=100,
         mask_truncated_completions=True, #  When enabled, truncated completions are excluded from the loss calculation, preventing them from being incorrectly penalized and introducing noise during training. According to the DAPO paper, this is a good practice for training stability.
-        completion_only_loss=True,
         # wandb
         report_to='wandb',
         run_name=os.path.basename(cfg.output_dir),
@@ -135,6 +134,7 @@ def main():
         reward_funcs=reward_func,
         args=training_args,
         train_dataset=grpo_dataset,
+        completion_only_loss=True, #TODO; check if this is correct
     )
     trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
 

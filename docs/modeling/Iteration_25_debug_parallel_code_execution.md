@@ -613,17 +613,33 @@ should be almost instantaneous:
 2025-09-19 09:18:36,881 - arc25.logging - INFO - wrapper - Executed arc_reward in 49.1656 seconds
 ```
 
-Even after updating the python environment to be copied to the local memory of the machine, the problem persists.
+However the solution has come by copying the python environment to the local memory:
 
-- [First run with coderunner](https://wandb.ai/guillermobarbadillo/2025-09-15-rl-first-steps/runs/ha5nesfm/logs)
-- [Run with tar.gz environment](https://wandb.ai/guillermobarbadillo/2025-09-15-rl-first-steps/runs/4h2to9tc/logs)
+```
+2025-09-19 16:41:05,047 - arc25.logging - INFO - wrapper - Executed arc_reward in 1.3339 seconds
+  0%|          | 1/40000 [01:30<1007:33:16, 90.68s/it]2025-09-19 16:42:34,549 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 16:42:35,040 - __main__ - INFO - arc_reward - Completions length: [426, 248, 479, 467, 441, 497, 526, 464, 434, 378, 426, 478, 326, 128, 491, 341]
+2025-09-19 16:42:35,041 - __main__ - INFO - arc_reward - Rewards: [0.0, 1.2416666666666667, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+2025-09-19 16:42:35,041 - arc25.logging - INFO - wrapper - Executed arc_reward in 0.4920 seconds
+  0%|          | 2/40000 [02:18<726:45:39, 65.41s/it]2025-09-19 16:43:23,442 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 16:43:23,650 - __main__ - INFO - arc_reward - Completions length: [515, 438, 525, 485, 294, 231, 429, 261, 434, 501, 403, 270, 355, 452, 429, 428]
+2025-09-19 16:43:23,651 - __main__ - INFO - arc_reward - Rewards: [1.4316666666666666, 0.0, -1.0, 0.0, 0.0, 1.6901851851851852, 0.0, 1.4316666666666666, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 1.2349999999999999]
+2025-09-19 16:43:23,652 - arc25.logging - INFO - wrapper - Executed arc_reward in 0.2098 seconds
+  0%|          | 3/40000 [03:05<632:14:33, 56.91s/it]2025-09-19 16:43:54,525 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 16:43:54,917 - __main__ - INFO - arc_reward - Completions length: [272, 253, 250, 220, 262, 267, 237, 294, 272, 224, 262, 248, 236, 257, 232, 224]
+2025-09-19 16:43:54,918 - __main__ - INFO - arc_reward - Rewards: [3.9299999999999997, 1.8, 3.9275, 3.9299999999999997, 1.9075, 1.77, 1.9075, 5.945, 1.8, 3.9299999999999997, 1.8425, 1.8399999999999999, 1.8900000000000001, 3.8875, 1.9075, 1.8]
+2025-09-19 16:43:54,919 - arc25.logging - INFO - wrapper - Executed arc_reward in 0.3941 seconds
+  0%|          | 4/40000 [03:38<527:49:57, 47.51s/it]2025-09-19 16:44:42,267 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 16:44:42,485 - __main__ - INFO - arc_reward - Completions length: [404, 377, 280, 465, 268, 499, 458, 393, 497, 484, 325, 413, 375, 357, 433, 414]
+2025-09-19 16:44:42,486 - __main__ - INFO - arc_reward - Rewards: [1.6831275720164611, 0.0, 1.954732510288066, 0.0, 1.954732510288066, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+2025-09-19 16:44:42,487 - arc25.logging - INFO - wrapper - Executed arc_reward in 0.2192 seconds
+  0%|          | 5/40000 [04:24<523:05:03, 47.08s/it]2025-09-19 16:45:49,305 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 16:45:49,373 - __main__ - INFO - arc_reward - Completions length: [884, 646, 704, 758, 655, 645, 732, 349, 599, 371, 729, 604, 454, 567, 494, 689]
+2025-09-19 16:45:49,374 - __main__ - INFO - arc_reward - Rewards: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+2025-09-19 16:45:49,375 - arc25.logging - INFO - wrapper - Executed arc_reward in 0.0698 seconds
+```
 
-
-It seems that I solved the toy problem: initialization of the parallel object, but execution is also slow.
-So initialization wasn't the only problem...
-Additionally I'm seeing weird RAM usages in the rl finetuning (more than 200GB.)
-
-I have to recover the debug_parallel_execution script to use the code runner and run more tests.
+Now code execution is blazingly fast, and runtimes are shorter despite being run on A6000 compared to H100 from the previous snippet.
 
 
 

@@ -27,10 +27,9 @@ from accelerate import Accelerator
 
 from arc25.encoders import create_grid_encoder
 from arc25.utils import load_arc_dataset_with_solutions, set_random_seed, write_json
-from arc25.data_augmentation import apply_data_augmentation, revert_data_augmentation, get_random_data_augmentation_params
+from arc25.data_augmentation import apply_data_augmentation, get_random_data_augmentation_params
 from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 from arc25.metrics import aggregate_metrics, error_analysis
-from arc25.collator import get_data_collator
 from arc25.logging import log_execution_time, configure_logging
 from arc25.parallel_code_execution import CodeRunner
 
@@ -212,7 +211,6 @@ def learn(training_prompts, model, tokenizer, output_dir, learning_rate, lr_sche
         dataset_text_field = "input_ids",
         max_seq_length = max_seq_length,
         packing = False, # Can make training 5x faster for short sequences.
-        data_collator=get_data_collator(tokenizer),
         args = SFTConfig(
             per_device_train_batch_size = 1,
             gradient_accumulation_steps = 1,
@@ -230,6 +228,7 @@ def learn(training_prompts, model, tokenizer, output_dir, learning_rate, lr_sche
             # added to fix this error: https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/sqydbbim/logs
             dataloader_num_workers = 4,
             dataloader_persistent_workers = True,
+            completion_only_loss=True,
         ),
     )
     try:

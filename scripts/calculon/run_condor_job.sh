@@ -1,33 +1,44 @@
 #!/bin/bash
 # Exit immediately if a command exits with a non-zero status.
-set -e 
+set -e
 set -x
-#Arguments
+# Arguments
 REQUIREMENTS_FILE=$1  # Path to requirements.txt
 # Shift the first argument to get the remaining arguments as $@
 shift 1
 COMMAND=$@
 
-# Directories
-ENV_CACHE_DIR="/mnt/scratch/users/gbarbadillo/arc25/cached-environments"  # Directory to cache environments
-ENV_HASH=$(md5sum $REQUIREMENTS_FILE | awk '{print $1}')  # Hash the requirements.txt
-ENV_DIR="$ENV_CACHE_DIR/venv_$ENV_HASH"
+# Directories / cache
+ENV_CACHE_DIR="/mnt/scratch/users/gbarbadillo/arc25/cached-environments"
+ENV_HASH=$(md5sum "$REQUIREMENTS_FILE" | awk '{print $1}')
+ENV_TAR="$ENV_CACHE_DIR/venv_${ENV_HASH}.tgz"
+[ -z "$TMPDIR" ] && { echo "TMPDIR environment variable is mandatory. (Typically set by Condor)" >&2;  exit 1; }
+LOCAL_ENV_DIR="$TMPDIR/venv_${ENV_HASH}"
+mkdir -p "$ENV_CACHE_DIR"
 
 echo "Started job at $(date)"
-# Check if the environment exists
-if [ -d "$ENV_DIR" ]; then
-    echo "Environment already exists. Reusing... $ENV_DIR"
-    source $ENV_DIR/bin/activate
+# Load from cache if available, else create locally and cache as tar
+if [ -f "$ENV_TAR" ]; then
+    echo "Environment cache found. Extracting to $LOCAL_ENV_DIR ..."
+    rm -rf "$LOCAL_ENV_DIR"
+    mkdir -p "$LOCAL_ENV_DIR"
+    tar -xzf "$ENV_TAR" -C "$LOCAL_ENV_DIR"
+    source "$LOCAL_ENV_DIR/bin/activate"
 else
-    echo "Environment does not exist. Creating a new one..."
-    python3 -m venv $ENV_DIR 
-    source $ENV_DIR/bin/activate
+    echo "Environment cache not found. Creating a new one at $LOCAL_ENV_DIR ..."
+    python3 -m venv "$LOCAL_ENV_DIR"
+    source "$LOCAL_ENV_DIR/bin/activate"
     pip3 install --upgrade pip
-    pip3 install -r $REQUIREMENTS_FILE
+    pip3 install -r "$REQUIREMENTS_FILE"
     MAX_JOBS=2 pip3 install flash-attn==2.6.3 --no-build-isolation
-    # fix torch dataloader
-    sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multiprocessing_context='fork',/" $ENV_DIR/lib/python3.10/site-packages/torch/utils/data/dataloader.py
-    echo "Environment created and cached at $ENV_DIR."
+    # fix torch dataloader (detect python version inside venv)
+    PYVER=$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+    DL_PATH="$LOCAL_ENV_DIR/lib/python$PYVER/site-packages/torch/utils/data/dataloader.py"
+    if [ -f "$DL_PATH" ]; then
+      sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multiprocessing_context='fork',/" "$DL_PATH"
+    fi
+    echo "Creating environment cache tar at $ENV_TAR ..."
+    tar -czf "$ENV_TAR" -C "$LOCAL_ENV_DIR" .
 fi
 
 $COMMAND

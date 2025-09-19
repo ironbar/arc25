@@ -160,10 +160,14 @@ def _individual_arc_reward(result, task):
     """
     The north start metric is the correct grids, pixel score is use as a tiebreaker.
     When code is not parsed reward is -1, and code that creates valids gets a reward of 1 vs code that does not.
-    -1 -> code not parsed
-    0 -> code parsed but does not produce valid results
-    1 -> code produces valid results but accuracy is 0
-    1 + 8*correct_grids + pixel_score -> code produces valid results with accuracy
+
+    Reward scheme:
+    -1: code not parsed
+    0: code parsed but does not produce valid results
+    1: code produces valid results but accuracy is 0
+    1 + 8*correct_grids + pixel_score: code produces valid results with accuracy
+
+    Reward is in range [-1, 10]
     """
     if 'code' not in result: # code was not parsed correctly
         reward = -1.0

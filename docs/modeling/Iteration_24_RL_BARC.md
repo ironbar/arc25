@@ -131,7 +131,23 @@ python scripts/inference_with_BARC.py \
 
 ![alt text](res/1758261277970_image.png)
 
-The task with the maximum number of grids is 12.
+The task with the maximum number of grids is 12. However there are only around ~20 tasks with more than 8 samples per task.
+
+### Reward design
+
+The north start metric is the correct grids, pixel score is use as a tiebreaker.
+When code is not parsed reward is -1, and code that creates valids gets a reward of 1 vs code that does not.
+
+Reward scheme:
+
+```
+-1: code not parsed
+ 0: code parsed but does not produce valid results
+ 1: code produces valid results but accuracy is 0
+ 1 + 8*correct_grids + pixel_score: code produces valid results with accuracy, [1, 9]
+```
+
+Reward is always in range [-1, 10]
 
 ## Results
 

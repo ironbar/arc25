@@ -151,19 +151,30 @@ def arc_reward(completions, tasks, completion_ids, code_runner, **kwargs):
         numpy_tasks, list(range(len(completions))), completions,
         [None]*len(completions), group_results_by_task=False, disable_tqdm=True)
     logger.info(f'Completions length: {[len(c) for c in completion_ids]}')
-
-    rewards = []
-    for result in results:
-        if 'code' not in result: # code was not parsed correctly
-            rewards.append(-1.0)
-        elif 'train_correct_grids' not in result: # code ran but did not produce valid results
-            rewards.append(0.0)
-        else:
-            # TODO: use a smoother reward
-            rewards.append(float(result['train_correct_grids']) + float(result.get('test_correct_grids')))
-
+    rewards = [_individual_arc_reward(result, task) for result, task in zip(results, tasks)]
     logger.info(f'Rewards: {rewards}')
     return rewards
+
+
+def _individual_arc_reward(result, task):
+    """
+    The north start metric is the correct grids, pixel score is use as a tiebreaker.
+    When code is not parsed reward is -1, and code that creates valids gets a reward of 1 vs code that does not.
+    -1 -> code not parsed
+    0 -> code parsed but does not produce valid results
+    1 -> code produces valid results but accuracy is 0
+    1 + 8*correct_grids + pixel_score -> code produces valid results with accuracy
+    """
+    if 'code' not in result: # code was not parsed correctly
+        reward = -1.0
+    elif 'train_correct_grids' not in result: # code ran but did not produce valid results
+        reward = 0.0
+    else:
+        n_train, n_test = len(task['train']), len(task['test'])
+        correct_grids = (float(result['train_correct_grids'])*n_train + float(result.get('test_correct_grids', 0))*n_test) / (n_train + n_test)
+        pixel_score = (float(result['train_pixel_score'])*n_train + float(result.get('test_pixel_score', 0))*n_test) / (n_train + n_test)
+        reward = 1.0 + 8*correct_grids + pixel_score
+    return reward
 
 
 if __name__ == "__main__":

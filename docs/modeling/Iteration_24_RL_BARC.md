@@ -229,3 +229,8 @@ data augmentation for this experiment.
   - [x] https://github.com/huggingface/trl/issues/3827
   - [x] As far as I can see it was removed on version 0.20 and we should use `completion_only_loss=True,` on `SFTConfig`
   - [x] https://www.kaggle.com/code/ironbar/completion-only-loss-investigation
+  - [x] Verify that it works by comparing these two runs:
+    - [x] https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn/runs/27f8199j
+    - [x] https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn/runs/vacaozda?nw=nwuserguillermobarbadillo
+    - [x] Verified that there is a clear difference in loss values
+    - [ ] Should I also use it on RL, if it works I guess so.

@@ -14,6 +14,7 @@ os.environ['VLLM_WORKER_MULTIPROC_METHOD'] = 'spawn'
 os.environ['TOKENIZERS_PARALLELISM'] = 'false' # to avoid warnings, so far I haven't seen any slowdown
 
 from unsloth import FastLanguageModel
+from unsloth.chat_templates import train_on_responses_only
 
 from dataclasses import dataclass
 import time
@@ -207,7 +208,6 @@ def learn(training_prompts, model, tokenizer, output_dir, learning_rate, lr_sche
         model = model,
         tokenizer = tokenizer,
         train_dataset = train_dataset,
-        # dataset_text_field = "text",
         dataset_text_field = "input_ids",
         max_seq_length = max_seq_length,
         packing = False, # Can make training 5x faster for short sequences.
@@ -228,8 +228,13 @@ def learn(training_prompts, model, tokenizer, output_dir, learning_rate, lr_sche
             # added to fix this error: https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/sqydbbim/logs
             dataloader_num_workers = 4,
             dataloader_persistent_workers = True,
-            completion_only_loss=True,
         ),
+    )
+    logger.warning('Training on responses only, make sure the prompt templates are correct!. So far is only implemented for LLaMA style templates.')
+    trainer = train_on_responses_only(
+        trainer,
+        instruction_part = "<|start_header_id|>user<|end_header_id|>\n\n",
+        response_part = "<|start_header_id|>assistant<|end_header_id|>\n\n",
     )
     try:
         trainer_stats = trainer.train()

@@ -225,4 +225,7 @@ data augmentation for this experiment.
     - [ ] -> Lower gpu_memory and see what happens.
     - [ ] Better adjustment of model hyperparameters
 - [ ] Train with the new reward and verify that is able to learn
-- [ ] Not sure if completion_only_loss is working, check what happens with collator on new trl versions
+- [x] Not sure if completion_only_loss is working, check what happens with collator on new trl versions
+  - [x] https://github.com/huggingface/trl/issues/3827
+  - [x] As far as I can see it was removed on version 0.20 and we should use `completion_only_loss=True,` on `SFTConfig`
+  - [x] https://www.kaggle.com/code/ironbar/completion-only-loss-investigation

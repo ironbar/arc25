@@ -233,4 +233,4 @@ data augmentation for this experiment.
     - [x] https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn/runs/27f8199j
     - [x] https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn/runs/vacaozda?nw=nwuserguillermobarbadillo
     - [x] Verified that there is a clear difference in loss values
-    - [ ] Should I also use it on RL, if it works I guess so.
+    - [ ] Should I also use it on RL, if it works I guess so. IT DOES NOT WORK WITH RL, requires input_ids in the dataset

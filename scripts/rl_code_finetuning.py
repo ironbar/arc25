@@ -134,7 +134,6 @@ def main():
         reward_funcs=reward_func,
         args=training_args,
         train_dataset=grpo_dataset,
-        completion_only_loss=True, #TODO; check if this is correct
     )
     trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
 

@@ -578,6 +578,8 @@ TODO: 128 preds
 
 TODO: 512 preds
 
+32 GB of RAM seem to be enough to do experiments with 512 predictions. Although the limit might be too tight.
+
 ### Do I have clear evidence that the approach works?
 
 TODO: Kaggle

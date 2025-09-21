@@ -151,7 +151,7 @@ Reward is always in range [-1, 10]
 
 ## Results
 
-### Reward is not improving
+### Reward is not improving on first experiments
 
 <https://wandb.ai/guillermobarbadillo/2025-09-14-debug-grpo>
 
@@ -189,6 +189,19 @@ rate raises. I can see that with just 20 training steps, because I'm using the s
 data augmentation for this experiment.
 
 ![alt text](res/1757951689198_image.png)
+
+### Local experiments with ~70 shortest training tasks
+
+https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo?nw=nwuserguillermobarbadillo
+
+- A learning rate of 2e-5 is too high, 1e-5 seems to work but not sure if it's optimal.
+
+### Cluster experiments with the whole ARC-AGI-1 training set
+
+https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps?nw=nwuserguillermobarbadillo
+
+- After more than 30 hours of training I don't see a clear improvement in the reward.
+- Let's do experiments with a single prompt per step, increase LoRA capacity to 32, 32 generations per prompt and try also decreasing the learning rate.
 
 ## Conclusion
 
@@ -233,4 +246,4 @@ data augmentation for this experiment.
     - [x] https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn/runs/27f8199j
     - [x] https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn/runs/vacaozda?nw=nwuserguillermobarbadillo
     - [x] Verified that there is a clear difference in loss values
-    - [ ] Should I also use it on RL, if it works I guess so. IT DOES NOT WORK WITH RL, requires input_ids in the dataset
+    - [x] Should I also use it on RL, if it works I guess so. IT DOES NOT WORK WITH RL, requires input_ids in the dataset

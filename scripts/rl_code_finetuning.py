@@ -5,10 +5,11 @@ from arc25.utils import set_cuda_visible_devices_to_least_used_gpu_if_undefined
 configure_logging()
 set_cuda_visible_devices_to_least_used_gpu_if_undefined()
 
+from unsloth import FastLanguageModel
 import tyro
 import os
 import random
-from unsloth import FastLanguageModel
+import numpy as np
 from dataclasses import dataclass
 from datasets import Dataset
 from tqdm.auto import tqdm
@@ -149,9 +150,10 @@ def arc_reward(completions, tasks, completion_ids, code_runner, **kwargs):
     results = code_runner.run(
         numpy_tasks, list(range(len(completions))), completions,
         [None]*len(completions), group_results_by_task=False, disable_tqdm=True)
-    logger.info(f'Completions length: {[len(c) for c in completion_ids]}')
+    completion_lengths = [len(c) for c in completion_ids]
+    logger.info(f'Mean completion length: {np.mean(completion_lengths):.2f}, lengths: {completion_lengths}')
     rewards = [_individual_arc_reward(result, task) for result, task in zip(results, tasks)]
-    logger.info(f'Rewards: {rewards}')
+    logger.info(f'Mean reward: {np.mean(rewards):.2f}, rewards: {np.array(rewards).round(2).tolist()}')
     return rewards
 
 

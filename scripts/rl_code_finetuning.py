@@ -153,9 +153,9 @@ def arc_reward(completions, tasks, completion_ids, code_runner, **kwargs):
         numpy_tasks, list(range(len(completions))), completions,
         [None]*len(completions), group_results_by_task=False, disable_tqdm=True)
     completion_lengths = [len(c) for c in completion_ids]
-    logger.info(f'Mean completion length: {np.mean(completion_lengths):.2f}, lengths: {completion_lengths}')
+    logger.info(f'Mean completion length: {np.mean(completion_lengths):.2f}, Max completion length: {np.max(completion_lengths):.2f}, lengths: {completion_lengths}')
     rewards = [_individual_arc_reward(result, task) for result, task in zip(results, tasks)]
-    logger.info(f'Mean reward: {np.mean(rewards):.2f}, rewards: {np.array(rewards).round(2).tolist()}')
+    logger.info(f'Mean reward: {np.mean(rewards):.2f}, Max reward: {np.max(rewards):.2f}, rewards: {np.array(rewards).round(2).tolist()}')
     return rewards
 
 

@@ -163,7 +163,7 @@ python scripts/rl_code_finetuning.py --learning-rate 4e-5 --epochs 80 --warmup-r
 # I have updated the script to use a single task per step, maybe I should do a single prompt...
 python scripts/rl_code_finetuning.py --learning-rate 4e-5 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.68 --num-generations 16 --lora-r 16 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr4e-5_80epochs_16gen_4prompts-per-step_16lora_prompt-fix --training-prompts-per-step 4
 
-python scripts/rl_code_finetuning.py --learning-rate 4e-5 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.67 --num-generations 16 --lora-r 16 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr4e-5_80epochs_16gen_4prompts-per-step_16lora_prompt-fix-v2 --training-prompts-per-step 4
+python scripts/rl_code_finetuning.py --learning-rate 2e-5 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.67 --num-generations 16 --lora-r 16 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr2e-5_80epochs_16gen_4prompts-per-step_16lora_prompt-fix-v2 --training-prompts-per-step 4
 ```
 
 #### Cluster
@@ -272,3 +272,4 @@ https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps?nw=nwuserguillerm
     - [x] Should I also use it on RL, if it works I guess so. IT DOES NOT WORK WITH RL, requires input_ids in the dataset
 - [ ] It seems that on my current implementation using more than 1 prompt per step does not work. Maybe
   I have missunderstood the implementation and I have to use the same prompt for the step.
+  - It seems that if a single prompt is used on each step the reward improves: https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo/runs/f7r56ln8  

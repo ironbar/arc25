@@ -212,7 +212,7 @@ https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo?nw=nwuserguillermobar
 - A learning rate of 2e-5 is too high, 1e-5 seems to work but not sure if it's optimal.
 - Cannot use more than 16 generations per prompt because it gives OOM error
 - Cannot use Lora 32 because it also gives OOM
-- Weirdly when using 4 prompts per step did not seemed to learn
+- Weirdly when using 4 prompts per step did not seemed to learn. I have done an experiment with learning rate 1e-5 and 4e-5.
 
 ### Cluster experiments with the whole ARC-AGI-1 training set
 
@@ -220,6 +220,7 @@ https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps?nw=nwuserguillerm
 
 - After more than 30 hours of training I don't see a clear improvement in the reward.
 - Let's do experiments with a single prompt per step, increase LoRA capacity to 32, 32 generations per prompt and try also decreasing the learning rate.
+- Jobs that do 32 generations per prompt have huge spikes in RAM use, more than 200GB that result on condor stopping the jobs. (235635., 235638.). Normal jobs only seem to require 7GB.
 
 ## Conclusion
 
@@ -265,3 +266,5 @@ https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps?nw=nwuserguillerm
     - [x] https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn/runs/vacaozda?nw=nwuserguillermobarbadillo
     - [x] Verified that there is a clear difference in loss values
     - [x] Should I also use it on RL, if it works I guess so. IT DOES NOT WORK WITH RL, requires input_ids in the dataset
+- [ ] It seems that on my current implementation using more than 1 prompt per step does not work. Maybe
+  I have missunderstood the implementation and I have to use the same prompt for the step.

@@ -162,10 +162,11 @@ python scripts/rl_code_finetuning.py --learning-rate 4e-5 --epochs 80 --warmup-r
 
 # I have updated the script to use a single task per step, maybe I should do a single prompt...
 python scripts/rl_code_finetuning.py --learning-rate 4e-5 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.68 --num-generations 16 --lora-r 16 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr4e-5_80epochs_16gen_4prompts-per-step_16lora_prompt-fix --training-prompts-per-step 4
+
+python scripts/rl_code_finetuning.py --learning-rate 4e-5 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.68 --num-generations 16 --lora-r 16 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr4e-5_80epochs_16gen_4prompts-per-step_16lora_prompt-fix-v2 --training-prompts-per-step 4
 ```
 
 #### Cluster
-
 
 ## Results
 

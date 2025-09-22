@@ -73,17 +73,17 @@ def main():
     print(f"Loaded {len(dataset)} tasks from {cfg.dataset_path}")
     set_random_seed(None)
     grpo_dataset = []
-    for _ in tqdm(range(cfg.epochs//cfg.training_prompts_per_step), desc="Preparing training data"):
+    for _ in tqdm(range(cfg.epochs), desc="Preparing training data"):
         random.shuffle(task_ids)
         for task_id in list(task_ids):
+            if cfg.use_data_augmentation:
+                params = get_random_data_augmentation_params()
+                task = apply_data_augmentation(dataset[task_id], **params)
+            else:
+                task = dataset[task_id] # debug without data augmentation
+            prompt = create_prompt_from_task(
+                    task, grid_encoder=grid_encoder, tokenizer=tokenizer, shuffle_train_samples=True)
             for _ in range(cfg.training_prompts_per_step):
-                if cfg.use_data_augmentation:
-                    params = get_random_data_augmentation_params()
-                    task = apply_data_augmentation(dataset[task_id], **params)
-                else:
-                    task = dataset[task_id] # debug without data augmentation
-                prompt = create_prompt_from_task(
-                        task, grid_encoder=grid_encoder, tokenizer=tokenizer, shuffle_train_samples=True)
                 grpo_dataset.append(dict(prompt=prompt, tasks=task))
     grpo_dataset = Dataset.from_list(grpo_dataset)
     pretty_print_prompt(prompt, default_color='white')

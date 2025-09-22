@@ -149,6 +149,21 @@ Reward scheme:
 
 Reward is always in range [-1, 10]
 
+### Experiments
+
+#### Local
+
+```bash
+python scripts/rl_code_finetuning.py --learning-rate 4e-6 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.7 --num-generations 24 --lora-r 32 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr4e-6_80epochs_24gen_32lora_new-reward
+
+python scripts/rl_code_finetuning.py --learning-rate 1e-5 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.7 --num-generations 16 --lora-r 32 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr1e-5_80epochs_16gen_4prompts-per-step_32lora_new-reward --training-prompts-per-step 4
+
+python scripts/rl_code_finetuning.py --learning-rate 4e-5 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.68 --num-generations 16 --lora-r 16 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr4e-5_80epochs_16gen_4prompts-per-step_16lora_new-reward --training-prompts-per-step 4
+```
+
+#### Cluster
+
+
 ## Results
 
 ### Reward is not improving on first experiments
@@ -195,6 +210,9 @@ data augmentation for this experiment.
 https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo?nw=nwuserguillermobarbadillo
 
 - A learning rate of 2e-5 is too high, 1e-5 seems to work but not sure if it's optimal.
+- Cannot use more than 16 generations per prompt because it gives OOM error
+- Cannot use Lora 32 because it also gives OOM
+- Weirdly when using 4 prompts per step did not seemed to learn
 
 ### Cluster experiments with the whole ARC-AGI-1 training set
 

@@ -23,7 +23,8 @@ We already know that search and learn works. Can we make it faster and better?
 
 TODO: the goal is to measure where the execution time is going so I can have more information to design improvements
 
-Probably the easiest way to do it is to use the logs from Kaggle.
+- Probably the easiest way to do it is to use the logs from Kaggle.
+- I can also use the logs from the cluster experiments
 
 ## Results
 

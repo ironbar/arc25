@@ -34,4 +34,4 @@ I want to explore:
 
 ## TODO
 
-- [ ]
+- [ ] Create a notebook to see experiment with solution refinement

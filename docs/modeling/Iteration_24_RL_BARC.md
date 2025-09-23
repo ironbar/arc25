@@ -217,6 +217,8 @@ https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo?nw=nwuserguillermobar
 - Cannot use more than 16 generations per prompt because it gives OOM error
 - Cannot use Lora 32 because it also gives OOM
 - Weirdly when using 4 prompts per step did not seemed to learn. I have done an experiment with learning rate 1e-5 and 4e-5.
+  The problem was that on each step we can use just one prompt and I was using many. After fixing that
+  the reward improved again during training.
 
 ### Cluster experiments with the whole ARC-AGI-1 training set
 

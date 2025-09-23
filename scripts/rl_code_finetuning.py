@@ -47,7 +47,7 @@ class Config:
     # training hyperparameters
     epochs: int = 10
     num_generations: int = 4
-    training_prompts_per_step: int = 1
+    gradient_accumulation_steps: int = 1 # the number of generations must be divisible by this
     learning_rate: float = 1e-5
     lr_scheduler_type: str = 'constant_with_warmup'
     use_data_augmentation: bool = True
@@ -83,7 +83,7 @@ def main():
                 task = dataset[task_id] # debug without data augmentation
             prompt = create_prompt_from_task(
                     task, grid_encoder=grid_encoder, tokenizer=tokenizer, shuffle_train_samples=True)
-            for _ in range(cfg.training_prompts_per_step):
+            for _ in range(cfg.gradient_accumulation_steps):
                 grpo_dataset.append(dict(prompt=prompt, tasks=task))
     grpo_dataset = Dataset.from_list(grpo_dataset)
     pretty_print_prompt(prompt, default_color='white')
@@ -105,9 +105,10 @@ def main():
     training_args = GRPOConfig(
         output_dir=cfg.output_dir,
         num_train_epochs=1,
-        per_device_train_batch_size=cfg.num_generations, # this is forced by unsloth
-        num_generations=cfg.num_generations,
-        gradient_accumulation_steps=cfg.training_prompts_per_step,
+        # unsloth forces num_generations and per_device_train_batch_size to be equal
+        per_device_train_batch_size=cfg.num_generations//cfg.gradient_accumulation_steps,
+        num_generations=cfg.num_generations//cfg.gradient_accumulation_steps,
+        gradient_accumulation_steps=cfg.gradient_accumulation_steps,
         warmup_ratio=cfg.warmup_ratio,
         learning_rate=cfg.learning_rate,
         lr_scheduler_type=cfg.lr_scheduler_type,

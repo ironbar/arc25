@@ -26,6 +26,28 @@ TODO: the goal is to measure where the execution time is going so I can have mor
 - Probably the easiest way to do it is to use the logs from Kaggle.
 - I can also use the logs from the cluster experiments
 
+### Local experiments with group sizes
+
+```bash
+export GROUP_SIZE=1
+python scripts/search_and_learn_with_unsloth.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small_arc-agi_training_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-24-debug-grouped-tasks/group-size-${GROUP_SIZE} \
+--task-group-size ${GROUP_SIZE} \
+--max-epochs 3 \
+--initial-predictions 8 \
+--predictions-per-epoch 8
+
+export GROUP_SIZE=67
+python scripts/search_and_learn_with_unsloth.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small_arc-agi_training_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-24-debug-grouped-tasks/group-size-${GROUP_SIZE} \
+--task-group-size ${GROUP_SIZE} \
+--max-epochs 3 \
+--initial-predictions 8 \
+--predictions-per-epoch 8
+```
+
 ## Results
 
 ## Conclusion

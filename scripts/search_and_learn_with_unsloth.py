@@ -18,6 +18,7 @@ from unsloth.chat_templates import train_on_responses_only
 
 from dataclasses import dataclass
 import time
+import random
 import wandb
 from datasets import Dataset
 import tyro
@@ -53,6 +54,7 @@ class Config:
     output_dir: str = "/mnt/hdd0/Kaggle/arc25/trainings/2025-09-06-debug-unsloth/first-steps"
     # search and learn hyperparameters
     use_data_augmentation: bool = True
+    task_group_size: int = 1 # how many tasks to group when searching and learning, 1 means each task is independent of the others, -1 means all tasks are grouped together
     max_epochs: int = 0
     inference_batch_size: int = 8
     initial_predictions: int = 32
@@ -72,6 +74,7 @@ class Config:
     log_to_wandb: bool = True
 
 
+@log_execution_time
 def main():
     cfg = tyro.cli(Config, description="Search and learn with unsloth")
     accelerator = Accelerator() # seems to need to do this if I want to use logging
@@ -101,18 +104,19 @@ def main():
     print(aggregate_metrics(results))
 
     model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora) # initialize peft model
-    for task_id in tqdm(task_ids, desc="Tasks", unit="task"):
+    task_batches = create_task_batches(task_ids, cfg.task_group_size)
+    for batch_idx, task_batch in tqdm(enumerate(task_batches), total=len(task_batches), desc="Tasks", unit="task batch"):
         if not cfg.max_epochs:
             continue
-        print('\n'*2 + '='*80 + f'\nTask {task_id}\n' + '='*80)
-        logger.info(f'Search and learn for task {task_id} ({task_ids.index(task_id)+1}/{len(task_ids)})')
-        task = dataset[task_id]
+        print('\n'*2 + '='*80 + f'\nTasks {task_batch}\n' + '='*80)
+        logger.info(f'Search and learn for tasks {batch_idx + 1}/{len(task_batches)}: {task_batch}')
+        # task = dataset[task_id]
         model = create_peft_model(llm, lora_r=cfg.lora_r, use_rslora=cfg.use_rslora, model=model) # reset the LoRA weights for each task
         lora_request = None
-        task_results = results[task_id]
+        batch_results = {task_id: results[task_id] for task_id in task_batch}
         for epoch in range(1, cfg.max_epochs + 1):
-            logger.info(f'Prepare training data for task {task_id} epoch {epoch}/{cfg.max_epochs}')
-            relabeled_tasks = create_hindsight_relabeled_tasks(task_results, task)
+            logger.info(f'Epoch {epoch}/{cfg.max_epochs}. Prepare training data for tasks {task_batch} ')
+            relabeled_tasks = create_hindsight_relabeled_tasks(batch_results, dataset)
             training_prompts = create_training_prompts(relabeled_tasks, grid_encoder, tokenizer)
             lora_request = learn(
                 training_prompts, model, tokenizer, cfg.output_dir, learning_rate=cfg.learning_rate,
@@ -120,14 +124,14 @@ def main():
                 previous_lora_request=lora_request)
 
             logger.info(f'Searching solutions for epoch {epoch}')
-            task_results = search(dataset, [task_id], llm, tokenizer, grid_encoder, lora_request,
+            batch_results = search(dataset, task_batch, llm, tokenizer, grid_encoder, lora_request,
                 inference_batch_size=cfg.inference_batch_size, n_predictions=cfg.initial_predictions,
                 use_data_augmentation=cfg.use_data_augmentation,
                 timeout_duration=cfg.timeout_duration, max_tokens=cfg.max_output_tokens,
                 temperature=cfg.temperature, top_p=cfg.top_p, code_runner=code_runner)
-            print(aggregate_metrics(task_results).head(1).round(3))
-            task_results = task_results[task_id]
-            results[task_id].extend(task_results)
+            print(aggregate_metrics(batch_results).iloc[:-1].round(3))
+            for task_id, task_results in batch_results.items():
+                results[task_id].extend(task_results)
             # TODO: stop criteria
     # TODO: select best predictions and prepare submission
     error_analysis(results)
@@ -277,7 +281,25 @@ def log_metrics_evolution(results, step=8):
         wandb.log(partial_metrics_summary, step=n_predictions)
 
 # hindsight relabeling functions, probably should be moved to module
-def create_hindsight_relabeled_tasks(results, task):
+def create_hindsight_relabeled_tasks(batch_results, dataset):
+    # first create relabeled tasks for each task in the batch
+    relabeled_tasks = dict()
+    for task_id, results in batch_results.items():
+        task = dataset[task_id]
+        relabeled_tasks[task_id] = _create_hindsight_relabeled_tasks_for_single_task(results, task)[::-1] # reverse the order so the best ones are first
+    task_ids = list(relabeled_tasks.keys())
+    random.shuffle(task_ids)
+    # now interleave the relabeled tasks
+    interleaved_relabeled_tasks = []
+    max_len = max(len(v) for v in relabeled_tasks.values())
+    for i in range(max_len):
+        for task_id in task_ids:
+            if i < len(relabeled_tasks[task_id]):
+                interleaved_relabeled_tasks.append(relabeled_tasks[task_id][i])
+    interleaved_relabeled_tasks = interleaved_relabeled_tasks[::-1] # reverse the order so the best ones are last again
+    return interleaved_relabeled_tasks
+
+def _create_hindsight_relabeled_tasks_for_single_task(results, task):
     # TODO: strategies to avoid repetitions
     # sort the tasks, placing the best ones last
     sorted_results = sorted(results, key=lambda r: (r.get('train_correct_grids', -1), r.get('train_pixel_score', -1)), reverse=False)
@@ -303,6 +325,16 @@ def create_training_prompts(relabeled_tasks, grid_encoder, tokenizer):
         prompt += task['text_prediction'] + tokenizer.eos_token
         prompts.append(prompt)
     return prompts
+
+
+def create_task_batches(task_ids, group_size):
+    logger.info(f'Creating task batches with group size {group_size}, total tasks {len(task_ids)}')
+    if group_size == 1:
+        return [[task_id] for task_id in task_ids]
+    elif group_size == -1:
+        return [task_ids]
+    else:
+        return [task_ids[i:i + group_size] for i in range(0, len(task_ids), group_size)]
 
 
 if __name__ == '__main__':

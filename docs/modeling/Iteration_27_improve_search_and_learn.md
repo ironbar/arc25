@@ -37,6 +37,7 @@ python scripts/search_and_learn_with_unsloth.py \
 --max-epochs 3 \
 --initial-predictions 8 \
 --predictions-per-epoch 8
+# 3978
 
 export GROUP_SIZE=67
 python scripts/search_and_learn_with_unsloth.py \
@@ -46,7 +47,57 @@ python scripts/search_and_learn_with_unsloth.py \
 --max-epochs 3 \
 --initial-predictions 8 \
 --predictions-per-epoch 8
+# 1493s
+
+export GROUP_SIZE=34
+python scripts/search_and_learn_with_unsloth.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small_arc-agi_training_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-24-debug-grouped-tasks/group-size-${GROUP_SIZE} \
+--task-group-size ${GROUP_SIZE} \
+--max-epochs 3 \
+--initial-predictions 8 \
+--predictions-per-epoch 8
+# 1549s
+
+export GROUP_SIZE=17
+python scripts/search_and_learn_with_unsloth.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small_arc-agi_training_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-24-debug-grouped-tasks/group-size-${GROUP_SIZE} \
+--task-group-size ${GROUP_SIZE} \
+--max-epochs 3 \
+--initial-predictions 8 \
+--predictions-per-epoch 8
+# 1585s
+
+export GROUP_SIZE=9
+python scripts/search_and_learn_with_unsloth.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small_arc-agi_training_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-24-debug-grouped-tasks/group-size-${GROUP_SIZE} \
+--task-group-size ${GROUP_SIZE} \
+--max-epochs 3 \
+--initial-predictions 8 \
+--predictions-per-epoch 8
+# 1615s
+
+export GROUP_SIZE=4
+python scripts/search_and_learn_with_unsloth.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small_arc-agi_training_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-24-debug-grouped-tasks/group-size-${GROUP_SIZE} \
+--task-group-size ${GROUP_SIZE} \
+--max-epochs 3 \
+--initial-predictions 8 \
+--predictions-per-epoch 8
+# 2029s
+
+python scripts/search_and_learn_with_unsloth.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small_arc-agi_training_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-24-debug-grouped-tasks/no-learning \
+--max-epochs 0 \
+--initial-predictions 32
+# 566s
 ```
+
+TODO: visualize results
 
 ## Results
 

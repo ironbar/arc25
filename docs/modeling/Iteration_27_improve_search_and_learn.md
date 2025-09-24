@@ -99,6 +99,13 @@ python scripts/search_and_learn_with_unsloth.py \
 
 TODO: visualize results
 
+### Cluster experiments with 128 predictions
+
+The goal of this experimentation is to find the best compromise between the number of predictions per
+epoch and the group size. Ideally I will do one prediction per epoch and do not group the tasks, but
+we have to make a compromise because of the current hardware. Once I find a good configuration we
+could make experiments with 512 predictions and compare against the previous iteration.
+
 ## Results
 
 ## Conclusion
@@ -108,5 +115,6 @@ TODO: visualize results
 ## TODO
 
 - [ ] Maybe I should discard the idea of tuning for each task independently if the data shows that it is too inefficient
-  - [ ] Edit the script to support grouping tasks
+  - [x] Edit the script to support grouping tasks
   - [ ] Compare speed of grouping vs no grouping
+  - [ ] Experiments to verify that improvement is also get when grouping

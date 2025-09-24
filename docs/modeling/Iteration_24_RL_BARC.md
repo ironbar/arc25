@@ -216,9 +216,8 @@ https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo?nw=nwuserguillermobar
 - A learning rate of 2e-5 is too high, 1e-5 seems to work but not sure if it's optimal.
 - Cannot use more than 16 generations per prompt because it gives OOM error
 - Cannot use Lora 32 because it also gives OOM
-- Weirdly when using 4 prompts per step did not seemed to learn. I have done an experiment with learning rate 1e-5 and 4e-5.
-  The problem was that on each step we can use just one prompt and I was using many. After fixing that
-  the reward improved again during training.
+- I have been able to train with gradient accumulation, training is slower but seems to be more stable. I had
+  to repeat the prompt n times for each gradient accumulation step.
 
 ### Cluster experiments with the whole ARC-AGI-1 training set
 
@@ -226,7 +225,9 @@ https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps?nw=nwuserguillerm
 
 - After more than 30 hours of training I don't see a clear improvement in the reward.
 - Let's do experiments with a single prompt per step, increase LoRA capacity to 32, 32 generations per prompt and try also decreasing the learning rate.
-- Jobs that do 32 generations per prompt have huge spikes in RAM use, more than 200GB that result on condor stopping the jobs. (235635., 235638.). Normal jobs only seem to require 7GB.
+- Jobs that do 32 generations per prompt have huge spikes in RAM use, more than 200GB that result on condor stopping the jobs. (235635., 235638.).
+  Normal jobs only seem to require 7GB. But when trying to lower the RAM requirements I got problems, so I had to use 128GB at minimum.
+- I don't know why, but some trainings collapse and suddenly start doing long predictions
 
 ## Conclusion
 

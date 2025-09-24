@@ -157,6 +157,7 @@ def arc_reward(completions, tasks, completion_ids, code_runner, **kwargs):
     logger.info(f'Mean completion length: {np.mean(completion_lengths):.2f}, Max completion length: {np.max(completion_lengths):.2f}, lengths: {completion_lengths}')
     rewards = [_individual_arc_reward(result, task) for result, task in zip(results, tasks)]
     logger.info(f'Mean reward: {np.mean(rewards):.2f}, Max reward: {np.max(rewards):.2f}, rewards: {np.array(rewards).round(2).tolist()}')
+    logger.info(f'Best completion:\n{completions[np.argmax(rewards)]}')
     return rewards
 
 

@@ -35,3 +35,5 @@ TODO: the goal is to measure where the execution time is going so I can have mor
 ## TODO
 
 - [ ] Maybe I should discard the idea of tuning for each task independently if the data shows that it is too inefficient
+  - [ ] Edit the script to support grouping tasks
+  - [ ] Compare speed of grouping vs no grouping

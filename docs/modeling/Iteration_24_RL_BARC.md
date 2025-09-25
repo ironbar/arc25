@@ -273,6 +273,7 @@ https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps?nw=nwuserguillerm
     - [x] https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn/runs/vacaozda?nw=nwuserguillermobarbadillo
     - [x] Verified that there is a clear difference in loss values
     - [x] Should I also use it on RL, if it works I guess so. IT DOES NOT WORK WITH RL, requires input_ids in the dataset
-- [ ] It seems that on my current implementation using more than 1 prompt per step does not work. Maybe
+- [x] It seems that on my current implementation using more than 1 prompt per step does not work. Maybe
   I have missunderstood the implementation and I have to use the same prompt for the step.
   - It seems that if a single prompt is used on each step the reward improves: https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo/runs/f7r56ln8  
+- [ ] Evaluate: /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-09-19-rl-first-steps/lr1e-6_epochs100_16gen_1prompts-per-step_32lora/checkpoint-8400

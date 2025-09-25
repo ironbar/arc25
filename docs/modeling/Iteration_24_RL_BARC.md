@@ -194,6 +194,16 @@ In this case we would be able to parse python code, so it won't get a reward of 
 I'm going to update the reward to don't make distinctions between code not parsed an unvalid output.
 That might prevent training collapsing. Other option would be to use some penalty over repeated text.
 
+### Evaluation
+
+```bash
+python scripts/inference_with_BARC.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-09-19-rl-first-steps/lr1e-6_epochs100_16gen_1prompts-per-step_32lora/evaluation \
+--lora-path /mnt/hdd0/MEGA/TEMP/trainings/2025-09-19-rl-first-steps/lr1e-6_epochs100_16gen_1prompts-per-step_32lora/checkpoint-8400 \
+--n-predictions 240
+```
+
 ## Results
 
 ### Reward is not improving on first experiments

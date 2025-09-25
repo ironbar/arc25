@@ -168,6 +168,32 @@ python scripts/rl_code_finetuning.py --learning-rate 2e-5 --epochs 80 --warmup-r
 
 #### Cluster
 
+### Training collapse
+
+https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps/runs/9lvckhn0/logs
+
+<details>
+  <summary>Click to expand/collapse this section</summary>
+
+
+```
+2025-09-25 12:56:23 ```python
+2025-09-25 12:56:23 from common import *
+2025-09-25 12:56:23 
+2025-09-25 12:56:23 import pattern detection as pattern
+2025-09-25 12:56:23 from the input, you will see a vertical sequence of alternating patterns of alternating patterns in a pattern of alternating patterns in a vertical sequence of alternating patterns in a 3x3 pattern. The pattern of a pattern is a pattern of alternating patterns in a 3x3 pattern.
+2025-09-25 12:56:23 
+2025-09-25 12:56:23 ```patterns in a 3x1 vertical pattern. The pattern of a pattern is a pattern of alternating patterns in a vertical sequence of alternating patterns in a 3x1 pattern in a 3x1 pattern in a 3x1 pattern. The pattern of a pattern in a 3x1 pattern in a 3x1 pattern in a 3x1 pattern in a 1 pattern in a 1 pattern in a pattern in a 1 pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a vertical pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a1 pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a vertical pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a vertical pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a vertical pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a vertical pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a vertical pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a vertical pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in a pattern in
+2025-09-25 12:56:23 2025-09-25 14:56:23,927 - arc25.logging - INFO - wrapper - Executed arc_reward in 0.0321 seconds
+```
+
+In this case we would be able to parse python code, so it won't get a reward of -1 but a reward of 0.
+
+</details>
+
+I'm going to update the reward to don't make distinctions between code not parsed an unvalid output.
+That might prevent training collapsing. Other option would be to use some penalty over repeated text.
+
 ## Results
 
 ### Reward is not improving on first experiments
@@ -277,3 +303,4 @@ https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps?nw=nwuserguillerm
   I have missunderstood the implementation and I have to use the same prompt for the step.
   - It seems that if a single prompt is used on each step the reward improves: https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo/runs/f7r56ln8  
 - [ ] Evaluate: /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-09-19-rl-first-steps/lr1e-6_epochs100_16gen_1prompts-per-step_32lora/checkpoint-8400
+- [ ] Should I use some repetition penalty when training?

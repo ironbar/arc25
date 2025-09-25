@@ -582,6 +582,8 @@ TODO: 512 preds
 
 ### Do I have clear evidence that the approach works?
 
+<https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn>
+
 Yes, the plot below shows two experiments of search and learn vs 3 baseline experiments that simply do independent predictions.
 
 ![alt text](res/1758805734469_image.png)
@@ -598,7 +600,7 @@ That explains why the blue line separates early from the baseline.
 |-----------------------|--------|--------|
 | 512                   | 1      | 23.3%  |
 | 256                   | 2      | 26.0%  |
-| 128                   | 4      | 28.3%  |
+| 128                   | 4      | **28.3%**  |
 
 We get an improvement of 5% with the best configuration, but is very likely that we could
 get even better results by using more epochs (a more continuous learning approach).
@@ -623,10 +625,11 @@ I will deal with it on a future iteration.
 
 ## Conclusion
 
-TODO:
+I have made a first implementation of search and learn, it is not very efficient but I have been able to verify that for a fixed prediction budget of 512 predictions, the method is able to improve 5% the pass@n rate over the baseline of 23.3% on the ARC-AGI-1 evaluation dataset.
 
-- Do I have clear evidence that the approach works?
-- Is the current implementation efficient enough?
+It is not a huge improvement, but hopefully is a good start point that I could improve on future
+iterations with a more efficient implementation.
+
 
 ## Next steps
 

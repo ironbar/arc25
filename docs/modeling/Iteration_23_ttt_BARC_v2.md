@@ -582,8 +582,44 @@ TODO: 512 preds
 
 ### Do I have clear evidence that the approach works?
 
-TODO: Kaggle
-TODO: Cluster
+Yes, the plot below shows two experiments of search and learn vs 3 baseline experiments that simply do independent predictions.
+
+![alt text](res/1758805734469_image.png)
+
+All the experiments do the same number of predictions: 512. The difference is that the blue and green
+line learn from the predictions:
+
+- Green line does 256 predictions, learns and does other 256 predictions.
+- Blue line learns every 128 predictions.
+
+That explains why the blue line separates early from the baseline.
+
+| predictions per epoch | epochs | pass@n |
+|-----------------------|--------|--------|
+| 512                   | 1      | 23.3%  |
+| 256                   | 2      | 26.0%  |
+| 128                   | 4      | 28.3%  |
+
+We get an improvement of 5% with the best configuration, but is very likely that we could
+get even better results by using more epochs (a more continuous learning approach).
+
+On Kaggle I have done experiments with the ARC-AGI-2 evaluation set and didn't observe improvements yet. However the start point is just 0.8% pass@2 so it is a totally different
+level of difficulty.
+
+### Current implementation is too slow
+
+| predictions per epoch | epochs | runtime (h) |
+|-----------------------|--------|-------------|
+| 512                   | 1      | 23          |
+| 256                   | 2      | 54          |
+| 128                   | 4      | 74          |
+
+However the current implementation is slow, and the worst of all is that using more
+epochs results on bigger time. 
+This happens because inference is efficient when we do a a big number of predictions on each run.
+
+I will deal with it on a future iteration.
+
 
 ## Conclusion
 

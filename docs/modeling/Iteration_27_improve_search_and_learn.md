@@ -209,3 +209,5 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
   - [x] Edit the script to support grouping tasks
   - [ ] Compare speed of grouping vs no grouping
   - [ ] Experiments to verify that improvement is also get when grouping
+- [ ] This implementation is still not efficient for H100.
+  - https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn/runs/nmzebmh1?nw=nwuserguillermobarbadillo

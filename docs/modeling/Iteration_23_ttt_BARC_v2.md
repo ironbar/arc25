@@ -596,11 +596,11 @@ line learn from the predictions:
 
 That explains why the blue line separates early from the baseline.
 
-| predictions per epoch | epochs | pass@n |
-|-----------------------|--------|--------|
-| 512                   | 1      | 23.3%  |
-| 256                   | 2      | 26.0%  |
-| 128                   | 4      | **28.3%**  |
+| initial predictions | epochs | predictions per epoch | pass@n    |
+|---------------------|--------|-----------------------|-----------|
+| 512                 | 0      | 0                     | 23.3%     |
+| 256                 | 1      | 256                   | 26.0%     |
+| 128                 | 3      | 128                   | **28.3%** |
 
 We get an improvement of 5% with the best configuration, but is very likely that we could
 get even better results by using more epochs (a more continuous learning approach).
@@ -610,11 +610,11 @@ level of difficulty.
 
 ### Current implementation is too slow
 
-| predictions per epoch | epochs | runtime (h) |
-|-----------------------|--------|-------------|
-| 512                   | 1      | 23          |
-| 256                   | 2      | 54          |
-| 128                   | 4      | 74          |
+| initial predictions | epochs | predictions per epoch | runtime (h) |
+|---------------------|--------|-----------------------|-------------|
+| 512                 | 0      | 0                     | 23          |
+| 256                 | 1      | 256                   | 54          |
+| 128                 | 3      | 128                   | 74          |
 
 However the current implementation is slow, and the worst of all is that using more
 epochs results on bigger time. 

@@ -265,6 +265,19 @@ https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps?nw=nwuserguillerm
   Normal jobs only seem to require 7GB. But when trying to lower the RAM requirements I got problems, so I had to use 128GB at minimum.
 - I don't know why, but some trainings collapse and suddenly start doing long predictions
 
+### Evaluation of first model trained with RL on all training tasks
+
+| dataset     | experiment   | n_preds | valid code  | valid outputs | unique outputs | train_pixel_score | train_correct_grids | train_pass_rate | train_is_correct | test_pixel_score | test_correct_grids | test_pass_rate | test_is_correct | is_correct |
+|-------------|--------------|---------|-------------|---------------|----------------|-------------------|---------------------|-----------------|------------------|------------------|--------------------|----------------|-----------------|------------|
+| evaluation  | baseline     | 480     | **100.00%** | 70.87%        | **43.82%**     | 41.30%            | 2.07%               | 1.34%           | 22.50%           | 40.21%           | 1.71%              | 1.68%          | 28.50%          | 22.25%     |
+| evaluation  | RL all tasks | 480     | 96.17%      | **81.92%**    | 35.98%         | **56.24%**        | **6.76%**           | **4.60%**       | **27.75%**       | **54.93%**       | **5.90%**          | **5.82%**      | **35.25%**      | **27.00%** |
+
+The model trained with RL is best in all metrics except valid code and unique outputs. It improves
+the pass@n rate from 22.25% to 27%.
+
+It is possible that by improving the reward and training for longer results could improve even more.
+This model was trained for 8400 steps, so that is around 20 epochs for 400 training tasks.
+
 ## Conclusion
 
 ## Next steps

@@ -250,7 +250,25 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}_${GROUP_SIZE}-group-size" -append request_gpus=1 -append request_cpus=6 -append request_memory=32G --append 'requirements = (TARGET.Machine == "calculon19.das-nano.com")'
 237851.
+
+export FOLDER=2025-09-24-search-and-learn
+export INITIAL_PREDICTIONS=16
+export EPOCHS=7
+export PREDICTIONS_PER_EPOCH=16
+export GROUP_SIZE=20
+export LEARNING_RATE=1e-5; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--task-group-size ${GROUP_SIZE} \
+--initial-predictions ${INITIAL_PREDICTIONS} \
+--predictions-per-epoch ${PREDICTIONS_PER_EPOCH} \
+--learning-rate ${LEARNING_RATE} \
+--max-epochs ${EPOCHS} \
+--gpu_memory_utilization 0.5 \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}_${GROUP_SIZE}-group-size" -append request_gpus=1 -append request_cpus=6 -append request_memory=32G --append 'requirements = (TARGET.Machine == "calculon19.das-nano.com")'
 ```
+
 ## Results
 
 ## Conclusion

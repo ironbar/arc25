@@ -269,6 +269,8 @@ https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps?nw=nwuserguillerm
 
 ## Next steps
 
+- If RL is proven to work, next step is scale the training by using more GPUs and more data (BARC)
+
 ## TODO
 
 - [x] How to pass the responses to the reward function? It seems that the data should be provided as a field in the dictionary
@@ -314,3 +316,12 @@ https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps?nw=nwuserguillerm
   - It seems that if a single prompt is used on each step the reward improves: https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo/runs/f7r56ln8  
 - [ ] Evaluate: /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-09-19-rl-first-steps/lr1e-6_epochs100_16gen_1prompts-per-step_32lora/checkpoint-8400
 - [ ] Should I use some repetition penalty when training?
+- [ ] More advanced reward
+  - When all the rewards are equal, the loss is 0. And the model does not learn. However I would like
+  the model to still learn when all the responses are correct. In that case I could break the ties
+  using the length of the response. Use ockham's razor to keep responses as short as possible.
+  - However I'm not sure if that makes sense. Wouldn't be better to use a bigger number of predictions
+  so there is one failing one and the model can learn the true goal?
+- [ ] Longer trainings with simplified reward to see if collapse happens
+- [ ] Update reward information with the best one
+- [ ] Document local experiments

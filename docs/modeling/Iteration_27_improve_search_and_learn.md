@@ -315,7 +315,13 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 
 - [ ] Maybe I should discard the idea of tuning for each task independently if the data shows that it is too inefficient
   - [x] Edit the script to support grouping tasks
-  - [ ] Compare speed of grouping vs no grouping
+  - [ ] Compare speed of grouping vs no grouping. Create a table to show the effect of group size and number of predictions per epoch
   - [ ] Experiments to verify that improvement is also get when grouping
 - [ ] This implementation is still not efficient for H100.
   - https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn/runs/nmzebmh1?nw=nwuserguillermobarbadillo
+- [ ] Once a good configuration has been found scale to 512 predictions and compare against previous results
+- [ ] Optimize learning rate and group size
+- [ ] Try to reduce computation cost by filtering the training data
+  - [ ] Start by training on half of the samples
+  - [ ] Remove duplicates
+  - [ ] Explore a policy of keeping the best and more diverse solutions

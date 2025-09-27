@@ -193,6 +193,22 @@ export NUM_GENERATIONS=64; export ACCUM_STEPS=8; python scripts/rl_code_finetuni
 --learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.70 \
 --num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-27-rl-speed-test/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_RTX3090
+
+export NUM_GENERATIONS=128; export ACCUM_STEPS=16; python scripts/rl_code_finetuning.py \
+--learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-27-rl-speed-test/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_RTX3090
+
+export NUM_GENERATIONS=256; export ACCUM_STEPS=32; python scripts/rl_code_finetuning.py \
+--learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-27-rl-speed-test/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_RTX3090
+
+export EPOCHS=1
+export NUM_GENERATIONS=16; export ACCUM_STEPS=1;  python scripts/rl_code_finetuning.py \
+--learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.67 \
+--num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-27-rl-speed-test/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_RTX3090
 ```
 
 #### Cluster
@@ -306,6 +322,23 @@ the pass@n rate from 22.25% to 27%.
 
 It is possible that by improving the reward and training for longer results could improve even more.
 This model was trained for 8400 steps, so that is around 20 epochs for 400 training tasks.
+
+### Speed tests
+
+#### 3090 (training on 67 smallest training tasks)
+
+![alt text](res/1758958482820_image.png)
+
+- Using a bigger number of generations per step results on more efficient generation until 128, then it plateaus.
+- In the other side a bigger number of generations results on slower training speed
+- For the 3090 32 generations per step might be the sweet spot
+- I have verified that the number of gradient accumulation steps does not affect too much to the metrics. We should try to use a batch size as big as possible but the effect is not big.
+
+#### H100 (traininig on all training tasks)
+
+![alt text](res/1758959201075_image.png)
+
+Similar conclusions for H100.
 
 ## Conclusion
 

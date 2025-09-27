@@ -306,7 +306,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=90G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
-237996.0
+237996.0 # OOM with 54GB of RAM, relaunched with 128GB
 ```
 
 ### Training collapse

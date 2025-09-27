@@ -153,6 +153,8 @@ Reward is always in range [-1, 10]
 
 #### Local
 
+##### First steps
+
 ```bash
 python scripts/rl_code_finetuning.py --learning-rate 4e-6 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.7 --num-generations 24 --lora-r 32 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr4e-6_80epochs_24gen_32lora_new-reward
 
@@ -164,6 +166,33 @@ python scripts/rl_code_finetuning.py --learning-rate 4e-5 --epochs 80 --warmup-r
 python scripts/rl_code_finetuning.py --learning-rate 4e-5 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.68 --num-generations 16 --lora-r 16 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr4e-5_80epochs_16gen_4prompts-per-step_16lora_prompt-fix --training-prompts-per-step 4
 
 python scripts/rl_code_finetuning.py --learning-rate 2e-5 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.67 --num-generations 16 --lora-r 16 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr2e-5_80epochs_16gen_4prompts-per-step_16lora_prompt-fix-v2 --training-prompts-per-step 4
+```
+
+#### Speed test
+
+Let's compare the speed when using gradient accumulation steps. I believe inference shoudl be faster
+
+```bash
+export EPOCHS=1
+export NUM_GENERATIONS=8; export ACCUM_STEPS=1;  python scripts/rl_code_finetuning.py \
+--learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.67 \
+--num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-27-rl-speed-test/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_RTX3090
+
+export NUM_GENERATIONS=16; export ACCUM_STEPS=2; python scripts/rl_code_finetuning.py \
+--learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-27-rl-speed-test/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_RTX3090
+
+export NUM_GENERATIONS=32; export ACCUM_STEPS=4; python scripts/rl_code_finetuning.py \
+--learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-27-rl-speed-test/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_RTX3090
+
+export NUM_GENERATIONS=64; export ACCUM_STEPS=8; python scripts/rl_code_finetuning.py \
+--learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-27-rl-speed-test/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_RTX3090
 ```
 
 #### Cluster

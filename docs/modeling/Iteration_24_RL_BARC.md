@@ -293,15 +293,15 @@ export N_CPUS=20
 export LORA_R=32
 export EPOCHS=100; condor_submit train.condor command=" 
 python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
---gpu_memory_utilization 0.3 \
---lora_r ${LORA_R} \
---warmup-ratio 0.01 \
 --num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
 --epochs ${EPOCHS} \
 --max-seq-length 9700 \
 --max-completion-length 1024 \
---learning-rate ${LEARNING_RATE} \
---gradient-accumulation-steps ${ACUM_STEPS} \
 --n-jobs ${N_CPUS} \
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \

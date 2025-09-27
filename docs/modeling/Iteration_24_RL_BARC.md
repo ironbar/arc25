@@ -419,6 +419,13 @@ the pass@n rate from 22.25% to 27%.
 It is possible that by improving the reward and training for longer results could improve even more.
 This model was trained for 8400 steps, so that is around 20 epochs for 400 training tasks.
 
+| dataset  | experiment   | n_preds | valid code | valid outputs | unique outputs | train_pixel_score | train_correct_grids | train_pass_rate | train_is_correct | test_pixel_score | test_correct_grids | test_pass_rate | test_is_correct | is_correct |
+|----------|--------------|---------|------------|---------------|----------------|-------------------|---------------------|-----------------|------------------|------------------|--------------------|----------------|-----------------|------------|
+| training | baseline     | 240     | **100.0%** | 76.4%         | **41.1%**      | 48.1%             | 11.8%               | 10.1%           | 61.8%            | 47.1%            | 11.1%              | 11.0%          | 66.8%           | 61.5%      |
+| training | RL all tasks | 240     | 97.9%      | **89.9%**     | 29.4%          | **67.9%**         | **28.8%**           | **24.9%**       | **64.8%**        | **66.9%**        | **27.4%**          | **27.1%**      | **70.5%**       | **64.3%**  |
+
+On the training set there are improvements, but they are small. Either I need to train for longer or some tasks are not solvable.
+
 ### Speed tests
 
 https://wandb.ai/guillermobarbadillo/2025-09-27-rl-speed-test

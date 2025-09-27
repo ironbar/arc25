@@ -421,6 +421,8 @@ This model was trained for 8400 steps, so that is around 20 epochs for 400 train
 
 ### Speed tests
 
+https://wandb.ai/guillermobarbadillo/2025-09-27-rl-speed-test
+
 #### 3090 (training on 67 smallest training tasks)
 
 ![alt text](res/1758958482820_image.png)

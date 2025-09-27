@@ -213,6 +213,102 @@ export NUM_GENERATIONS=16; export ACCUM_STEPS=1;  python scripts/rl_code_finetun
 
 #### Cluster
 
+#### Speed test
+
+Let's compare the speed when using gradient accumulation steps. I believe inference shoudl be faster
+
+```bash
+export EPOCHS=1
+export FOLDER=2025-09-27-rl-speed-test
+export LEARNING_RATE=1e-6
+export N_CPUS=20
+export LORA_R=32
+export NUM_GENERATIONS=8; export ACUM_STEPS=1; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--lora_r ${LORA_R} \
+--epochs ${EPOCHS} \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--learning-rate ${LEARNING_RATE} \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_H100" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=50G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+
+export NUM_GENERATIONS=512; export ACUM_STEPS=64; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--lora_r ${LORA_R} \
+--epochs ${EPOCHS} \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--learning-rate ${LEARNING_RATE} \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_H100" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=50G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+
+```
+
+#### Trainings
+
+```bash
+export FOLDER=2025-09-19-rl-first-steps
+export LEARNING_RATE=1e-6
+export NUM_GENERATIONS=16
+export PROMPTS_PER_STEP=1
+export N_CPUS=20
+export LORA_R=32
+export EPOCHS=100; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--gpu_memory_utilization 0.3 \
+--lora_r ${LORA_R} \
+--warmup-ratio 0.01 \
+--num-generations ${NUM_GENERATIONS} \
+--epochs ${EPOCHS} \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--learning-rate ${LEARNING_RATE} \
+--gradient-accumulation-steps ${PROMPTS_PER_STEP} \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${PROMPTS_PER_STEP}prompts-per-step_${LORA_R}lora_simplified-reward" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=200G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+237770.0 # OOM when using 128GB of RAM
+237843.0 # CUDA error: an illegal memory access was encountered
+237995.0
+
+export FOLDER=2025-09-19-rl-first-steps
+export LEARNING_RATE=2e-6
+export NUM_GENERATIONS=32
+export ACUM_STEPS=4
+export N_CPUS=20
+export LORA_R=32
+export EPOCHS=100; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--gpu_memory_utilization 0.3 \
+--lora_r ${LORA_R} \
+--warmup-ratio 0.01 \
+--num-generations ${NUM_GENERATIONS} \
+--epochs ${EPOCHS} \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--learning-rate ${LEARNING_RATE} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=90G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+237996.0
+```
+
 ### Training collapse
 
 https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps/runs/9lvckhn0/logs

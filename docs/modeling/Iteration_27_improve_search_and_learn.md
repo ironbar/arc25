@@ -397,6 +397,23 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 
 ## Results
 
+### Searching the best configuration for inference
+
+The table below shows the runtime for experiments with a budget of 128 predictions.
+
+![alt text](res/1759045821376_image.png)
+
+It is clear how using a smaller group size or smaller number of predictions per epoch leads
+to bigger runtimes.
+
+Now I'm going to experiment with a budget of 512 predictions. I'm going to try these configurations:
+
+- 32 predictions per epoch, group size 5
+- 16 predictions per epoch, group size 20
+- 8 predictions per epoch, group size 30
+
+For each configuration I should try different learning rates.
+
 ## Conclusion
 
 ## Next steps

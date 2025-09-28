@@ -168,7 +168,7 @@ python scripts/rl_code_finetuning.py --learning-rate 4e-5 --epochs 80 --warmup-r
 python scripts/rl_code_finetuning.py --learning-rate 2e-5 --epochs 80 --warmup-ratio 0.01 --gpu-memory-utilization 0.67 --num-generations 16 --lora-r 16 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr2e-5_80epochs_16gen_4prompts-per-step_16lora_prompt-fix-v2 --training-prompts-per-step 4
 ```
 
-#### Speed test
+##### Speed test
 
 Let's compare the speed when using gradient accumulation steps. I believe inference shoudl be faster
 
@@ -211,9 +211,42 @@ export NUM_GENERATIONS=16; export ACCUM_STEPS=1;  python scripts/rl_code_finetun
 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-27-rl-speed-test/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_RTX3090
 ```
 
+##### Scale rewards
+
+Try scale_rewards='batch', https://huggingface.co/docs/trl/main/en/grpo_trainer#trl.GRPOConfig, this migth reduce the frac_std_reward_zero
+
+```bash
+export EPOCHS=1
+export NUM_GENERATIONS=8; export ACCUM_STEPS=2;  python scripts/rl_code_finetuning.py \
+--learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-28-rl-scale-rewards/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_baseline
+
+export EPOCHS=1
+export NUM_GENERATIONS=8; export ACCUM_STEPS=2;  python scripts/rl_code_finetuning.py \
+--learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
+--scale-rewards batch \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-28-rl-scale-rewards/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_batch
+
+export EPOCHS=1
+export NUM_GENERATIONS=8; export ACCUM_STEPS=4;  python scripts/rl_code_finetuning.py \
+--learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
+--scale-rewards group \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-28-rl-scale-rewards/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_group
+
+export EPOCHS=1
+export NUM_GENERATIONS=8; export ACCUM_STEPS=4;  python scripts/rl_code_finetuning.py \
+--learning-rate 2e-5 --epochs ${EPOCHS} --warmup-ratio 0.01 --gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} --lora-r 16 --gradient-accumulation-steps ${ACCUM_STEPS} \
+--scale-rewards batch \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-28-rl-scale-rewards/lr2e-5_${EPOCHS}epochs_${NUM_GENERATIONS}gen_${ACCUM_STEPS}accum-steps_16lora_batch
+```
+
 #### Cluster
 
-#### Speed test
+##### Speed test
 
 Let's compare the speed when using gradient accumulation steps. I believe inference shoudl be faster
 
@@ -257,7 +290,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 
 ```
 
-#### Trainings
+##### Trainings
 
 ```bash
 export FOLDER=2025-09-19-rl-first-steps

@@ -506,3 +506,4 @@ Similar conclusions for H100.
 - [ ] Update reward information with the best one
 - [ ] Document local experiments
 - [ ] There seems to be a problem with the gradient accumulation steps on this experiment: https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps/runs/jle1n3oa/overview
+- [ ] Try scale_rewards='batch', https://huggingface.co/docs/trl/main/en/grpo_trainer#trl.GRPOConfig, this migth reduce the frac_std_reward_zero

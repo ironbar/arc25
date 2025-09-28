@@ -316,7 +316,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${PROMPTS_PER_STEP}prompts-per-step_${LORA_R}lora_simplified-reward" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=200G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
 237770.0 # OOM when using 128GB of RAM
 237843.0 # CUDA error: an illegal memory access was encountered
-237995.0
+237995.0 # at step 10117 it is collapsing
 
 export FOLDER=2025-09-19-rl-first-steps
 export LEARNING_RATE=2e-6
@@ -340,6 +340,30 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=90G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
 237996.0 # OOM with 54GB of RAM, relaunched with 128GB
+
+# first training with scale rewards
+export FOLDER=2025-09-19-rl-first-steps
+export LEARNING_RATE=2e-6
+export NUM_GENERATIONS=64
+export ACUM_STEPS=8
+export N_CPUS=20
+export LORA_R=32
+export EPOCHS=100; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--epochs ${EPOCHS} \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=90G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
 ```
 
 ### Training collapse
@@ -527,8 +551,10 @@ Similar conclusions for H100.
 - [x] It seems that on my current implementation using more than 1 prompt per step does not work. Maybe
   I have missunderstood the implementation and I have to use the same prompt for the step.
   - It seems that if a single prompt is used on each step the reward improves: https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo/runs/f7r56ln8  
-- [ ] Evaluate: /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-09-19-rl-first-steps/lr1e-6_epochs100_16gen_1prompts-per-step_32lora/checkpoint-8400
+- [x] Evaluate: /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-09-19-rl-first-steps/lr1e-6_epochs100_16gen_1prompts-per-step_32lora/checkpoint-8400
 - [ ] Should I use some repetition penalty when training?
+  - [ ] After simplifying the reward the training still collapses: 237995.0
+  - [ ] Does using a bigger group size helps to prevent collapse?
 - [ ] More advanced reward
   - When all the rewards are equal, the loss is 0. And the model does not learn. However I would like
   the model to still learn when all the responses are correct. In that case I could break the ties
@@ -538,5 +564,5 @@ Similar conclusions for H100.
 - [ ] Longer trainings with simplified reward to see if collapse happens
 - [ ] Update reward information with the best one
 - [ ] Document local experiments
-- [ ] There seems to be a problem with the gradient accumulation steps on this experiment: https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps/runs/jle1n3oa/overview
-- [ ] Try scale_rewards='batch', https://huggingface.co/docs/trl/main/en/grpo_trainer#trl.GRPOConfig, this migth reduce the frac_std_reward_zero
+- [x] There seems to be a problem with the gradient accumulation steps on this experiment: https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps/runs/jle1n3oa/overview
+- [x] Try scale_rewards='batch', https://huggingface.co/docs/trl/main/en/grpo_trainer#trl.GRPOConfig, this migth reduce the frac_std_reward_zero

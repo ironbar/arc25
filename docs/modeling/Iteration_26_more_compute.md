@@ -70,7 +70,11 @@ git clone git@github.com:ironbar/arc25.git
 python3 -m virtualenv ~/arc25_env
 source ~/arc25_env/bin/activate
 pip install -r arc25/requirements.txt
-pip install flash-attn==2.6.3 --no-build-isolation
+#pip install flash-attn==2.6.3 --no-build-isolation
+MAX_JOBS=2 python -m pip install flash-attn==2.6.3 --no-build-isolation
+
+vim secrets.sh #export WANDB_API_KEY=
+chmod +x secrets.sh
 ```
 
 - Created dataset from huggingface [barc0/Llama-3.1-ARC-Potpourri-Induction-8B](https://huggingface.co/barc0/Llama-3.1-ARC-Potpourri-Induction-8B)
@@ -94,6 +98,6 @@ pip install flash-attn==2.6.3 --no-build-isolation
   - [x] Clone arc25 repo, for that I have to add a new public key to github.
   - [ ] Create python environment
   - [ ] Create dataset for BARC induction model
-  - [ ] Add data to repo for simplicity
+  - [x] Add data to repo for simplicity
   - [ ] Launch first experiment, with wandb, saving to artifacts
   - [ ] Create multiple experiments

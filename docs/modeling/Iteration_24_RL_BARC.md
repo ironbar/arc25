@@ -365,6 +365,64 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=90G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+
+
+# Experiments to avoid training collapse
+mkdir trainings/2025-09-19-rl-first-steps/lr2e-6_epochs100_32gen_4accum-steps_32lora_simplified-reward_repetition-penalty-1.2
+cp -r trainings/2025-09-19-rl-first-steps/lr2e-6_epochs100_32gen_4accum-steps_32lora_simplified-reward/checkpoint-2400 trainings/2025-09-19-rl-first-steps/lr2e-6_epochs100_32gen_4accum-steps_32lora_simplified-reward_repetition-penalty-1.2
+mkdir trainings/2025-09-19-rl-first-steps/lr2e-6_epochs100_32gen_4accum-steps_32lora_simplified-reward_unmasked-truncated-completions
+cp -r trainings/2025-09-19-rl-first-steps/lr2e-6_epochs100_32gen_4accum-steps_32lora_simplified-reward/checkpoint-2400 trainings/2025-09-19-rl-first-steps/lr2e-6_epochs100_32gen_4accum-steps_32lora_simplified-reward_unmasked-truncated-completions
+
+export FOLDER=2025-09-19-rl-first-steps
+export LEARNING_RATE=2e-6
+export NUM_GENERATIONS=32
+export ACUM_STEPS=4
+export N_CPUS=20
+export LORA_R=32
+export REPETITION_PENALTY=1.2
+export EPOCHS=100; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+# 238016.0
+
+export FOLDER=2025-09-19-rl-first-steps
+export LEARNING_RATE=2e-6
+export NUM_GENERATIONS=32
+export ACUM_STEPS=4
+export N_CPUS=20
+export LORA_R=32
+export EPOCHS=100; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--epochs ${EPOCHS} \
+--no-mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_unmasked-truncated-completions" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+# 238017.0
 ```
 
 ### Training collapse
@@ -393,6 +451,8 @@ In this case we would be able to parse python code, so it won't get a reward of 
 I'm going to update the reward to don't make distinctions between code not parsed an unvalid output.
 That might prevent training collapsing. Other option would be to use some penalty over repeated text.
 And other option would be to use unfinished responses for training that would get reward 0.
+
+I have already done a few experiments with the simplified reward and collapse still happens.
 
 ### Evaluation
 
@@ -555,15 +615,18 @@ Similar conclusions for H100.
   - It seems that if a single prompt is used on each step the reward improves: https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo/runs/f7r56ln8  
 - [x] Evaluate: /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-09-19-rl-first-steps/lr1e-6_epochs100_16gen_1prompts-per-step_32lora/checkpoint-8400
 - [ ] Should I use some repetition penalty when training?
-  - [ ] After simplifying the reward the training still collapses: 237995.0
-  - [ ] Does using a bigger group size helps to prevent collapse?
-- [ ] More advanced reward
+  - [x] After simplifying the reward the training still collapses: 237995.0
+  - [x] Does using a bigger group size helps to prevent collapse? No
+  - [ ] Launched experiment with repetition penalty 1.2
+  - [ ] Launched experiment without masking truncated completions
+- [x] More advanced reward
   - When all the rewards are equal, the loss is 0. And the model does not learn. However I would like
   the model to still learn when all the responses are correct. In that case I could break the ties
   using the length of the response. Use ockham's razor to keep responses as short as possible.
   - However I'm not sure if that makes sense. Wouldn't be better to use a bigger number of predictions
   so there is one failing one and the model can learn the true goal?
-- [ ] Longer trainings with simplified reward to see if collapse happens
+- [x] Longer trainings with simplified reward to see if collapse happens
+
 - [ ] Update reward information with the best one
 - [ ] Document local experiments
 - [x] There seems to be a problem with the gradient accumulation steps on this experiment: https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps/runs/jle1n3oa/overview

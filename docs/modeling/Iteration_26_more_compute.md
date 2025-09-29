@@ -38,6 +38,30 @@ https://arcprize.org/partners
 I did the introductory call on 29/09/2025. My initial intention is to use machines with 3090 to run
 experiments with search and learn and find the best possible configuration.
 
+<https://cp.strongcompute.ai/>
+
+Notes from meeting with Adam:
+
+- [Documentation](https://docs.strongcompute.com/)
+  - Burst is for AI Model training. I can see many burst experiments from last year's ARC edition.
+- **Datasets**. I can use datasets to store models or data. They can be created from S3 objects or Huggingface. They say it should be faster than using Huggingface directly. At least I don't have to download the data to the temporal folder.
+- **Shapes**. I can see the available machine types.
+- I need wiregard to connect to the Sydney cluster
+- They can help with multi-node trainings
+
+#### Logbook
+
+- I have created a new project for the experiments
+- I have started a container on `Sydney Strong Compute Cluster` with 0 GPUs.
+- I have added [wireguard](https://docs.strongcompute.com/~/revisions/amxNDLwVFA8r5isl8NAV/getting-started/vpn-sydney-cluster-only) and configured it: `sudo wg-quick up wg0` to connect and `sudo wg-quick down wg0` to disconnect.
+- I'm following the [Hello world](https://docs.strongcompute.com/getting-started/2.-hello-world-training-example) guide.
+- Documentation is very complete. It might take a while to get used and started but once I launch the
+first run I believe it will be very fast to launch multiple experiments.
+
+#### Doubts
+
+- When I start a container and select some type of machine. Do I pay for the machine when installing python or other things? Should I select a cheap machine for development and a expensive one for training?
+
 ## Results
 
 ## Conclusion
@@ -46,4 +70,10 @@ experiments with search and learn and find the best possible configuration.
 
 ## TODO
 
-- [ ]
+- [ ] Strong compute
+  - [ ] Clone arc25 repo
+  - [ ] Create python environment
+  - [ ] Create dataset for BARC induction model
+  - [ ] Add data to repo for simplicity
+  - [ ] Launch first experiment, with wandb, saving to artifacts
+  - [ ] Create multiple experiments

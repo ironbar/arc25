@@ -26,12 +26,17 @@ It's time to use the compute offered by ARC prize partners to be able to do my e
 
 https://arcprize.org/partners
 
-- [ ] Lambda. $1K. Already applied, waiting for approval
-- [ ] Modal. $500. Already applied, waiting for approval
+- [x] Strong Compute. $5k-$50k. 
+- [x] Lambda. $1K. Applied and received 1k in compute credits.
 - [ ] Google. $?. Applied, waiting for approval
 - [ ] Hyperbolic. $1K. . Applied, waiting for approval
-- [ ] Strong Compute. $5k-$50k. Sent mail to Ben Sand.
-- [ ] RunPod. $100. Decided not to apply.
+- [ ] Modal. $500. Already applied, waiting for approval
+- RunPod. $100. Decided not to apply.
+
+### Strong Compute
+
+I did the introductory call on 29/09/2025. My initial intention is to use machines with 3090 to run
+experiments with search and learn and find the best possible configuration.
 
 ## Results
 

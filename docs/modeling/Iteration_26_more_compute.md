@@ -57,10 +57,30 @@ Notes from meeting with Adam:
 - I'm following the [Hello world](https://docs.strongcompute.com/getting-started/2.-hello-world-training-example) guide.
 - Documentation is very complete. It might take a while to get used and started but once I launch the
 first run I believe it will be very fast to launch multiple experiments.
+- References from previous arc edition:
+  - https://github.com/ironbar/arc24/tree/main/scripts/strong_compute
+  - https://ironbar.github.io/arc24/modeling/Iteration_44_learn_to_use_strong_compute/
+- I was losing internet connection when using Wireguard, removing the line with `DNS = ` fixed it. [ChatGPT](https://chatgpt.com/c/68da8cb6-22f8-8328-9388-b559f2872c8c)
+- Create a key with `ssh-keygen` and add it to github. Remember to delete it once the challenge is over.
+- Install the requirements, I believe flash-attn requires a machine with GPU to be installed
+
+```bash
+cd ~
+git clone git@github.com:ironbar/arc25.git
+python3 -m virtualenv ~/arc25_env
+source ~/arc25_env/bin/activate
+pip install -r arc25/requirements.txt
+pip install flash-attn==2.6.3 --no-build-isolation
+```
+
+- Created dataset from huggingface [barc0/Llama-3.1-ARC-Potpourri-Induction-8B](https://huggingface.co/barc0/Llama-3.1-ARC-Potpourri-Induction-8B)
+- After installing the requirements stopping the machine took more time, probably due to saving the environment
 
 #### Doubts
 
 - When I start a container and select some type of machine. Do I pay for the machine when installing python or other things? Should I select a cheap machine for development and a expensive one for training?
+- I lost internet when using wireguard, solved.
+- I have created a dataset but does not seem to be working
 
 ## Results
 
@@ -71,7 +91,7 @@ first run I believe it will be very fast to launch multiple experiments.
 ## TODO
 
 - [ ] Strong compute
-  - [ ] Clone arc25 repo
+  - [x] Clone arc25 repo, for that I have to add a new public key to github.
   - [ ] Create python environment
   - [ ] Create dataset for BARC induction model
   - [ ] Add data to repo for simplicity

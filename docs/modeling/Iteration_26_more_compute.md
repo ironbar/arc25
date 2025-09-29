@@ -90,6 +90,7 @@ chmod +x secrets.sh
 - I lost internet when using wireguard, solved.
 - I have created a dataset but does not seem to be working
 - First job send from the Sidney cluster asked for 1 GPUs and received 4. Maybe it's the minimum. But a second job has received 8 GPUs. However it seems to be running on Canada.
+- Should I stop the container after creating the environment?
 
 ## Results
 

@@ -54,6 +54,7 @@ class Config:
     resume_from_checkpoint: bool = True
     warmup_ratio: float = 0.1
     scale_rewards: str = 'group'
+    mask_truncated_completions: bool = True
     # others
     n_jobs: int = -1
 
@@ -120,7 +121,7 @@ def main():
         top_p=0.95,
         dataloader_num_workers=1,
         save_steps=100,
-        mask_truncated_completions=True, #  When enabled, truncated completions are excluded from the loss calculation, preventing them from being incorrectly penalized and introducing noise during training. According to the DAPO paper, this is a good practice for training stability.
+        mask_truncated_completions=cfg.mask_truncated_completions, #  When enabled, truncated completions are excluded from the loss calculation, preventing them from being incorrectly penalized and introducing noise during training. According to the DAPO paper, this is a good practice for training stability.
         scale_rewards=cfg.scale_rewards, # "group", 'batch', 'none', by default is 'group
         # wandb
         report_to='wandb',

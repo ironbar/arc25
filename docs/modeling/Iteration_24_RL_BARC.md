@@ -340,6 +340,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=90G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
 237996.0 # OOM with 54GB of RAM, relaunched with 128GB
+# Training has collapsed after 4k steps, but there were signs after step 2400
 
 # first training with scale rewards
 export FOLDER=2025-09-19-rl-first-steps
@@ -391,6 +392,7 @@ In this case we would be able to parse python code, so it won't get a reward of 
 
 I'm going to update the reward to don't make distinctions between code not parsed an unvalid output.
 That might prevent training collapsing. Other option would be to use some penalty over repeated text.
+And other option would be to use unfinished responses for training that would get reward 0.
 
 ### Evaluation
 

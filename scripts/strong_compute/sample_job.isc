@@ -28,5 +28,5 @@ python /root/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
 --gpu_memory_utilization 0.75 \
 --model-path barc0/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /root/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
---output-dir ${FOLDER}/${EXPERIMENT_NAME}"
+--output-dir ${FOLDER}/${EXPERIMENT_NAME}
 '''

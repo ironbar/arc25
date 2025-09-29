@@ -38,6 +38,7 @@ class Config:
     max_seq_length: int = 2048
     max_completion_length: int = 1024
     grid_encoder: str = 'ColorNameEncoder()'
+    repetition_penalty: float = 1.0 # 1.0 means no penalty, >1.0 penalizes repetitions
     # LoRA
     lora_r: int = 16
     use_rslora: bool = True
@@ -123,6 +124,7 @@ def main():
         save_steps=100,
         mask_truncated_completions=cfg.mask_truncated_completions, #  When enabled, truncated completions are excluded from the loss calculation, preventing them from being incorrectly penalized and introducing noise during training. According to the DAPO paper, this is a good practice for training stability.
         scale_rewards=cfg.scale_rewards, # "group", 'batch', 'none', by default is 'group
+        repetition_penalty=cfg.repetition_penalty,
         # wandb
         report_to='wandb',
         run_name=os.path.basename(cfg.output_dir),

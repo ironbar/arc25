@@ -82,13 +82,14 @@ chmod +x secrets.sh
 
 - Created dataset from huggingface [barc0/Llama-3.1-ARC-Potpourri-Induction-8B](https://huggingface.co/barc0/Llama-3.1-ARC-Potpourri-Induction-8B)
 - After installing the requirements stopping the machine took more time, probably due to saving the environment
+- Starting a job takes around 10 minutes (probably spend copying the environment)
 
 #### Doubts
 
 - When I start a container and select some type of machine. Do I pay for the machine when installing python or other things? Should I select a cheap machine for development and a expensive one for training?
 - I lost internet when using wireguard, solved.
 - I have created a dataset but does not seem to be working
-- First job in the Sidney cluster asked for 1 GPUs and received 4. Maybe it's the minimum.
+- First job in the Sidney cluster asked for 1 GPUs and received 4. Maybe it's the minimum. But a second job has received 8 GPUs.
 
 ## Results
 

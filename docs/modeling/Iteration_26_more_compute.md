@@ -89,7 +89,7 @@ chmod +x secrets.sh
 - When I start a container and select some type of machine. Do I pay for the machine when installing python or other things? Should I select a cheap machine for development and a expensive one for training?
 - I lost internet when using wireguard, solved.
 - I have created a dataset but does not seem to be working
-- First job in the Sidney cluster asked for 1 GPUs and received 4. Maybe it's the minimum. But a second job has received 8 GPUs.
+- First job send from the Sidney cluster asked for 1 GPUs and received 4. Maybe it's the minimum. But a second job has received 8 GPUs. However it seems to be running on Canada.
 
 ## Results
 

@@ -65,6 +65,9 @@ first run I believe it will be very fast to launch multiple experiments.
 - Install the requirements, I believe flash-attn requires a machine with GPU to be installed
 
 ```bash
+apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano vim
+git config --global user.name "Guillermo Barbadillo"
+git config --global user.email "guillermobarbadillo@gmail.com"
 cd ~
 git clone git@github.com:ironbar/arc25.git
 python3 -m virtualenv ~/arc25_env
@@ -85,6 +88,7 @@ chmod +x secrets.sh
 - When I start a container and select some type of machine. Do I pay for the machine when installing python or other things? Should I select a cheap machine for development and a expensive one for training?
 - I lost internet when using wireguard, solved.
 - I have created a dataset but does not seem to be working
+- First job in the Sidney cluster asked for 1 GPUs and received 4. Maybe it's the minimum.
 
 ## Results
 

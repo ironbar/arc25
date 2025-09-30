@@ -73,7 +73,7 @@ git clone git@github.com:ironbar/arc25.git
 python3 -m virtualenv ~/arc25_env
 source ~/arc25_env/bin/activate
 pip install -r arc25/requirements.txt
-#pip install flash-attn==2.6.3 --no-build-isolation
+pip install unsloth_zoo==2025.9.6 # I should update the requirements
 MAX_JOBS=2 python -m pip install flash-attn==2.6.3 --no-build-isolation
 
 vim secrets.sh #export WANDB_API_KEY=
@@ -84,7 +84,52 @@ chmod +x secrets.sh
 - After installing the requirements stopping the machine took more time, probably due to saving the environment
 - Starting a job takes around 10 minutes (probably spend copying the environment)
 
-#### Doubts
+#### Problems with unsloth
+
+When launching the first trainings I see problems when importing unsloth
+
+```bash
+source ~/arc25_env/bin/activate
+python -c "import unsloth"
+2025-09-30 06:14:27,085 - datasets - INFO - <module> - PyTorch version 2.7.1 available.
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+INFO 09-30 06:14:29 [__init__.py:241] Automatically detected platform cuda.
+🦥 Unsloth Zoo will now patch everything to make training faster!
+Traceback (most recent call last):
+  File "/root/arc25/scripts/search_and_learn_with_unsloth.py", line 16, in <module>
+    from unsloth import FastLanguageModel
+  File "/root/arc25_env/lib/python3.12/site-packages/unsloth/__init__.py", line 247, in <module>
+    from .models import *
+  File "/root/arc25_env/lib/python3.12/site-packages/unsloth/models/__init__.py", line 15, in <module>
+    from .llama     import FastLlamaModel
+  File "/root/arc25_env/lib/python3.12/site-packages/unsloth/models/llama.py", line 52, in <module>
+    from .vision import FastBaseModel
+  File "/root/arc25_env/lib/python3.12/site-packages/unsloth/models/vision.py", line 87, in <module>
+    from unsloth_zoo.vllm_utils import (
+  File "/root/arc25_env/lib/python3.12/site-packages/unsloth_zoo/vllm_utils.py", line 63, in <module>
+    from unsloth.models.vision import VLLM_SUPPORTED_VLM
+ImportError: cannot import name 'VLLM_SUPPORTED_VLM' from partially initialized module 'unsloth.models.vision' (most likely due to a circular import) (/root/arc25_env/lib/python3.12/site-packages/unsloth/models/vision.py)
+
+# try to reinstall unsloth, but does not solve the problem
+pip install --upgrade --force-reinstall --no-cache-dir --no-deps unsloth==2025.9.3 unsloth_zoo
+
+# install python 3.10
+apt update
+apt install -y software-properties-common
+add-apt-repository ppa:deadsnakes/ppa -y
+apt update
+apt install -y python3.10 python3.10-venv python3.10-dev
+/usr/bin/python3.10 -m venv ~/arc25_env310
+source ~/arc25_env310/bin/activate
+python -V        # should print 3.10.x
+pip install -U pip
+# Does not solve the problem either
+# This is the solution
+pip install unsloth_zoo==2025.9.6
+
+```
+
+#### Doubts and suggestions
 
 - When I start a container and select some type of machine. Do I pay for the machine when installing python or other things? Should I select a cheap machine for development and a expensive one for training?
 - I lost internet when using wireguard, solved.
@@ -93,6 +138,7 @@ chmod +x secrets.sh
 - Should I stop the container after creating the environment?
 - When trying to train on "canada-a100-x1-p3-ws" I get `Failed to build shape list from priority list, as no shapes matched the priority list`, same for "canada-h100-x1-p3-ws". Why some machines are only available for workstation and not for burst experiments?
 - It would be nice to be able to sort the shapes by cost, and show also the cost per GPU (not just the total cost)
+- It would be nice to be able to batch delete previous experiments, to have a cleaner interface in the web
 
 ## Results
 

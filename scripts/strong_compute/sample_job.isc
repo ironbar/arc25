@@ -9,6 +9,7 @@ burst_shape_priority_list = ["gcp-us-central1_h100-spot-x1", "gcp-asia-southeast
 command = '''
 source /root/arc25_env/bin/activate && 
 source /root/secrets.sh && 
+export PYTHONPATH=$PYTHONPATH:/root/arc25 &&
 export FOLDER=$OUTPUT_PATH/2025-09-28-search-and-learn && 
 export INITIAL_PREDICTIONS=16 && 
 export EPOCHS=32 && 

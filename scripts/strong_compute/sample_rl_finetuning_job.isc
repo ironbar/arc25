@@ -27,7 +27,7 @@ python /root/arc25/scripts/rl_code_finetuning.py
 --lora_r $LORA_R 
 --repetition-penalty $REPETITION_PENALTY 
 --epochs $EPOCHS
---no-mask-truncated-completions \
+--no-mask-truncated-completions
 --scale-rewards batch 
 --gpu_memory_utilization 0.3 
 --warmup-ratio 0.01 

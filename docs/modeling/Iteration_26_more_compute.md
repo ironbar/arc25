@@ -83,6 +83,7 @@ chmod +x secrets.sh
 - Created dataset from huggingface [barc0/Llama-3.1-ARC-Potpourri-Induction-8B](https://huggingface.co/barc0/Llama-3.1-ARC-Potpourri-Induction-8B)
 - After installing the requirements stopping the machine took more time, probably due to saving the environment
 - Starting a job takes around 10 minutes (probably spend copying the environment)
+- First running job failed after 14 minutes without any error message. Might be related to low disk space, maybe I should change the cache directory for huggingface.
 
 #### Problems with unsloth
 
@@ -156,3 +157,4 @@ pip install unsloth_zoo==2025.9.6
   - [ ] Launch first experiment, with wandb, saving to artifacts
   - [ ] Create multiple experiments
   - [ ] How to get the artifacts?
+  - [ ] Create a sample RL training script

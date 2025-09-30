@@ -91,6 +91,8 @@ chmod +x secrets.sh
 - I have created a dataset but does not seem to be working
 - First job send from the Sidney cluster asked for 1 GPUs and received 4. Maybe it's the minimum. But a second job has received 8 GPUs. However it seems to be running on Canada.
 - Should I stop the container after creating the environment?
+- When trying to train on "canada-a100-x1-p3-ws" I get `Failed to build shape list from priority list, as no shapes matched the priority list`, same for "canada-h100-x1-p3-ws". Why some machines are only available for workstation and not for burst experiments?
+- It would be nice to be able to sort the shapes by cost, and show also the cost per GPU (not just the total cost)
 
 ## Results
 

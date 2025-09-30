@@ -81,6 +81,7 @@ chmod +x secrets.sh
 ```
 
 - Created dataset from huggingface [barc0/Llama-3.1-ARC-Potpourri-Induction-8B](https://huggingface.co/barc0/Llama-3.1-ARC-Potpourri-Induction-8B)
+  I don't know why but the first day it was not available, the second day it was. Seems to take time to generate the dataset.
 - After installing the requirements stopping the machine took more time, probably due to saving the environment
 - Starting a job takes around 10 minutes (probably spend copying the environment)
 - First running job failed after 14 minutes without any error message. Might be related to low disk space, maybe I should change the cache directory for huggingface.
@@ -152,9 +153,9 @@ pip install unsloth_zoo==2025.9.6
 - [ ] Strong compute
   - [x] Clone arc25 repo, for that I have to add a new public key to github.
   - [x] Create python environment
-  - [ ] Create dataset for BARC induction model
+  - [x] Create dataset for BARC induction model
   - [x] Add data to repo for simplicity
+  - [x] Create a sample RL training script
   - [ ] Launch first experiment, with wandb, saving to artifacts
   - [ ] Create multiple experiments
-  - [ ] How to get the artifacts?
-  - [ ] Create a sample RL training script
+  - [x] How to get the artifacts? It seems I can make the artifacts available to a running workstation

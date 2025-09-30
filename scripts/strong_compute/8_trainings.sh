@@ -12,11 +12,34 @@ export N_CPUS=20
 export LORA_R=32
 export EPOCHS=40
 
+copy_to_tmp() {
+    local filepath="$1"
+    if [[ ! -f "$filepath" ]]; then
+        echo "Error: file '$filepath' does not exist" >&2
+        return 1
+    fi
+
+    # create temp dir (deleted automatically when system cleans /tmp)
+    local tmpdir
+    tmpdir=$(mktemp -d) || return 1
+
+    # copy file to temp dir
+    local filename
+    filename=$(basename "$filepath")
+    local dst="$tmpdir/$filename"
+
+    cp "$filepath" "$dst" || return 1
+
+    # print the new path
+    echo "$dst"
+}
+
 # Experiment 1
 export CUDA_VISIBLE_DEVICES=1
 export REPETITION_PENALTY=1.00
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}_unmasked-truncated-completions
-python /root/arc25/scripts/rl_code_finetuning.py \
+newpath=$(copy_to_tmp /root/arc25/scripts/rl_code_finetuning.py)
+python $newpath \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -38,7 +61,8 @@ python /root/arc25/scripts/rl_code_finetuning.py \
 export CUDA_VISIBLE_DEVICES=2
 export REPETITION_PENALTY=1.01
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}_unmasked-truncated-completions
-python /root/arc25/scripts/rl_code_finetuning.py \
+newpath=$(copy_to_tmp /root/arc25/scripts/rl_code_finetuning.py)
+python $newpath \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -60,7 +84,8 @@ python /root/arc25/scripts/rl_code_finetuning.py \
 export CUDA_VISIBLE_DEVICES=3
 export REPETITION_PENALTY=1.02
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}_unmasked-truncated-completions
-python /root/arc25/scripts/rl_code_finetuning.py \
+newpath=$(copy_to_tmp /root/arc25/scripts/rl_code_finetuning.py)
+python $newpath \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -82,7 +107,8 @@ python /root/arc25/scripts/rl_code_finetuning.py \
 export CUDA_VISIBLE_DEVICES=4
 export REPETITION_PENALTY=1.05
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}_unmasked-truncated-completions
-python /root/arc25/scripts/rl_code_finetuning.py \
+newpath=$(copy_to_tmp /root/arc25/scripts/rl_code_finetuning.py)
+python $newpath \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -104,7 +130,8 @@ python /root/arc25/scripts/rl_code_finetuning.py \
 export CUDA_VISIBLE_DEVICES=5
 export REPETITION_PENALTY=1.01
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}
-python /root/arc25/scripts/rl_code_finetuning.py \
+newpath=$(copy_to_tmp /root/arc25/scripts/rl_code_finetuning.py)
+python $newpath \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -126,7 +153,8 @@ python /root/arc25/scripts/rl_code_finetuning.py \
 export CUDA_VISIBLE_DEVICES=6
 export REPETITION_PENALTY=1.02
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}
-python /root/arc25/scripts/rl_code_finetuning.py \
+newpath=$(copy_to_tmp /root/arc25/scripts/rl_code_finetuning.py)
+python $newpath \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -148,7 +176,8 @@ python /root/arc25/scripts/rl_code_finetuning.py \
 export CUDA_VISIBLE_DEVICES=7
 export REPETITION_PENALTY=1.05
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}
-python /root/arc25/scripts/rl_code_finetuning.py \
+newpath=$(copy_to_tmp /root/arc25/scripts/rl_code_finetuning.py)
+python $newpath \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -170,7 +199,8 @@ python /root/arc25/scripts/rl_code_finetuning.py \
 export CUDA_VISIBLE_DEVICES=0
 export REPETITION_PENALTY=1.10
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}
-python /root/arc25/scripts/rl_code_finetuning.py \
+newpath=$(copy_to_tmp /root/arc25/scripts/rl_code_finetuning.py)
+python $newpath \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \

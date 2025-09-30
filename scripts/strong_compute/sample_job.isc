@@ -4,7 +4,7 @@ isc_project_id = "prj-typical-vast-constrictor-250929"
 experiment_name = "sample-search-and-learn-job"
 gpus = 1
 compute_mode = "burst"
-burst_shape_priority_list = ["canada-a100-x1-p3-ws"]
+burst_shape_priority_list = ["gcp-us-central1_h100-spot-x1", "gcp-asia-southeast1_h100-80g-spot-x1"]
 #dataset_id_list = []
 command = '''
 source /root/arc25_env/bin/activate && 

@@ -104,8 +104,9 @@ chmod +x secrets.sh
 
 - [ ] Strong compute
   - [x] Clone arc25 repo, for that I have to add a new public key to github.
-  - [ ] Create python environment
+  - [x] Create python environment
   - [ ] Create dataset for BARC induction model
   - [x] Add data to repo for simplicity
   - [ ] Launch first experiment, with wandb, saving to artifacts
   - [ ] Create multiple experiments
+  - [ ] How to get the artifacts?

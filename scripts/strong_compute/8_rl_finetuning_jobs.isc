@@ -1,0 +1,10 @@
+# https://docs.strongcompute.com/~/revisions/amxNDLwVFA8r5isl8NAV/getting-started/2.-hello-world-training-example
+# https://docs.strongcompute.com/basic-concepts/launching-experiments
+isc_project_id = "prj-typical-vast-constrictor-250929"
+experiment_name = "sample-rl-finetuning-job"
+gpus = 8
+compute_mode = "burst"
+burst_shape_priority_list = ["aws-us-east-2_h100-spot-8x"]
+# barc0/Llama-3.1-ARC-Potpourri-Induction-8B 
+dataset_id_list = ["uds-fourth-five-hunter-250929"]
+command = "./root/arc25/scripts/strong_compute/8_trainings.sh"

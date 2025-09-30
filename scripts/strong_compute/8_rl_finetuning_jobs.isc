@@ -1,7 +1,7 @@
 # https://docs.strongcompute.com/~/revisions/amxNDLwVFA8r5isl8NAV/getting-started/2.-hello-world-training-example
 # https://docs.strongcompute.com/basic-concepts/launching-experiments
 isc_project_id = "prj-typical-vast-constrictor-250929"
-experiment_name = "sample-rl-finetuning-job"
+experiment_name = "8-rl-finetuning-jobs"
 gpus = 8
 compute_mode = "burst"
 burst_shape_priority_list = ["aws-us-east-2_h100-spot-8x"]

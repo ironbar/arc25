@@ -13,9 +13,10 @@ export LORA_R=32
 export EPOCHS=40
 
 # Experiment 1
+export CUDA_VISIBLE_DEVICES=1
 export REPETITION_PENALTY=1.00
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}_unmasked-truncated-completions
-python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+python /root/arc25/scripts/rl_code_finetuning.py \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -34,9 +35,10 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --output-dir $FOLDER/$EXPERIMENT_NAME &
 
 # Experiment 2
+export CUDA_VISIBLE_DEVICES=2
 export REPETITION_PENALTY=1.01
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}_unmasked-truncated-completions
-python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+python /root/arc25/scripts/rl_code_finetuning.py \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -55,9 +57,10 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --output-dir $FOLDER/$EXPERIMENT_NAME &
 
 # Experiment 3
+export CUDA_VISIBLE_DEVICES=3
 export REPETITION_PENALTY=1.02
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}_unmasked-truncated-completions
-python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+python /root/arc25/scripts/rl_code_finetuning.py \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -76,30 +79,10 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --output-dir $FOLDER/$EXPERIMENT_NAME &
 
 # Experiment 4
+export CUDA_VISIBLE_DEVICES=4
 export REPETITION_PENALTY=1.05
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}_unmasked-truncated-completions
-python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
---num-generations ${NUM_GENERATIONS} \
---gradient-accumulation-steps ${ACUM_STEPS} \
---learning-rate ${LEARNING_RATE} \
---lora_r ${LORA_R} \
---repetition-penalty ${REPETITION_PENALTY} \
---epochs ${EPOCHS} \
---no-mask-truncated-completions \
---scale-rewards batch \
---gpu_memory_utilization 0.3 \
---warmup-ratio 0.01 \
---max-seq-length 9700 \
---max-completion-length 1024 \
---n-jobs ${N_CPUS} \
---model-path /data/uds-fourth-five-hunter-250929 \
---dataset-path /root/arc25/data/arc-prize-2024/arc-agi_training_challenges.json  \
---output-dir $FOLDER/$EXPERIMENT_NAME &
-
-# Experiment 4
-export REPETITION_PENALTY=1.05
-export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}_unmasked-truncated-completions
-python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+python /root/arc25/scripts/rl_code_finetuning.py \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -118,9 +101,10 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --output-dir $FOLDER/$EXPERIMENT_NAME &
 
 # Experiment 5
+export CUDA_VISIBLE_DEVICES=5
 export REPETITION_PENALTY=1.01
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}
-python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+python /root/arc25/scripts/rl_code_finetuning.py \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -139,9 +123,10 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --output-dir $FOLDER/$EXPERIMENT_NAME &
 
 # Experiment 6
+export CUDA_VISIBLE_DEVICES=6
 export REPETITION_PENALTY=1.02
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}
-python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+python /root/arc25/scripts/rl_code_finetuning.py \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -160,9 +145,10 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --output-dir $FOLDER/$EXPERIMENT_NAME &
 
 # Experiment 7
+export CUDA_VISIBLE_DEVICES=7
 export REPETITION_PENALTY=1.05
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}
-python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+python /root/arc25/scripts/rl_code_finetuning.py \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \
@@ -180,10 +166,11 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --dataset-path /root/arc25/data/arc-prize-2024/arc-agi_training_challenges.json  \
 --output-dir $FOLDER/$EXPERIMENT_NAME &
 
-# Experiment 7
+# Experiment 8
+export CUDA_VISIBLE_DEVICES=0
 export REPETITION_PENALTY=1.10
 export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}
-python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+python /root/arc25/scripts/rl_code_finetuning.py \
 --num-generations ${NUM_GENERATIONS} \
 --gradient-accumulation-steps ${ACUM_STEPS} \
 --learning-rate ${LEARNING_RATE} \

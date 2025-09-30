@@ -17,14 +17,14 @@ export PREDICTIONS_PER_EPOCH=16 &&
 export GROUP_SIZE=20 && 
 export LEARNING_RATE=1e-5 && 
 export EXPERIMENT_NAME=${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}_${GROUP_SIZE}-group-size && 
-python /root/arc25/scripts/search_and_learn_with_unsloth.py \
-  --task-group-size $GROUP_SIZE \
-  --initial-predictions $INITIAL_PREDICTIONS \
-  --predictions-per-epoch $PREDICTIONS_PER_EPOCH \
-  --learning-rate $LEARNING_RATE \
-  --max-epochs $EPOCHS \
-  --gpu_memory_utilization 0.3 \
-  --model-path barc0/Llama-3.1-ARC-Potpourri-Induction-8B \
-  --dataset-path /root/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+python /root/arc25/scripts/search_and_learn_with_unsloth.py 
+  --task-group-size $GROUP_SIZE 
+  --initial-predictions $INITIAL_PREDICTIONS 
+  --predictions-per-epoch $PREDICTIONS_PER_EPOCH 
+  --learning-rate $LEARNING_RATE 
+  --max-epochs $EPOCHS 
+  --gpu_memory_utilization 0.3 
+  --model-path barc0/Llama-3.1-ARC-Potpourri-Induction-8B 
+  --dataset-path /root/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json 
   --output-dir $FOLDER/$EXPERIMENT_NAME
 '''

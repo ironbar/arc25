@@ -489,4 +489,4 @@ For each configuration I should try different learning rates.
   - [ ] Start by training on half of the samples
   - [ ] Remove duplicates
   - [ ] Explore a policy of keeping the best and more diverse solutions
-- Experiments on Kaggle to find a good configuration to submit. https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&range=F857
+- [ ] Experiments on Kaggle to find a good configuration to submit. https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&range=F857

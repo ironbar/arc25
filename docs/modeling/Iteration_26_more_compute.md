@@ -156,6 +156,7 @@ pip install unsloth_zoo==2025.9.6
   - [x] Create dataset for BARC induction model
   - [x] Add data to repo for simplicity
   - [x] Create a sample RL training script
-  - [ ] Launch first experiment, with wandb, saving to artifacts
-  - [ ] Create multiple experiments
+  - [x] Launch first experiment, with wandb, saving to artifacts
+  - [x] Create multiple experiments
   - [x] How to get the artifacts? It seems I can make the artifacts available to a running workstation
+  - [ ] Awaiting for answers to my doubts

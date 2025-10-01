@@ -2,8 +2,6 @@
 source /root/arc25_env/bin/activate
 source /root/secrets.sh
 export PYTHONPATH=$PYTHONPATH:/root/arc25
-export FOLDER=$OUTPUT_PATH/2025-09-28-search-and-learn
-
 export FOLDER=$OUTPUT_PATH/2025-09-30-rl-collapse-study
 export NUM_GENERATIONS=32
 export ACUM_STEPS=4

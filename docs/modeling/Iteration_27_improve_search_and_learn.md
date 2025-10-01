@@ -456,6 +456,20 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 
 ## Results
 
+### Inference is not efficient for a small number of predictions
+
+| initial predictions | epochs | predictions per epoch | total predictions | search time (h) | predictions/hour | learn time (h) | training steps | training steps/hour |
+|---------------------|--------|-----------------------|-------------------|-----------------|------------------|----------------|----------------|---------------------|
+| 512                 | 0      | 0                     | 512               | 5.12            | 100.0            | 0              | 0              | -                   |
+| 128                 | 1      | 128                   | 256               | 2.98            | 85.9             | 2.66           | 128            | 48.1                |
+| 64                  | 3      | 64                    | 256               | 4.2             | 61.0             | 4.08           | 192            | 47.1                |
+| 32                  | 2      | 32                    | 96                | 2.26            | 42.5             | 1.36           | 64             | 47.1                |
+
+The table shows how the inference efficiency decreases if we use a smaller number of predictions per epoch.
+In the other hand training is not affected by using a smaller number of training steps.
+
+If we group the predictions of different tasks, we should see improvements in speed.
+
 ### Searching the best configuration for inference
 
 The table below shows the runtime for experiments with a budget of 128 predictions.

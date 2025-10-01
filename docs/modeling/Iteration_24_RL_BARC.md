@@ -507,7 +507,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
-# 238350.0
+# 239015.0
 
 export REPETITION_PENALTY=1.01
 mkdir trainings/2025-09-19-rl-first-steps/lr2e-6_epochs100_32gen_4accum-steps_32lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}

@@ -47,6 +47,7 @@ class Config:
     output_dir: str = "/mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr1e-5_small-dataset_10epochs_5582e5ca"
     # training hyperparameters
     epochs: int = 10
+    save_steps: int = 100 # each checkpoint with lora_r=32 takes around 500MB
     num_generations: int = 4
     gradient_accumulation_steps: int = 1 # the number of generations must be divisible by this
     learning_rate: float = 1e-5
@@ -121,7 +122,7 @@ def main():
         temperature=1.0,
         top_p=0.95,
         dataloader_num_workers=1,
-        save_steps=100,
+        save_steps=cfg.save_steps,
         mask_truncated_completions=cfg.mask_truncated_completions, #  When enabled, truncated completions are excluded from the loss calculation, preventing them from being incorrectly penalized and introducing noise during training. According to the DAPO paper, this is a good practice for training stability.
         scale_rewards=cfg.scale_rewards, # "group", 'batch', 'none', by default is 'group
         repetition_penalty=cfg.repetition_penalty,

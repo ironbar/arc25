@@ -2,9 +2,9 @@
 source /root/arc25_env/bin/activate
 source /root/secrets.sh
 export PYTHONPATH=$PYTHONPATH:/root/arc25
-export FOLDER=$OUTPUT_PATH/2025-09-30-rl-collapse-study
-export NUM_GENERATIONS=32
-export ACUM_STEPS=4
+export FOLDER=$OUTPUT_PATH/2025-10-01-rl-collapse-study
+export NUM_GENERATIONS=16
+export ACUM_STEPS=2
 export LEARNING_RATE=1e-6
 export N_CPUS=20
 export LORA_R=32
@@ -44,6 +44,7 @@ python $newpath \
 --lora_r ${LORA_R} \
 --repetition-penalty ${REPETITION_PENALTY} \
 --epochs ${EPOCHS} \
+--save-steps 1000 \
 --no-mask-truncated-completions \
 --scale-rewards batch \
 --gpu_memory_utilization 0.3 \
@@ -67,6 +68,7 @@ python $newpath \
 --lora_r ${LORA_R} \
 --repetition-penalty ${REPETITION_PENALTY} \
 --epochs ${EPOCHS} \
+--save-steps 1000 \
 --no-mask-truncated-completions \
 --scale-rewards batch \
 --gpu_memory_utilization 0.3 \
@@ -90,6 +92,7 @@ python $newpath \
 --lora_r ${LORA_R} \
 --repetition-penalty ${REPETITION_PENALTY} \
 --epochs ${EPOCHS} \
+--save-steps 1000 \
 --no-mask-truncated-completions \
 --scale-rewards batch \
 --gpu_memory_utilization 0.3 \
@@ -113,6 +116,7 @@ python $newpath \
 --lora_r ${LORA_R} \
 --repetition-penalty ${REPETITION_PENALTY} \
 --epochs ${EPOCHS} \
+--save-steps 1000 \
 --no-mask-truncated-completions \
 --scale-rewards batch \
 --gpu_memory_utilization 0.3 \
@@ -136,6 +140,7 @@ python $newpath \
 --lora_r ${LORA_R} \
 --repetition-penalty ${REPETITION_PENALTY} \
 --epochs ${EPOCHS} \
+--save-steps 1000 \
 --mask-truncated-completions \
 --scale-rewards batch \
 --gpu_memory_utilization 0.3 \
@@ -159,6 +164,7 @@ python $newpath \
 --lora_r ${LORA_R} \
 --repetition-penalty ${REPETITION_PENALTY} \
 --epochs ${EPOCHS} \
+--save-steps 1000 \
 --mask-truncated-completions \
 --scale-rewards batch \
 --gpu_memory_utilization 0.3 \
@@ -182,6 +188,7 @@ python $newpath \
 --lora_r ${LORA_R} \
 --repetition-penalty ${REPETITION_PENALTY} \
 --epochs ${EPOCHS} \
+--save-steps 1000 \
 --mask-truncated-completions \
 --scale-rewards batch \
 --gpu_memory_utilization 0.3 \
@@ -205,6 +212,7 @@ python $newpath \
 --lora_r ${LORA_R} \
 --repetition-penalty ${REPETITION_PENALTY} \
 --epochs ${EPOCHS} \
+--save-steps 1000 \
 --mask-truncated-completions \
 --scale-rewards batch \
 --gpu_memory_utilization 0.3 \

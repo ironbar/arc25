@@ -21,10 +21,12 @@ We already know that search and learn works. Can we make it faster and better?
 
 ### Speed analysis of all the parts
 
-TODO: the goal is to measure where the execution time is going so I can have more information to design improvements
+The goal is to measure where the execution time is going so I can have more information to design improvements
 
 - Probably the easiest way to do it is to use the logs from Kaggle.
 - I can also use the logs from the cluster experiments
+
+The work has been done in the notebook `notebooks/013_analyze_kaggle_runtime.ipynb`.
 
 ### Local experiments with group sizes
 
@@ -469,6 +471,13 @@ The table shows how the inference efficiency decreases if we use a smaller numbe
 In the other hand training is not affected by using a smaller number of training steps.
 
 If we group the predictions of different tasks, we should see improvements in speed.
+
+### Speedup due to grouping
+
+![alt text](res/1759325746959_image.png)
+
+By grouping the tasks we can a speedup of around 2.5x These are the results of local and small experiments.
+It is possible that we could achieve an even higher speedup with bigger experiments.
 
 ### Searching the best configuration for inference
 

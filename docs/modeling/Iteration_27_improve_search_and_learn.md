@@ -37,7 +37,7 @@ python scripts/search_and_learn_with_unsloth.py \
 --max-epochs 3 \
 --initial-predictions 8 \
 --predictions-per-epoch 8
-# 3978
+# 3978s
 
 export GROUP_SIZE=67
 python scripts/search_and_learn_with_unsloth.py \
@@ -97,7 +97,9 @@ python scripts/search_and_learn_with_unsloth.py \
 # 566s
 ```
 
-TODO: visualize results
+![alt text](res/1759325746959_image.png)
+
+By grouping the tasks we can a speedup of around 2.5x
 
 ### Cluster experiments with 128 predictions
 

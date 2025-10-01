@@ -748,3 +748,5 @@ Similar conclusions for H100.
   - [x] What is the configuration that better uses the hardware. 32 generations per step
   - [ ] Best learning rate
   - [ ] How much the model improves after training?
+- [ ] MultiGPU training
+- [ ] Analyze disk space used by trainings

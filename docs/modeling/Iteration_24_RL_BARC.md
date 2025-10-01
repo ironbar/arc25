@@ -478,7 +478,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
-# 238182.
+# 238182., collapses but on a weird way
 
 
 export REPETITION_PENALTY=1.02
@@ -507,6 +507,35 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+# 238350.0
+
+export REPETITION_PENALTY=1.01
+mkdir trainings/2025-09-19-rl-first-steps/lr2e-6_epochs100_32gen_4accum-steps_32lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}
+cp -r trainings/2025-09-19-rl-first-steps/lr2e-6_epochs100_32gen_4accum-steps_32lora_simplified-reward/checkpoint-2400 trainings/2025-09-19-rl-first-steps/lr2e-6_epochs100_32gen_4accum-steps_32lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}
+export FOLDER=2025-09-19-rl-first-steps
+export LEARNING_RATE=2e-6
+export NUM_GENERATIONS=32
+export ACUM_STEPS=4
+export N_CPUS=20
+export LORA_R=32
+export EPOCHS=100; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_simplified-reward_repetition-penalty-${REPETITION_PENALTY}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+# 239013.0
 ```
 
 ### Training collapse

@@ -1,6 +1,6 @@
-# Iteration 2x. Refine predictions
+# Iteration 28. Refine predictions
 
-_start date_
+_01-09-2025_
 
 <!---
 The work is done using short iterations. Each iteration needs to have a very
@@ -34,4 +34,5 @@ I want to explore:
 
 ## TODO
 
+- [ ] How much memory is needed to do refinement? Estimate the number of necessary tokens and try with VLLM
 - [ ] Create a notebook to see experiment with solution refinement

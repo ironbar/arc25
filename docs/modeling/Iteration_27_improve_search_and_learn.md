@@ -472,11 +472,11 @@ In the other hand training is not affected by using a smaller number of training
 
 If we group the predictions of different tasks, we should see improvements in speed.
 
-### Speedup due to grouping
+### Speedup due to grouping tasks
 
 ![alt text](res/1759325746959_image.png)
 
-By grouping the tasks we can a speedup of around 2.5x These are the results of local and small experiments.
+By grouping the tasks we can get a speedup of around 2.5x (considering the full execution time, not just inference). These are the results of local and small experiments.
 It is possible that we could achieve an even higher speedup with bigger experiments.
 
 ### Searching the best configuration for inference

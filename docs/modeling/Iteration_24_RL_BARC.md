@@ -627,6 +627,10 @@ https://wandb.ai/guillermobarbadillo/2025-09-15-debug-grpo?nw=nwuserguillermobar
 - Cannot use Lora 32 because it also gives OOM
 - I have been able to train with gradient accumulation, training is slower but seems to be more stable. I had
   to repeat the prompt n times for each gradient accumulation step.
+- It seems that 40 epochs might be a good training duration (check graph below). Training for 40 epochs
+  improves the reward over training just for 10 epochs, but training for longer did not brought better results.
+
+![alt text](res/1759324987682_image.png)
 
 ### Cluster experiments with the whole ARC-AGI-1 training set
 
@@ -636,7 +640,8 @@ https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps?nw=nwuserguillerm
 - Let's do experiments with a single prompt per step, increase LoRA capacity to 32, 32 generations per prompt and try also decreasing the learning rate.
 - Jobs that do 32 generations per prompt have huge spikes in RAM use, more than 200GB that result on condor stopping the jobs. (235635., 235638.).
   Normal jobs only seem to require 7GB. But when trying to lower the RAM requirements I got problems, so I had to use 128GB at minimum.
-- I don't know why, but some trainings collapse and suddenly start doing long predictions
+- I don't know why, but some trainings collapse and suddenly start doing long predictions. I'm working to understand and solve the problem.
+  Otherwise I cannot train for long with the whole training set.
 
 ### Evaluation of first model trained with RL on all training tasks
 
@@ -695,13 +700,13 @@ Similar conclusions for H100.
     - [x] ~~Generator for the prompts~~ Not necessary, dataset is small
     - [x] Add verbose option to code evaluation
     - [xz] More smooth reward, combine test and train
-- [ ] Training experiments
-  - [ ] How many epochs does the model need to learn all the tasks?
-  - [ ] What is the configuration that better uses the hardware
+- [x] Training experiments
+  - [x] How many epochs does the model need to learn all the tasks?
+  - [x] What is the configuration that better uses the hardware. 32 generations per step
   - [ ] Best learning rate
   - [ ] How much the model improves after training?
 - [x] What is the max prompt length for all the datasets available? -> 8635
-- [ ] GPU usage is not efficient with server mode: https://huggingface.co/blog/vllm-colocate
+- [x] GPU usage is not efficient with server mode: https://huggingface.co/blog/vllm-colocate
 - [x] Kaggle scoring error
   - [x] Create validate submission script
   - [ ] Add tests for create submission
@@ -709,11 +714,11 @@ Similar conclusions for H100.
   - [x] Change priority to dataset (there might be missing tasks)
   - [x] Maybe I'm using numpy instead of float?
   - [x] https://www.kaggle.com/code/ironbar/validate-arc25-submission?scriptVersionId=262170501
-  - [ ] First sucessful submission. https://www.kaggle.com/code/ironbar/search-and-learn?scriptVersionId=262195260
-  - [ ] I suspect the problem is there were missing tasks. Can I simulate that?
+  - [x] First sucessful submission. https://www.kaggle.com/code/ironbar/search-and-learn?scriptVersionId=262195260
+  - [x] I suspect the problem is there were missing tasks. Can I simulate that?
     - [ ] -> Lower gpu_memory and see what happens.
     - [ ] Better adjustment of model hyperparameters
-- [ ] Train with the new reward and verify that is able to learn
+- [x] Train with the new reward and verify that is able to learn
 - [x] Not sure if completion_only_loss is working, check what happens with collator on new trl versions
   - [x] https://github.com/huggingface/trl/issues/3827
   - [x] As far as I can see it was removed on version 0.20 and we should use `completion_only_loss=True,` on `SFTConfig`
@@ -739,8 +744,7 @@ Similar conclusions for H100.
   - However I'm not sure if that makes sense. Wouldn't be better to use a bigger number of predictions
   so there is one failing one and the model can learn the true goal?
 - [x] Longer trainings with simplified reward to see if collapse happens
-
 - [ ] Update reward information with the best one
-- [ ] Document local experiments
+- [x] Document local experiments
 - [x] There seems to be a problem with the gradient accumulation steps on this experiment: https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps/runs/jle1n3oa/overview
 - [x] Try scale_rewards='batch', https://huggingface.co/docs/trl/main/en/grpo_trainer#trl.GRPOConfig, this migth reduce the frac_std_reward_zero

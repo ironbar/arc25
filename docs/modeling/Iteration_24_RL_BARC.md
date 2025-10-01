@@ -700,11 +700,6 @@ Similar conclusions for H100.
     - [x] ~~Generator for the prompts~~ Not necessary, dataset is small
     - [x] Add verbose option to code evaluation
     - [xz] More smooth reward, combine test and train
-- [x] Training experiments
-  - [x] How many epochs does the model need to learn all the tasks?
-  - [x] What is the configuration that better uses the hardware. 32 generations per step
-  - [ ] Best learning rate
-  - [ ] How much the model improves after training?
 - [x] What is the max prompt length for all the datasets available? -> 8635
 - [x] GPU usage is not efficient with server mode: https://huggingface.co/blog/vllm-colocate
 - [x] Kaggle scoring error
@@ -744,7 +739,12 @@ Similar conclusions for H100.
   - However I'm not sure if that makes sense. Wouldn't be better to use a bigger number of predictions
   so there is one failing one and the model can learn the true goal?
 - [x] Longer trainings with simplified reward to see if collapse happens
-- [ ] Update reward information with the best one
 - [x] Document local experiments
 - [x] There seems to be a problem with the gradient accumulation steps on this experiment: https://wandb.ai/guillermobarbadillo/2025-09-19-rl-first-steps/runs/jle1n3oa/overview
 - [x] Try scale_rewards='batch', https://huggingface.co/docs/trl/main/en/grpo_trainer#trl.GRPOConfig, this migth reduce the frac_std_reward_zero
+- [ ] Update reward information with the best one
+- [x] Training experiments
+  - [x] How many epochs does the model need to learn all the tasks?
+  - [x] What is the configuration that better uses the hardware. 32 generations per step
+  - [ ] Best learning rate
+  - [ ] How much the model improves after training?

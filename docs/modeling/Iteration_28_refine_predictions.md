@@ -41,6 +41,8 @@ Thus without considering any message in the prompt it would be 13090 tokens. Bei
 could request for 13500 tokens in the refining prompt, and a total sequence length of 14500 tokens
 considering that we allow to predict 1000 tokens.
 
+### How much VRAM is needed for 14500 sequence length?
+
 ## Results
 
 ## Conclusion

@@ -48,8 +48,6 @@ for i in "${!learning_rates[@]}"; do
     --dataset-path /root/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
     --output-dir ${FOLDER}/${EXPERIMENT_NAME} &
 done
-wait
-
 
 # wait for *all* background jobs to finish
 echo "Waiting for all commands to finish..."

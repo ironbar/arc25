@@ -72,6 +72,7 @@ class Config:
     max_output_tokens: int = 1024
     # other
     log_to_wandb: bool = True
+    save_results: bool = True
 
 
 @log_execution_time
@@ -135,10 +136,14 @@ def main():
             # TODO: stop criteria
     # TODO: select best predictions and prepare submission
     error_analysis(results)
-    save_results(results, cfg.output_dir, cfg.log_to_wandb)
+    metrics = aggregate_metrics(results)
+    print(metrics.tail(1))
     if cfg.log_to_wandb:
+        log_metrics_summary_to_wandb(metrics)
         wandb.log({"execution_time": time.time() - t0})
-        log_metrics_evolution(results)
+        log_metrics_evolution_to_wandb(results)
+    if cfg.save_results:
+        save_results(results, metrics, cfg.output_dir)
 
 
 @log_execution_time
@@ -253,16 +258,10 @@ def learn(training_prompts, model, tokenizer, output_dir, learning_rate, lr_sche
     return lora_request
 
 
-def save_results(results, output_dir, log_to_wandb):
+def save_results(results, metrics, output_dir):
     os.makedirs(output_dir, exist_ok=True)
     logger.info(f'Saving results to {output_dir}')
-    metrics = aggregate_metrics(results)
     metrics.to_csv(f'{output_dir}/metrics.csv', index_label='task_id')
-    print(metrics.tail(1))
-    if log_to_wandb:
-        wandb.log({"task_metrics": wandb.Table(dataframe=metrics.tail(1))})
-        metrics_summary = metrics.loc['MEAN'].to_dict()
-        wandb.log(metrics_summary)
     # convert numpy arrays to lists for json serialization
     for task_id, task_results in results.items():
         for result in task_results:
@@ -272,7 +271,13 @@ def save_results(results, output_dir, log_to_wandb):
     write_json(results, f'{output_dir}/results.json.gz')
 
 
-def log_metrics_evolution(results, step=8):
+def log_metrics_summary_to_wandb(metrics):
+    wandb.log({"task_metrics": wandb.Table(dataframe=metrics.tail(1))})
+    metrics_summary = metrics.loc['MEAN'].to_dict()
+    wandb.log(metrics_summary)
+
+
+def log_metrics_evolution_to_wandb(results, step=8):
     for n_predictions in range(step, max(len(v) for v in results.values()) + 1, step):
         partial_results = {task_id: task_results[:n_predictions] for task_id, task_results in results.items()}
         partial_metrics = aggregate_metrics(partial_results)

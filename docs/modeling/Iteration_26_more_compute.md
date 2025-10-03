@@ -164,7 +164,7 @@ chmod 600 .ssh/id_ed25519
 vim secrets.sh #export WANDB_API_KEY=
 chmod +x secrets.sh
 # now install all the dependencies
-apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano vim htop screen
+apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano vim htop screen nvtop
 git config --global user.name "Guillermo Barbadillo"
 git config --global user.email "guillermobarbadillo@gmail.com"
 git clone git@github.com:ironbar/arc25.git

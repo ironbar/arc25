@@ -33,6 +33,7 @@ copy_to_tmp() {
 learning_rates=(1e-5 5e-6 2e-6 1e-6)
 for i in "${!learning_rates[@]}"; do
   export CUDA_VISIBLE_DEVICES=$i
+  echo "Starting experiment with learning rate ${learning_rates[$i]} on GPU $CUDA_VISIBLE_DEVICES"
   export LEARNING_RATE=${learning_rates[$i]}
   export EXPERIMENT_NAME=${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}_${GROUP_SIZE}-group-size
 

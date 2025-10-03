@@ -142,6 +142,37 @@ pip install unsloth_zoo==2025.9.6
 - It would be nice to be able to sort the shapes by cost, and show also the cost per GPU (not just the total cost)
 - It would be nice to be able to batch delete previous experiments, to have a cleaner interface in the web
 
+#### Training on the Sydney Cluster
+
+I haven't received a reply of how to train on the Sydney Cluster. Thus I have had the idea to use
+workstations for training. As far as I know I'm not charged by using the workstations, maybe I'm wrong
+but I will easily find out.
+
+The idea is to request workstations with a few GPUs, and launch search and learn experiments there.
+I won't be saving anything so in theory I should be capable of doing it.
+
+I can create workstations on the Sydney Cluster with 4 GPUs, and I have to attach the BARC model to them.
+Running htop shows that the machines have 32 cores and 378GB of RAM, more than enough.
+
+```bash
+# copy these two files from the first workstation
+vim .ssh/id_ed25519
+chmod 600 .ssh/id_ed25519
+vim secrets.sh #export WANDB_API_KEY=
+chmod +x secrets.sh
+# now install all the dependencies
+apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano vim htop screen
+git config --global user.name "Guillermo Barbadillo"
+git config --global user.email "guillermobarbadillo@gmail.com"
+git clone git@github.com:ironbar/arc25.git
+python3 -m virtualenv ~/arc25_env
+source ~/arc25_env/bin/activate
+pip install -r arc25/requirements.txt
+pip install unsloth_zoo==2025.9.6 # I should update the requirements
+# skip this step by now because it is very slow
+#MAX_JOBS=2 python -m pip install flash-attn==2.6.3 --no-build-isolation
+```
+
 ## Results
 
 ## Conclusion
@@ -160,3 +191,4 @@ pip install unsloth_zoo==2025.9.6
   - [x] Create multiple experiments
   - [x] How to get the artifacts? It seems I can make the artifacts available to a running workstation
   - [ ] Awaiting for answers to my doubts
+  - [ ] Use workstations for training

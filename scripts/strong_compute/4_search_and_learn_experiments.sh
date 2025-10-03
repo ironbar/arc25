@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 source /root/arc25_env/bin/activate
 source /root/secrets.sh
+export PYTHONPATH=$PYTHONPATH:/root/arc25
 export FOLDER=/root/trainings/2025-09-28-search-and-learn
 export INITIAL_PREDICTIONS=16
 export EPOCHS=32

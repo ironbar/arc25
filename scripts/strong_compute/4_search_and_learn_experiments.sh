@@ -43,7 +43,7 @@ for i in "${!learning_rates[@]}"; do
     --predictions-per-epoch ${PREDICTIONS_PER_EPOCH} \
     --learning-rate ${LEARNING_RATE} \
     --max-epochs ${EPOCHS} \
-    --gpu_memory_utilization 0.5 \
+    --gpu_memory_utilization 0.75 \
     --model-path /data/uds-fourth-five-hunter-250929 \
     --dataset-path /root/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
     --output-dir ${FOLDER}/${EXPERIMENT_NAME} &

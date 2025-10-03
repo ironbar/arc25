@@ -133,11 +133,10 @@ pip install unsloth_zoo==2025.9.6
 
 #### Doubts and suggestions
 
-- When I start a container and select some type of machine. Do I pay for the machine when installing python or other things? Should I select a cheap machine for development and a expensive one for training?
+- When I start a container and select some type of machine. Do I pay for the machine when installing python or other things? Should I select a cheap machine for development and a expensive one for training? Yes, we are charged for using the workstation. So is better to use a cheap workstation to launch jobs.
 - I lost internet when using wireguard, solved.
 - I have created a dataset but does not seem to be working
-- First job send from the Sidney cluster asked for 1 GPUs and received 4. Maybe it's the minimum. But a second job has received 8 GPUs. However it seems to be running on Canada.
-- Should I stop the container after creating the environment?
+- Should I stop the container after creating the environment? Yes
 - When trying to train on "canada-a100-x1-p3-ws" I get `Failed to build shape list from priority list, as no shapes matched the priority list`, same for "canada-h100-x1-p3-ws". Why some machines are only available for workstation and not for burst experiments?
 - It would be nice to be able to sort the shapes by cost, and show also the cost per GPU (not just the total cost)
 - It would be nice to be able to batch delete previous experiments, to have a cleaner interface in the web
@@ -196,3 +195,4 @@ pip install unsloth_zoo==2025.9.6 # I should update the requirements
   - [x] How to get the artifacts? It seems I can make the artifacts available to a running workstation
   - [ ] Awaiting for answers to my doubts
   - [ ] Use workstations for training
+    - [ ] I'm really charged? 1,292.63 at the start of the experiment

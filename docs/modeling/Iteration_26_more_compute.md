@@ -195,4 +195,9 @@ pip install unsloth_zoo==2025.9.6 # I should update the requirements
   - [x] How to get the artifacts? It seems I can make the artifacts available to a running workstation
   - [ ] Awaiting for answers to my doubts
   - [ ] Use workstations for training
-    - [ ] I'm really charged? 1,292.63 at the start of the experiment
+    - I'm really charged? 1,292.63 at the start of the experiment
+    - $1,292.42 while the experiment is running, some charge has already happened. I see $1.32 on pending charges.
+    - $1,287.19 after stopping the experiment. 
+    - So yes, I'm being charged for using the Sydney Cluster
+
+

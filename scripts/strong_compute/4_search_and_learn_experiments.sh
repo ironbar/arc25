@@ -49,6 +49,7 @@ for i in "${!learning_rates[@]}"; do
     --model-path /data/uds-fourth-five-hunter-250929 \
     --dataset-path /root/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
     --output-dir ${FOLDER}/${EXPERIMENT_NAME} &
+  sleep 10  # slight delay to avoid race conditions
 done
 
 # wait for *all* background jobs to finish

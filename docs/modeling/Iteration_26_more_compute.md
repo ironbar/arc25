@@ -144,9 +144,13 @@ pip install unsloth_zoo==2025.9.6
 
 #### Training on the Sydney Cluster
 
+I have noticed that they charge $1.25 hour per GPU on the Sydney Cluster, and slightly less for
+having a container active. On a machine with 4 GPUs that would be around $1.5 per 3090 GPU. Thus
+it does not have too much sense to use them considering that they charge $2.10 for an H100 GPU.
+So the rest of this section does not have too much sense, but I leave it for reference.
+
 I haven't received a reply of how to train on the Sydney Cluster. Thus I have had the idea to use
-workstations for training. As far as I know I'm not charged by using the workstations, maybe I'm wrong
-but I will easily find out.
+workstations for training.
 
 The idea is to request workstations with a few GPUs, and launch search and learn experiments there.
 I won't be saving anything so in theory I should be capable of doing it.

@@ -79,7 +79,7 @@ accelerate launch rl_code_finetuning_multigpu.py \
 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-05-debug-multigpu/2-GPUs
 
 
-# baseline
+# new script
 export EPOCHS=1
 export NUM_GENERATIONS=8
 export ACCUM_STEPS=2
@@ -89,11 +89,26 @@ python scripts/rl_code_finetuning_multigpu.py \
 --learning-rate 1e-5 \
 --epochs ${EPOCHS} \
 --warmup-ratio 0.01 \
---gpu-memory-utilization 0.60 \
+--gpu-memory-utilization 0.3 \
 --num-generations ${NUM_GENERATIONS} \
 --lora-r 16 \
 --gradient-accumulation-steps ${ACCUM_STEPS} \
 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-05-debug-multigpu/new-script-1GPU
+# 28/67 [16:41<20:54, 32.18s/it
+
+# new script 2 gpus
+accelerate launch scripts/rl_code_finetuning_multigpu.py \
+--max-seq-length 1536 \
+--max-completion-length 512 \
+--learning-rate 1e-5 \
+--epochs ${EPOCHS} \
+--warmup-ratio 0.01 \
+--gpu-memory-utilization 0.3 \
+--num-generations ${NUM_GENERATIONS} \
+--lora-r 16 \
+--gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-05-debug-multigpu/new-script-2GPUs
+# 27/33 [17:35<04:01, 40.32s/it
 ```
 
 Baseline experiment trains at around 28s/it and the GPU is at 100% utilization.

@@ -22,8 +22,7 @@ from arc25.data_augmentation import apply_data_augmentation, get_random_data_aug
 from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 from arc25.logging import configure_logging, logging, log_execution_time
 from arc25.parallel_code_execution import CodeRunner
-
-from finetuning import get_model, get_tokenizer, get_lora_model
+from arc25.model import get_model, get_tokenizer, get_lora_model
 
 logger = get_logger(__name__)
 

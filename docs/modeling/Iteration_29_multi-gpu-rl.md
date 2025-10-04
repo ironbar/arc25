@@ -24,6 +24,17 @@ Current BARC induction model is not strong enough to solve ARC, it needs a lot o
 
 ## Development
 
+### Documentation
+
+<https://docs.unsloth.ai/basics/multi-gpu-training-with-unsloth>
+
+- **DDP**: Distributed Data Parallel. The most common PyTorch distributed training method. Each GPU holds a full copy of the model, processes different batches of data, and gradients are synchronized across GPUs.
+- **FSDP**. Fully Sharded Data Parallel. A PyTorch parallelism method where model parameters, gradients, and optimizer states are sharded across GPUs to save memory. Each GPU only holds a fraction of the model at any time.
+
+I'm interested in DDP, because the model can fit on a single GPU.
+
+### Experiments
+
 ```bash
 # baseline
 export EPOCHS=1

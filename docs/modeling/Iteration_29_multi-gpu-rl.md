@@ -77,10 +77,29 @@ accelerate launch rl_code_finetuning_multigpu.py \
 --lora-r 16 \
 --gradient-accumulation-steps ${ACCUM_STEPS} \
 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-05-debug-multigpu/2-GPUs
+
+
+# baseline
+export EPOCHS=1
+export NUM_GENERATIONS=8
+export ACCUM_STEPS=2
+python scripts/rl_code_finetuning_multigpu.py \
+--max-seq-length 1536 \
+--max-completion-length 512 \
+--learning-rate 1e-5 \
+--epochs ${EPOCHS} \
+--warmup-ratio 0.01 \
+--gpu-memory-utilization 0.60 \
+--num-generations ${NUM_GENERATIONS} \
+--lora-r 16 \
+--gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-05-debug-multigpu/new-script-1GPU
 ```
 
 Baseline experiment trains at around 28s/it and the GPU is at 100% utilization.
 It seems that unsloth is not currently prepared to do multigpu training, I will have to try with plain trl.
+
+I had to modify the `GRPOTrainer` on line 539 to add `quantization='bitsandbytes',`, otherwise I don't have enough VRAM. `/home/gbarbadillo/miniconda3/envs/arc25/lib/python3.10/site-packages/trl/trainer/grpo_trainer.py`
 
 ## Results
 

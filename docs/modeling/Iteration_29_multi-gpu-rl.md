@@ -24,6 +24,24 @@ Current BARC induction model is not strong enough to solve ARC, it needs a lot o
 
 ## Development
 
+```bash
+# baseline
+export EPOCHS=1
+export NUM_GENERATIONS=8
+export ACCUM_STEPS=2
+python scripts/rl_code_finetuning.py \
+--learning-rate 1e-5 \
+--epochs ${EPOCHS} \
+--warmup-ratio 0.01 \
+--gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} \
+--lora-r 16 \
+--gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-05-debug-multigpu/baseline-1GPU
+```
+
+Baseline experiment trains at around 28s/it and the GPU is at 100% utilization.
+
 ## Results
 
 ## Conclusion

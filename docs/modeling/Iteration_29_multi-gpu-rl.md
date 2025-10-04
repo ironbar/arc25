@@ -127,4 +127,8 @@ that the model is learning correctly.
 
 ## TODO
 
-- [ ]
+- [ ] Validate the code locally
+  - [ ] Create an even smaller dataset ~ 10 tasks
+  - [ ] Train with the previous script on a single GPU
+  - [ ] Train with the new script on a single GPU
+  - [ ] Train with the new script on 2 GPUs

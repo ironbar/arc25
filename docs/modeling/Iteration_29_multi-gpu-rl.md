@@ -49,9 +49,38 @@ python scripts/rl_code_finetuning.py \
 --lora-r 16 \
 --gradient-accumulation-steps ${ACCUM_STEPS} \
 --output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-05-debug-multigpu/baseline-1GPU
+
+# multigpu with torchrun
+# this hangs after initializing the LLM engine
+export EPOCHS=1
+export NUM_GENERATIONS=8
+export ACCUM_STEPS=2
+cd scripts
+torchrun --nproc_per_node 2 -m rl_code_finetuning_multigpu \
+--learning-rate 1e-5 \
+--epochs ${EPOCHS} \
+--warmup-ratio 0.01 \
+--gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} \
+--lora-r 16 \
+--gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-05-debug-multigpu/2-GPUs
+
+# accelerate
+# this also hangs after initializing the LLM engine
+accelerate launch rl_code_finetuning_multigpu.py \
+--learning-rate 1e-5 \
+--epochs ${EPOCHS} \
+--warmup-ratio 0.01 \
+--gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} \
+--lora-r 16 \
+--gradient-accumulation-steps ${ACCUM_STEPS} \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-05-debug-multigpu/2-GPUs
 ```
 
 Baseline experiment trains at around 28s/it and the GPU is at 100% utilization.
+It seems that unsloth is not currently prepared to do multigpu training, I will have to try with plain trl.
 
 ## Results
 

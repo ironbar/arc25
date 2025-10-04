@@ -33,7 +33,7 @@ Current BARC induction model is not strong enough to solve ARC, it needs a lot o
 
 I'm interested in DDP, because the model can fit on a single GPU.
 
-### Experiments
+### Implementation
 
 ```bash
 # baseline
@@ -119,6 +119,44 @@ I had to modify the `GRPOTrainer` on line 539 to add `quantization='bitsandbytes
 When training with 2 GPUs the number of steps is halved, I would need to do experiments to verify
 that the model is learning correctly.
 
+### Validate implementation locally
+
+```bash
+# baseline
+export EPOCHS=40
+export NUM_GENERATIONS=8
+export ACCUM_STEPS=2
+python scripts/rl_code_finetuning.py \
+--learning-rate 1e-5 \
+--epochs ${EPOCHS} \
+--warmup-ratio 0.01 \
+--max-seq-length 1536 \
+--max-completion-length 512 \
+--gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} \
+--lora-r 16 \
+--gradient-accumulation-steps ${ACCUM_STEPS} \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small-10_arc-agi_training_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-05-validate-multigpu/baseline-1GPU-${EPOCHS}epochs
+
+# new script with 1 GPU
+export EPOCHS=40
+export NUM_GENERATIONS=8
+export ACCUM_STEPS=2
+python scripts/rl_code_finetuning_multigpu.py \
+--max-seq-length 1536 \
+--max-completion-length 512 \
+--learning-rate 1e-5 \
+--epochs ${EPOCHS} \
+--warmup-ratio 0.01 \
+--gpu-memory-utilization 0.3 \
+--num-generations ${NUM_GENERATIONS} \
+--lora-r 16 \
+--gradient-accumulation-steps ${ACCUM_STEPS} \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small-10_arc-agi_training_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-05-validate-multigpu/new-script-1GPU-${EPOCHS}epochs
+```
+
 ## Results
 
 ## Conclusion
@@ -128,7 +166,8 @@ that the model is learning correctly.
 ## TODO
 
 - [ ] Validate the code locally
-  - [ ] Create an even smaller dataset ~ 10 tasks
-  - [ ] Train with the previous script on a single GPU
+  - [x] Create an even smaller dataset ~ 10 tasks
+  - [x] Train with the previous script on a single GPU
+  - [ ] When training without unsloth it does not log the same metrics
   - [ ] Train with the new script on a single GPU
   - [ ] Train with the new script on 2 GPUs

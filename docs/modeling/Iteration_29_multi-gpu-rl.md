@@ -116,6 +116,9 @@ It seems that unsloth is not currently prepared to do multigpu training, I will 
 
 I had to modify the `GRPOTrainer` on line 539 to add `quantization='bitsandbytes',`, otherwise I don't have enough VRAM. `/home/gbarbadillo/miniconda3/envs/arc25/lib/python3.10/site-packages/trl/trainer/grpo_trainer.py`
 
+When training with 2 GPUs the number of steps is halved, I would need to do experiments to verify
+that the model is learning correctly.
+
 ## Results
 
 ## Conclusion

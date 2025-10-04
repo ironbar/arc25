@@ -117,6 +117,7 @@ def main():
         repetition_penalty=cfg.repetition_penalty,
         # use_liger_kernel=True, #ImportError: cannot import name '_CONFIG_FOR_DOC' from 'transformers.models.gemma.modeling_gemma' (/home/gbarbadillo/miniconda3/envs/arc25/lib/python3.10/site-packages/transformers/models/gemma/modeling_gemma.py)
         # wandb
+        logging_steps=1,
         report_to='wandb',
         run_name=os.path.basename(cfg.output_dir),
         shuffle_dataset=False, # already shuffled on creation

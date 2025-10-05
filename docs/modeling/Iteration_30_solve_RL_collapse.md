@@ -103,6 +103,23 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 240689.0
 ```
 
+### How to log more metrics about the rewards
+
+If I have access to the trainer, I could simply add metrics to the object `_metrics`.
+
+```python
+# /home/gbarbadillo/miniconda3/envs/arc25/lib/python3.10/site-packages/trl/trainer/grpo_trainer.py
+prediction_step(
+_prepare_inputs
+_generate_and_score_completions
+self._metrics[mode]["reward"].append(mean_grouped_rewards.mean().item())
+        self._metrics[mode]["reward_std"].append(std_rewards.mean().item())
+        self._metrics[mode]["frac_reward_zero_std"].append(is_std_zero.float().mean().item())
+
+log(
+metrics = {key: sum(val) / len(val) for key, val in self._metrics[mode].items()}  # average the metrics
+```
+
 ## Results
 
 ### Training collapse

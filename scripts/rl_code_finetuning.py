@@ -175,6 +175,7 @@ class RewardLogger():
         self.trainer = trainer
 
     def log(self, rewards, completions, completion_lengths):
+        # on a first step log to the terminal
         logger.info(f'Mean completion length: {np.mean(completion_lengths):.2f}, Max completion length: {np.max(completion_lengths):.2f}, lengths: {completion_lengths}')
         logger.info(f'Mean reward: {np.mean(rewards):.2f}, Max reward: {np.max(rewards):.2f}, rewards: {np.array(rewards).round(2).tolist()}')
         logger.info(f'Best completion:\n{completions[np.argmax(rewards)]}')
@@ -186,13 +187,27 @@ class RewardLogger():
             logger.warning(f'{len(truncated_completion_ids)}/{len(completions)} completions were truncated to {self.max_completion_length} tokens. Rewards: {truncated_completion_rewards}')
             logger.warning(f'Non-truncated completions rewards: {non_truncated_completion_rewards}')
             logger.warning(f'First truncated completion:\n{completions[truncated_completion_ids[0]]}')
+        # second log to the trainer metrics
         if self.trainer is not None:
-            mode = 'train'
-            self.trainer._metrics[mode]["reward_max"].append(float(np.max(rewards)))
-            self.trainer._metrics[mode]["reward_min"].append(float(np.min(rewards)))
-            self.trainer._metrics[mode]["truncated_completions_ratio"].append(len(truncated_completion_ids) / len(completions))
-        # TODO: stats about truncated and non-truncated rewards
-        # TODO: stats about completed tasks and completion lengths
+            metrics = self.trainer._metrics['train']
+            metrics["reward_max"].append(float(np.max(rewards)))
+            metrics["reward_min"].append(float(np.min(rewards)))
+            metrics["truncated_completions_ratio"].append(len(truncated_completion_ids) / len(completions))
+            # solved task metrics
+            solved_tasks_ids = [i for i, r in enumerate(rewards) if r == 10.0]
+            metrics["solved_tasks_ratio"].append(len(solved_tasks_ids) / len(completions))
+            if len(solved_tasks_ids) > 0:
+                metrics["solved_tasks_completion_length_mean"].append(float(np.mean([completion_lengths[i] for i in solved_tasks_ids])))
+                metrics["solved_tasks_completion_length_max"].append(float(np.max([completion_lengths[i] for i in solved_tasks_ids])))
+            # truncated completions metrics
+            if len(truncated_completion_ids) > 0:
+                metrics["truncated_completions_reward_mean"].append(float(np.mean([rewards[i] for i in truncated_completion_ids])))
+                metrics["truncated_completions_reward_max"].append(float(np.max([rewards[i] for i in truncated_completion_ids])))
+            # non truncated completions metrics
+            if len(truncated_completion_ids) < len(completions):
+                non_truncated_completion_ids = [i for i in range(len(completions)) if i not in truncated_completion_ids]
+                metrics["non_truncated_completions_reward_mean"].append(float(np.mean([rewards[i] for i in non_truncated_completion_ids])))
+                metrics["non_truncated_completions_reward_max"].append(float(np.max([rewards[i] for i in non_truncated_completion_ids])))
 
 
 def _individual_arc_reward(result, task):

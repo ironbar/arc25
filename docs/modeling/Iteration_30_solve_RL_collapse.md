@@ -245,3 +245,5 @@ TODO: Maybe I have to lower the learning rate
 - [ ] Analyze logs of failed training, and document experiments training from zero
 - [ ] Is the new reward helpful?
 - [ ] Are the new metrics helpful to understand the problem?
+- [ ] Maybe I have to use a longer max sequence length?
+  - [ ] Analyze truncate errors

@@ -26,7 +26,7 @@ I need to understand the problem and fix it so I can train for longer on more da
 
 ### Thoughts about the collapse problem
 
-I have seen different kinds of collapse: long predictions and giberish prediction.
+I have seen different kinds of collapse: long predictions and gibberish prediction.
 
 ### Cluster experiments
 

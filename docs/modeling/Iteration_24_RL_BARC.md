@@ -741,30 +741,6 @@ https://wandb.ai/guillermobarbadillo/2025-09-27-rl-speed-test
 
 Similar conclusions for H100.
 
-### Training collapse
-
-When training for long on all the ARC-AGI-1 training samples I have observed that the reward collapses.
-
-First trainings for more than 5k steps (more than 12 epochs) show the same problem. 
-
-![alt text](res/1759507475811_image.png)
-
-The model starts to make longer predictions that fill all the output tokens, it repeats the same text over and over.
-After seeing this I thought the problem could be the reward function, that was making a distinction between
-being able to parse or not being able to parse the code. Thus it might be favoring bad code sometimes if it could be parsed.
-
-However simplifying the reward did not solve the problem. The metrics show the same problem:
-
-![alt text](res/1759507730951_image.png)
-
-I have tried different configurations of repetition penalty and unmasking the truncated completions to see if I could continue a training without collapsing without much success. Sometimes I could prevent collapse but
-at the cost of not improving the reward.
-
-![alt text](res/1759508063549_image.png)
-
-TODO: Maybe I have to train from zero
-TODO: Maybe I have to lower the learning rate
-
 
 ## Conclusion
 

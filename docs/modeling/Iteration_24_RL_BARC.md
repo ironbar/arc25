@@ -832,5 +832,5 @@ TODO: Maybe I have to lower the learning rate
   - [x] What is the configuration that better uses the hardware. 32 generations per step
   - [ ] Best learning rate
   - [ ] How much the model improves after training?
-- [ ] MultiGPU training
+- [x] MultiGPU training. Doing it on a different iteration
 - [ ] Analyze disk space used by trainings

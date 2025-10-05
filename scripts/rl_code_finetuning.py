@@ -46,6 +46,7 @@ class Config:
     dataset_path: str = "/mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small_arc-agi_training_challenges.json"
     output_dir: str = "/mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr1e-5_small-dataset_10epochs_5582e5ca"
     # training hyperparameters
+    reward_name: str = 'arc-v1' # 'arc-v1', 'arc-v2-no-pixel-score'
     epochs: int = 10
     save_steps: int = 100 # each checkpoint with lora_r=32 takes around 500MB
     num_generations: int = 4
@@ -134,7 +135,8 @@ def main():
     os.environ["WANDB_PROJECT"] = os.path.basename(os.path.dirname(cfg.output_dir))
     os.environ["WANDB_DIR"] = cfg.output_dir
 
-    reward_logger = RewardLogger(n_jobs=cfg.n_jobs, max_completion_length=cfg.max_completion_length)
+    reward_logger = RewardLogger(n_jobs=cfg.n_jobs, max_completion_length=cfg.max_completion_length,
+                                 reward_name=cfg.reward_name)
     trainer = GRPOTrainer(
         model=model,
         processing_class=tokenizer,
@@ -148,11 +150,12 @@ def main():
 
 class RewardLogger():
     """ Computes the reward and adds more logs to the trainer """
-    def __init__(self, n_jobs=-1, max_completion_length=1024):
+    def __init__(self, n_jobs=-1, max_completion_length=1024, reward_name='arc-v1'):
         # TODO: allow to choose different reward functions
         self.code_runner = CodeRunner(n_jobs=n_jobs)
         self.max_completion_length = max_completion_length
         self.trainer = None
+        self.reward_name = reward_name
 
 
     @log_execution_time
@@ -167,7 +170,7 @@ class RewardLogger():
             numpy_tasks, list(range(len(completions))), completions,
             [None]*len(completions), group_results_by_task=False, disable_tqdm=True)
         completion_lengths = [len(c) for c in completion_ids]
-        rewards = [_individual_arc_reward(result, task) for result, task in zip(results, tasks)]
+        rewards = [_individual_arc_reward(result, task, self.reward_name) for result, task in zip(results, tasks)]
         self.log(rewards, completions, completion_lengths)
         return rewards
 
@@ -210,7 +213,7 @@ class RewardLogger():
                 metrics["non_truncated_completions_reward_max"].append(float(np.max([rewards[i] for i in non_truncated_completion_ids])))
 
 
-def _individual_arc_reward(result, task):
+def _individual_arc_reward(result, task, reward_name):
     """
     The north start metric is the correct grids, pixel score is use as a tiebreaker.
 
@@ -225,18 +228,25 @@ def _individual_arc_reward(result, task):
     20 tasks with more than 8 training samples, and a reward with a maximum value of 10 is more
     intuitive.
     """
-    # if 'code' not in result: # code was not parsed correctly
-    #     reward = -1.0
-    # elif 'train_correct_grids' not in result: # code ran but did not produce valid results
-    #     reward = 0.0
-    if 'train_correct_grids' not in result: # code ran but did not produce valid results
-        reward = 0.0
+    if reward_name == 'arc-v1':
+        if 'train_correct_grids' not in result: # code ran but did not produce valid results
+            reward = 0.0
+        else:
+            n_train, n_test = len(task['train']), len(task['test'])
+            correct_grids = (float(result['train_correct_grids'])*n_train + float(result.get('test_correct_grids', 0))*n_test) / (n_train + n_test)
+            pixel_score = (float(result['train_pixel_score'])*n_train + float(result.get('test_pixel_score', 0))*n_test) / (n_train + n_test)
+            reward = 1.0 + 8*correct_grids + pixel_score
+        return reward
+    if reward_name == 'arc-v2-no-pixel-score':
+        if 'train_correct_grids' not in result: # code ran but did not produce valid results
+            reward = 0.0
+        else:
+            n_train, n_test = len(task['train']), len(task['test'])
+            correct_grids = (float(result['train_correct_grids'])*n_train + float(result.get('test_correct_grids', 0))*n_test) / (n_train + n_test)
+            reward = 1.0 + 9*correct_grids
+        return reward
     else:
-        n_train, n_test = len(task['train']), len(task['test'])
-        correct_grids = (float(result['train_correct_grids'])*n_train + float(result.get('test_correct_grids', 0))*n_test) / (n_train + n_test)
-        pixel_score = (float(result['train_pixel_score'])*n_train + float(result.get('test_pixel_score', 0))*n_test) / (n_train + n_test)
-        reward = 1.0 + 8*correct_grids + pixel_score
-    return reward
+        raise ValueError(f"Unknown reward name: {reward_name}")
 
 
 if __name__ == "__main__":

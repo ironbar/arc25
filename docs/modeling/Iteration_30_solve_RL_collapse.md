@@ -175,6 +175,6 @@ TODO: Maybe I have to lower the learning rate
   - [x] I should log the prompt if it reaches the maximum completion length. That way I could see the first times that the model is doing that.
   - [x] Max reward might be a better metric that mean reward
   - [x] Log rewards of truncated completions
-- [ ] Maybe using the pixel score as a reward was a bad idea. It might reward the wrong thing
-  - [ ] Allow to choose different rewards when training
-  - [ ] Try training without pixel score reward
+- [x] Maybe using the pixel score as a reward was a bad idea. It might reward the wrong thing
+  - [x] Allow to choose different rewards when training
+  - [x] Try training without pixel score reward

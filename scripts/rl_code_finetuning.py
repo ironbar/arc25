@@ -135,7 +135,7 @@ def main():
     os.environ["WANDB_DIR"] = cfg.output_dir
 
     code_runner = CodeRunner(n_jobs=cfg.n_jobs)
-    reward_func = partial(arc_reward, code_runner=code_runner)
+    reward_func = partial(arc_reward, code_runner=code_runner, max_completion_length=cfg.max_completion_length)
     update_wrapper(reward_func, arc_reward)
 
     trainer = GRPOTrainer(
@@ -164,10 +164,14 @@ def arc_reward(completions, tasks, completion_ids, code_runner, max_completion_l
     rewards = [_individual_arc_reward(result, task) for result, task in zip(results, tasks)]
     logger.info(f'Mean reward: {np.mean(rewards):.2f}, Max reward: {np.max(rewards):.2f}, rewards: {np.array(rewards).round(2).tolist()}')
     logger.info(f'Best completion:\n{completions[np.argmax(rewards)]}')
-    for i, completion_length in enumerate(completion_lengths):
-        if completion_length >= max_completion_length:
-            logger.warning(f'Completion was truncated to {max_completion_length} tokens. Reward: {rewards[i]}. Completion:\n{completions[i]}')
-            break
+    # Log about truncated completions to diagnose collapsing training problem
+    truncated_completion_ids = [i for i, l in enumerate(completion_lengths) if l >= max_completion_length]
+    if len(truncated_completion_ids) > 0:
+        truncated_completion_rewards = [rewards[i] for i in truncated_completion_ids]
+        non_truncated_completion_rewards = [rewards[i] for i in range(len(completions)) if i not in truncated_completion_ids]
+        logger.warning(f'{len(truncated_completion_ids)}/{len(completions)} completions were truncated to {max_completion_length} tokens. Rewards: {truncated_completion_rewards}')
+        logger.warning(f'Non-truncated completions rewards: {non_truncated_completion_rewards}')
+        logger.warning(f'First truncated completion:\n{completions[truncated_completion_ids[0]]}')
     return rewards
 
 

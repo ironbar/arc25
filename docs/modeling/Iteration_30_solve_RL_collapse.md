@@ -242,3 +242,6 @@ TODO: Maybe I have to lower the learning rate
 - [x] Maybe using the pixel score as a reward was a bad idea. It might reward the wrong thing
   - [x] Allow to choose different rewards when training
   - [x] Try training without pixel score reward
+- [ ] Analyze logs of failed training, and document experiments training from zero
+- [ ] Is the new reward helpful?
+- [ ] Are the new metrics helpful to understand the problem?

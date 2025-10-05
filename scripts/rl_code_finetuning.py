@@ -134,45 +134,65 @@ def main():
     os.environ["WANDB_PROJECT"] = os.path.basename(os.path.dirname(cfg.output_dir))
     os.environ["WANDB_DIR"] = cfg.output_dir
 
-    code_runner = CodeRunner(n_jobs=cfg.n_jobs)
-    reward_func = partial(arc_reward, code_runner=code_runner, max_completion_length=cfg.max_completion_length)
-    update_wrapper(reward_func, arc_reward)
-
+    reward_logger = RewardLogger(n_jobs=cfg.n_jobs, max_completion_length=cfg.max_completion_length)
     trainer = GRPOTrainer(
         model=model,
         processing_class=tokenizer,
-        reward_funcs=reward_func,
+        reward_funcs=reward_logger.arc_reward,
         args=training_args,
         train_dataset=grpo_dataset,
     )
+    reward_logger.update_trainer(trainer)
     trainer.train(resume_from_checkpoint=cfg.resume_from_checkpoint and is_checkpoint_available(cfg.output_dir))
 
 
-@log_execution_time
-def arc_reward(completions, tasks, completion_ids, code_runner, max_completion_length, **kwargs):
-    """
-    Reward function that rewards completions based on how many test cases they pass.
+class RewardLogger():
+    """ Computes the reward and adds more logs to the trainer """
+    def __init__(self, n_jobs=-1, max_completion_length=1024):
+        # TODO: allow to choose different reward functions
+        self.code_runner = CodeRunner(n_jobs=n_jobs)
+        self.max_completion_length = max_completion_length
+        self.trainer = None
 
-    As input seems to be receiving: completions, prompts, ground_truth and completion_ids
-    """
-    numpy_tasks = [convert_task_to_numpy(task) for task in tasks]
-    results = code_runner.run(
-        numpy_tasks, list(range(len(completions))), completions,
-        [None]*len(completions), group_results_by_task=False, disable_tqdm=True)
-    completion_lengths = [len(c) for c in completion_ids]
-    logger.info(f'Mean completion length: {np.mean(completion_lengths):.2f}, Max completion length: {np.max(completion_lengths):.2f}, lengths: {completion_lengths}')
-    rewards = [_individual_arc_reward(result, task) for result, task in zip(results, tasks)]
-    logger.info(f'Mean reward: {np.mean(rewards):.2f}, Max reward: {np.max(rewards):.2f}, rewards: {np.array(rewards).round(2).tolist()}')
-    logger.info(f'Best completion:\n{completions[np.argmax(rewards)]}')
-    # Log about truncated completions to diagnose collapsing training problem
-    truncated_completion_ids = [i for i, l in enumerate(completion_lengths) if l >= max_completion_length]
-    if len(truncated_completion_ids) > 0:
-        truncated_completion_rewards = [rewards[i] for i in truncated_completion_ids]
-        non_truncated_completion_rewards = [rewards[i] for i in range(len(completions)) if i not in truncated_completion_ids]
-        logger.warning(f'{len(truncated_completion_ids)}/{len(completions)} completions were truncated to {max_completion_length} tokens. Rewards: {truncated_completion_rewards}')
-        logger.warning(f'Non-truncated completions rewards: {non_truncated_completion_rewards}')
-        logger.warning(f'First truncated completion:\n{completions[truncated_completion_ids[0]]}')
-    return rewards
+
+    @log_execution_time
+    def arc_reward(self, completions, tasks, completion_ids, **kwargs):
+        """
+        Reward function that rewards completions based on how many test cases they pass.
+
+        As input seems to be receiving: completions, prompts, ground_truth and completion_ids
+        """
+        numpy_tasks = [convert_task_to_numpy(task) for task in tasks]
+        results = self.code_runner.run(
+            numpy_tasks, list(range(len(completions))), completions,
+            [None]*len(completions), group_results_by_task=False, disable_tqdm=True)
+        completion_lengths = [len(c) for c in completion_ids]
+        rewards = [_individual_arc_reward(result, task) for result, task in zip(results, tasks)]
+        self.log(rewards, completions, completion_lengths)
+        return rewards
+
+    def update_trainer(self, trainer):
+        self.trainer = trainer
+
+    def log(self, rewards, completions, completion_lengths):
+        logger.info(f'Mean completion length: {np.mean(completion_lengths):.2f}, Max completion length: {np.max(completion_lengths):.2f}, lengths: {completion_lengths}')
+        logger.info(f'Mean reward: {np.mean(rewards):.2f}, Max reward: {np.max(rewards):.2f}, rewards: {np.array(rewards).round(2).tolist()}')
+        logger.info(f'Best completion:\n{completions[np.argmax(rewards)]}')
+        truncated_completion_ids = [i for i, l in enumerate(completion_lengths) if l >= self.max_completion_length]
+        # Log about truncated completions to diagnose collapsing training problem
+        if len(truncated_completion_ids) > 0:
+            truncated_completion_rewards = [rewards[i] for i in truncated_completion_ids]
+            non_truncated_completion_rewards = [rewards[i] for i in range(len(completions)) if i not in truncated_completion_ids]
+            logger.warning(f'{len(truncated_completion_ids)}/{len(completions)} completions were truncated to {self.max_completion_length} tokens. Rewards: {truncated_completion_rewards}')
+            logger.warning(f'Non-truncated completions rewards: {non_truncated_completion_rewards}')
+            logger.warning(f'First truncated completion:\n{completions[truncated_completion_ids[0]]}')
+        if self.trainer is not None:
+            mode = 'train'
+            self.trainer._metrics[mode]["reward_max"].append(float(np.max(rewards)))
+            self.trainer._metrics[mode]["reward_min"].append(float(np.min(rewards)))
+            self.trainer._metrics[mode]["truncated_completions_ratio"].append(len(truncated_completion_ids) / len(completions))
+        # TODO: stats about truncated and non-truncated rewards
+        # TODO: stats about completed tasks and completion lengths
 
 
 def _individual_arc_reward(result, task):

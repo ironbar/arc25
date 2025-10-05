@@ -120,6 +120,25 @@ log(
 metrics = {key: sum(val) / len(val) for key, val in self._metrics[mode].items()}  # average the metrics
 ```
 
+```bash
+# baseline
+export EPOCHS=1
+export NUM_GENERATIONS=8
+export ACCUM_STEPS=2
+python scripts/rl_code_finetuning.py \
+--learning-rate 1e-5 \
+--epochs ${EPOCHS} \
+--warmup-ratio 0.01 \
+--max-seq-length 1536 \
+--max-completion-length 512 \
+--gpu-memory-utilization 0.70 \
+--num-generations ${NUM_GENERATIONS} \
+--lora-r 16 \
+--gradient-accumulation-steps ${ACCUM_STEPS} \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small-10_arc-agi_training_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-06-debug-reward-logging/baseline-1GPU-${EPOCHS}epochs
+```
+
 ## Results
 
 ### Training collapse

@@ -833,4 +833,4 @@ TODO: Maybe I have to lower the learning rate
   - [ ] Best learning rate
   - [ ] How much the model improves after training?
 - [x] MultiGPU training. Doing it on a different iteration
-- [ ] Analyze disk space used by trainings
+- [x] Analyze disk space used by trainings

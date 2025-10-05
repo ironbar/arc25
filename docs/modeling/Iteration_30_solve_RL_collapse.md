@@ -24,7 +24,98 @@ I need to understand the problem and fix it so I can train for longer on more da
 
 ## Development
 
+### Thoughts about the collapse problem
+
+I have seen different kinds of collapse: long predictions and giberish prediction.
+
+### Cluster experiments
+
+```bash
+## Start from zero
+export REPETITION_PENALTY=1.05
+export FOLDER=2025-09-19-rl-first-steps
+export LEARNING_RATE=1e-6
+export NUM_GENERATIONS=16
+export ACUM_STEPS=2
+export N_CPUS=20
+export LORA_R=32
+export EPOCHS=100
+export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_repetition-penalty-${REPETITION_PENALTY}_masked-truncate
+condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+240688.0
+
+export REPETITION_PENALTY=1.05
+export FOLDER=2025-09-19-rl-first-steps
+export LEARNING_RATE=1e-6
+export NUM_GENERATIONS=16
+export ACUM_STEPS=2
+export N_CPUS=20
+export LORA_R=32
+export EPOCHS=100
+export EXPERIMENT_NAME=lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_repetition-penalty-${REPETITION_PENALTY}_unmasked-truncate
+condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--no-mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+240689.0
+```
+
 ## Results
+
+### Training collapse
+
+When training for long on all the ARC-AGI-1 training samples I have observed that the reward collapses.
+
+First trainings for more than 5k steps (more than 12 epochs) show the same problem. 
+
+![alt text](res/1759507475811_image.png)
+
+The model starts to make longer predictions that fill all the output tokens, it repeats the same text over and over.
+After seeing this I thought the problem could be the reward function, that was making a distinction between
+being able to parse or not being able to parse the code. Thus it might be favoring bad code sometimes if it could be parsed.
+
+However simplifying the reward did not solve the problem. The metrics show the same problem:
+
+![alt text](res/1759507730951_image.png)
+
+I have tried different configurations of repetition penalty and unmasking the truncated completions to see if I could continue a training without collapsing without much success. Sometimes I could prevent collapse but
+at the cost of not improving the reward.
+
+![alt text](res/1759508063549_image.png)
+
+TODO: Maybe I have to train from zero
+TODO: Maybe I have to lower the learning rate
 
 ## Conclusion
 

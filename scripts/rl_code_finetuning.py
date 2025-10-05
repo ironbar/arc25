@@ -149,7 +149,7 @@ def main():
 
 
 @log_execution_time
-def arc_reward(completions, tasks, completion_ids, code_runner, **kwargs):
+def arc_reward(completions, tasks, completion_ids, code_runner, max_completion_length, **kwargs):
     """
     Reward function that rewards completions based on how many test cases they pass.
 
@@ -164,6 +164,10 @@ def arc_reward(completions, tasks, completion_ids, code_runner, **kwargs):
     rewards = [_individual_arc_reward(result, task) for result, task in zip(results, tasks)]
     logger.info(f'Mean reward: {np.mean(rewards):.2f}, Max reward: {np.max(rewards):.2f}, rewards: {np.array(rewards).round(2).tolist()}')
     logger.info(f'Best completion:\n{completions[np.argmax(rewards)]}')
+    for i, completion_length in enumerate(completion_lengths):
+        if completion_length >= max_completion_length:
+            logger.warning(f'Completion was truncated to {max_completion_length} tokens. Reward: {rewards[i]}. Completion:\n{completions[i]}')
+            break
     return rewards
 
 

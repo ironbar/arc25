@@ -744,6 +744,8 @@ Similar conclusions for H100.
 
 ## Conclusion
 
+After training with RL the model solved 27% of the ARC-AGI-1 evaluation tasks compared to the 22.25% baseline (for 480 predictions). This shows that RL is able to make the model better at solving ARC tasks. I need to solve the issue of training collapse to be able to train for longer on more data.
+
 ## Next steps
 
 - If RL is proven to work, next step is scale the training by using more GPUs and more data (BARC)

@@ -28,6 +28,18 @@ I need to understand the problem and fix it so I can train for longer on more da
 
 I have seen different kinds of collapse: long predictions and gibberish prediction.
 
+#### Long predictions
+
+I don't understand why, but the model starts doing long predictions after 5k steps of training. Predictions are being truncated because the max completion length is 1024.
+
+![alt text](res/1759655567624_image.png)
+
+On the first experiments I was masking the truncated completions, furthermore they should probably get a reward of 0
+
+#### Gibberish prediction
+
+When I started using repetition penalty to avoid long predictions (because I saw predictions with lots of repetitions) I also saw the model doing gibberish predictions.
+
 ### Cluster experiments
 
 ```bash
@@ -123,4 +135,10 @@ TODO: Maybe I have to lower the learning rate
 
 ## TODO
 
-- [ ]
+- [ ] I need more information to diagnose the problem
+  - [ ] I should log the prompt if it reaches the maximum completion length. That way I could see the first times that the model is doing that.
+  - [ ] Max reward might be a better metric that mean reward
+  - [ ] Log rewards of truncated completions
+- [ ] Maybe using the pixel score as a reward was a bad idea. It might reward the wrong thing
+  - [ ] Allow to choose different rewards when training
+  - [ ] Try training without pixel score reward

@@ -252,4 +252,5 @@ TODO: Maybe I have to lower the learning rate
   - [ ] Log ngram repetition and unique tokens
   - [ ] Add or increase the KL penalty
   - [ ] Lower the learning rate, and/or do gradient clipping
-  - [ ] Using the information from ngram repetition metrics, add a reward penalty to ngram repetition
+  - [ ] `frequency_penalty` can be a better option than `repetition_penalty`, `generation_kwargs=dict(frequency_penalty=1.1)`
+  - [ ] Using the information from ngram repetition metrics, add a reward penalty to ngram repetition. (VLLM does not have a ngram-repetion-penalty)

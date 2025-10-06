@@ -214,11 +214,12 @@ class RewardLogger():
                 metrics["truncated_completions_reward_max"].append(float(np.max([rewards[i] for i in truncated_completion_ids])))
                 # n gram metrics
                 for i in truncated_completion_ids:
-                    metrics['truncated_completions_unique_tokens_ratio'] = len(set(completions[i])) / len(completions[i]) if len(completions[i]) > 0 else 0
+                    metrics['truncated_completions_unique_tokens_ratio'].append(len(set(completions[i])) / len(completions[i]) if len(completions[i]) > 0 else 0)
                     for n in [3, 4]:
                         stats = ngram_stats(completion_ids[i], n)
                         metrics[f"truncated_completions_ngram_{n}_unique_ngram_ratio"].append(stats["unique_ngram_ratio"])
                         metrics[f"truncated_completions_ngram_{n}_most_repeated_ngram_count"].append(stats["most_repeated_ngram_count"])
+                        metrics[f"truncated_completions_ngram_{n}_most_repeated_ngram_frequency"].append(stats["most_repeated_ngram_frequency"])
             # non truncated completions metrics
             if len(truncated_completion_ids) < len(completions):
                 non_truncated_completion_ids = [i for i in range(len(completions)) if i not in truncated_completion_ids]
@@ -226,11 +227,12 @@ class RewardLogger():
                 metrics["non_truncated_completions_reward_max"].append(float(np.max([rewards[i] for i in non_truncated_completion_ids])))
                 # n gram metrics
                 for i in non_truncated_completion_ids:
-                    metrics['non_truncated_completions_unique_tokens_ratio'] = len(set(completions[i])) / len(completions[i]) if len(completions[i]) > 0 else 0
+                    metrics['non_truncated_completions_unique_tokens_ratio'].append(len(set(completions[i])) / len(completions[i]) if len(completions[i]) > 0 else 0)
                     for n in [3, 4]:
                         stats = ngram_stats(completion_ids[i], n)
                         metrics[f"non_truncated_completions_ngram_{n}_unique_ngram_ratio"].append(stats["unique_ngram_ratio"])
                         metrics[f"non_truncated_completions_ngram_{n}_most_repeated_ngram_count"].append(stats["most_repeated_ngram_count"])
+                        metrics[f"non_truncated_completions_ngram_{n}_most_repeated_ngram_frequency"].append(stats["most_repeated_ngram_frequency"])
 
 
 def _individual_arc_reward(result, task, reward_name):

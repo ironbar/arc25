@@ -202,6 +202,9 @@ class RewardLogger():
             if len(solved_tasks_ids) > 0:
                 metrics["solved_tasks_completion_length_mean"].append(float(np.mean([completion_lengths[i] for i in solved_tasks_ids])))
                 metrics["solved_tasks_completion_length_max"].append(float(np.max([completion_lengths[i] for i in solved_tasks_ids])))
+                metrics["is_solved_task"].append(1.0)
+            else:
+                metrics["is_solved_task"].append(0.0)
             # truncated completions metrics
             if len(truncated_completion_ids) > 0:
                 metrics["truncated_completions_reward_mean"].append(float(np.mean([rewards[i] for i in truncated_completion_ids])))

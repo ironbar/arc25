@@ -59,6 +59,7 @@ class Config:
     warmup_ratio: float = 0.1
     scale_rewards: str = 'group'
     mask_truncated_completions: bool = True
+    beta: float = 0.001 # KL penalty, by default 0.001 in unsloth
     # others
     n_jobs: int = -1
 
@@ -128,6 +129,7 @@ def main():
         mask_truncated_completions=cfg.mask_truncated_completions, #  When enabled, truncated completions are excluded from the loss calculation, preventing them from being incorrectly penalized and introducing noise during training. According to the DAPO paper, this is a good practice for training stability.
         scale_rewards=cfg.scale_rewards, # "group", 'batch', 'none', by default is 'group
         repetition_penalty=cfg.repetition_penalty,
+        beta=cfg.beta,
         # wandb
         report_to='wandb',
         run_name=os.path.basename(cfg.output_dir),

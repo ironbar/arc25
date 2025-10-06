@@ -23,6 +23,7 @@ from arc25.data_augmentation import apply_data_augmentation, get_random_data_aug
 from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 from arc25.logging import configure_logging, logging, log_execution_time
 from arc25.parallel_code_execution import CodeRunner
+from arc25.ngram import ngram_stats
 
 configure_logging()
 logger = logging.getLogger(__name__)
@@ -169,15 +170,15 @@ class RewardLogger():
         results = self.code_runner.run(
             numpy_tasks, list(range(len(completions))), completions,
             [None]*len(completions), group_results_by_task=False, disable_tqdm=True)
-        completion_lengths = [len(c) for c in completion_ids]
         rewards = [_individual_arc_reward(result, task, self.reward_name) for result, task in zip(results, tasks)]
-        self.log(rewards, completions, completion_lengths)
+        self.log(rewards, completions, completion_ids)
         return rewards
 
     def update_trainer(self, trainer):
         self.trainer = trainer
 
-    def log(self, rewards, completions, completion_lengths):
+    def log(self, rewards, completions, completion_ids):
+        completion_lengths = [len(c) for c in completion_ids]
         # on a first step log to the terminal
         logger.info(f'Mean completion length: {np.mean(completion_lengths):.2f}, Max completion length: {np.max(completion_lengths):.2f}, lengths: {completion_lengths}')
         logger.info(f'Mean reward: {np.mean(rewards):.2f}, Max reward: {np.max(rewards):.2f}, rewards: {np.array(rewards).round(2).tolist()}')

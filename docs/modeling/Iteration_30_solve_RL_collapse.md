@@ -247,3 +247,9 @@ TODO: Maybe I have to lower the learning rate
 - [ ] Are the new metrics helpful to understand the problem?
 - [ ] Maybe I have to use a longer max sequence length?
   - [ ] Analyze truncate errors
+- [ ] Actions to solve RL collapse
+  - [ ] Avoid model quantization
+  - [ ] Log ngram repetition and unique tokens
+  - [ ] Add or increase the KL penalty
+  - [ ] Lower the learning rate, and/or do gradient clipping
+  - [ ] Using the information from ngram repetition metrics, add a reward penalty to ngram repetition

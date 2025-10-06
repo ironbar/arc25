@@ -214,6 +214,7 @@ class RewardLogger():
                 metrics["truncated_completions_reward_max"].append(float(np.max([rewards[i] for i in truncated_completion_ids])))
                 # n gram metrics
                 for i in truncated_completion_ids:
+                    metrics['truncated_completions_unique_tokens_ratio'] = len(set(completions[i])) / len(completions[i]) if len(completions[i]) > 0 else 0
                     for n in [3, 4]:
                         stats = ngram_stats(completion_ids[i], n)
                         metrics[f"truncated_completions_ngram_{n}_unique_ngram_ratio"].append(stats["unique_ngram_ratio"])
@@ -225,6 +226,7 @@ class RewardLogger():
                 metrics["non_truncated_completions_reward_max"].append(float(np.max([rewards[i] for i in non_truncated_completion_ids])))
                 # n gram metrics
                 for i in non_truncated_completion_ids:
+                    metrics['non_truncated_completions_unique_tokens_ratio'] = len(set(completions[i])) / len(completions[i]) if len(completions[i]) > 0 else 0
                     for n in [3, 4]:
                         stats = ngram_stats(completion_ids[i], n)
                         metrics[f"non_truncated_completions_ngram_{n}_unique_ngram_ratio"].append(stats["unique_ngram_ratio"])

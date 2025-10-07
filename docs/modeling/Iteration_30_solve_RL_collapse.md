@@ -317,7 +317,7 @@ TODO: Maybe I have to lower the learning rate
   - [ ] Analyze truncate errors
 - [ ] Actions to solve RL collapse
   - [x] Log ngram repetition and unique tokens
-  - [ ] Avoid model quantization
+  - [ ] Avoid model quantization. Not sure if will solve the problem but it's training way faster, more than x2.
   - [ ] Add or increase the KL penalty
   - [ ] Lower the learning rate, and/or do gradient clipping
   - [ ] `frequency_penalty` can be a better option than `repetition_penalty`, `generation_kwargs=dict(frequency_penalty=1.1)`

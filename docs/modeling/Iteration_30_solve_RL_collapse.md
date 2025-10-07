@@ -233,6 +233,74 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
 # 241166.
+
+export BETA=0.004
+export REPETITION_PENALTY=1.02
+export FOLDER=2025-10-05-rl-study-collapse
+export LEARNING_RATE=2e-6
+export NUM_GENERATIONS=16
+export ACUM_STEPS=2
+export N_CPUS=20
+export LORA_R=32
+export EPOCHS=100
+export REWARD_NAME=arc-v2-no-pixel-score
+export EXPERIMENT_NAME=${REWARD_NAME}_lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_repetition-penalty-${REPETITION_PENALTY}_masked-truncate_unquantized_beta${BETA}
+condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--beta ${BETA} \
+--no-load-in-4bit \
+--reward-name ${REWARD_NAME} \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+# 241399.0
+
+export BETA=0.01
+export REPETITION_PENALTY=1.02
+export FOLDER=2025-10-05-rl-study-collapse
+export LEARNING_RATE=2e-6
+export NUM_GENERATIONS=16
+export ACUM_STEPS=2
+export N_CPUS=20
+export LORA_R=32
+export EPOCHS=100
+export REWARD_NAME=arc-v2-no-pixel-score
+export EXPERIMENT_NAME=${REWARD_NAME}_lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_repetition-penalty-${REPETITION_PENALTY}_masked-truncate_unquantized_beta${BETA}
+condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--beta ${BETA} \
+--no-load-in-4bit \
+--reward-name ${REWARD_NAME} \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+# 241400.0
 ```
 
 ### How to log more metrics about the rewards
@@ -322,3 +390,4 @@ TODO: Maybe I have to lower the learning rate
   - [ ] Lower the learning rate, and/or do gradient clipping
   - [ ] `frequency_penalty` can be a better option than `repetition_penalty`, `generation_kwargs=dict(frequency_penalty=1.1)`
   - [ ] Using the information from ngram repetition metrics, add a reward penalty to ngram repetition. (VLLM does not have a ngram-repetion-penalty)
+- [ ] Is it enough with rank=1 for RL? https://thinkingmachines.ai/blog/lora/

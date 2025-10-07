@@ -357,13 +357,35 @@ However simplifying the reward did not solve the problem. The metrics show the s
 
 ![alt text](res/1759507730951_image.png)
 
+#### Repetition penalty and unmasked truncated completions
+
 I have tried different configurations of repetition penalty and unmasking the truncated completions to see if I could continue a training without collapsing without much success. Sometimes I could prevent collapse but
 at the cost of not improving the reward.
 
 ![alt text](res/1759508063549_image.png)
 
-TODO: Maybe I have to train from zero
-TODO: Maybe I have to lower the learning rate
+Training from zero with repetition penalty or unmasked truncated completions did not avoid the problem:
+
+![alt text](res/1759839762428_image.png)
+
+#### Simplify the reward
+
+![alt text](res/1759839947031_image.png)
+
+Simplifying the reward did not solve the problem, we see the same behaviour with the two reward implementations.
+
+#### Use unquantized model
+
+![alt text](res/1759840012962_image.png)
+
+Using unquantized model does not solve the problem, but training is much faster, twice as fast.
+
+#### Increase the KL penalty (beta)
+
+The model does not have that behaviour of repeating ngrams at the start of the training. Maybe increasing
+the KL penalty can avoid that behaviour to arise.
+
+TODO:
 
 ## Conclusion
 
@@ -385,7 +407,7 @@ TODO: Maybe I have to lower the learning rate
   - [ ] Analyze truncate errors
 - [ ] Actions to solve RL collapse
   - [x] Log ngram repetition and unique tokens
-  - [ ] Avoid model quantization. Not sure if will solve the problem but it's training way faster, more than x2.
+  - [x] Avoid model quantization. Not sure if will solve the problem but it's training way faster, more than x2.
   - [ ] Add or increase the KL penalty
   - [ ] Lower the learning rate, and/or do gradient clipping
   - [ ] `frequency_penalty` can be a better option than `repetition_penalty`, `generation_kwargs=dict(frequency_penalty=1.1)`

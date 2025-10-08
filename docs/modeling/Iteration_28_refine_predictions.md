@@ -65,5 +65,6 @@ that does not use prediction refinement.
 ## TODO
 
 - [x] How much memory is needed to do refinement? Estimate the number of necessary tokens and try with VLLM
-- [ ] Collect predictions from previous experiments
+- [x] ~Collect predictions from previous experiments~ I have found that I wasn't saving all the required information.
+- [ ] Modify search and learn to save the required information
 - [ ] Create a notebook to see experiment with solution refinement

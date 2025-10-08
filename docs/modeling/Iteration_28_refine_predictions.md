@@ -43,6 +43,10 @@ considering that we allow to predict 1000 tokens.
 
 ### How much VRAM is needed for 14500 sequence length?
 
+When using unsloth I need 0.75 of the 3090 VRAM to be able to make those predictions, with VLLM is enough with 0.5.
+
+If I don't quantize the model to 4-bit then I need at least 0.8 memory with VLLM.
+
 ## Results
 
 ## Conclusion

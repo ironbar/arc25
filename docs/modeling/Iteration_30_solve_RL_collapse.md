@@ -374,6 +374,9 @@ Training from zero with repetition penalty or unmasked truncated completions did
 
 Simplifying the reward did not solve the problem, we see the same behaviour with the two reward implementations.
 
+However after analyzing the truncated prompts I don't see repetitions of the same ngrams, I see giberish. It seems that
+the model is making a prediction, fails on some token and then derails and forgets what its doing.
+
 #### Use unquantized model
 
 ![alt text](res/1759840012962_image.png)

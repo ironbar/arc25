@@ -47,6 +47,15 @@ When using unsloth I need 0.75 of the 3090 VRAM to be able to make those predict
 
 If I don't quantize the model to 4-bit then I need at least 0.8 memory with VLLM.
 
+### Experiment design
+
+The easiest experiment is to create a notebook where I just do solution refinement. This implies I already need
+to have the solutions generated and saved to disk. Probably the easiest way is to reuse predictions
+from search and learn experiments.
+
+I could select n random unsolved predictions for each task, and compare the accuracy against the baseline
+that does not use prediction refinement.
+
 ## Results
 
 ## Conclusion
@@ -55,5 +64,6 @@ If I don't quantize the model to 4-bit then I need at least 0.8 memory with VLLM
 
 ## TODO
 
-- [ ] How much memory is needed to do refinement? Estimate the number of necessary tokens and try with VLLM
+- [x] How much memory is needed to do refinement? Estimate the number of necessary tokens and try with VLLM
+- [ ] Collect predictions from previous experiments
 - [ ] Create a notebook to see experiment with solution refinement

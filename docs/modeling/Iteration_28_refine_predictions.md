@@ -56,6 +56,14 @@ from search and learn experiments.
 I could select n random unsolved predictions for each task, and compare the accuracy against the baseline
 that does not use prediction refinement.
 
+### Generate predictions to refine
+
+```bash
+export N_PREDICTIONS=8; python scripts/search_and_learn_with_unsloth.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-08-generate-predictions-to-refine/${N_PREDICTIONS}i \
+--initial-predictions ${N_PREDICTIONS}
+```
+
 ## Results
 
 ## Conclusion

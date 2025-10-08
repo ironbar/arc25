@@ -417,7 +417,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 --gpu_memory_utilization 0.5 \
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}_${GROUP_SIZE}-group-size" -append request_gpus=1 -append request_cpus=6 -append request_memory=32G --append 'requirements = (TARGET.Machine == "calculon19.das-nano.com")'
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}_${GROUP_SIZE}-group-size" -append request_gpus=1 -append request_cpus=6 -append request_memory=48G --append 'requirements = (TARGET.Machine == "calculon19.das-nano.com")'
 238003.-238007.
 
 export FOLDER=2025-09-28-search-and-learn
@@ -435,7 +435,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 --gpu_memory_utilization 0.5 \
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}_${GROUP_SIZE}-group-size" -append request_gpus=1 -append request_cpus=6 -append request_memory=32G --append 'requirements = (TARGET.Machine == "calculon19.das-nano.com")'
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}_${GROUP_SIZE}-group-size" -append request_gpus=1 -append request_cpus=6 -append request_memory=48G --append 'requirements = (TARGET.Machine == "calculon19.das-nano.com")'
 238008.-238011.
 
 export FOLDER=2025-09-28-search-and-learn
@@ -453,7 +453,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_
 --gpu_memory_utilization 0.5 \
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
---output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}_${GROUP_SIZE}-group-size" -append request_gpus=1 -append request_cpus=6 -append request_memory=32G --append 'requirements = (TARGET.Machine == "calculon19.das-nano.com")'
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}_${GROUP_SIZE}-group-size" -append request_gpus=1 -append request_cpus=6 -append request_memory=48G --append 'requirements = (TARGET.Machine == "calculon19.das-nano.com")'
 ```
 
 ## Results

@@ -409,7 +409,7 @@ TODO:
   - [x] Log ngram repetition and unique tokens
   - [x] Avoid model quantization. Not sure if will solve the problem but it's training way faster, more than x2.
   - [ ] Add or increase the KL penalty
-  - [ ] Lower the learning rate, and/or do gradient clipping
+  - [ ] Lower the learning rate, and/or do gradient clipping. . I'm already doing `max_grad_norm=0.1,`.
   - [ ] `frequency_penalty` can be a better option than `repetition_penalty`, `generation_kwargs=dict(frequency_penalty=1.1)`
   - [ ] Using the information from ngram repetition metrics, add a reward penalty to ngram repetition. (VLLM does not have a ngram-repetion-penalty)
 - [ ] Is it enough with rank=1 for RL? https://thinkingmachines.ai/blog/lora/

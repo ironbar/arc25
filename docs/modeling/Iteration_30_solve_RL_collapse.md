@@ -388,7 +388,20 @@ Using unquantized model does not solve the problem, but training is much faster,
 The model does not have that behaviour of repeating ngrams at the start of the training. Maybe increasing
 the KL penalty can avoid that behaviour to arise.
 
+The experiments show a clear effect on the KL training metrics. If we increase the penalty the KL value
+is lower.
+
 TODO:
+
+Also it seems to delay the occurence of truncated completions.
+
+### Do we need a longer max_completion_length than 1024
+
+![alt text](res/1759897605258_image.png)
+
+The average max solving length is around 400 tokens, but we can see a small fraction of the tasks requiring
+close to 1024 tokens. This implies that we could get a small benefit from increasing the max_completion_length, 
+but the current value is a good choice.
 
 ## Conclusion
 
@@ -405,9 +418,9 @@ TODO:
   - [x] Try training without pixel score reward
 - [x] Analyze logs of failed training, and document experiments training from zero
 - [x] Is the new reward helpful?
-- [ ] Are the new metrics helpful to understand the problem?
-- [ ] Maybe I have to use a longer max sequence length?
-  - [ ] Analyze truncate errors
+- [x] Are the new metrics helpful to understand the problem? Yes
+- [x] Maybe I have to use a longer max sequence length?
+  - [x] Analyze truncate errors
 - [ ] Actions to solve RL collapse
   - [x] Log ngram repetition and unique tokens
   - [x] Avoid model quantization. Not sure if will solve the problem but it's training way faster, more than x2.

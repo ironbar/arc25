@@ -80,7 +80,7 @@ def _run_one(text_prediction, task, task_id, data_augmentation_params,
                       input_grids=input_grids, text_prediction=text_prediction,
                       fingerprint=fingerprint(original_output_grids),
                       test_output_grids=original_output_grids[-len(task['test']):],
-                      task_id=task_id)
+                      task_id=task_id, data_augmentation_params=data_augmentation_params)
         result.update(get_metrics(task, original_output_grids))
         return result
     except BaseException as e:

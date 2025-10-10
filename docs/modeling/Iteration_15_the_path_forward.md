@@ -53,7 +53,7 @@ improvement was measured when using this technique.
 
 ### Alternating cycles
 
-One possible implementation would alternate between search and learning phases in a cycling fashion. For example the search phase could involve sampling 32 new function,
+One possible implementation would alternate between search and learning phases in a cycling fashion. For example the search phase could involve sampling 32 new functions,
 then switch to training on those new 32 tasks.
 
 ## Other details

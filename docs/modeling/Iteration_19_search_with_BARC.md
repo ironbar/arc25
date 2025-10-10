@@ -86,7 +86,7 @@ or other tricks on the following iterations, I should be doing 8 or 16 predictio
 ## Conclusion
 
 We have validated that the BARC induction model has the ability to solve ARC tasks using code. This is a good
-baseline to compare against methods that combine search and test-time trainingºº    .
+baseline to compare against methods that combine search and test-time training.
 
 ## Next steps
 

@@ -622,14 +622,12 @@ This happens because inference is efficient when we do a a big number of predict
 
 I will deal with it on a future iteration.
 
-
 ## Conclusion
 
 I have made a first implementation of search and learn, it is not very efficient but I have been able to verify that for a fixed prediction budget of 512 predictions, the method is able to improve 5% the pass@n rate over the baseline of 23.3% on the ARC-AGI-1 evaluation dataset.
 
 It is not a huge improvement, but hopefully is a good start point that I could improve on future
 iterations with a more efficient implementation.
-
 
 ## Next steps
 

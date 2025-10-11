@@ -66,6 +66,11 @@ export N_PREDICTIONS=8; python scripts/search_and_learn_with_unsloth.py \
 
 ## Results
 
+| initial predictions | refinement predictions | valid code | valid outputs | unique outputs | train_pixel_score | train_correct_grids | train_pass_rate | train_is_correct | test_pixel_score | test_correct_grids | test_pass_rate | test_is_correct | is_correct |
+|---------------------|------------------------|------------|---------------|----------------|-------------------|---------------------|-----------------|------------------|------------------|--------------------|----------------|-----------------|------------|
+| 128                 | 0                      | **99.9%**  | 71.7%         | **49.8%**      | 42.1%             | **2.4%**            | **1.6%**        | 16.3%            | 40.9%            | **2.0%**           | **2.0%**       | **23.0%**       | **16.3%**  |
+| 64                  | 64                     | 99.7%      | **74.0%**     | 43.7%          | **45.8%**         | 2.1%                | 1.1%            | **16.5%**        | **44.4%**        | 1.7%               | 1.6%           | 21.5%           | 16.0%      |
+
 ## Conclusion
 
 ## Next steps

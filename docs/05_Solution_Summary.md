@@ -44,3 +44,20 @@ work during the ARC25 challenge has gone in that direction.
    of creating a big number of diverse training tasks so the model could learn to use the primitive
    functions effectively. Our current deep learning methods need a lot of data, and data needs to be
    very diverse. My training tasks were very few and not very diverse.
+4. Then I tried to use public models, and let them use the DSL by describing it on the prompt. But it did not work well, the models were not able to explore the space effectively, there were a lot of repeated solutions.
+5. Thus I decided to switch and use the BARC induction model. That model had been trained with a
+   lot of ARC tasks and was able to use a DSL. Maybe the DSL was not complete or maybe the model
+   was not strong enough, but I believed I could probe or discard my ideas with it. On a first
+   step I validated that the model could produce reasonable good results with a reasonable number of
+   predictions (<= 512), because in the BARC paper I believe they use 20k predictions.
+6. Validated that using search and learn the BARC induction model improves its accuracy from 22% to 27%.
+   The improvement is not dramatic but it solves tasks that won't be solvable using simple predictions.
+7. Start working with RL to try to improve the solve rate of the model, that way I won't be needing
+   too many predictions to solve each task. I have some early results that show it's a good direction,
+   but trainings collapse.
+
+Now I'm trying to:
+
+- Solve RL training collapse so I can train for longer
+- Try to make the search and learn script more hardware efficient
+- Check if solution refinement is possible with the BARC model

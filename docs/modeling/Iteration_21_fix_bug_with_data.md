@@ -21,8 +21,6 @@ I have discovered that I wasn't using the test samples when evaluating the BARC 
 
 I already know that data augmentation is helpful, so I will be using it by default on this iteration.
 
-## Development
-
 ## Results
 
 ### Accuracy on the different datasets

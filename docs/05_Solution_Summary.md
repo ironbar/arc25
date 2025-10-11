@@ -55,9 +55,10 @@ work during the ARC25 challenge has gone in that direction.
 7. Start working with RL to try to improve the solve rate of the model, that way I won't be needing
    too many predictions to solve each task. I have some early results that show it's a good direction,
    but trainings collapse.
+8. Experimented with prediction refinement, but BARC model does not seem to have that capability
+   that allows techniques like AlphaEvolve with frontier models.
 
 Now I'm trying to:
 
 - Solve RL training collapse so I can train for longer
 - Try to make the search and learn script more hardware efficient
-- Check if solution refinement is possible with the BARC model

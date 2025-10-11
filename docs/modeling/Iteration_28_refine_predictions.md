@@ -81,6 +81,11 @@ same number of tasks: 16%.
 
 I have tried to refine predictions with the BARC induction model but results did not improve over just making independent predictions.
 
+| experiment               | pass@128  |
+|--------------------------|-----------|
+| baseline (no refinement) | **16.3%** |
+| refine predictions       | 16.0%     |
+
 Frontier models benefit from refining its predictions, but this 8B model does not. The model was finetuned just to make predictions, not to refine them. Very likely that ability could be developed
 with reinforcement learning.
 

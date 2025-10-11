@@ -29,6 +29,10 @@ harder problems (like solving ARC) this cycle can take many years.
 I believe that a system that will solve ARC will very likely combine search and learn as well. All my
 work during the ARC25 challenge has gone in that direction.
 
+TODO: why code is better than transduction and natural language
+TODO: hindsight relabelling, diagram, intuition of why it works, use all the information from the search
+TODO: ARC as a game, played with code, RL is the framework
+
 ## Brief story of my work for ARC25
 
 1. Baseline with test-time training. Since o3 was solving less than 5% of the test tasks,

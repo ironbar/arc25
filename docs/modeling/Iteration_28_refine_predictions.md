@@ -71,13 +71,26 @@ export N_PREDICTIONS=8; python scripts/search_and_learn_with_unsloth.py \
 | 128                 | 0                      | **99.9%**  | 71.7%         | **49.8%**      | 42.1%             | **2.4%**            | **1.6%**        | 16.3%            | 40.9%            | **2.0%**           | **2.0%**       | **23.0%**       | **16.3%**  |
 | 64                  | 64                     | 99.7%      | **74.0%**     | 43.7%          | **45.8%**         | 2.1%                | 1.1%            | **16.5%**        | **44.4%**        | 1.7%               | 1.6%           | 21.5%           | 16.0%      |
 
+The baseline makes 128 predictions per task, and the contender does 64 initial predictions, selects
+the most promising ones (that didn't solve the train set) and refines them.
+
+The table shows that there is no clear difference between the approaches. Both solve almost the
+same number of tasks: 16%.
+
 ## Conclusion
 
+I have tried to refine predictions with the BARC induction model but results did not improve over just making independent predictions.
+
+Frontier models benefit from refining its predictions, but this 8B model does not. The model was finetuned just to make predictions, not to refine them. Very likely that ability could be developed
+with reinforcement learning.
+
 ## Next steps
+
+Focus on RL and search and learn. No more time for refinement.
 
 ## TODO
 
 - [x] How much memory is needed to do refinement? Estimate the number of necessary tokens and try with VLLM
 - [x] ~Collect predictions from previous experiments~ I have found that I wasn't saving all the required information.
-- [ ] Modify search and learn to save the required information
-- [ ] Create a notebook to see experiment with solution refinement
+- [x] Modify search and learn to save the required information
+- [x] Create a notebook to see experiment with solution refinement

@@ -72,6 +72,20 @@ short and elegant. Thus I don't see the limitations of using python.
 
 Finally the python interpreter always works and in contrast all models are fallible.
 
+### Transduction
+
+Transduction relies on the model to generate a good representation of the ARC tasks. At test time
+the model can use in context learning or test-time training to adapt to new tasks.
+
+Test-time training is crucial for transduction approaches. My solution improved from 11% to 33% just
+by doing test-time training.
+
+How could this approach be improved:
+
+- Pre-train on more data
+- Use an architecture with better inductive priors, that will better represent the programs.
+- Improvements in the test-time training setup
+
 ## Results
 
 ## Conclusion

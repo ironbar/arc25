@@ -16,7 +16,7 @@ I'm going to recap all the learnings from the previous [ARC24 challenge](https:/
 
 ![o3 performance](res/2025-03-18-13-59-03.png)
 
-Details are not public, but it is very likely that `o3` is trained just with reinforcement learning like `r1`. When [o1 was announced](https://openai.com/index/learning-to-reason-with-llms/) they said:
+Details are not public, but it is very likely that `o3` is trained just with reinforcement learning like DeepSeek's `r1`. When [o1 was announced](https://openai.com/index/learning-to-reason-with-llms/) they said:
 
 > Our large-scale reinforcement learning algorithm teaches the model how to think productively using its chain of thought in a highly data-efficient training process.
 
@@ -36,7 +36,7 @@ use upscaling as data augmentation so the model learns to work with bigger image
 
 ![other reasoning model results](res/2025-03-18-14-48-47.png)
 
-Other reasoning models such as `r1` and Sonnet 3.7 but none of them achieve as high results as OpenAI's model. That does not happen in other fields such as mathematics, so probably OpenAI is using some 2d data for its RL training.
+There are other reasoning models such as `r1` and Sonnet 3.7 but none of them achieve as high results as OpenAI's model. That does not happen in other fields such as mathematics, so probably OpenAI is using some 2d data for its RL training.
 
 Interestingly in the [results](https://arcprize.org/blog/r1-zero-r1-results-analysis) we can see that `r1` uses 6-11k tokens to solve each task. That is between 5 and 10 times less than `o3`.
 

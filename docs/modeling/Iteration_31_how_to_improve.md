@@ -26,6 +26,36 @@ We need to think outside the box to be able to make a dramatic improvement.
 
 ## Development
 
+### How humans solve abstraction and reasoning (ARC) tasks?
+
+Humans have the core knowledge priors, so when we look at the pixels of an ARC grid we create an
+abstract representation of the image. We can describe the grid with natural language, we can understand
+what the input grids have in common, what the outputs have in common...
+In summary, **abstraction** allows us to see not just a collection of pixels, but to build high level
+abstractions that represent the images and allow to compare them and see what the differences are and
+what do they have in common. 
+
+Those abstractions help to reduce the search space when we try to solve a task. We describe the tasks
+using natural language, describing the transformation between the inputs and the outputs. When we **reason**
+we draw some hypothesis of what the task is about. Then we can use our internal world model to transform
+the grids using the hypothesis and verify if the outputs are correct.
+On every failed attempt we learn more about the task. In fact an intelligent person should make the attempts
+that will maximize its learning. That eventually leads to find the right solution.
+
+Observe, hypothesize, test, learn, repeat. Solving ARC requires to use the scientific method.
+
+### How my current system compares against a human?
+
+I'm pretty sure my model does not have abstractions as powerful and general as humans. One way to enhance
+the representations of the model would be teh omni-arc approach from last year ARC24 challenge.
+
+Humans have **memory**. Memory allows to explore the search space without repeating previous errors.
+My system does many predictions independently, and this produces repeated predictions.
+
+Humans have the ability to correct/refine an incorrect solution. However the BARC induction model
+that I'm currently using does not have this ability.
+
+
 ## Results
 
 ## Conclusion

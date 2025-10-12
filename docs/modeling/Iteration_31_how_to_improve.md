@@ -44,6 +44,8 @@ that will maximize its learning. That eventually leads to find the right solutio
 
 Observe, hypothesize, test, learn, repeat. Solving ARC requires to use the scientific method.
 
+![](../res/how-humans-solve-arc.png)
+
 ### How my current system compares against a human?
 
 I'm pretty sure my model does not have abstractions as powerful and general as humans. One way to enhance
@@ -55,6 +57,20 @@ My system does many predictions independently, and this produces repeated predic
 Humans have the ability to correct/refine an incorrect solution. However the BARC induction model
 that I'm currently using does not have this ability.
 
+![](../res/how-ai-might-solve-arc.png)
+
+### Python code and the python interpreter
+
+I still believe the easiest way to solve ARC is to use python code and the python interpreter.
+
+It is true that frontier models rely on natural language to describe the tasks and use their own
+capabilities as a world model.
+
+But for any task that can be described with natural language there should also be a python program
+that implements the task. And I would argue that with the right DSL the python program should be
+short and elegant. Thus I don't see the limitations of using python.
+
+Finally the python interpreter always works and in contrast all models are fallible.
 
 ## Results
 

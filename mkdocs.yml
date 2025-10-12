@@ -37,6 +37,8 @@ plugins:
     - awesome-pages
     - git-revision-date
 
+copyright: '2025. Guillermo Barbadillo'
+
 extra:
   generator: false
   social:

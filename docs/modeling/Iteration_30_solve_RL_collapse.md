@@ -438,6 +438,77 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
 # 242985.0
+
+
+## Reduce LoRA
+export BETA=0.01
+export REPETITION_PENALTY=1.02
+export FOLDER=2025-10-05-rl-study-collapse
+export LEARNING_RATE=2e-6
+export NUM_GENERATIONS=16
+export ACUM_STEPS=2
+export N_CPUS=20
+export LORA_R=8
+export EPOCHS=100
+export REWARD_NAME=arc-v2-no-pixel-score
+export EXPERIMENT_NAME=${REWARD_NAME}_lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_repetition-penalty-${REPETITION_PENALTY}_masked-truncate_unquantized_beta${BETA}
+condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--beta ${BETA} \
+--no-load-in-4bit \
+--reward-name ${REWARD_NAME} \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+# 243382.0
+
+export BETA=0.01
+export REPETITION_PENALTY=1.02
+export FOLDER=2025-10-05-rl-study-collapse
+export LEARNING_RATE=2e-6
+export NUM_GENERATIONS=16
+export ACUM_STEPS=2
+export N_CPUS=20
+export LORA_R=1
+export EPOCHS=100
+export REWARD_NAME=arc-v2-no-pixel-score
+export EXPERIMENT_NAME=${REWARD_NAME}_lr${LEARNING_RATE}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_${LORA_R}lora_repetition-penalty-${REPETITION_PENALTY}_masked-truncate_unquantized_beta${BETA}
+condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py \
+--beta ${BETA} \
+--no-load-in-4bit \
+--reward-name ${REWARD_NAME} \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_training_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+# 243383.0
+
 ```
 
 ### How to log more metrics about the rewards
@@ -525,12 +596,12 @@ Using unquantized model does not solve the problem, but training is much faster,
 The model does not have that behaviour of repeating ngrams at the start of the training. Maybe increasing
 the KL penalty can avoid that behaviour to arise.
 
-The experiments show a clear effect on the KL training metrics. If we increase the penalty the KL value
+![alt text](res/1760242122087_image.png)
+
+- The experiments show a clear effect on the KL training metrics. If we increase the penalty the KL value
 is lower.
-
-TODO:
-
-Also it seems to delay the occurence of truncated completions.
+- Also it seems to delay the occurence of truncated completions. However they eventually start happening.
+- The relation with reward is unclear.
 
 ### Do we need a longer max_completion_length than 1024
 
@@ -539,6 +610,10 @@ Also it seems to delay the occurence of truncated completions.
 The average max solving length is around 400 tokens, but we can see a small fraction of the tasks requiring
 close to 1024 tokens. This implies that we could get a small benefit from increasing the max_completion_length, 
 but the current value is a good choice.
+
+### Lowering the LoRA rank
+
+This [article](https://thinkingmachines.ai/blog/lora/) by thinkingmachines says that for RL LoRA rank 1 is enough.
 
 ## Conclusion
 
@@ -561,7 +636,7 @@ but the current value is a good choice.
 - [ ] Actions to solve RL collapse
   - [x] Log ngram repetition and unique tokens
   - [x] Avoid model quantization. Not sure if will solve the problem but it's training way faster, more than x2.
-  - [ ] Add or increase the KL penalty
+  - [x] Add or increase the KL penalty
   - [ ] Lower the learning rate, and/or do gradient clipping. . I'm already doing `max_grad_norm=0.1,`.
   - [ ] `frequency_penalty` can be a better option than `repetition_penalty`, `generation_kwargs=dict(frequency_penalty=1.1)`
   - [ ] Using the information from ngram repetition metrics, add a reward penalty to ngram repetition. (VLLM does not have a ngram-repetion-penalty)

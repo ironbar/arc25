@@ -86,6 +86,13 @@ How could this approach be improved:
 - Use an architecture with better inductive priors, that will better represent the programs.
 - Improvements in the test-time training setup
 
+Transduction can solve ARC, but I don't believe is the easiest way to do it. To be able to work
+the model has to learn an internal representation almost equivalent to a python program. I believe
+that transduction is more difficult than generating python code.
+
+The biggest advantage of transduction is that it can use gradient descent at test-time to adapt to
+the new tasks. In the other hand we don't have yet a similar adaptation mechanism when using induction.
+
 ## Results
 
 ## Conclusion

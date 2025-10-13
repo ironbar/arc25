@@ -15,28 +15,28 @@ def plot_grids_with_shape(grids, suptitle=None, facecolor='white'):
     plt.show()
 
 
-def plot_task(task):
+def plot_task(task, n_rows=2):
     if isinstance(task, dict):
         samples = task['train'] + task['test']
         for plot_idx, sample in enumerate(samples):
-            plt.subplot(2, len(samples), plot_idx + 1)
+            plt.subplot(n_rows, len(samples), plot_idx + 1)
             plot_grid(sample['input'])
             if plot_idx < len(task['train']):
                 plt.xlabel(f'Train {plot_idx}')
             else:
                 plt.xlabel(f'Test {plot_idx - len(task["train"])}')
             if 'output' in sample:
-                plt.subplot(2, len(samples), plot_idx + 1 + len(samples))
+                plt.subplot(n_rows, len(samples), plot_idx + 1 + len(samples))
                 plot_grid(sample['output'])
             plt.tight_layout()
     elif isinstance(task, tuple):
         plt.figure(facecolor='white')
         for plot_idx, grid in enumerate(task.inputs):
-            plt.subplot(2, len(task.inputs), plot_idx + 1)
+            plt.subplot(n_rows, len(task.inputs), plot_idx + 1)
             plot_grid(grid)
             plt.title(f'{len(grid)}x{len(grid[0])}')
         for plot_idx, grid in enumerate(task.outputs):
-            plt.subplot(2, len(task.inputs), plot_idx + 1 + len(task.inputs))
+            plt.subplot(n_rows, len(task.inputs), plot_idx + 1 + len(task.inputs))
             plot_grid(grid)
             plt.title(f'{len(grid)}x{len(grid[0])}')
         plt.tight_layout()

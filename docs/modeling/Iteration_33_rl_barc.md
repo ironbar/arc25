@@ -23,8 +23,19 @@ get stronger models and solve the training collapse problem.
 
 ## Development
 
-The Heavy version of the [dataset](https://huggingface.co/datasets/barc0/200k_HEAVY_gpt4o-description-gpt4omini-code_generated_problems) 
+The Heavy version of the [dataset](https://huggingface.co/datasets/barc0/200k_HEAVY_gpt4o-description-gpt4omini-code_generated_problems)
 is the most interesting one because it uses more seed functions and uses the stronger gpt4 model for description generation.
+
+### Verify that I can train locally
+
+```bash
+python scripts/rl_code_finetuning.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/200k_HEAVY_gpt4o-description-gpt4omini-code_generated_problems/dataset_100k.json.gz \
+--epochs 1 \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-14-debug-BARC/debug
+```
+
+Works perfectly.
 
 ## Results
 

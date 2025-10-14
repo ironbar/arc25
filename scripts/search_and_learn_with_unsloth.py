@@ -87,7 +87,7 @@ def main():
     t0 = time.time()
     logger.info(f'Running search and learn with config: {cfg}')
 
-    dataset = load_arc_dataset_with_solutions(cfg.dataset_path)
+    dataset = load_arc_dataset_with_solutions(cfg.dataset_path, verify_outputs=False)
     task_ids = list(dataset.keys())
     logger.info(f"Loaded {len(dataset)} tasks from {cfg.dataset_path}")
 

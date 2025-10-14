@@ -1,4 +1,4 @@
-# Iteration 2x. Using RL to improve BARC induction model
+# Iteration 24. Using RL to improve BARC induction model
 
 _11-09-2025_
 

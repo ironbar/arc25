@@ -31,7 +31,10 @@ I have analyzed a random subset of 128 predictions, 16% of the evaluation ARC-AG
 
 The plot shows that model has a good intuition of ARC tasks. Only 20% are complete misunderstood.
 
-But at the same time only 16% of the tasks are solved when doing 128 predictions per task.
+But at the same time only 16% of the tasks are solved when doing 128 predictions per task. With 20k
+predictions the solve rate is 38% according to the paper. But making so many predictions does
+not have sense and it is not efficient. Making a few independent attempt makes sense to have diversity
+in the predictions, but not in the order of hundreds or thousands.
 
 ## Conclusion
 

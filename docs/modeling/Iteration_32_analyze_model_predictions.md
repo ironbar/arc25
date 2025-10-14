@@ -25,6 +25,14 @@ Using predictions from previous experiments, I need to create a notebook to sele
 
 ## Results
 
+I have analyzed a random subset of 128 predictions, 16% of the evaluation ARC-AGI-1 tasks were solved.
+
+![alt text](res/1760443849455_image.png)
+
+The plot shows that model has a good intuition of ARC tasks. Only 20% are complete misunderstood.
+
+But at the same time only 16% of the tasks are solved when doing 128 predictions per task.
+
 ## Conclusion
 
 ## Next steps

@@ -58,6 +58,7 @@ def get_least_used_gpu_index():
 
 
 def load_json(filepath):
+    logger.info(f'Loading JSON file: {filepath}')
     if filepath.endswith('.gz'):
         with gzip.open(filepath, 'rt', encoding='utf-8') as f:
             data = json.load(f)
@@ -80,18 +81,20 @@ def write_json(data, filepath):
         raise ValueError(f'Unsupported file extension: {filepath}')
 
 
-def load_arc_dataset_with_solutions(filepath, convert_to_numpy=True):
+def load_arc_dataset_with_solutions(filepath, convert_to_numpy=True, verify_outputs=True):
     dataset = load_json(filepath)
     solutions_filepath = filepath.replace('challenges.json', 'solutions.json')
-    assert solutions_filepath != filepath
-    if os.path.exists(solutions_filepath):
+    if solutions_filepath == filepath:
+        logger.warning(f'Solutions file does not exist.')
+    elif os.path.exists(solutions_filepath):
         solutions = load_json(solutions_filepath)
         for sample_id, task in dataset.items():
             for idx, sample in enumerate(task['test']):
                 sample['output'] = solutions[sample_id][idx]
-        _verify_that_all_dataset_samples_have_output(dataset)
     else:
         logger.warning(f'Solutions file not found: {solutions_filepath}, loading dataset without solutions')
+    if verify_outputs:
+        _verify_that_all_dataset_samples_have_output(dataset)
     if convert_to_numpy:
         for task_id, task in dataset.items():
             dataset[task_id] = convert_task_to_numpy(task)

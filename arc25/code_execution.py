@@ -10,12 +10,6 @@ from types import ModuleType
 from contextlib import redirect_stdout, redirect_stderr
 import io
 
-try:
-    import resource
-    HAS_RESOURCE = True
-except ImportError:
-    HAS_RESOURCE = False
-
 logger = logging.getLogger(__name__)
 
 
@@ -137,21 +131,19 @@ def _is_valid_output(output):
 
 
 def safe_code_execution(code: str, inputs: List[np.ndarray], func_name: str = 'task',
-                        timeout_duration: int = 1, execution_method='exec', dsl: Optional[ModuleType] = None,
-                        max_memory_mb: int = 2048):
+                        timeout_duration: int = 1, execution_method='exec', dsl: Optional[ModuleType] = None):
     if execution_method == 'exec':
-        return _safe_code_execution_exec(code, inputs, func_name, timeout_duration, dsl, max_memory_mb)
+        return _safe_code_execution_exec(code, inputs, func_name, timeout_duration, dsl)
     elif execution_method == 'subprocess':
-        return _safe_code_execution_subprocess(code, inputs, func_name, timeout_duration, dsl, max_memory_mb)
+        return _safe_code_execution_subprocess(code, inputs, func_name, timeout_duration, dsl)
     else:
         raise ValueError(f"Unknown execution method: {execution_method}")
 
 
 def _safe_code_execution_exec(code: str, inputs: List[np.ndarray], func_name: str = 'task',
-                        timeout_duration: int = 1, dsl: Optional[ModuleType] = None, max_memory_mb: int = 2048):
+                        timeout_duration: int = 1, dsl: Optional[ModuleType] = None):
     check_code_is_safe(code)
     check_code_is_deterministic(code)
-    _set_memory_limit(max_memory_mb)
     _set_timeout_alarm(timeout_duration)
     namespace={'__builtins__': __builtins__, 'input_grids': inputs}
     if dsl is not None: namespace['dsl'] = dsl
@@ -181,20 +173,6 @@ def _disable_timeout_alarm():
     signal.alarm(0)
 
 
-def _set_memory_limit(max_memory_mb: int):
-    """Set memory limit for the current process (Linux/Unix only)."""
-    if not HAS_RESOURCE:
-        logger.warning("resource module not available, cannot set memory limit")
-        return
-    
-    try:
-        max_memory_bytes = max_memory_mb * 1024 * 1024
-        # RLIMIT_AS limits the total address space (virtual memory)
-        resource.setrlimit(resource.RLIMIT_AS, (max_memory_bytes, max_memory_bytes))
-    except Exception as e:
-        logger.warning(f"Failed to set memory limit: {e}")
-
-
 class TimeoutException(BaseException):
     pass
 
@@ -209,7 +187,6 @@ def _safe_code_execution_subprocess(
     func_name: str = "task",
     timeout_duration: int = 2,
     dsl: Optional[ModuleType] = None,
-    max_memory_mb: int = 2048,
 ):
     check_code_is_safe(code)
     check_code_is_deterministic(code)
@@ -219,26 +196,10 @@ def _safe_code_execution_subprocess(
         "code": code,
         "func_name": func_name,
         "dsl_module_name": (dsl.__name__ if dsl is not None else None),
-        "max_memory_mb": max_memory_mb,
     }
 
     launcher = r"""
 import sys, pickle, importlib, numpy as np
-
-try:
-    import resource
-    HAS_RESOURCE = True
-except ImportError:
-    HAS_RESOURCE = False
-
-def set_memory_limit(max_memory_mb):
-    if not HAS_RESOURCE:
-        return
-    try:
-        max_memory_bytes = max_memory_mb * 1024 * 1024
-        resource.setrlimit(resource.RLIMIT_AS, (max_memory_bytes, max_memory_bytes))
-    except Exception:
-        pass
 
 def main():
     data = pickle.load(sys.stdin.buffer)
@@ -246,10 +207,6 @@ def main():
     code = data["code"]
     func_name = data["func_name"]
     dsl_name = data["dsl_module_name"]
-    max_memory_mb = data.get("max_memory_mb", 2048)
-
-    # Set memory limit before executing user code
-    set_memory_limit(max_memory_mb)
 
     # Keep a raw binary handle to real stdout for the pickle.
     raw_stdout = sys.stdout.buffer

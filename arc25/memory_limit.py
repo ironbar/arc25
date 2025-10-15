@@ -27,3 +27,15 @@ def apply_memory_limit(memory_limit_mb: int):
             except ValueError:
                 # If even that fails (rare), fall back to the maximum allowed soft
                 resource.setrlimit(resource.RLIMIT_AS, (cur_hard, cur_hard))
+
+
+def preexec_memory_limit(memory_limit_mb):
+    import resource
+    limit = int(memory_limit_mb) * 1024 * 1024
+    soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+    if hard == resource.RLIM_INFINITY or limit <= hard:
+        new_soft, new_hard = limit, limit
+    else:
+        new_soft, new_hard = hard, hard
+    resource.setrlimit(resource.RLIMIT_AS, (new_soft, new_hard))
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))

@@ -10,7 +10,7 @@ from types import ModuleType
 from contextlib import redirect_stdout, redirect_stderr
 import io
 
-from arc25.memory_limit import MemoryLimitExceeded, apply_memory_limit
+from arc25.memory_limit import MemoryLimitExceeded, apply_memory_limit, preexec_memory_limit
 
 logger = logging.getLogger(__name__)
 
@@ -138,7 +138,7 @@ def safe_code_execution(code: str, inputs: List[np.ndarray], func_name: str = 't
     if execution_method == 'exec':
         return _safe_code_execution_exec(code, inputs, func_name, timeout_duration, dsl, memory_limit_mb)
     elif execution_method == 'subprocess':
-        return _safe_code_execution_subprocess(code, inputs, func_name, timeout_duration, dsl)
+        return _safe_code_execution_subprocess(code, inputs, func_name, timeout_duration, dsl, memory_limit_mb)
     else:
         raise ValueError(f"Unknown execution method: {execution_method}")
 
@@ -195,6 +195,7 @@ def _safe_code_execution_subprocess(
     func_name: str = "task",
     timeout_duration: int = 2,
     dsl: Optional[ModuleType] = None,
+    memory_limit_mb: int = 2048,
 ):
     check_code_is_safe(code)
     check_code_is_deterministic(code)
@@ -250,6 +251,7 @@ if __name__ == "__main__":
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         start_new_session=True,
+        preexec_fn=lambda: preexec_memory_limit(memory_limit_mb=memory_limit_mb),
     )
 
     try:

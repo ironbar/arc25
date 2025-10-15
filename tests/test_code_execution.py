@@ -110,8 +110,9 @@ def test_safe_code_execution_returns_expected_output(code, expected_outputs, exe
         assert np.all(output == expected_output)
 
 
+@pytest.mark.parametrize("execution_method", ['exec', 'subprocess'])
 @pytest.mark.parametrize("mb", [2000, 3000, 4000]) # weirdly does not work correctly with 1000
-def test_safe_code_execution_does_not_raise_memory_error(mb, execution_method='exec'):
+def test_safe_code_execution_does_not_raise_memory_error(mb, execution_method):
     code = """
 import numpy as np
 
@@ -124,8 +125,9 @@ def transform(input_grid):
     safe_code_execution(code_mb, inputs, timeout_duration=10, func_name='transform', memory_limit_mb=mb*2, execution_method=execution_method)
 
 
+@pytest.mark.parametrize("execution_method", ['exec', 'subprocess'])
 @pytest.mark.parametrize("mb", [2000, 3000, 4000])
-def test_safe_code_execution_raises_memory_error(mb, execution_method='exec'):
+def test_safe_code_execution_raises_memory_error(mb, execution_method):
     code = """
 import numpy as np
 
@@ -135,5 +137,9 @@ def transform(input_grid):
 """
     inputs = [np.zeros((10, 10), dtype=int)]
     code_mb = code.replace('N_MB', str(mb))
-    with pytest.raises(MemoryLimitExceeded):
-        safe_code_execution(code_mb, inputs, timeout_duration=10, func_name='transform', memory_limit_mb=mb, execution_method=execution_method)
+    if execution_method == 'subprocess':
+        with pytest.raises(RuntimeError):
+            safe_code_execution(code_mb, inputs, timeout_duration=10, func_name='transform', memory_limit_mb=mb, execution_method=execution_method)
+    elif execution_method == 'exec':
+        with pytest.raises(MemoryLimitExceeded):
+            safe_code_execution(code_mb, inputs, timeout_duration=10, func_name='transform', memory_limit_mb=mb, execution_method=execution_method)

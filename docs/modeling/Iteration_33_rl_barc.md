@@ -109,6 +109,22 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 # 243912.0
 ```
 
+### New memory limit when doing code execution
+
+```bash
+export LIMIT_MB=512; python scripts/rl_code_finetuning.py \
+--epochs 1 \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-15-debug-memory_limit/limit_${LIMIT_MB}MB \
+--code-execution-memory-limit-mb ${LIMIT_MB}
+
+export LIMIT_MB=256; python scripts/rl_code_finetuning.py \
+--epochs 1 \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-15-debug-memory_limit/limit_${LIMIT_MB}MB \
+--code-execution-memory-limit-mb ${LIMIT_MB}
+```
+
+I cannot see the effect on the metrics... That's weird.
+
 ## Results
 
 ## Conclusion

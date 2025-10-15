@@ -30,20 +30,19 @@ class CodeRunner():
             batch_size=5000, group_results_by_task=True, timeout_duration=1,
             disable_tqdm=False):
         results = []
+        extra_kwargs = dict(timeout_duration=timeout_duration, memory_limit_mb=self.memory_limit_mb)
         for i in tqdm(range(0, len(tasks), batch_size), desc="Executing predictions", unit="batch",
                     disable=len(tasks)<=batch_size or disable_tqdm, smoothing=0):
             batch = list(zip(text_predictions[i:i+batch_size], tasks[i:i+batch_size], task_ids[i:i+batch_size], data_augmentation_params[i:i+batch_size]))
             try:
-                extra_kwargs = dict(timeout_duration=timeout_duration, execution_method='exec', memory_limit_mb=self.memory_limit_mb)
                 with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size} with exec",
                                 unit="run", smoothing=0, disable=disable_tqdm):
-                    results.extend(self.parallel(delayed(_run_one)(*args, **extra_kwargs) for args in batch))
+                    results.extend(self.parallel(delayed(_run_one)(*args, execution_method='exec', **extra_kwargs) for args in batch))
             except TerminatedWorkerError:
                 logger.warning("TerminatedWorkerError encountered with 'exec' method, retrying with 'subprocess' method.")
-                extra_kwargs = dict(timeout_duration=timeout_duration, execution_method='subprocess')
                 with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size} with subprocess",
                                 unit="run", smoothing=0, disable=disable_tqdm):
-                    results.extend(self.parallel(delayed(_run_one)(*args, **extra_kwargs) for args in batch))
+                    results.extend(self.parallel(delayed(_run_one)(*args, execution_method='subprocess', **extra_kwargs) for args in batch))
         if not group_results_by_task:
             return results
         grouped_results = {}

@@ -133,9 +133,10 @@ def _is_valid_output(output):
 
 
 def safe_code_execution(code: str, inputs: List[np.ndarray], func_name: str = 'task',
-                        timeout_duration: int = 1, execution_method='exec', dsl: Optional[ModuleType] = None):
+                        timeout_duration: int = 1, execution_method='exec',
+                        dsl: Optional[ModuleType] = None, memory_limit_mb: int = 2048):
     if execution_method == 'exec':
-        return _safe_code_execution_exec(code, inputs, func_name, timeout_duration, dsl)
+        return _safe_code_execution_exec(code, inputs, func_name, timeout_duration, dsl, memory_limit_mb)
     elif execution_method == 'subprocess':
         return _safe_code_execution_subprocess(code, inputs, func_name, timeout_duration, dsl)
     else:

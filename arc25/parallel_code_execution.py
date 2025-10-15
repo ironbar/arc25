@@ -17,8 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 class CodeRunner():
-    def __init__(self, n_jobs=-1):
+    def __init__(self, n_jobs=-1, memory_limit_mb: int = 2048):
         self.n_jobs = n_jobs
+        self.memory_limit_mb = memory_limit_mb
         self.parallel = None
         self.start_parallel()
 
@@ -33,7 +34,7 @@ class CodeRunner():
                     disable=len(tasks)<=batch_size or disable_tqdm, smoothing=0):
             batch = list(zip(text_predictions[i:i+batch_size], tasks[i:i+batch_size], task_ids[i:i+batch_size], data_augmentation_params[i:i+batch_size]))
             try:
-                extra_kwargs = dict(timeout_duration=timeout_duration, execution_method='exec')
+                extra_kwargs = dict(timeout_duration=timeout_duration, execution_method='exec', memory_limit_mb=self.memory_limit_mb)
                 with tqdm_joblib(total=len(batch), desc=f"Executing predictions for batch {i//batch_size} with exec",
                                 unit="run", smoothing=0, disable=disable_tqdm):
                     results.extend(self.parallel(delayed(_run_one)(*args, **extra_kwargs) for args in batch))
@@ -55,7 +56,7 @@ class CodeRunner():
 
 
 def _run_one(text_prediction, task, task_id, data_augmentation_params,
-             timeout_duration=5, execution_method='exec'):
+             timeout_duration=5, execution_method='exec', memory_limit_mb: int = 2048):
     code = parse_python_code_from_response(text_prediction)
     if not code:
         return dict(error_type="ParsingCodeFailed", error_message='', text_prediction=text_prediction,
@@ -70,6 +71,7 @@ def _run_one(text_prediction, task, task_id, data_augmentation_params,
             func_name="transform",
             execution_method=execution_method,
             timeout_duration=timeout_duration,
+            memory_limit_mb=memory_limit_mb
         )
         output_grids = validate_outputs(output_grids)
         if data_augmentation_params is not None:

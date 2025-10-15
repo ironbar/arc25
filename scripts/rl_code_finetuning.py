@@ -62,6 +62,7 @@ class Config:
     beta: float = 0.001 # KL penalty, by default 0.001 in unsloth
     # others
     n_jobs: int = -1
+    code_execution_memory_limit_mb: int = 4096
 
 
 def main():
@@ -139,7 +140,7 @@ def main():
     os.environ["WANDB_DIR"] = cfg.output_dir
 
     reward_logger = RewardLogger(n_jobs=cfg.n_jobs, max_completion_length=cfg.max_completion_length,
-                                 reward_name=cfg.reward_name)
+                                 reward_name=cfg.reward_name, memory_limit_mb=cfg.code_execution_memory_limit_mb)
     trainer = GRPOTrainer(
         model=model,
         processing_class=tokenizer,
@@ -153,9 +154,9 @@ def main():
 
 class RewardLogger():
     """ Computes the reward and adds more logs to the trainer """
-    def __init__(self, n_jobs=-1, max_completion_length=1024, reward_name='arc-v1'):
-        # TODO: allow to choose different reward functions
-        self.code_runner = CodeRunner(n_jobs=n_jobs)
+    def __init__(self, n_jobs=-1, max_completion_length=1024,
+                 reward_name='arc-v1', memory_limit_mb: int = 4096):
+        self.code_runner = CodeRunner(n_jobs=n_jobs, memory_limit_mb=memory_limit_mb)
         self.max_completion_length = max_completion_length
         self.trainer = None
         self.reward_name = reward_name

@@ -10,6 +10,8 @@ from types import ModuleType
 from contextlib import redirect_stdout, redirect_stderr
 import io
 
+from arc25.memory_limit import MemoryLimitExceeded, apply_memory_limit
+
 logger = logging.getLogger(__name__)
 
 
@@ -141,7 +143,8 @@ def safe_code_execution(code: str, inputs: List[np.ndarray], func_name: str = 't
 
 
 def _safe_code_execution_exec(code: str, inputs: List[np.ndarray], func_name: str = 'task',
-                        timeout_duration: int = 1, dsl: Optional[ModuleType] = None):
+                        timeout_duration: int = 1, dsl: Optional[ModuleType] = None,
+                        memory_limit_mb: int = 2048):
     check_code_is_safe(code)
     check_code_is_deterministic(code)
     _set_timeout_alarm(timeout_duration)
@@ -150,10 +153,14 @@ def _safe_code_execution_exec(code: str, inputs: List[np.ndarray], func_name: st
 
     code = code + f'\n\noutput_grids = [{func_name}(input.copy()) for input in input_grids]'
     try:
-        buf = io.StringIO()
-        with redirect_stdout(buf), redirect_stderr(buf):
-            exec(code, namespace)
+        with apply_memory_limit(memory_limit_mb):
+            buf = io.StringIO()
+            with redirect_stdout(buf), redirect_stderr(buf):
+                exec(code, namespace)
         return namespace['output_grids']
+    except MemoryError as e:
+        logger.debug(f"Memory limit exceeded during code execution: {e}")
+        raise MemoryLimitExceeded(f"Process tried to exceed {memory_limit_mb} MiB") from e
     except BaseException as e:
         logger.debug(f"Error during code execution: {e}")
         raise e

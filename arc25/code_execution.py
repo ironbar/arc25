@@ -158,7 +158,7 @@ def _safe_code_execution_exec(code: str, inputs: List[np.ndarray], func_name: st
             buf = io.StringIO()
             with redirect_stdout(buf), redirect_stderr(buf):
                 exec(code, namespace)
-        return namespace['output_grids']
+            return namespace['output_grids']
     except MemoryError as e:
         logger.debug(f"Memory limit exceeded during code execution: {e}")
         raise MemoryLimitExceeded(f"Process tried to exceed {memory_limit_mb} MiB") from e

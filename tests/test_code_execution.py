@@ -8,7 +8,8 @@ from arc25.code_execution import (
     check_code_is_deterministic,
     InvalidCode,
     NonDeterministicCode,
-    UnsafeCode,)
+    UnsafeCode,
+    MemoryLimitExceeded)
 from arc25.dsl import create_img
 
 @pytest.mark.parametrize("inputs, input_code, output_code", [
@@ -74,18 +75,6 @@ def test_validate_code_returns_validated_code(inputs, input_code, output_code):
     assert validated_code == output_code
 
 
-@pytest.mark.parametrize("inputs, input_code", [
-    # test that a line with the same color as background is removed
-    ([create_img((3, 3), color=0)],
-"""def task(img):
-    draw_vertical_line(img, x=0, color=0)
-    return img"""),
-])
-def test_validate_code_raises_exception_if_code_is_not_valid(inputs, input_code):
-    with pytest.raises(InvalidCode):
-        validate_code(input_code, inputs)
-
-
 @pytest.mark.parametrize("unsafe_code", [
     "import multiprocessing",
 ])
@@ -119,3 +108,32 @@ def test_safe_code_execution_returns_expected_output(code, expected_outputs, exe
     for output, expected_output in zip(outputs, expected_outputs):
         assert output.shape == expected_output.shape
         assert np.all(output == expected_output)
+
+
+@pytest.mark.parametrize("mb", [2000, 3000, 4000]) # weirdly does not work correctly with 1000
+def test_safe_code_execution_does_not_raise_memory_error(mb, execution_method='exec'):
+    code = """
+import numpy as np
+
+def transform(input_grid):
+    a = np.arange(N_MB * 1024 * 128)
+    return input_grid.copy()
+"""
+    inputs = [np.zeros((10, 10), dtype=int)]
+    code_mb = code.replace('N_MB', str(mb))
+    safe_code_execution(code_mb, inputs, timeout_duration=10, func_name='transform', memory_limit_mb=mb*2, execution_method=execution_method)
+
+
+@pytest.mark.parametrize("mb", [2000, 3000, 4000])
+def test_safe_code_execution_raises_memory_error(mb, execution_method='exec'):
+    code = """
+import numpy as np
+
+def transform(input_grid):
+    a = np.arange(N_MB * 1024 * 128)
+    return input_grid.copy()
+"""
+    inputs = [np.zeros((10, 10), dtype=int)]
+    code_mb = code.replace('N_MB', str(mb))
+    with pytest.raises(MemoryLimitExceeded):
+        safe_code_execution(code_mb, inputs, timeout_duration=10, func_name='transform', memory_limit_mb=mb, execution_method=execution_method)

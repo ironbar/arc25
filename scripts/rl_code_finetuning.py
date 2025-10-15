@@ -173,13 +173,13 @@ class RewardLogger():
             numpy_tasks, list(range(len(completions))), completions,
             [None]*len(completions), group_results_by_task=False, disable_tqdm=True)
         rewards = [_individual_arc_reward(result, task, self.reward_name) for result, task in zip(results, tasks)]
-        self.log(rewards, completions, completion_ids)
+        self.log(rewards, completions, completion_ids, results)
         return rewards
 
     def update_trainer(self, trainer):
         self.trainer = trainer
 
-    def log(self, rewards, completions, completion_ids):
+    def log(self, rewards, completions, completion_ids, results):
         completion_lengths = [len(c) for c in completion_ids]
         # on a first step log to the terminal
         logger.info(f'Mean completion length: {np.mean(completion_lengths):.2f}, Max completion length: {np.max(completion_lengths):.2f}, lengths: {completion_lengths}')
@@ -233,6 +233,9 @@ class RewardLogger():
                         metrics[f"non_truncated_completions_ngram_{n}_unique_ngram_ratio"].append(stats["unique_ngram_ratio"])
                         metrics[f"non_truncated_completions_ngram_{n}_most_repeated_ngram_count"].append(stats["most_repeated_ngram_count"])
                         metrics[f"non_truncated_completions_ngram_{n}_most_repeated_ngram_frequency"].append(stats["most_repeated_ngram_frequency"])
+            # memory error metrics
+            memory_errors = [1 for result in results if result.get('error_type', None) == 'MemoryError']
+            metrics["memory_errors_ratio"].append(sum(memory_errors) / len(completions))
 
 
 def _individual_arc_reward(result, task, reward_name):

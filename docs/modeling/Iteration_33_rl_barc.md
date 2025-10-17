@@ -130,6 +130,14 @@ I cannot see the effect on the metrics... That's weird.
 I'm going to update the inference script to also evaluate and save the results compressed. That way
 I can quickly now the results of the inference.
 
+```bash
+python scripts/inference_with_BARC.py \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/small_arc-agi_training_challenges.json \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-09-15-debug-grpo/lr1e-5_small-dataset_80epochs_16gens_continue/small-training \
+--lora-path /mnt/hdd0/Kaggle/arc25/trainings/2025-09-15-debug-grpo/lr1e-5_small-dataset_80epochs_16gens_continue/checkpoint-5360 \
+--n-predictions 8
+```
+
 ## Results
 
 ## Conclusion

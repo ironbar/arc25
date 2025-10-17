@@ -21,6 +21,7 @@ from arc25.utils import get_timestamp, load_arc_dataset_with_solutions, write_js
 from arc25.encoders import create_grid_encoder
 from arc25.data_augmentation import apply_data_augmentation, get_random_data_augmentation_params
 from arc25.prompting import create_prompt_from_task
+from arc25.parallel_code_execution import CodeRunner
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,7 @@ class Config:
     use_data_augmentation: bool = True
     batch_size: int = 8
     n_predictions: int = 8
+    evaluate: bool = True
     # model parameters
     max_model_len: int = 9700
     max_output_tokens: int = 1024
@@ -54,14 +56,16 @@ def main():
     else:
         lora_request = None
     grid_encoder = create_grid_encoder('ColorNameEncoder()')
-    dataset = load_arc_dataset_with_solutions(cfg.dataset_path)
+    dataset = load_arc_dataset_with_solutions(cfg.dataset_path, verify_outputs=cfg.evaluate)
     task_ids = list(dataset.keys())
 
     sampling_params = SamplingParams(n=cfg.batch_size, temperature=1.0, top_p=0.95, max_tokens=cfg.max_output_tokens)
     os.makedirs(cfg.output_folder, exist_ok=True)
     n_rounds = cfg.n_predictions//cfg.batch_size
+    if cfg.evaluate:
+        code_runner = CodeRunner(n_jobs=20)
     for round_idx in tqdm(range(n_rounds), desc="Prediction rounds", unit="round", smoothing=0):
-        prompts, data_augmentation_params = [], []
+        prompts, data_augmentation_params, inference_task_ids = [], [], []
         for task_id in task_ids:
             task = dataset[task_id]
             if cfg.use_data_augmentation:
@@ -69,31 +73,50 @@ def main():
                 task = apply_data_augmentation(task, **params)
             else:
                 params = None
-            data_augmentation_params.append(params)
+            data_augmentation_params.extend([params] * cfg.batch_size)
             prompt = create_prompt_from_task(
                 task, grid_encoder=grid_encoder, tokenizer=tokenizer, shuffle_train_samples=True)
             prompts.append(prompt)
+            inference_task_ids.extend([task_id] * cfg.batch_size)
+
 
         t0 = time.time()
-        text_predictions = llm.generate(prompts, sampling_params, lora_request=lora_request)
-        total_tokens = sum(sum(len(_output.token_ids) for _output in output.outputs) for output in text_predictions)
+        generations = llm.generate(prompts, sampling_params, lora_request=lora_request)
+        total_tokens = sum(sum(len(_output.token_ids) for _output in output.outputs) for output in generations)
         inference_time = time.time() - t0
         logger.info(f'Prediction round {round_idx + 1}/{n_rounds} completed.')
         logger.info(f"Total tokens generated: {total_tokens}")
         logger.info(f"Time taken: {inference_time:.2f} seconds")
-        logger.info(f"Average time per task: {inference_time / len(text_predictions):.2f} seconds")
-        logger.info(f"Average tokens per task: {total_tokens / len(text_predictions) / sampling_params.n:.2f} tokens")
+        logger.info(f"Average time per task: {inference_time / len(generations):.2f} seconds")
+        logger.info(f"Average tokens per task: {total_tokens / len(generations) / sampling_params.n:.2f} tokens")
         logger.info(f"Average tokens per second: {total_tokens / inference_time:.2f} tokens/second")
 
-        predictions = dict()
-        for task_id, output, params in zip(task_ids, text_predictions, data_augmentation_params):
-            predictions[task_id] = {
-                'text_predictions': [output.text for output in output.outputs],
-                'data_augmentation_params': params,
-            }
+        if cfg.evaluate:
+            text_predictions = []
+            for generation in generations:
+                for output in generation.outputs:
+                    text_predictions.append(output.text)
+            outputs = code_runner.run(
+                [dataset[task_id] for task_id in inference_task_ids],
+                inference_task_ids,
+                text_predictions,
+                data_augmentation_params)
+            # convert numpy arrays to lists for json serialization
+            for task_id, task_results in outputs.items():
+                for result in task_results:
+                    for key in ['input_grids', 'output_grids', 'test_output_grids']:
+                        if key in result:
+                            result[key] = [grid.tolist() for grid in result[key]]
+        else:
+            outputs = dict()
+            for task_id, output, params in zip(task_ids, generations, data_augmentation_params):
+                outputs[task_id] = {
+                    'text_predictions': [output.text for output in output.outputs],
+                    'data_augmentation_params': params,
+                }
 
         output_filepath = f'{cfg.output_folder}/{sampling_params.n}preds_{get_timestamp()}_predictions.json.gz'
-        write_json(predictions, output_filepath)
+        write_json(outputs, output_filepath)
         logger.info(f"Predictions saved to {output_filepath}")
 
 

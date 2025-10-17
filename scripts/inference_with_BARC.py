@@ -36,9 +36,9 @@ class Config:
     batch_size: int = 8
     n_predictions: int = 8
     # model parameters
-    max_model_len: int = 10700
-    max_output_tokens: int = 2048
-    gpu_memory_utilization: float = 0.85
+    max_model_len: int = 9700
+    max_output_tokens: int = 1024
+    gpu_memory_utilization: float = 0.90
 
 
 def main():
@@ -124,7 +124,6 @@ def load_vllm_model_and_tokenizer(model_path: str, use_4bit_quantization: bool=F
         tokenizer_path = model_path
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
     return llm, tokenizer
-
 
 
 if __name__ == '__main__':

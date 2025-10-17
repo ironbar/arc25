@@ -80,16 +80,16 @@ def main():
             inference_task_ids.extend([task_id] * cfg.batch_size)
 
 
-        t0 = time.time()
+        # t0 = time.time()
         generations = llm.generate(prompts, sampling_params, lora_request=lora_request)
-        total_tokens = sum(sum(len(_output.token_ids) for _output in output.outputs) for output in generations)
-        inference_time = time.time() - t0
+        # total_tokens = sum(sum(len(_output.token_ids) for _output in output.outputs) for output in generations)
+        # inference_time = time.time() - t0
         logger.info(f'Prediction round {round_idx + 1}/{n_rounds} completed.')
-        logger.info(f"Total tokens generated: {total_tokens}")
-        logger.info(f"Time taken: {inference_time:.2f} seconds")
-        logger.info(f"Average time per task: {inference_time / len(generations):.2f} seconds")
-        logger.info(f"Average tokens per task: {total_tokens / len(generations) / sampling_params.n:.2f} tokens")
-        logger.info(f"Average tokens per second: {total_tokens / inference_time:.2f} tokens/second")
+        # logger.info(f"Total tokens generated: {total_tokens}")
+        # logger.info(f"Time taken: {inference_time:.2f} seconds")
+        # logger.info(f"Average time per task: {inference_time / len(generations):.2f} seconds")
+        # logger.info(f"Average tokens per task: {total_tokens / len(generations) / sampling_params.n:.2f} tokens")
+        # logger.info(f"Average tokens per second: {total_tokens / inference_time:.2f} tokens/second")
 
         if cfg.evaluate:
             text_predictions = []

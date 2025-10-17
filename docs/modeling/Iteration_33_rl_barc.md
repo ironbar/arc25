@@ -125,6 +125,11 @@ export LIMIT_MB=256; python scripts/rl_code_finetuning.py \
 
 I cannot see the effect on the metrics... That's weird.
 
+### Update inference to also evaluate and save output compressed
+
+I'm going to update the inference script to also evaluate and save the results compressed. That way
+I can quickly now the results of the inference.
+
 ## Results
 
 ## Conclusion

@@ -9,7 +9,6 @@ import time
 from dataclasses import dataclass
 from typing import Optional
 import tyro
-import json
 import random
 from tqdm.auto import tqdm
 
@@ -18,7 +17,7 @@ from vllm import LLM, SamplingParams
 from vllm.lora.request import LoRARequest
 
 from arc25.logging import logging, log_execution_time
-from arc25.utils import get_timestamp, load_arc_dataset_with_solutions
+from arc25.utils import get_timestamp, load_arc_dataset_with_solutions, write_json
 from arc25.encoders import create_grid_encoder
 from arc25.data_augmentation import apply_data_augmentation, get_random_data_augmentation_params
 from arc25.prompting import Template
@@ -93,9 +92,8 @@ def main():
                 'data_augmentation_params': params,
             }
 
-        output_filepath = f'{cfg.output_folder}/{sampling_params.n}preds_{get_timestamp()}_predictions.json'
-        with open(output_filepath, 'w') as f:
-            json.dump(predictions, f, indent=2)
+        output_filepath = f'{cfg.output_folder}/{sampling_params.n}preds_{get_timestamp()}_predictions.json.gz'
+        write_json(predictions, output_filepath)
         logger.info(f"Predictions saved to {output_filepath}")
 
 

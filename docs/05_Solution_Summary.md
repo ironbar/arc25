@@ -61,8 +61,10 @@ TODO: ARC as a game, played with code, RL is the framework
    but trainings collapse.
 8. Experimented with prediction refinement, but BARC model does not seem to have that capability
    that allows techniques like AlphaEvolve with frontier models.
+9. I have tried to make search and learn more hardware efficient by grouping the tasks (instead
+    of training on each task independently) but I wasn't able to find a good configuration. Each
+    evaluation takes 3 days on a single GPU, so iteration was very slow.
 
 Now I'm trying to:
 
-- Solve RL training collapse so I can train for longer
-- Try to make the search and learn script more hardware efficient
+- Solve RL training collapse so I can train for longer. Hoping that training on huge datasets helps.

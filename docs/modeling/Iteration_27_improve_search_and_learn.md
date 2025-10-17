@@ -496,7 +496,25 @@ Now I'm going to experiment with a budget of 512 predictions. I'm going to try t
 
 For each configuration I should try different learning rates.
 
+### Could not find a good hyperparameter setup
+
+I have tried with different learning rates for the configuration of 32 predictions per group with a group size of 5.
+The problem of this experiments is that they take more than 3 days to make 512 predictions per task
+for the 400 validation tasks on a single A6000 GPU. Iteration is very slow.
+
+I have not seen a clear tendency regarding the learning rate.
+
+https://wandb.ai/guillermobarbadillo/2025-09-28-search-and-learn?nw=nwuserguillermobarbadillo
+
+![alt text](res/1760717014919_image.png)
+
+It is likely that with more time I could find some awesome configuration. All the experiments
+score above the 23.3% baseline from [Iteration_23_ttt_BARC_v2](Iteration_23_ttt_BARC_v2.md), however I was expecting an improvement over the search and learn methods and that did
+not happened.
+
 ## Conclusion
+
+I have been able to speedup search and learn by grouping tasks, but I have not been able to make it more accurate.
 
 ## Next steps
 
@@ -509,7 +527,7 @@ For each configuration I should try different learning rates.
 - [ ] This implementation is still not efficient for H100.
   - https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn/runs/nmzebmh1?nw=nwuserguillermobarbadillo
 - [ ] Once a good configuration has been found scale to 512 predictions and compare against previous results
-- [ ] Optimize learning rate and group size
+- [x] Optimize learning rate and group size
 - [ ] Try to reduce computation cost by filtering the training data
   - [ ] Start by training on half of the samples
   - [ ] Remove duplicates

@@ -37,7 +37,7 @@ python scripts/rl_code_finetuning.py \
 
 Works perfectly.
 
-### Train on cluster
+### Train and evaluate on cluster
 
 ```bash
 export BETA=0.01
@@ -107,6 +107,17 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/barc/dataset_100k.json.gz \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
 # 243912.0
+```
+
+```bash
+export STEPS=1000; export FOLDER=2025-08-29-smaller-datasets/2xA6000-${STEPS}steps-8192msl-1e-4lr-lora32; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
+--n-predictions 128 \
+--base-model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--lora-path /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/checkpoint-${STEPS} \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--use-data-augmentation \
+--output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/${FOLDER}/evaluation" -append request_gpus=1 -append request_cpus=20 --append 'requirements = (TARGET.Machine == "calculon19.das-nano.com")' -append request_memory=32G
 ```
 
 ### New memory limit when doing code execution

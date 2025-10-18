@@ -61,6 +61,7 @@ class Config:
     scale_rewards: str = 'group'
     mask_truncated_completions: bool = True
     beta: float = 0.001 # KL penalty, by default 0.001 in unsloth
+    logging_steps: int = 10 # by default 1 in unsloth
     # others
     n_jobs: int = -1
     code_execution_memory_limit_mb: int = 4096
@@ -132,6 +133,7 @@ def main():
         scale_rewards=cfg.scale_rewards, # "group", 'batch', 'none', by default is 'group
         repetition_penalty=cfg.repetition_penalty,
         beta=cfg.beta,
+        logging_steps=cfg.logging_steps,
         # wandb
         report_to='wandb',
         run_name=os.path.basename(cfg.output_dir),

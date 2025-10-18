@@ -185,6 +185,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 # 245087. CUDA error: an illegal memory access was encountered
 # It is not an OOM, but very suspicious to see when I remove the accum steps
 # the step the error happend the max completion length was 990, the greatest of all the steps
+# However GPU memory usage was just 60%
 
 export BETA=0.02
 export MAX_GRAD_NORM=0.05

@@ -25,6 +25,8 @@ repeating errors and benefit from the execution feedback.
 
 ## Development
 
+### Unsloth GRPO does not support Iterable datasets
+
 ```bash
 python scripts/multi-turn_rl_code_finetuning.py \
 --epochs 1 \
@@ -35,6 +37,17 @@ python scripts/multi-turn_rl_code_finetuning.py \
 
 After changing from Dataset to IterableDataset I get this bad surprise.
 
+### Proof of concept with pre-generated responses
+
+The easiest way to test the concept is to generate a dataset were I generate predictions
+for the task and pick one that is not correct. This is exactly the same I did in [Iteration 28](Iteration_28_refine_predictions.md) but instead of doing it at test time, I need to do it
+at training time using training data.
+
+So the best option would be to take BARC dataset and make predictions for the tasks.
+
+Making 8 predictions for 1000 tasks takes around one hour on a single GPU. A good proof of concept will require between 10k and 20k prompts, at least that is what I'm currently
+training with RL before the training collapses.
+
 ## Results
 
 ## Conclusion
@@ -43,5 +56,9 @@ After changing from Dataset to IterableDataset I get this bad surprise.
 
 ## TODO
 
-- [ ] On a first step I have to modify the current RL script to train on a generator
-- [ ] On a second step I have to couple the prompt generation and the training to be able to use the predictions done during GRPO training
+- [x] On a first step I have to modify the current RL script to train on a generator
+- [ ] Create two datasets of 10k tasks from BARC
+- [ ] Generate predictions to create a 2nd turn dataset for RL
+- [ ] Prepare the dataset for training
+- [ ] Train 2nd turn RL
+- [ ] Evaluate using the same setup from Iteration 28

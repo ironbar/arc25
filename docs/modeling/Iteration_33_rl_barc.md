@@ -362,6 +362,10 @@ Despite training on a huge dataset, the training with lora rank 1 has collapsed.
 I'm already using `beta=0.01, repetition_penalty=1.02, and max_grad_norm=0.1`, but I'm going to make
 those constraints harder. Also I'm going to double the number of generations from 16 to 32.
 
+RL is showing signs of improvements. The improvements are modest but noticeable.
+The problem is that training for longer will likely make the improvements bigger, but I don't have a robust training configuration yet.
+And the challenge ending is approaching.
+
 ## Conclusion
 
 ## Next steps

@@ -52,6 +52,7 @@ class Config:
     save_steps: int = 100 # each checkpoint with lora_r=32 takes around 500MB
     num_generations: int = 4
     gradient_accumulation_steps: int = 1 # the number of generations must be divisible by this
+    max_grad_norm: float = 0.1
     learning_rate: float = 1e-5
     lr_scheduler_type: str = 'constant_with_warmup'
     use_data_augmentation: bool = True
@@ -120,7 +121,7 @@ def main():
         warmup_ratio=cfg.warmup_ratio,
         learning_rate=cfg.learning_rate,
         lr_scheduler_type=cfg.lr_scheduler_type,
-        max_grad_norm=0.1,
+        max_grad_norm=cfg.max_grad_norm,
         max_completion_length=cfg.max_completion_length,
         max_prompt_length=None,
         temperature=1.0,

@@ -48,6 +48,10 @@ So the best option would be to take BARC dataset and make predictions for the ta
 Making 8 predictions for 1000 tasks takes around one hour on a single GPU. A good proof of concept will require between 10k and 20k prompts, at least that is what I'm currently
 training with RL before the training collapses.
 
+#### Dataset preparation
+
+To prepare the dataset for inference I'm going to reuse the notebook `notebooks/016_prepare_BARC_data_for_training.ipynb`.
+
 ## Results
 
 ## Conclusion

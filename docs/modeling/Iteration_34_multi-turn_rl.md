@@ -25,6 +25,16 @@ repeating errors and benefit from the execution feedback.
 
 ## Development
 
+```bash
+python scripts/multi-turn_rl_code_finetuning.py \
+--epochs 1 \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-18-debug-multi-turn-RL/baseline
+
+[rank0]: NotImplementedError: Iterable datasets are not yet supported in GRPOTrainer. Please use a standard dataset instead.
+```
+
+After changing from Dataset to IterableDataset I get this bad surprise.
+
 ## Results
 
 ## Conclusion

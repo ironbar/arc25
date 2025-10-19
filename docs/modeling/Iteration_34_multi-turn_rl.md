@@ -23,6 +23,9 @@ good at refining its predictions. That forces us to just make independent predic
 But that is not efficient, we should take into account previous predictions to avoid
 repeating errors and benefit from the execution feedback.
 
+All the evolutionary test-time compute methods are based on the capability of the model to use
+feedback from execution.
+
 ## Development
 
 ### Unsloth GRPO does not support Iterable datasets
@@ -81,7 +84,7 @@ The maximum prompt length is 8511, so I can keep the training parameters as they
 export BETA=0.02
 export MAX_GRAD_NORM=0.05
 export REPETITION_PENALTY=1.02
-export FOLDER=2025-10-14-rl-barc
+export FOLDER=2025-10-19-multi-turn-rl
 export LEARNING_RATE=4e-6
 export NUM_GENERATIONS=32
 export ACUM_STEPS=4
@@ -91,7 +94,7 @@ export EPOCHS=1
 export REWARD_NAME=arc-v2-no-pixel-score
 export EXPERIMENT_NAME=${LORA_R}lora_lr${LEARNING_RATE}_${MAX_GRAD_NORM}max-grad-norm_${REWARD_NAME}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_repetition-penalty-${REPETITION_PENALTY}_masked-truncate_unquantized_beta${BETA}
 condor_submit train.condor command="
-python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/multi-step_rl_code_finetuning.py \
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/multi-turn_rl_code_finetuning.py \
 --lora_r ${LORA_R} \
 --beta ${BETA} \
 --max-grad-norm ${MAX_GRAD_NORM} \
@@ -113,6 +116,7 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/multi-step_rl_code_fin
 --model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/barc/refine_dataset.json.gz \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+# 245113.0
 ```
 
 ## Results
@@ -120,6 +124,9 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/multi-step_rl_code_fin
 ## Conclusion
 
 ## Next steps
+
+- Is RL the best way to teach the model to refine its predictions? Maybe we should use supervised learning
+  first, which has stronger learning signal.
 
 ## TODO
 

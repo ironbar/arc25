@@ -87,7 +87,7 @@ def main():
         random.shuffle(task_ids)
         for task_id in list(task_ids):
             for _ in range(cfg.gradient_accumulation_steps):
-                grpo_dataset.append(dataset[task_id])
+                grpo_dataset.append(dict(prompt=dataset[task_id]['prompt'], tasks=dataset[task_id]['task']))
     grpo_dataset = Dataset.from_list(grpo_dataset)
     pretty_print_prompt(grpo_dataset[0]['prompt'], default_color='white')
 

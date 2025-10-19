@@ -73,6 +73,7 @@ python scripts/inference_with_BARC.py \
 #### Dataset for 2nd turn conversation preparation
 
 I have done the work on the already existing notebook `notebooks/014_refine_solutions.ipynb`.
+The maximum prompt length is 8511, so I can keep the training parameters as they were.
 
 ## Results
 

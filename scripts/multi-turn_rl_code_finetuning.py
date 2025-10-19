@@ -11,14 +11,14 @@ import os
 import random
 import numpy as np
 from dataclasses import dataclass
-from datasets import IterableDataset
+from datasets import Dataset
 from tqdm.auto import tqdm
 from functools import partial, update_wrapper
 
 from trl import GRPOConfig, GRPOTrainer
 
 from arc25.encoders import create_grid_encoder
-from arc25.utils import load_arc_dataset_with_solutions, convert_task_to_numpy, set_random_seed, is_checkpoint_available
+from arc25.utils import load_json, convert_task_to_numpy, set_random_seed, is_checkpoint_available
 from arc25.data_augmentation import apply_data_augmentation, get_random_data_augmentation_params
 from arc25.prompting import create_prompt_from_task, pretty_print_prompt
 from arc25.logging import configure_logging, logging, log_execution_time
@@ -78,26 +78,18 @@ def main():
         gpu_memory_utilization=cfg.gpu_memory_utilization)
     grid_encoder = create_grid_encoder(cfg.grid_encoder)
 
-    dataset = load_arc_dataset_with_solutions(cfg.dataset_path)
+    dataset = load_json(cfg.dataset_path)
     task_ids = list(dataset.keys())
     print(f"Loaded {len(dataset)} tasks from {cfg.dataset_path}")
     set_random_seed(None)
-
-    def generator():
-        for _ in tqdm(range(cfg.epochs), desc="Preparing training data"):
-            random.shuffle(task_ids)
-            for task_id in list(task_ids):
-                if cfg.use_data_augmentation:
-                    params = get_random_data_augmentation_params()
-                    task = apply_data_augmentation(dataset[task_id], **params)
-                else:
-                    task = dataset[task_id] # debug without data augmentation
-                prompt = create_prompt_from_task(
-                        task, grid_encoder=grid_encoder, tokenizer=tokenizer, shuffle_train_samples=True)
-                for _ in range(cfg.gradient_accumulation_steps):
-                    yield dict(prompt=prompt, tasks=task)
-    grpo_dataset = IterableDataset.from_generator(generator)
-    # pretty_print_prompt(prompt, default_color='white')
+    grpo_dataset = []
+    for _ in tqdm(range(cfg.epochs), desc="Preparing training data"):
+        random.shuffle(task_ids)
+        for task_id in list(task_ids):
+            for _ in range(cfg.gradient_accumulation_steps):
+                grpo_dataset.append(dataset[task_id])
+    grpo_dataset = Dataset.from_list(grpo_dataset)
+    pretty_print_prompt(grpo_dataset[0]['prompt'], default_color='white')
 
     model = FastLanguageModel.get_peft_model(
         llm,
@@ -115,7 +107,7 @@ def main():
     # https://huggingface.co/docs/trl/main/en/grpo_trainer#trl.GRPOConfig
     training_args = GRPOConfig(
         output_dir=cfg.output_dir,
-        max_steps=len(task_ids)*cfg.epochs,
+        num_train_epochs=1,
         # unsloth forces num_generations and per_device_train_batch_size to be equal
         per_device_train_batch_size=cfg.num_generations//cfg.gradient_accumulation_steps,
         num_generations=cfg.num_generations//cfg.gradient_accumulation_steps,
@@ -243,7 +235,6 @@ class RewardLogger():
             metrics["memory_errors_ratio"].append(sum(memory_errors) / len(completions))
 
 
-# TODO: move this function to arc25.rewards
 def _individual_arc_reward(result, task, reward_name):
     """
     The north start metric is the correct grids, pixel score is use as a tiebreaker.

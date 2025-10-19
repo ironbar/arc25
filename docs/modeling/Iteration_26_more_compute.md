@@ -158,13 +158,14 @@ I can create workstations on the Sydney Cluster with 4 GPUs, and I have to attac
 Running htop shows that the machines have 32 cores and 378GB of RAM, more than enough.
 
 ```bash
+# install all the dependencies
+apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano vim htop screen nvtop
 # copy these two files from the first workstation
 vim .ssh/id_ed25519
 chmod 600 .ssh/id_ed25519
 vim secrets.sh #export WANDB_API_KEY=
 chmod +x secrets.sh
-# now install all the dependencies
-apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano vim htop screen nvtop
+# clone repo and create environment
 git config --global user.name "Guillermo Barbadillo"
 git config --global user.email "guillermobarbadillo@gmail.com"
 git clone git@github.com:ironbar/arc25.git
@@ -174,6 +175,7 @@ pip install -r arc25/requirements.txt
 pip install unsloth_zoo==2025.9.6 # I should update the requirements
 # skip this step by now because it is very slow
 #MAX_JOBS=2 python -m pip install flash-attn==2.6.3 --no-build-isolation
+mkdir data training data/barc
 ```
 
 ## Results

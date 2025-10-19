@@ -75,6 +75,46 @@ python scripts/inference_with_BARC.py \
 I have done the work on the already existing notebook `notebooks/014_refine_solutions.ipynb`.
 The maximum prompt length is 8511, so I can keep the training parameters as they were.
 
+### Cluster experiments
+
+```bash
+export BETA=0.02
+export MAX_GRAD_NORM=0.05
+export REPETITION_PENALTY=1.02
+export FOLDER=2025-10-14-rl-barc
+export LEARNING_RATE=4e-6
+export NUM_GENERATIONS=32
+export ACUM_STEPS=4
+export N_CPUS=20
+export LORA_R=1
+export EPOCHS=1
+export REWARD_NAME=arc-v2-no-pixel-score
+export EXPERIMENT_NAME=${LORA_R}lora_lr${LEARNING_RATE}_${MAX_GRAD_NORM}max-grad-norm_${REWARD_NAME}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_repetition-penalty-${REPETITION_PENALTY}_masked-truncate_unquantized_beta${BETA}
+condor_submit train.condor command="
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/multi-step_rl_code_finetuning.py \
+--lora_r ${LORA_R} \
+--beta ${BETA} \
+--max-grad-norm ${MAX_GRAD_NORM} \
+--no-load-in-4bit \
+--reward-name ${REWARD_NAME} \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--save-steps 200 \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/barc/refine_dataset.json.gz \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
+```
+
 ## Results
 
 ## Conclusion

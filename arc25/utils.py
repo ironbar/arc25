@@ -105,6 +105,10 @@ def convert_task_to_numpy(task):
     return {partition: [{key: np.array(value) for key, value in sample.items()} for sample in samples] for partition, samples in task.items()}
 
 
+def convert_task_to_lists(task):
+    return {partition: [{key: value.tolist() if isinstance(value, np.ndarray) else value for key, value in sample.items()} for sample in samples] for partition, samples in task.items()}
+
+
 def _verify_that_all_dataset_samples_have_output(data):
     for task in data.values():
         if isinstance(task, dict):

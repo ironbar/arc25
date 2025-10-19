@@ -48,9 +48,31 @@ So the best option would be to take BARC dataset and make predictions for the ta
 Making 8 predictions for 1000 tasks takes around one hour on a single GPU. A good proof of concept will require between 10k and 20k prompts, at least that is what I'm currently
 training with RL before the training collapses.
 
-#### Dataset preparation
+#### Inference Dataset preparation
 
 To prepare the dataset for inference I'm going to reuse the notebook `notebooks/016_prepare_BARC_data_for_training.ipynb`.
+
+#### Inference
+
+```bash
+export PART=1
+python scripts/inference_with_BARC.py \
+--n-predictions 8 \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/200k_HEAVY_gpt4o-description-gpt4omini-code_generated_problems/dataset_10k_part${PART}.json.gz \
+--use-data-augmentation \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-10-18-barc-inference/part${PART}
+
+export PART=2
+python scripts/inference_with_BARC.py \
+--n-predictions 8 \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/200k_HEAVY_gpt4o-description-gpt4omini-code_generated_problems/dataset_10k_part${PART}.json.gz \
+--use-data-augmentation \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-10-18-barc-inference/part${PART}
+```
+
+#### Dataset for 2nd turn conversation preparation
+
+I have done the work on the already existing notebook `notebooks/014_refine_solutions.ipynb`.
 
 ## Results
 

@@ -68,3 +68,7 @@ TODO: ARC as a game, played with code, RL is the framework
 Now I'm trying to:
 
 - Solve RL training collapse so I can train for longer. Hoping that training on huge datasets helps.
+- Trying to make the model learn to refine its predictions using RL, but maybe I should start thinking
+  on a fresh system for ARC26. 
+
+In essence the BARC model is not strong enough and doesn't know how to refine its predictions.

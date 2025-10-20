@@ -160,6 +160,7 @@ Running htop shows that the machines have 32 cores and 378GB of RAM, more than e
 ```bash
 # install all the dependencies
 apt update && apt install -y python3-dev python3-pip python3-virtualenv git nano vim htop screen nvtop
+mkdir data training data/barc
 # copy these two files from the first workstation
 vim .ssh/id_ed25519
 chmod 600 .ssh/id_ed25519
@@ -175,7 +176,6 @@ pip install -r arc25/requirements.txt
 pip install unsloth_zoo==2025.9.6 # I should update the requirements
 # skip this step by now because it is very slow
 #MAX_JOBS=2 python -m pip install flash-attn==2.6.3 --no-build-isolation
-mkdir data training data/barc
 ```
 
 ## Results

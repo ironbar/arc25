@@ -4,6 +4,28 @@ https://www.kaggle.com/wiki/WinningModelDocumentationTemplate
 https://www.kaggle.com/solution-write-up-documentation
 --->
 
+<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [Solution Summary](#solution-summary)
+  - [Abstract](#abstract)
+  - [Introduction](#introduction)
+  - [Vision](#vision)
+    - [Four ways to arrive at that vision](#four-ways-to-arrive-at-that-vision)
+      - [Search and learn](#search-and-learn)
+      - [Combine test-time training and program synthesis](#combine-test-time-training-and-program-synthesis)
+      - [How humans solve ARC](#how-humans-solve-arc)
+      - [Frame ARC as a game and solve it with RL](#frame-arc-as-a-game-and-solve-it-with-rl)
+    - [Why it will beat the other approaches](#why-it-will-beat-the-other-approaches)
+      - [Transduction and test-time training](#transduction-and-test-time-training)
+      - [Natural language program search (o3)](#natural-language-program-search-o3)
+      - [Evolutionary program search](#evolutionary-program-search)
+  - [Brief story of my work for ARC25](#brief-story-of-my-work-for-arc25)
+  - [Acknowledgements](#acknowledgements)
+
+<!-- /code_chunk_output -->
+
 ## Abstract
 
 ## Introduction
@@ -15,7 +37,9 @@ Requirements of a good intelligence test. Intelligence is all about adaptation t
 
 **ARC will be solved first by deep-learning-guided program synthesis that searches program space and adapts at test time with test-time training via hindsight relabeling, in a tight search-and-learn loop.**
 
-### Three ways to arrive at that vision
+### Four ways to arrive at that vision
+
+#### Search and learn
 
 There are only two methods to adapt to novelty: search and learn.
 
@@ -35,14 +59,21 @@ harder problems (like solving ARC) this cycle can take many years.
 I believe that a system that will solve ARC will very likely combine search and learn as well. All my
 work during the ARC25 challenge has gone in that direction.
 
-TODO: why code is better than transduction and natural language
+#### Combine test-time training and program synthesis
+
+#### How humans solve ARC
+
+#### Frame ARC as a game and solve it with RL
+
 TODO: hindsight relabelling, diagram, intuition of why it works, use all the information from the search
 TODO: ARC as a game, played with code, RL is the framework
 
 ### Why it will beat the other approaches
 
 ARC can be solved (and will be solved) with many different approaches, but in this section I will
-argue why search-and-learn will be the first approach to solve it.
+argue why search and learn will be the first approach to solve it.
+
+TODO: why code is better than transduction and natural language
 
 #### Transduction and test-time training
 

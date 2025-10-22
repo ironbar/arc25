@@ -4,12 +4,18 @@ https://www.kaggle.com/wiki/WinningModelDocumentationTemplate
 https://www.kaggle.com/solution-write-up-documentation
 --->
 
+## Abstract
+
 ## Introduction
 
 TODO: very brief description of ARC, what is intelligence and why it is important. Ability is not intelligence.
 Requirements of a good intelligence test. Intelligence is all about adaptation to novelty.
 
 ## Vision
+
+**ARC will be solved first by deep-learning-guided program synthesis that searches program space and adapts at test time with test-time training via hindsight relabeling, in a tight search-and-learn loop.**
+
+### Three ways to arrive at that vision
 
 There are only two methods to adapt to novelty: search and learn.
 
@@ -32,6 +38,24 @@ work during the ARC25 challenge has gone in that direction.
 TODO: why code is better than transduction and natural language
 TODO: hindsight relabelling, diagram, intuition of why it works, use all the information from the search
 TODO: ARC as a game, played with code, RL is the framework
+
+### Why it will beat the other approaches
+
+ARC can be solved (and will be solved) with many different approaches, but in this section I will
+argue why search-and-learn will be the first approach to solve it.
+
+#### Transduction and test-time training
+
+TODO: programming is better suited for ARC-AGI-2 tasks with multiple interacting rules
+TODO: dominant approach on ARC24 and probably ARC25
+
+#### Natural language program search (o3)
+
+TODO: python interpreter is perfect, models fail, specially out of distribution
+
+#### Evolutionary program search
+
+TODO: a frozen model won't be able to generalize when the generalization jump is big
 
 ## Brief story of my work for ARC25
 
@@ -72,3 +96,6 @@ Now I'm trying to:
   on a fresh system for ARC26. 
 
 In essence the BARC model is not strong enough and doesn't know how to refine its predictions.
+
+## Acknowledgements
+

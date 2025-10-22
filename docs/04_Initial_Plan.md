@@ -56,7 +56,7 @@ We can reuse the diagram of how humans solve ARC and replace the elements.
 
 Focusing on efficiency the best configuration for ARC might be the following:
 
-- **Policy**: model, a Large Reasoning Model.
+- **Policy**: a Large Reasoning Model.
 - **World model**: python interpreter
 - **Judgment**: metric function
 - **Learning**: reinforcement learning and hindsight experience replay

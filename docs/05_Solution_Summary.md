@@ -193,6 +193,15 @@ In essence the BARC model is not strong enough and doesn't know how to refine it
 
 ### 1. How does test-time training compares against o3?
 
+At the start of ARC25 challenge I was curious to see how well test-time training
+compared against o3. A custom version of o3 was presented in December 2024 and reported to have solved 87.5% of the semi-private test set of ARC-AGI-1. However with the release
+of ARC-AGI-2 o3 was solving less than 5% of the semi-private test set. It was not
+the exact same version of o3, but the change was so dramatic.
+
+To my surprise I was able to score 11.94 on the leaderboard, doubling the score of o3
+and being the first team to score above 10% in the challenge.
+
+
 ### 2. Does hindsight relabeling works for program synthesis on toy tasks?
 
 ### 3. Does hindsight relabeling works for program synthesis on ARC tasks?

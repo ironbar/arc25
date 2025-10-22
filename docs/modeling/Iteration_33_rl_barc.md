@@ -513,6 +513,123 @@ python /root/arc25/scripts/rl_code_finetuning.py \
 --model-path /data/uds-fourth-five-hunter-250929 \
 --dataset-path /root/data/barc/dataset_100k.json.gz \
 --output-dir /root/trainings/${FOLDER}/${EXPERIMENT_NAME}
+
+# arc25_1
+source /root/arc25_env/bin/activate
+source /root/secrets.sh
+export PYTHONPATH=$PYTHONPATH:/root/arc25
+export BETA=0.04
+export MAX_GRAD_NORM=0.01
+export REPETITION_PENALTY=1.01
+export FOLDER=2025-10-14-rl-barc
+export LEARNING_RATE=4e-6
+export NUM_GENERATIONS=32
+export ACUM_STEPS=4
+export N_CPUS=20
+export LORA_R=1
+export EPOCHS=1
+export REWARD_NAME=arc-v2-no-pixel-score
+export EXPERIMENT_NAME=${LORA_R}lora_lr${LEARNING_RATE}_${MAX_GRAD_NORM}max-grad-norm_${REWARD_NAME}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_repetition-penalty-${REPETITION_PENALTY}_masked-truncate_unquantized_beta${BETA}
+python /root/arc25/scripts/rl_code_finetuning.py \
+--lora_r ${LORA_R} \
+--beta ${BETA} \
+--max-grad-norm ${MAX_GRAD_NORM} \
+--no-load-in-4bit \
+--reward-name ${REWARD_NAME} \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--save-steps 200 \
+--model-path /data/uds-fourth-five-hunter-250929 \
+--dataset-path /root/data/barc/dataset_100k.json.gz \
+--output-dir /root/trainings/${FOLDER}/${EXPERIMENT_NAME}
+
+#arc25_2
+source /root/arc25_env/bin/activate
+source /root/secrets.sh
+export PYTHONPATH=$PYTHONPATH:/root/arc25
+export BETA=0.04
+export MAX_GRAD_NORM=0.004
+export REPETITION_PENALTY=1.01
+export FOLDER=2025-10-14-rl-barc
+export LEARNING_RATE=4e-6
+export NUM_GENERATIONS=32
+export ACUM_STEPS=4
+export N_CPUS=20
+export LORA_R=1
+export EPOCHS=1
+export REWARD_NAME=arc-v2-no-pixel-score
+export EXPERIMENT_NAME=${LORA_R}lora_lr${LEARNING_RATE}_${MAX_GRAD_NORM}max-grad-norm_${REWARD_NAME}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_repetition-penalty-${REPETITION_PENALTY}_masked-truncate_unquantized_beta${BETA}
+python /root/arc25/scripts/rl_code_finetuning.py \
+--lora_r ${LORA_R} \
+--beta ${BETA} \
+--max-grad-norm ${MAX_GRAD_NORM} \
+--no-load-in-4bit \
+--reward-name ${REWARD_NAME} \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--save-steps 200 \
+--model-path /data/uds-fourth-five-hunter-250929 \
+--dataset-path /root/data/barc/dataset_100k.json.gz \
+--output-dir /root/trainings/${FOLDER}/${EXPERIMENT_NAME}
+
+#arc25_3
+source /root/arc25_env/bin/activate
+source /root/secrets.sh
+export PYTHONPATH=$PYTHONPATH:/root/arc25
+export BETA=0.04
+export MAX_GRAD_NORM=0.002
+export REPETITION_PENALTY=1.01
+export FOLDER=2025-10-14-rl-barc
+export LEARNING_RATE=4e-6
+export NUM_GENERATIONS=32
+export ACUM_STEPS=4
+export N_CPUS=20
+export LORA_R=1
+export EPOCHS=1
+export REWARD_NAME=arc-v2-no-pixel-score
+export EXPERIMENT_NAME=${LORA_R}lora_lr${LEARNING_RATE}_${MAX_GRAD_NORM}max-grad-norm_${REWARD_NAME}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_repetition-penalty-${REPETITION_PENALTY}_masked-truncate_unquantized_beta${BETA}
+python /root/arc25/scripts/rl_code_finetuning.py \
+--lora_r ${LORA_R} \
+--beta ${BETA} \
+--max-grad-norm ${MAX_GRAD_NORM} \
+--no-load-in-4bit \
+--reward-name ${REWARD_NAME} \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.01 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--save-steps 200 \
+--model-path /data/uds-fourth-five-hunter-250929 \
+--dataset-path /root/data/barc/dataset_100k.json.gz \
+--output-dir /root/trainings/${FOLDER}/${EXPERIMENT_NAME}
 ```
 
 

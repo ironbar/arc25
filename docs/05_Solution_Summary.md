@@ -24,6 +24,12 @@ https://www.kaggle.com/solution-write-up-documentation
       - [Natural language program search (o3)](#natural-language-program-search-o3)
       - [Evolutionary program search](#evolutionary-program-search)
   - [Brief story of my work for ARC25](#brief-story-of-my-work-for-arc25)
+  - [Content](#content)
+    - [1. How does test-time training compares against o3?](#1-how-does-test-time-training-compares-against-o3)
+    - [2. Does hindsight relabeling works for program synthesis on toy tasks?](#2-does-hindsight-relabeling-works-for-program-synthesis-on-toy-tasks)
+    - [3. Does hindsight relabeling works for program synthesis on ARC tasks?](#3-does-hindsight-relabeling-works-for-program-synthesis-on-arc-tasks)
+    - [4. Can we get a stronger base model with reinforcement learning?](#4-can-we-get-a-stronger-base-model-with-reinforcement-learning)
+    - [5. Can we improve the search accuracy by doing prediction refinement?](#5-can-we-improve-the-search-accuracy-by-doing-prediction-refinement)
   - [Acknowledgements](#acknowledgements)
 
 <!-- /code_chunk_output -->
@@ -182,6 +188,18 @@ Now I'm trying to:
   on a fresh system for ARC26. 
 
 In essence the BARC model is not strong enough and doesn't know how to refine its predictions.
+
+## Content
+
+### 1. How does test-time training compares against o3?
+
+### 2. Does hindsight relabeling works for program synthesis on toy tasks?
+
+### 3. Does hindsight relabeling works for program synthesis on ARC tasks?
+
+### 4. Can we get a stronger base model with reinforcement learning?
+
+### 5. Can we improve the search accuracy by doing prediction refinement?
 
 ## Acknowledgements
 

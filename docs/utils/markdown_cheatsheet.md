@@ -10,6 +10,8 @@ Next an image with html syntax that allows to control the size
 
 <img src="https://www.kaggle.com/static/images/site-logo.png" alt="drawing" width="100"/>
 
+<center><img src="https://www.kaggle.com/static/images/site-logo.png" width="20%"></center>
+
 ## Examples of equations
 
 Equation on a different line:

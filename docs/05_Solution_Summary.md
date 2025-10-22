@@ -14,8 +14,10 @@ https://www.kaggle.com/solution-write-up-documentation
   - [Vision](#vision)
     - [Four ways to arrive at that vision](#four-ways-to-arrive-at-that-vision)
       - [Search and learn](#search-and-learn)
-      - [Combine test-time training and program synthesis](#combine-test-time-training-and-program-synthesis)
-      - [How humans solve ARC](#how-humans-solve-arc)
+      - [Combine the best approaches from ARC24: test-time training and program synthesis](#combine-the-best-approaches-from-arc24-test-time-training-and-program-synthesis)
+      - [Imitate how humans solve ARC](#imitate-how-humans-solve-arc)
+        - [How humans solve ARC](#how-humans-solve-arc)
+        - [How AI might solve ARC](#how-ai-might-solve-arc)
       - [Frame ARC as a game and solve it with RL](#frame-arc-as-a-game-and-solve-it-with-rl)
     - [Why it will beat the other approaches](#why-it-will-beat-the-other-approaches)
       - [Transduction and test-time training](#transduction-and-test-time-training)
@@ -39,6 +41,8 @@ Requirements of a good intelligence test. Intelligence is all about adaptation t
 
 ### Four ways to arrive at that vision
 
+TODO: read and rewrite this paths
+
 #### Search and learn
 
 There are only two methods to adapt to novelty: search and learn.
@@ -59,14 +63,65 @@ harder problems (like solving ARC) this cycle can take many years.
 I believe that a system that will solve ARC will very likely combine search and learn as well. All my
 work during the ARC25 challenge has gone in that direction.
 
-#### Combine test-time training and program synthesis
+<center><img src="modeling/res/1752753996905_arc25.png" width="50%"></center>
 
-#### How humans solve ARC
+#### Combine the best approaches from ARC24: test-time training and program synthesis
+
+Last year's competition showed that test-time training allowed the models to adapt to the novel tasks. At the same time in the semi-private dataset we saw that frontier models could generate code to solve more than half of the tasks.
+
+Using code is a more promising approach because:
+
+1. It is verifiable
+2. Enables to iteratively refine the solution by comparing the outputs with the ground truth. I would argue that this is similar to reasoning.
+
+My hypothesis is that we can use [hindsight experience replay (HER)](https://arxiv.org/abs/1707.01495) at test time to update the beliefs of the model and find the right solution more efficiently. Instead of sampling thousands of programs, sample a few and learn from the mistakes. **That is the way to combine induction and test-time training.**
+
+We can treat the failed code attempts that run as new tasks, and train the model on those tasks. Those tasks will be in the neighborhood of the task that we want to solve.
+
+We already know that HER enables faster learning, specially in very sparse reward environments.
+
+![](res/2025-03-25-16-38-36.png)
+
+Additionally we could define a continuous metric such as the number of correct pixels and use it with reinforcement learning to modify the model towards solutions
+that score higher.
+
+#### Imitate how humans solve ARC
+
+##### How humans solve ARC
+
+![](res/how-humans-solve-arc.png)
+
+When humans try to solve ARC tasks we draw some hypothesis and test it in our heads, if it is not correct we update our beliefs and refine the hypothesis. What modules are needed to do this process?
+
+- **Policy.** What action do I have to do to achieve the goal? Learned with hindsight
+- **World model.** What happens if do this action? Learned with past experiences
+- **Judgment.** Is the solution correct? Learned with human feedback or by comparison
+- **Learning.** In difficult problems we are able to learn from our errors and modify our initial beliefs about the problem.
+
+Reasoning is an iterative process, as shown in the loop diagram in the image.
+
+##### How AI might solve ARC
+
+Focusing on efficiency the best configuration for ARC might be the following:
+
+![](res/how-ai-might-solve-arc.png)
+
+- **Policy**: a Large Reasoning Model.
+- **World model**: python interpreter
+- **Judgment**: metric function
+- **Learning**: reinforcement learning and hindsight experience replay
+
+That way we only have to learn the policy and parametrize the learning, all the other modules are guaranteed to work perfectly.
+
 
 #### Frame ARC as a game and solve it with RL
 
-TODO: hindsight relabelling, diagram, intuition of why it works, use all the information from the search
-TODO: ARC as a game, played with code, RL is the framework
+The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to learn it as efficiently as possible. It is like playing a game, but instead of hitting the buttons it has to write code to play.
+The code generates an output that is evaluated against the ground truth and returns an score.
+
+Finding the right program is equivalent to finding the right trajectory to solve a game. Instead of actions we write code, but the problem is exactly the same. When we want to solve a new task in ARC is the same as wanting to solve a new game. We can frame the problem as a Reinforcement learning game, with a very sparse reward.
+
+TODO: standard RL does not work well with very sparse rewards, HR is needed.
 
 ### Why it will beat the other approaches
 

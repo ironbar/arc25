@@ -199,7 +199,7 @@ of ARC-AGI-2 o3 was solving less than 5% of the semi-private test set. It was no
 the exact same version of o3, but the change was so dramatic.
 
 To my surprise I was able to score [11.94 on the leaderboard](https://www.kaggle.com/code/ironbar/the-architects-single-task-ttt?scriptVersionId=234515350), doubling the score of o3
-and being the first team to score above 10% in the challenge.
+and being the [first team to score above 10% in the challenge](https://x.com/guille_bar/status/1910307180093354427).
 
 To achieve this I simply took the solution for ARC24 from the Architects and made
 a few small modifications.

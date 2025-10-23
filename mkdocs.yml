@@ -36,6 +36,7 @@ plugins:
     - search
     - awesome-pages
     - git-revision-date
+    - glightbox
 
 copyright: '2025. Guillermo Barbadillo'
 

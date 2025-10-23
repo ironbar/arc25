@@ -688,7 +688,31 @@ export NUM_GENERATIONS=32; python scripts/rl_code_finetuning.py \
 ```
 
 This implementation starts with 13GB of RAM usage, grows to 17.2GB when loading the dataset, and just to 18.1GB
-when creating the dataset for training. So apparently is very RAM memory efficient.
+when creating the dataset for training. So apparently is very RAM memory efficient. Previous implementation
+raised RAM usage to 26GB with the same configuration.
+
+```bash
+export NUM_GENERATIONS=32
+export ACCUMULATION_STEPS=4
+
+python scripts/rl_code_finetuning.py \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACCUMULATION_STEPS} \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/200k_HEAVY_gpt4o-description-gpt4omini-code_generated_problems/dataset_100k.json.gz \
+--epochs 1 \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-23-debug-generator/debug-barc_${NUM_GENERATIONS}generations_${ACCUMULATION_STEPS}accum-steps_from_list
+# start RAM: 13.6GB, load dataset: 17.4GB, prepare dataset for training: 70GB (needed to use swap memory)
+
+python scripts/rl_code_finetuning.py \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACCUMULATION_STEPS} \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/200k_HEAVY_gpt4o-description-gpt4omini-code_generated_problems/dataset_100k.json.gz \
+--epochs 1 \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-23-debug-generator/debug-barc_${NUM_GENERATIONS}generations_${ACCUMULATION_STEPS}accum-steps_from_generator
+# start RAM: 8GB, load dataset: 11.6GB, prepare dataset for training: 12.6GB
+```
+
+In the previous implementation I needed 70GB, with the new just 12GB. This explains the memory error that I saw in the cluster.
 
 ## Results
 

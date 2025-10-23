@@ -670,6 +670,25 @@ python /root/arc25/scripts/rl_code_finetuning.py \
 --output-dir /root/trainings/${FOLDER}/${EXPERIMENT_NAME}
 ```
 
+### Dataset from generator
+
+When I increased the number of generations to 64 I had to increase the RAM memory in the cluster. Maybe
+starting from a generator could reduce the memory requirements.
+
+```bash
+python scripts/rl_code_finetuning.py \
+--epochs 1 \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-23-debug-generator/debug
+
+export NUM_GENERATIONS=32; python scripts/rl_code_finetuning.py \
+--num-generations ${NUM_GENERATIONS} \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/200k_HEAVY_gpt4o-description-gpt4omini-code_generated_problems/dataset_100k.json.gz \
+--epochs 1 \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-10-23-debug-generator/debug-barc-${NUM_GENERATIONS}
+```
+
+This implementation starts with 13GB of RAM usage, grows to 17.2GB when loading the dataset, and just to 18.1GB
+when creating the dataset for training. So apparently is very RAM memory efficient.
 
 ## Results
 

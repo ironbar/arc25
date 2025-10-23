@@ -9,7 +9,7 @@ clear goal. This allows to gain greater knowledge of the problem on each iterati
 
 ## Goal
 
-How far can we go using the Architects solution from ARC24?
+How far can we go using the Architects' solution from ARC24?
 
 ## Motivation
 

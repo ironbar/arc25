@@ -198,9 +198,17 @@ compared against o3. A custom version of o3 was presented in December 2024 and r
 of ARC-AGI-2 o3 was solving less than 5% of the semi-private test set. It was not
 the exact same version of o3, but the change was so dramatic.
 
-To my surprise I was able to score 11.94 on the leaderboard, doubling the score of o3
+To my surprise I was able to score [11.94 on the leaderboard](https://www.kaggle.com/code/ironbar/the-architects-single-task-ttt?scriptVersionId=234515350), doubling the score of o3
 and being the first team to score above 10% in the challenge.
 
+To achieve this I simply took the solution for ARC24 from the Architects and made
+a few small modifications.
+
+- Apply test-time training to each task individually, instead of training for a group of tasks together
+- Modify it to work efficiently on 4 GPUs
+- Hyperparameter tuning
+
+This results showed the power of test-time training, being able to beat the mighty o3 and establishing a strong baseline for the rest of the challenge.
 
 ### 2. Does hindsight relabeling works for program synthesis on toy tasks?
 

@@ -277,9 +277,54 @@ For more information go to iterations [4](modeling/Iteration_04_first_steps_with
 
 After validating that test-time training on hindsight-relabeled tasks allowed to solve toy tasks, it was time to see if we could validate the approach on ARC tasks that were much more complex.
 
+#### 3.1 Try to train my own model
+
+TODO:
+
+!!! tip "Learning"
+
+    TODO
+
+For more information go to iterations [10](modeling/Iteration_10_solve_arc_tasks.md), [12](modeling/Iteration_12_solve_a_few_arc_tasks.md), [13](modeling/Iteration_13_reflections.md), [14](modeling/Iteration_14_optimize_inference.md) and [15](modeling/Iteration_15_the_path_forward.md).
+
+#### 3.2 Experiment with base models
+
+TODO:
+
+!!! tip "Learning"
+
+    TODO
+
+For more information go to iterations [16](modeling/Iteration_16_search_with_base_models.md) and [17](modeling/Iteration_17_increase_search_diversity.md).
+
+#### 3.3 Experiment with BARC induction model
+
+TODO:
+
+!!! tip "Learning"
+
+    TODO
+
+For more information go to iterations [19](modeling/Iteration_19_search_with_BARC.md), [20](modeling/Iteration_20_data_augmentation_with_BARC.md), [21](modeling/Iteration_21_fix_bug_with_data.md), [22](modeling/Iteration_22_ttt_BARC.md), [23](modeling/Iteration_23_ttt_BARC_v2.md)
+
 ### 4. Can we get a stronger base model with reinforcement learning?
+
+TODO:
+
+!!! tip "Learning"
+
+    TODO
+
+For more information go to iterations [24](modeling/Iteration_24_RL_BARC.md), [25](modeling/Iteration_25_debug_parallel_code_execution.md), [29](modeling/Iteration_29_multi-gpu-rl.md), [30](modeling/Iteration_30_solve_RL_collapse.md), [33](modeling/Iteration_33_rl_barc.md)
 
 ### 5. Can we improve the search accuracy by doing prediction refinement?
 
-## Acknowledgements
+TODO:
 
+!!! tip "Learning"
+
+    TODO
+
+For more information go to iterations [28](modeling/Iteration_28_refine_predictions.md), [34](modeling/Iteration_34_multi-turn_rl.md)
+
+## Acknowledgements

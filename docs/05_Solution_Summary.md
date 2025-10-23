@@ -212,6 +212,10 @@ a few small modifications.
 
 This results showed the power of test-time training, being able to beat the mighty o3 and establishing a strong baseline for the rest of the challenge.
 
+!!! tip "Learning"
+
+    Test-time training with the model for ARC24 from the Architects was able to score 11.94% on the leaderboard while o3 scored less than 5%.
+
 Please go to iterations [1](modeling/Iteration_01_architects_baseline.md), [2](modeling/Iteration_02_8_fold.md) and [3](modeling/Iteration_03_ideal_test_time_training.md) for more information.
 
 ### 2. Does hindsight relabeling works for program synthesis on toy tasks?
@@ -238,6 +242,12 @@ Then I started doing the first experiments with hindsight relabeling. TODO: expl
 ![distribution evolution](modeling/res/2025-05-07-15-01-52.png)
 
 TODO: draw the chick, draw 100 elements.
+
+!!! tip "Learning"
+
+    Hindsight relabeling allowed a model trained to draw to generalize outside its training distribution.
+    The model was train to draw up to 5 elements and by doing test-time training with hindsight relabeling
+    it was able to solve tasks with more than 5 drew elements.
 
 For more information go to iterations [4](modeling/Iteration_04_first_steps_with_code.md), [5](modeling/Iteration_05_test_time_training_with_code_HER.md), [6](modeling/Iteration_06_reinforcement_learning.md) and [8](modeling/Iteration_08_improve_HER.md)
 

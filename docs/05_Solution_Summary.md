@@ -210,6 +210,8 @@ a few small modifications.
 
 This results showed the power of test-time training, being able to beat the mighty o3 and establishing a strong baseline for the rest of the challenge.
 
+Please go to iterations [1](modeling/Iteration_01_architects_baseline.md), [2](modeling/Iteration_02_8_fold.md) and [3](modeling/Iteration_03_ideal_test_time_training.md) for more information.
+
 ### 2. Does hindsight relabeling works for program synthesis on toy tasks?
 
 ### 3. Does hindsight relabeling works for program synthesis on ARC tasks?

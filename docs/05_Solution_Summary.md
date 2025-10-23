@@ -257,15 +257,21 @@ The initial algorithm used was very simple:
 7. Fine-tune the model on these new hindsight relabeled tasks
 8. Repeat all the steps above until a perfect solution is achieved or the maximum number of epochs is reached.
 
-TODO: draw the chick, draw 100 elements.
+One interesting thing is that this method still works even if we don't sort the tasks by accuracy. This implies that no reward function is needed.
+
+After a few tweaks and hyperparameter tuning I probed that the model was capable of learning to draw anything using test-time training on hindsight relabeled tasks. It was able to solve tasks with 100 squares and complex drawing with multiple elements, like the chick below.
+
+![solving the chick task](modeling/res/1747143038868_image.png)
+
+![alt text](modeling/res/1747143056873_image.png)
 
 !!! tip "Learning"
 
     Hindsight relabeling allowed a model trained to draw to generalize outside its training distribution.
     The model was train to draw up to 5 elements and by doing test-time training with hindsight relabeling
-    it was able to solve tasks with more than 5 drew elements.
+    it was able to solve tasks with more than 100 drew elements.
 
-For more information go to iterations [4](modeling/Iteration_04_first_steps_with_code.md), [5](modeling/Iteration_05_test_time_training_with_code_HER.md), [6](modeling/Iteration_06_reinforcement_learning.md) and [8](modeling/Iteration_08_improve_HER.md)
+For more information go to iterations [4](modeling/Iteration_04_first_steps_with_code.md), [5](modeling/Iteration_05_test_time_training_with_code_HER.md), [6](modeling/Iteration_06_reinforcement_learning.md), [8](modeling/Iteration_08_improve_HER.md) and [9](modeling/Iteration_09_improve_training_script.md).
 
 ### 3. Does hindsight relabeling works for program synthesis on ARC tasks?
 

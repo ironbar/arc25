@@ -275,6 +275,8 @@ For more information go to iterations [4](modeling/Iteration_04_first_steps_with
 
 ### 3. Does hindsight relabeling works for program synthesis on ARC tasks?
 
+After validating that test-time training on hindsight-relabeled tasks allowed to solve toy tasks, it was time to see if we could validate the approach on ARC tasks that were much more complex.
+
 ### 4. Can we get a stronger base model with reinforcement learning?
 
 ### 5. Can we improve the search accuracy by doing prediction refinement?

@@ -235,11 +235,27 @@ As expected, when we tested the model with out-of-distribution tasks (tasks with
 
 ![number of drawings](modeling/res/1746196996841_image.png)
 
-Then I started doing the first experiments with hindsight relabeling. TODO: explain them
+Then I started doing the first experiments with hindsight relabeling. I manually created tasks that
+were so far from the training distribution that the model was unable to solve them. For example
+below you can see a task with 25 squares of different colors. The first visualization shows the
+best prediction for each epoch, the second shows how the accuracy distribution evolved during the epochs.
+Notice how on the first epoch the prediction is very poor, and the accuracy distribution shows that no
+matter how many predictions are generated with the base model, it will be impossible to solve the task.
 
 ![best prediction evolution](modeling/res/1746622789551_image.png)
 
 ![distribution evolution](modeling/res/2025-05-07-15-01-52.png)
+
+The initial algorithm used was very simple:
+
+1. Given the inputs and outputs the model generates n predictions (for example n=256)
+2. The predictions are run to generate outputs images.
+3. Remove duplicates: keep only one prediction per output
+4. Validate the predicted code (remove lines of the code that do not affect the output)
+5. Create new tasks using hindsight relabeling. We use the original output, the output generated when running the code and the predicted code. The model will be trained to predict the code that generated the output.
+6. Sort the tasks by ascending order using the pixel accuracy of the prediction. Worst predictions come first.
+7. Fine-tune the model on these new hindsight relabeled tasks
+8. Repeat all the steps above until a perfect solution is achieved or the maximum number of epochs is reached.
 
 TODO: draw the chick, draw 100 elements.
 

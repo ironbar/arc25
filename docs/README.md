@@ -2,11 +2,9 @@
 
 Guillermo Barbadillo's solution for [ARC25 challenge](https://arcprize.org/arc)
 
+👉 [Solution summary](./05_Solution_Summary.md)
+
 ![](res/2025-03-26-15-33-54.png)
-
-## Docs
-
-[https://ironbar.github.io/arc25](https://ironbar.github.io/arc25)
 
 ## Code structure
 

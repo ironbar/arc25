@@ -231,7 +231,15 @@ As expected, when we tested the model with out-of-distribution tasks (tasks with
 
 ![number of drawings](modeling/res/1746196996841_image.png)
 
-For more information go to iterations [4](modeling/Iteration_04_first_steps_with_code.md)
+Then I started doing the first experiments with hindsight relabeling. TODO: explain them
+
+![best prediction evolution](modeling/res/1746622789551_image.png)
+
+![distribution evolution](modeling/res/2025-05-07-15-01-52.png)
+
+TODO: draw the chick, draw 100 elements.
+
+For more information go to iterations [4](modeling/Iteration_04_first_steps_with_code.md), [5](modeling/Iteration_05_test_time_training_with_code_HER.md), [6](modeling/Iteration_06_reinforcement_learning.md) and [8](modeling/Iteration_08_improve_HER.md)
 
 ### 3. Does hindsight relabeling works for program synthesis on ARC tasks?
 

@@ -30,6 +30,9 @@ https://www.kaggle.com/solution-write-up-documentation
     - [1. How does test-time training compares against o3?](#1-how-does-test-time-training-compares-against-o3)
     - [2. Does hindsight relabeling works for program synthesis on toy tasks?](#2-does-hindsight-relabeling-works-for-program-synthesis-on-toy-tasks)
     - [3. Does hindsight relabeling works for program synthesis on ARC tasks?](#3-does-hindsight-relabeling-works-for-program-synthesis-on-arc-tasks)
+      - [3.1 Try to train my own models](#31-try-to-train-my-own-models)
+      - [3.2 Experiment with base models](#32-experiment-with-base-models)
+      - [3.3 Experiment with BARC induction model](#33-experiment-with-barc-induction-model)
     - [4. Can we get a stronger base model with reinforcement learning?](#4-can-we-get-a-stronger-base-model-with-reinforcement-learning)
     - [5. Can we improve the search accuracy by doing prediction refinement?](#5-can-we-improve-the-search-accuracy-by-doing-prediction-refinement)
   - [Acknowledgements](#acknowledgements)
@@ -277,17 +280,28 @@ For more information go to iterations [4](modeling/Iteration_04_first_steps_with
 
 After validating that test-time training on hindsight-relabeled tasks allowed to solve toy tasks, it was time to see if we could validate the approach on ARC tasks that were much more complex.
 
-#### 3.1 Try to train my own model
+#### 3.1 Try to train my own models
 
-TODO:
+On a first step I tried to continue the approach taken for the toy drawing tasks. I defined a small
+set of primitive functions (~40), and I implemented task generators that created random tasks to teach
+how to use the primitive functions.
+
+However, the models trained on those synthetic tasks were unable to solve any of the real ARC tasks.
+Despite being able to generate an infinite number of synthetic tasks, the diversity of those tasks
+was limited. I implemented 32 tasks generators, but they likely had bias and the model
+was unable to learn something that generalize from that data distribution. Furthermore the diversity
+of the predictions from the model was very small, so the search space of solutions was not fully explored.
 
 !!! tip "Learning"
 
-    TODO
+    Infinite synthetic data is not enough if the diversity of the data is low.
 
 For more information go to iterations [10](modeling/Iteration_10_solve_arc_tasks.md), [12](modeling/Iteration_12_solve_a_few_arc_tasks.md), [13](modeling/Iteration_13_reflections.md), [14](modeling/Iteration_14_optimize_inference.md) and [15](modeling/Iteration_15_the_path_forward.md).
 
 #### 3.2 Experiment with base models
+
+After learning that creating synthetic tasks to teach a model to learn a DSL was very hard, I decided
+to try open-weight models. The idea was to prompt the models with a list of the available DSL functions and their signatures so the model could use them to generate a solution.
 
 TODO:
 

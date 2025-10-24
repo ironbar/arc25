@@ -132,7 +132,7 @@ predictions and doing independent search. No data augmentation was used (which w
 - The ratio of unique outputs decreases with the number of predictions, being just 20% with 512 predictions. Thus we could get the same results with around 100 predictions if we can always generate novel outputs.
 - The number of solved tasks increases log-linearly with the number of predictions
 
-![alt text](res/1753704854977_image.png)
+![alt text](res/1761318484651_image.png)
 
 This uses only one GPU, and we were able to do 512 predictions for 400 tasks in 12 hours. With 4 GPUs and 240 tasks, we could be making close to 4096 predictions per task.
 Or if we devote half of the time to training, we could do 2048 predictions per task. Sounds like a big enough number.
@@ -184,7 +184,7 @@ The best experiment solved 11.5% of the training tasks.
 The two most critical factors for success were model size and prediction volume. 
 Larger models consistently produced higher-quality solutions and solved more tasks. 
 
-The most effective strategy was a simple brute-force approach, generating hundreds of independent solutions per task, as this method significantly outperformed more complex search techniques aimed at refinement or increasing diversity. These "smarter" search prompts were counterproductive, often reducing the variety of generated outputs. While effective, the brute-force method is inefficient, suffering from diminishing returns in solution uniqueness, a key challenge that was only explorable thanks to the massive inference speedups provided by VLLM.
+The most effective strategy was a simple brute-force approach, generating hundreds of independent solutions per task, as this method significantly outperformed more complex search techniques aimed at refinement or increasing diversity. These "smarter" search prompts were counterproductive, often reducing the variety of generated outputs. While effective, the brute-force method is inefficient, suffering from diminishing returns in solution uniqueness.
 
 ## Next steps
 

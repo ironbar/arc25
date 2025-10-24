@@ -301,13 +301,26 @@ For more information go to iterations [10](modeling/Iteration_10_solve_arc_tasks
 #### 3.2 Experiment with base models
 
 After learning that creating synthetic tasks to teach a model to learn a DSL was very hard, I decided
-to try open-weight models. The idea was to prompt the models with a list of the available DSL functions and their signatures so the model could use them to generate a solution.
+to try open-weight models. The idea was to prompt the models with a list of the available DSL functions and their signatures so the model could use them to generate a solution. I decided to use the [BARC dsl](https://github.com/xu3kev/BARC) on these experiments.
 
-TODO:
+I decided to try the Qwen2.5-Coder family of models because there were many different model sizes. The plot below
+shows that bigger models generate valid outputs more frequently and use the dsl more frequently as well. The results are for the ARC-AGI-1 training set.
+
+![alt text](modeling/res/1753292348173_image.png)
+
+The plot below shows how the solved tasks rate changes with number of predictions for the 7B Qwen2.5-Coder model. However it also shows that the number of unique outputs decreases very fast, showing a lack of diversity in the predictions.
+
+![alt text](modeling/res/1761318484651_image.png)
+
+A surprising finding was that I tried different prompting techniques to increase the output diversity, but
+all my attempts produced worse results than simply asking the model to solve the task. For example I 
+tried giving already generated solutions by the model in the prompt and requesting to do something new and different, but the obtained effect was the opposite. In many cases instead of doing something new the model
+simply copied the code given in the prompt. It seems that "small" LLMs lack some capabilities that
+frontier models have.
 
 !!! tip "Learning"
 
-    TODO
+    Small open-weights models with access to a DSL can solve some ARC tasks by writing python code
 
 For more information go to iterations [16](modeling/Iteration_16_search_with_base_models.md) and [17](modeling/Iteration_17_increase_search_diversity.md).
 

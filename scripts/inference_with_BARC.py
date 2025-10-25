@@ -45,6 +45,8 @@ class Config:
 
 def main():
     cfg = tyro.cli(Config, description="Inference with BARC models")
+    if cfg.lora_path is not None and not os.path.exists(cfg.lora_path):
+        raise ValueError(f"LoRA path {cfg.lora_path} does not exist.")
     logger.info(f'Running BARC inference with config: {cfg}')
     llm, tokenizer = load_vllm_model_and_tokenizer(
         cfg.base_model_path, use_4bit_quantization=cfg.use_4bit_quantization,

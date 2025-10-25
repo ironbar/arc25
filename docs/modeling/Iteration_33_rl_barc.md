@@ -404,26 +404,25 @@ python scripts/inference_with_BARC.py \
 --output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-10-14-rl-barc/baseline/evaluation
 
 
-export EXPERIMENT=2025-10-14-rl-barc/8lora_lr2e-6_arc-v2-no-pixel-score_epochs1_16gen_2accum-steps_repetition-penalty-1.02_masked-truncate_unquantized_beta0.01
-for CHECKPOINT in 1000 5000 10000 15000 20000; do
-  echo "Running inference for checkpoint-${CHECKPOINT}..."
-  python scripts/inference_with_BARC.py \
-    --n-predictions 8 \
-    --lora-path /mnt/hdd0/MEGA/TEMP/${EXPERIMENT}/checkpoint-${CHECKPOINT} \
-    --dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
-    --use-data-augmentation \
-    --output-folder /mnt/hdd0/Kaggle/arc25/predictions/${EXPERIMENT}/checkpoint-${CHECKPOINT}/evaluation
-done
+EXPERIMENTS=(
+  "2025-10-14-rl-barc/8lora_lr2e-6_arc-v2-no-pixel-score_epochs1_16gen_2accum-steps_repetition-penalty-1.02_masked-truncate_unquantized_beta0.01"
+  "2025-10-14-rl-barc/1lora_lr4e-6_arc-v2-no-pixel-score_epochs1_16gen_2accum-steps_repetition-penalty-1.02_masked-truncate_unquantized_beta0.01"
+  "/mnt/hdd0/MEGA/TEMP/2025-10-14-rl-barc/1lora_lr4e-6_0.02max-grad-norm_arc-v2-no-pixel-score_64gen_8accum-steps_repetition-penalty-1.01_masked-truncate_unquantized_beta0.04"
+  "/mnt/hdd0/MEGA/TEMP/2025-10-14-rl-barc/1lora_lr4e-6_0.02max-grad-norm_arc-v2-no-pixel-score_128gen_16accum-steps_repetition-penalty-1.01_masked-truncate_unquantized_beta0.04"
+  "/mnt/hdd0/MEGA/TEMP/2025-10-14-rl-barc/1lora_lr4e-6_0.05max-grad-norm_arc-v2-no-pixel-score_32gen_4accum-steps_repetition-penalty-1.02_masked-truncate_unquantized_beta0.02"
+)
 
-export EXPERIMENT=2025-10-14-rl-barc/1lora_lr4e-6_arc-v2-no-pixel-score_epochs1_16gen_2accum-steps_repetition-penalty-1.02_masked-truncate_unquantized_beta0.01
-for CHECKPOINT in 1000 5000 10000 15000 20000; do
-  echo "Running inference for checkpoint-${CHECKPOINT}..."
-  python scripts/inference_with_BARC.py \
-    --n-predictions 8 \
-    --lora-path /mnt/hdd0/MEGA/TEMP/${EXPERIMENT}/checkpoint-${CHECKPOINT} \
-    --dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
-    --use-data-augmentation \
-    --output-folder /mnt/hdd0/Kaggle/arc25/predictions/${EXPERIMENT}/checkpoint-${CHECKPOINT}/evaluation
+for EXPERIMENT in "${EXPERIMENTS[@]}"; do
+  echo "Processing experiment: ${EXPERIMENT}"
+  for CHECKPOINT in 1000 5000 10000 15000 20000; do
+    echo "Running inference for checkpoint-${CHECKPOINT}..."
+    python scripts/inference_with_BARC.py \
+      --n-predictions 32 \
+      --lora-path /mnt/hdd0/MEGA/TEMP/${EXPERIMENT}/checkpoint-${CHECKPOINT} \
+      --dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+      --use-data-augmentation \
+      --output-folder /mnt/hdd0/Kaggle/arc25/predictions/${EXPERIMENT}/checkpoint-${CHECKPOINT}/evaluation
+  done
 done
 ```
 

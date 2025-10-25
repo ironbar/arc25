@@ -560,7 +560,7 @@ For more information go to iteration [34](modeling/Iteration_34_multi-turn_rl.md
 ## Acknowledgements
 
 - Thanks to my wife for taking care of our children many times so I could do research without small AGIs disturbing my attention.
-- Thanks to [Veridas](https://veridas.com/en/) for allowing me to do research on ARC during part of my job time and  providing me access to its compute cluster.
+- Thanks to [Veridas](https://veridas.com/en/) for allowing me to do research on ARC during part of my job time and providing me access to its compute cluster.
 - Thanks to [Strong Compute](https://strongcompute.com/) for providing compute for some of the RL experiments.
 - ARC team. It's been a pleasure to work in this super interesting challenge for a few months. Thanks
   for creating the challenge and specially to Chollet for all his wisdom and teachings.

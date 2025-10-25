@@ -500,13 +500,44 @@ def transform(input_grid: np.ndarray) -> np.ndarray:
 
 For more information go to iterations [19](modeling/Iteration_19_search_with_BARC.md), [20](modeling/Iteration_20_data_augmentation_with_BARC.md) and [21](modeling/Iteration_21_fix_bug_with_data.md).
 
-##### 3.3.2 
+##### 3.3.2 Hindsight relabeling and BARC induction model
+
+To verify if it was possible to do test-time training on hindsight relabeling tasks for program synthesis
+on ARC tasks I designed the following experiments: all the experiments have the same inference budget
+of 512 predictions. The only differences between experiments are wether test-time training with hindsight relabeling is used and its configuration.
+
+![alt text](modeling/res/1758805734469_image.png)
+
+- Orange lines are the baseline, I repeated the experiment 3 times to measure the variability.
+- Green line does 256 predictions, learns and does other 256 predictions. Notice how the green line starts to deviate from the orange lines only after prediction 256.
+- Blue line learns every 128 predictions. Notice how the blue line deviates from the orange line after
+  prediction 128.
+
+The table below summarizes the experiment and the results.
+
+| initial predictions | epochs | predictions per epoch | pass@n    |
+|---------------------|--------|-----------------------|-----------|
+| 512                 | 0      | 0                     | 23.3%     |
+| 256                 | 1      | 256                   | 26.0%     |
+| 128                 | 3      | 128                   | **28.3%** |
+
+We get an improvement of 5% with the best configuration. It is not a huge improvement like the one
+observed on ARC24 with transduction and test-time training where I was able to [improve from 11% to 33%](https://ironbar.github.io/arc24/05_Solution_Summary/#approach). But it validates the idea of **search and learn**.
+
+I would argue that the effect will be bigger if we had an inference budget bigger than 512 predictions,
+but we are constrained by the Kaggle submission hardware and time.
+
+On this initial implementation the model is fine-tuned independently for each task, and all the predictions
+that generated valid outputs are used for training. A more compute-efficient implementation would only
+use the best predictions for training.
 
 !!! tip "Learning"
 
-    TODO
+    We have validated that the search and learn approach works. By doing test-time training with hindsight
+    relabeling on the BARC induction model we were able to solve 28.3% of the ARC-AGI-1 evaluation tasks
+    compared to the 23.3% of the baseline model without test-time training.
 
-For more information go to iterations [19](modeling/Iteration_19_search_with_BARC.md), [20](modeling/Iteration_20_data_augmentation_with_BARC.md), [21](modeling/Iteration_21_fix_bug_with_data.md), [22](modeling/Iteration_22_ttt_BARC.md), [23](modeling/Iteration_23_ttt_BARC_v2.md)
+For more information go to iterations [22](modeling/Iteration_22_ttt_BARC.md) and [23](modeling/Iteration_23_ttt_BARC_v2.md).
 
 ### 4. Can we get a stronger base model with reinforcement learning?
 

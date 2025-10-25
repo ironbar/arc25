@@ -407,9 +407,9 @@ python scripts/inference_with_BARC.py \
 EXPERIMENTS=(
   "2025-10-14-rl-barc/8lora_lr2e-6_arc-v2-no-pixel-score_epochs1_16gen_2accum-steps_repetition-penalty-1.02_masked-truncate_unquantized_beta0.01"
   "2025-10-14-rl-barc/1lora_lr4e-6_arc-v2-no-pixel-score_epochs1_16gen_2accum-steps_repetition-penalty-1.02_masked-truncate_unquantized_beta0.01"
-  "/mnt/hdd0/MEGA/TEMP/2025-10-14-rl-barc/1lora_lr4e-6_0.02max-grad-norm_arc-v2-no-pixel-score_64gen_8accum-steps_repetition-penalty-1.01_masked-truncate_unquantized_beta0.04"
-  "/mnt/hdd0/MEGA/TEMP/2025-10-14-rl-barc/1lora_lr4e-6_0.02max-grad-norm_arc-v2-no-pixel-score_128gen_16accum-steps_repetition-penalty-1.01_masked-truncate_unquantized_beta0.04"
-  "/mnt/hdd0/MEGA/TEMP/2025-10-14-rl-barc/1lora_lr4e-6_0.05max-grad-norm_arc-v2-no-pixel-score_32gen_4accum-steps_repetition-penalty-1.02_masked-truncate_unquantized_beta0.02"
+  "2025-10-14-rl-barc/1lora_lr4e-6_0.02max-grad-norm_arc-v2-no-pixel-score_64gen_8accum-steps_repetition-penalty-1.01_masked-truncate_unquantized_beta0.04"
+  "2025-10-14-rl-barc/1lora_lr4e-6_0.02max-grad-norm_arc-v2-no-pixel-score_128gen_16accum-steps_repetition-penalty-1.01_masked-truncate_unquantized_beta0.04"
+  "2025-10-14-rl-barc/1lora_lr4e-6_0.05max-grad-norm_arc-v2-no-pixel-score_32gen_4accum-steps_repetition-penalty-1.02_masked-truncate_unquantized_beta0.02"
 )
 
 for EXPERIMENT in "${EXPERIMENTS[@]}"; do

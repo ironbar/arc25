@@ -156,25 +156,6 @@ TODO: python interpreter is perfect, models fail, specially out of distribution
 
 TODO: a frozen model won't be able to generalize when the generalization jump is big
 
-## Brief story of my work for ARC25
-
-1. Start working with RL to try to improve the solve rate of the model, that way I won't be needing
-   too many predictions to solve each task. I have some early results that show it's a good direction,
-   but trainings collapse.
-2. Experimented with prediction refinement, but BARC model does not seem to have that capability
-   that allows techniques like AlphaEvolve with frontier models.
-3. I have tried to make search and learn more hardware efficient by grouping the tasks (instead
-    of training on each task independently) but I wasn't able to find a good configuration. Each
-    evaluation takes 3 days on a single GPU, so iteration was very slow.
-
-Now I'm trying to:
-
-- Solve RL training collapse so I can train for longer. Hoping that training on huge datasets helps.
-- Trying to make the model learn to refine its predictions using RL, but maybe I should start thinking
-  on a fresh system for ARC26. 
-
-In essence the BARC model is not strong enough and doesn't know how to refine its predictions.
-
 ## Content
 
 ### 1. How does test-time training compares against o3?
@@ -531,7 +512,7 @@ that all the advances in math and coding abilities of the LLMs from the last yea
 I had experience with RL in different competitions ([Animal AI Olympics](https://www.goodai.com/animal-ai-olympics-results/), [Lux AI](https://www.kaggle.com/competitions/lux-ai-2021) and [Hungry Geese](https://www.kaggle.com/competitions/hungry-geese)), but not with LLMs so I though it was a good
 idea to give it a try.
 
-TODO: RL works, but training collapses and I still haven't found the cause.
+TODO: ONGOING RL works, but training collapses and I still haven't found the cause.
 
 !!! tip "Learning"
 
@@ -541,12 +522,45 @@ For more information go to iterations [24](modeling/Iteration_24_RL_BARC.md), [2
 
 ### 5. Can we improve the search accuracy by doing prediction refinement?
 
-TODO:
+#### 5.1 Can the BARC induction model refine its predictions?
+
+Currently I have been doing independent predictions with the BARC induction model. Each prediction
+is independent of the other predictions. This is very different from how humans solve tasks, we have
+in our memory the history of the search: what have we tried, how well it worked...
+
+One way to achieve this with LLMs is by asking to refine some incorrect solution. Given some prediction
+from the model, we can execute the code, add the outputs to the prompt along some metrics and request
+the model to analyze the problems of the generated code and created a refined version of it. Public approaches
+with frontier LLMs by [Ryan Greenblatt](https://redwoodresearch.substack.com/p/getting-50-sota-on-arc-agi-with-gpt)
+and [Jeremy Berman](https://jeremyberman.substack.com/p/how-i-got-a-record-536-on-arc-agi) rely in this ability of frontier models
+to refine code given feedback from execution.
+
+However when I tried to refine predictions with the BARC induction model I found that the model
+didn't have that ability. I made a comparison of a run doing 128 independent predictions per task,
+versus doing 64 independent predictions, select the best 8 predictions and try to refine those.
+I didn't found any significative difference in accuracy.
+
+!!! tip "Learning"
+
+    Frontier model have the ability to refine its predictions given feedback from execution, but
+    this 8B LLama model finetuned on ARC tasks does not have that ability.
+
+For more information go to iteration [28](modeling/Iteration_28_refine_predictions.md).
+
+#### 5.1 Can the BARC induction model learn to refine its predictions using RL?
+
+TODO: ONGOING
 
 !!! tip "Learning"
 
     TODO
 
-For more information go to iterations [28](modeling/Iteration_28_refine_predictions.md), [34](modeling/Iteration_34_multi-turn_rl.md)
+For more information go to iteration [34](modeling/Iteration_34_multi-turn_rl.md).
 
 ## Acknowledgements
+
+- Thanks to my wife for taking care of our children many times so I could do research without small AGIs disturbing my attention.
+- Thanks to [Veridas](https://veridas.com/en/) for allowing me to do research on ARC during part of my job time and  providing me access to its compute cluster.
+- Thanks to [Strong Compute](https://strongcompute.com/) for providing compute for some of the RL experiments.
+- ARC team. It's been a pleasure to work in this super interesting challenge for a few months. Thanks
+  for creating the challenge and specially to Chollet for all his wisdom and teachings.

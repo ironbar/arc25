@@ -301,7 +301,7 @@ For more information go to iterations [10](modeling/Iteration_10_solve_arc_tasks
 #### 3.2 Experiment with base models
 
 After learning that creating synthetic tasks to teach a model to learn a DSL was very hard, I decided
-to try open-weight models. The idea was to prompt the models with a list of the available DSL functions and their signatures so the model could use them to generate a solution. I decided to use the [BARC dsl](https://github.com/xu3kev/BARC) on these experiments.
+to try open-weight models. The idea was to prompt the models with a list of the available DSL functions and their signatures so the model could use them to generate a solution. I decided to use the [BARC DSL](https://github.com/xu3kev/BARC) on these experiments.
 
 I decided to try the Qwen2.5-Coder family of models because there were many different model sizes. The plot below
 shows that bigger models generate valid outputs more frequently and use the dsl more frequently as well. The results are for the ARC-AGI-1 training set.
@@ -326,7 +326,181 @@ For more information go to iterations [16](modeling/Iteration_16_search_with_bas
 
 #### 3.3 Experiment with BARC induction model
 
-TODO:
+After seeing that open-weights models with access to the [BARC DSL](https://github.com/xu3kev/BARC) were able to solve ARC tasks, I decided
+to use the BARC induction model directly. This model already knew to use the DSL, so I didn't have to
+provide the signature of the DSL functions in the prompt. One brilliant aspect of the [BARC paper](https://arxiv.org/abs/2411.02272) is that they implement generators and solvers for 162 ARC-AGI-1 training tasks and they use
+that code as seed for LLMs to generate new tasks. By doing that they move the problem domain from the ARC grids to code, and they can leverage the code capabilities of LLMs to generate new tasks. Asking an LLM to generate
+new tasks in the grid domain will very likely yield poor results. They train the BARC induction model on hundreds of thousands LLM-generated tasks and this overcomes the problems I saw on the previous [3.1 section](#31-try-to-train-my-own-models) where I could not generate training data with enough diversity to train my own models.
+
+##### 3.3.1 Replicate results from BARC paper
+
+On a first step I validated that I could get similar results to the numbers reported in the paper. Direct comparison is not possible because their last numbers are obtained doing 20k predictions per task and I only did around 500 predictions due to the constraints imposed by the Kaggle submission (with the current hardware I don't think is possible to make much more than 512 predictions per task with an 7B model).
+
+In the paper there is a plot that shows a solve rate slightly below 15% for 500 submissions, and I got around 22% for the same number of submissions. The differences are probably explained because the plot in the paper is
+very likely obtained with a model trained with less data (not the final model) and also maybe due to using
+data augmentation at inference.
+
+![alt text](modeling/res/1756053829174_image.png)
+
+<details>
+  <summary>Click to see examples of solved tasks</summary>
+
+![alt text](modeling/res/1756096296254_image.png)
+
+```python
+from common import *
+
+import numpy as np
+from typing import *
+
+# concepts:
+# scaling, color transformation
+
+# description:
+# In the input, you will see a 3x3 sprite with gray pixels scattered randomly. 
+# To create the output grid, you should first scale the sprite by a factor of 2, 
+# then replace all gray pixels with a pattern of alternating colors (blue and red).
+# The scaled sprite should maintain the original size, and the pattern should cover the gray pixels only.
+
+def transform(input_grid):
+    # Step 1: Detect the gray pixels in the input grid
+    gray_positions = np.argwhere(input_grid == Color.GRAY)
+
+    # Step 2: Create a new output grid with the same size as the scaled sprite
+    scale_factor = 2
+    output_height = input_grid.shape[0] * scale_factor
+    output_width = input_grid.shape[1] * scale_factor
+    output_grid = np.full((output_height, output_width), Color.BLACK)
+
+    # Step 3: Scale the input grid by the scale factor and place it in the output grid
+    for i in range(input_grid.shape[0]):
+        for j in range(input_grid.shape[1]):
+            if input_grid[i, j] != Color.BLACK:
+                # Blit the original color in the scaled position
+                blit_sprite(output_grid, np.full((scale_factor, scale_factor), input_grid[i, j]), 
+                            x=i*scale_factor, y=j*scale_factor)
+
+    # Step 4: Replace gray pixels in the scaled grid with the alternating pattern
+    for x, y in gray_positions:
+        scaled_x, scaled_y = x * scale_factor, y * scale_factor
+        # Create a 2x2 alternating pattern of blue and red
+        pattern = np.array([[Color.BLUE, Color.RED],
+                            [Color.RED, Color.BLUE]])
+        blit_sprite(output_grid, pattern, scaled_x, scaled_y)
+
+    return output_grid
+```
+
+---
+
+![alt text](modeling/res/1756096371982_image.png)
+
+```python
+from common import *
+
+import numpy as np
+from typing import *
+
+# concepts:
+# pattern generation, lines
+
+# description:
+# In the input you will see two red pixels. 
+# To make the output, you should create a pattern of blue squares and red lines that connect the two red pixels.
+# The pattern consists of blue squares filling the area between the two red pixels, 
+# and the red lines should extend vertically and horizontally from the red pixels to the edges of the canvas.
+
+def transform(input_grid):
+    # Find the positions of the two red pixels
+    red_positions = np.argwhere(input_grid == Color.RED)
+    if len(red_positions) != 2:
+        raise ValueError("Input grid must contain exactly two red pixels.")
+
+    (x1, y1), (x2, y2) = red_positions
+
+    # Determine the bounding box for the blue squares
+    min_x, max_x = min(x1, x2), max(x1, x2)
+    min_y, max_y = min(y1, y2), max(y1, y2)
+
+    # Create blue squares in the bounding box
+    output_grid = np.zeros_like(input_grid)
+    output_grid[min_x:max_x + 1, min_y:max_y + 1] = Color.BLUE
+
+    # Draw red lines from the red pixels to the edges of the canvas
+    draw_line(output_grid, x1, y1, color=Color.RED, direction=(1, 0))  # Right from first red pixel
+    draw_line(output_grid, x1, y1, color=Color.RED, direction=(-1, 0)) # Left from first red pixel
+    draw_line(output_grid, x1, y1, color=Color.RED, direction=(0, 1))  # Down from first red pixel
+    draw_line(output_grid, x1, y1, color=Color.RED, direction=(0, -1)) # Up from first red pixel
+
+    draw_line(output_grid, x2, y2, color=Color.RED, direction=(1, 0))  # Right from second red pixel
+    draw_line(output_grid, x2, y2, color=Color.RED, direction=(-1, 0)) # Left from second red pixel
+    draw_line(output_grid, x2, y2, color=Color.RED, direction=(0, 1))  # Down from second red pixel
+    draw_line(output_grid, x2, y2, color=Color.RED, direction=(0, -1)) # Up from second red pixel
+
+    return output_grid
+```
+
+---
+
+![alt text](modeling/res/1756096418602_image.png)
+
+```python
+from common import *
+
+import numpy as np
+from typing import *
+
+# concepts:
+# circle detection, color transformation
+
+# description:
+# In the input, you will see a grid with random colored pixels on it. 
+# To make the output, you should find all circular shapes (of any color) 
+# with a diameter greater than or equal to 3 pixels and change their color to yellow.
+
+def transform(input_grid: np.ndarray) -> np.ndarray:
+    # Plan:
+    # 1. Detect circular shapes in the grid
+    # 2. Change their color to yellow if they meet the size criteria
+
+    output_grid = np.copy(input_grid)
+
+    # Iterate over the grid to find circular shapes
+    for x in range(len(input_grid)):
+        for y in range(len(input_grid[0])):
+            # Check if the pixel is not background
+            if input_grid[x, y] != Color.BLACK:
+                # Check for circle shape using a simple heuristic
+                # We will consider a circle if it has a certain diameter
+                diameter = 1
+                while True:
+                    # Check the pixels in the current diameter
+                    if (x + diameter < len(input_grid) and
+                        y + diameter < len(input_grid[0]) and
+                        np.all(input_grid[x:x + diameter + 1, y:y + diameter + 1] == input_grid[x, y])):
+                        diameter += 1
+                    else:
+                        # We found the maximum diameter
+                        diameter -= 1
+                        break
+                
+                # If the diameter is 2 or more, we consider it a circle
+                if diameter >= 3:
+                    output_grid[x:x + diameter + 1, y:y + diameter + 1] = Color.YELLOW
+
+    return output_grid
+```
+
+</details>
+
+!!! tip "Learning"
+
+    BARC induction model is able to solve around 22% of the ARC-AGI-1 evaluation tasks with a budget
+    of 512 predictions, however it only solves 0.8% of the ARC-AGI-2 evaluation set.
+
+For more information go to iterations [19](modeling/Iteration_19_search_with_BARC.md), [20](modeling/Iteration_20_data_augmentation_with_BARC.md) and [21](modeling/Iteration_21_fix_bug_with_data.md).
+
+##### 3.3.2 
 
 !!! tip "Learning"
 

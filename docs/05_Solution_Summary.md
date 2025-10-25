@@ -33,6 +33,8 @@ https://www.kaggle.com/solution-write-up-documentation
       - [3.1 Try to train my own models](#31-try-to-train-my-own-models)
       - [3.2 Experiment with base models](#32-experiment-with-base-models)
       - [3.3 Experiment with BARC induction model](#33-experiment-with-barc-induction-model)
+        - [3.3.1 Replicate results from BARC paper](#331-replicate-results-from-barc-paper)
+        - [3.3.2 Hindsight relabeling and BARC induction model](#332-hindsight-relabeling-and-barc-induction-model)
     - [4. Can we get a stronger base model with reinforcement learning?](#4-can-we-get-a-stronger-base-model-with-reinforcement-learning)
     - [5. Can we improve the search accuracy by doing prediction refinement?](#5-can-we-improve-the-search-accuracy-by-doing-prediction-refinement)
   - [Acknowledgements](#acknowledgements)
@@ -156,33 +158,12 @@ TODO: a frozen model won't be able to generalize when the generalization jump is
 
 ## Brief story of my work for ARC25
 
-1. Baseline with test-time training. Since o3 was solving less than 5% of the test tasks,
-   I wanted to see what was the accuracy of the last year's most successfull approach.
-   To my surprise I was able to score 11.84, being the first team to score above 10 in the challenge.
-2. Then I moved and started to explore if an LLM generating code could learn from its failing attempts
-   and generalize outside its training distribution. For that I designed a toy environment where
-   the model had to learn to draw. I probed that hindsight relabelling was able to adapt the model
-   to work with much more complex drawings than the ones seen during training.
-3. Next step was to see if the same could be applied for ARC tasks, much more difficult than the
-   toy problem of drawing. My initial view was to create new tasks to teach how to use the primitive
-   functions of a custom DSL created for ARC. The problem was that I underestimated the difficulty
-   of creating a big number of diverse training tasks so the model could learn to use the primitive
-   functions effectively. Our current deep learning methods need a lot of data, and data needs to be
-   very diverse. My training tasks were very few and not very diverse.
-4. Then I tried to use public models, and let them use the DSL by describing it on the prompt. But it did not work well, the models were not able to explore the space effectively, there were a lot of repeated solutions.
-5. Thus I decided to switch and use the BARC induction model. That model had been trained with a
-   lot of ARC tasks and was able to use a DSL. Maybe the DSL was not complete or maybe the model
-   was not strong enough, but I believed I could probe or discard my ideas with it. On a first
-   step I validated that the model could produce reasonable good results with a reasonable number of
-   predictions (<= 512), because in the BARC paper I believe they use 20k predictions.
-6. Validated that using search and learn the BARC induction model improves its accuracy from 22% to 27%.
-   The improvement is not dramatic but it solves tasks that won't be solvable using simple predictions.
-7. Start working with RL to try to improve the solve rate of the model, that way I won't be needing
+1. Start working with RL to try to improve the solve rate of the model, that way I won't be needing
    too many predictions to solve each task. I have some early results that show it's a good direction,
    but trainings collapse.
-8. Experimented with prediction refinement, but BARC model does not seem to have that capability
+2. Experimented with prediction refinement, but BARC model does not seem to have that capability
    that allows techniques like AlphaEvolve with frontier models.
-9. I have tried to make search and learn more hardware efficient by grouping the tasks (instead
+3. I have tried to make search and learn more hardware efficient by grouping the tasks (instead
     of training on each task independently) but I wasn't able to find a good configuration. Each
     evaluation takes 3 days on a single GPU, so iteration was very slow.
 
@@ -541,7 +522,16 @@ For more information go to iterations [22](modeling/Iteration_22_ttt_BARC.md) an
 
 ### 4. Can we get a stronger base model with reinforcement learning?
 
-TODO:
+After validating that the search and learn approach could work, I realized that I need a stronger
+base model to be able to beat ARC-AGI-2. The BARC induction model only solves 22% and 0.8% of the
+evaluation taks of ARC-AGI-1 and ARC-AGI-2 respectively.
+
+I thought that giving a try to reinforcement learning could be a good idea. As an outsider it seems
+that all the advances in math and coding abilities of the LLMs from the last year come from using RL.
+I had experience with RL in different competitions ([Animal AI Olympics](https://www.goodai.com/animal-ai-olympics-results/), [Lux AI](https://www.kaggle.com/competitions/lux-ai-2021) and [Hungry Geese](https://www.kaggle.com/competitions/hungry-geese)), but not with LLMs so I though it was a good
+idea to give it a try.
+
+TODO: RL works, but training collapses and I still haven't found the cause.
 
 !!! tip "Learning"
 

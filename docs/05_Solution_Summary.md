@@ -6,8 +6,6 @@ https://www.kaggle.com/solution-write-up-documentation
 <center><img src="modeling/res/1752753996905_arc25.png" width="50%"></center>
 --->
 
-TODO: read and check everything
-
 ## Abstract
 
 This is a technical report of the work and research done by Guillermo Barbadillo for the ARC25 challenge.
@@ -51,7 +49,7 @@ the leaderboard was obtained with minor adaptations of last year's test-time tra
 ## Introduction
 
 <!-- what is intelligence --->
-François Chollet defined intelligence as "skill-acquisition intelligence" in the paper [On the Measure of Intelligence](https://arxiv.org/abs/1911.01547) back in 2019.
+François Chollet defined intelligence as **skill-acquisition intelligence** in the paper [On the Measure of Intelligence](https://arxiv.org/abs/1911.01547) back in 2019.
 
 <!-- intelligence vs skill --->
 Humans (and that include many AI researches) tend to confuse skill with intelligence. This happens because
@@ -62,13 +60,14 @@ to achieve an arbitrary level of skill by using unlimited priors, training data 
 would only be capable of playing chess and nothing more, its adaptation capacity is very limited and thus its intelligence is very limited as well.
 
 <!-- ARC --->
+> The intelligence of a system is a measure of its skill-acquisition efficiency over a scope of tasks, with respect to priors, experience, and generalization difficulty.
+
+Based on this definition Chollet created the Abstraction and Reasoning Corpus (ARC). ARC is a collection of visual intelligence tasks that only require core knowledge priors, each task has only a few examples to understand it, and all the evaluation tasks are novel and different to the training tasks. The image below shows a sample of the images used in the ARC tasks.
+
+![alt text](res/1761473956486_image.png)
 
 <!-- Why ARC is important --->
-
-<!-- superintelligence --->
-
-TODO: very brief description of ARC, what is intelligence and why it is important. Ability is not intelligence.
-Requirements of a good intelligence test. Intelligence is all about adaptation to novelty.
+ARC is important because currently is the only benchmark that is measuring intelligence. All the other benchmarks just measure skill (math skills, coding skills, general knowledge...). If we want to make progress towards AGI, ARC is the north star metric that we should follow.
 
 ## Vision: Search and learn
 

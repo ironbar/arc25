@@ -158,8 +158,16 @@ Transduction can solve ARC, but I don't believe is the easiest way to do it. Usi
 
 #### Natural language program search (o3)
 
-TODO: python interpreter is perfect, models fail, specially out of distribution
-TODO: why code is better than natural language
+Although OpenAI did not share any details of how a fine-tuned version of o3 was able to solve ARC-AGI-1,
+it is believed that it used natural language program search. For each task o3 described the task using
+natural language, then transformed the grids conditioned on that description and analyzed the outputs
+to find errors and refine the description of the task. However:
+
+- Any natural language description of a task can be implemented using python code. And it could be expressed
+  in a short program if a good domain specific language (DSL) is available. Thus I don't see a clear
+  advantage of using natural language over python code.
+- All deep learning models are fallible. Even if the model finds the correct description of the task,
+  it might fail to transform the grids accordingly. In the other hand, the python interpreter is a deterministic executor: once a correct program is found, it will always produce the correct output.
 
 #### Evolutionary program search
 

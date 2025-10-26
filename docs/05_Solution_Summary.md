@@ -10,43 +10,47 @@ https://www.kaggle.com/solution-write-up-documentation
 
 <!-- code_chunk_output -->
 
-- [Solution Summary](#solution-summary)
-  - [Abstract](#abstract)
-  - [Introduction](#introduction)
-  - [Vision: Search and learn](#vision-search-and-learn)
-    - [Four paths to arrive at that vision](#four-paths-to-arrive-at-that-vision)
-      - [Path 1. Search and learn](#path-1-search-and-learn)
-      - [Path 2. Combine the best approaches from ARC24: test-time training and program synthesis](#path-2-combine-the-best-approaches-from-arc24-test-time-training-and-program-synthesis)
-      - [Path 3. Imitate how humans solve ARC](#path-3-imitate-how-humans-solve-arc)
-        - [How humans solve ARC](#how-humans-solve-arc)
-        - [How AI might solve ARC](#how-ai-might-solve-arc)
-      - [Path 4. Frame ARC as a game and solve it with RL](#path-4-frame-arc-as-a-game-and-solve-it-with-rl)
-    - [Why it will beat the other approaches](#why-it-will-beat-the-other-approaches)
-      - [Transduction and test-time training](#transduction-and-test-time-training)
-      - [Natural language program search (o3)](#natural-language-program-search-o3)
-      - [Evolutionary program search](#evolutionary-program-search)
-  - [Content](#content)
-    - [1. How does test-time training compares against o3?](#1-how-does-test-time-training-compares-against-o3)
-    - [2. Does hindsight relabeling works for program synthesis on toy tasks?](#2-does-hindsight-relabeling-works-for-program-synthesis-on-toy-tasks)
-    - [3. Does hindsight relabeling works for program synthesis on ARC tasks?](#3-does-hindsight-relabeling-works-for-program-synthesis-on-arc-tasks)
-      - [3.1 Try to train my own models](#31-try-to-train-my-own-models)
-      - [3.2 Experiment with base models](#32-experiment-with-base-models)
-      - [3.3 Experiment with BARC induction model](#33-experiment-with-barc-induction-model)
-        - [3.3.1 Replicate results from BARC paper](#331-replicate-results-from-barc-paper)
-        - [3.3.2 Hindsight relabeling and BARC induction model](#332-hindsight-relabeling-and-barc-induction-model)
-    - [4. Can we get a stronger base model with reinforcement learning?](#4-can-we-get-a-stronger-base-model-with-reinforcement-learning)
-    - [5. Can we improve the search accuracy by doing prediction refinement?](#5-can-we-improve-the-search-accuracy-by-doing-prediction-refinement)
-      - [5.1 Can the BARC induction model refine its predictions?](#51-can-the-barc-induction-model-refine-its-predictions)
-      - [5.1 Can the BARC induction model learn to refine its predictions using RL?](#51-can-the-barc-induction-model-learn-to-refine-its-predictions-using-rl)
-  - [Acknowledgements](#acknowledgements)
-
-<!-- /code_chunk_output -->
-
 TODO: read and check everything
 
 ## Abstract
 
 TODO: This is a technical report of the work done for ARC25. Some ideas are clearly missing. baseline + vision
+
+## Table of contents
+
+- [Abstract](#abstract)
+- [Table of contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Vision: Search and learn](#vision-search-and-learn)
+  - [Four paths to arrive at that vision](#four-paths-to-arrive-at-that-vision)
+    - [Path 1. Search and learn](#path-1-search-and-learn)
+    - [Path 2. Combine the best approaches from ARC24: test-time training and program synthesis](#path-2-combine-the-best-approaches-from-arc24-test-time-training-and-program-synthesis)
+    - [Path 3. Imitate how humans solve ARC](#path-3-imitate-how-humans-solve-arc)
+      - [How humans solve ARC](#how-humans-solve-arc)
+      - [How AI might solve ARC](#how-ai-might-solve-arc)
+    - [Path 4. Frame ARC as a game and solve it with RL](#path-4-frame-arc-as-a-game-and-solve-it-with-rl)
+  - [Why it will beat the other approaches](#why-it-will-beat-the-other-approaches)
+    - [Transduction and test-time training](#transduction-and-test-time-training)
+    - [Natural language program search (o3)](#natural-language-program-search-o3)
+    - [Evolutionary program search](#evolutionary-program-search)
+- [Content](#content)
+  - [1. How does test-time training compares against o3?](#1-how-does-test-time-training-compares-against-o3)
+  - [2. Does hindsight relabeling works for program synthesis on toy tasks?](#2-does-hindsight-relabeling-works-for-program-synthesis-on-toy-tasks)
+  - [3. Does hindsight relabeling works for program synthesis on ARC tasks?](#3-does-hindsight-relabeling-works-for-program-synthesis-on-arc-tasks)
+    - [3.1 Try to train my own models](#31-try-to-train-my-own-models)
+    - [3.2 Experiment with base models](#32-experiment-with-base-models)
+    - [3.3 Experiment with BARC induction model](#33-experiment-with-barc-induction-model)
+      - [3.3.1 Replicate results from BARC paper](#331-replicate-results-from-barc-paper)
+      - [3.3.2 Hindsight relabeling and BARC induction model](#332-hindsight-relabeling-and-barc-induction-model)
+  - [4. Can we get a stronger base model with reinforcement learning?](#4-can-we-get-a-stronger-base-model-with-reinforcement-learning)
+  - [5. Can we improve the search accuracy by doing prediction refinement?](#5-can-we-improve-the-search-accuracy-by-doing-prediction-refinement)
+    - [5.1 Can the BARC induction model refine its predictions?](#51-can-the-barc-induction-model-refine-its-predictions)
+    - [5.1 Can the BARC induction model learn to refine its predictions using RL?](#51-can-the-barc-induction-model-learn-to-refine-its-predictions-using-rl)
+- [Acknowledgements](#acknowledgements)
+
+<!-- /code_chunk_output -->
+
+
 
 ## Introduction
 

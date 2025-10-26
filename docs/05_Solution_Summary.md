@@ -55,7 +55,7 @@ François Chollet defined intelligence as **skill-acquisition intelligence** in 
 Humans (and that includes many AI researchers) tend to confuse skill with intelligence. This happens because
 when a person shows a great level of skill, for example at chess, we can be very certain that the person is intelligent. Skill and intelligence are very correlated in humans because humans do not know chess at birth, they have to learn how to play it. Thus if a person is able to achieve a great level of skill at chess, it's because
 it has been able to acquire that skill more efficiently than other people.
-However, in the case of machines that correlation is totally broken. Given some task like play chess, it is possible
+However, in the case of machines that correlation is totally broken. Given some task like playing chess, it is possible
 to achieve an arbitrary level of skill by using unlimited priors, training data and compute. But that machine
 would only be capable of playing chess and nothing more, its adaptation capacity is very limited and thus its intelligence is very limited as well.
 
@@ -86,7 +86,7 @@ model to the new tasks.
 
 On the other hand, the solutions for the semi-private evaluation relied on search. o3 and other reasoning
 models search the space of natural language programs to find solutions for novel tasks. Other methods
-pioneered by Greenblatt searched the space of python programs.
+pioneered by Greenblatt searched the space of Python programs.
 
 Humans use both methods, when we approach a new task we try different approaches to try to solve it and
 we learn from the failures. When trying subsequent approaches we do not repeat the mistakes, we try

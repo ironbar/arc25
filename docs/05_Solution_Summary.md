@@ -50,6 +50,23 @@ the leaderboard was obtained with minor adaptations of last year's test-time tra
 
 ## Introduction
 
+<!-- what is intelligence --->
+François Chollet defined intelligence as "skill-acquisition intelligence" in the paper [On the Measure of Intelligence](https://arxiv.org/abs/1911.01547) back in 2019.
+
+<!-- intelligence vs skill --->
+Humans (and that include many AI researches) tend to confuse skill with intelligence. This happens because
+when a person shows a great level of skill, for example at chess, we can be very certain that the person is intelligent. Skill and intelligence are very correlated in humans because humans do not know chess at birth, they have to learn how to play it. Thus if a person is able to achieve a great level of skill at chess, it's because
+it has been able to acquire that skill more efficiently than other persons.
+However in the case of machines that correlation is totally broken. Given some task like play chess, it is possible
+to achieve an arbitrary level of skill by using unlimited priors, training data and compute. But that machine
+would only be capable of playing chess and nothing more, its adaptation capacity is very limited and thus its intelligence is very limited as well.
+
+<!-- ARC --->
+
+<!-- Why ARC is important --->
+
+<!-- superintelligence --->
+
 TODO: very brief description of ARC, what is intelligence and why it is important. Ability is not intelligence.
 Requirements of a good intelligence test. Intelligence is all about adaptation to novelty.
 

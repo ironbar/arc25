@@ -54,7 +54,7 @@ François Chollet defined intelligence as **skill-acquisition intelligence** in 
 <!-- intelligence vs skill --->
 Humans (and that includes many AI researchers) tend to confuse skill with intelligence. This happens because
 when a person shows a great level of skill, for example at chess, we can be very certain that the person is intelligent. Skill and intelligence are very correlated in humans because humans do not know chess at birth, they have to learn how to play it. Thus if a person is able to achieve a great level of skill at chess, it's because
-it has been able to acquire that skill more efficiently than other persons.
+it has been able to acquire that skill more efficiently than other people.
 However, in the case of machines that correlation is totally broken. Given some task like play chess, it is possible
 to achieve an arbitrary level of skill by using unlimited priors, training data and compute. But that machine
 would only be capable of playing chess and nothing more, its adaptation capacity is very limited and thus its intelligence is very limited as well.
@@ -127,7 +127,7 @@ that score higher.
 
 When humans try to solve ARC tasks we draw some hypothesis and test it in our heads, if it is not correct we update our beliefs and refine the hypothesis. What modules are needed to do this process?
 
-- **Policy.** What action do I have to do to achieve the goal? Learned with hindsight
+- **Policy.** What action do I have to take to achieve the goal? Learned with hindsight
 - **World model.** What happens if I do this action? Learned with past experiences
 - **Judgment.** Is the solution correct? Learned with human feedback or by comparison
 - **Learning.** In difficult problems, we are able to learn from our errors and modify our initial beliefs about the problem.
@@ -149,7 +149,7 @@ That way we only have to learn the policy and parametrize the learning, all the 
 
 #### Path 4. Frame ARC as a game and solve it with RL
 
-The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to learn it as efficiently as possible. It is like playing a game, but instead of hitting the buttons, it has to write code to play.
+The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to learn it as efficiently as possible. It is like playing a game, but instead of hitting the buttons, it has to write code.
 The code generates an output that is evaluated against the ground truth and returns a score.
 
 Finding the right program is equivalent to finding the right trajectory to solve a game.
@@ -195,7 +195,7 @@ and [Jeremy Berman](https://jeremyberman.substack.com/p/how-i-got-a-record-536-o
 state of the art accuracy on ARC by generating python code and refining the code using feedback from
 execution.
 
-My guess is that a frozen model, no matter how big, won't be able to generalize when the generalization jump is big.
+My guess is that a frozen model, no matter how big, will not be able to generalize when the generalization jump is big.
 I hypothesize that search and learn will beat a pure search approach.
 
 ## Content
@@ -211,11 +211,11 @@ To my surprise, I was able to score [11.94 on the leaderboard](https://www.kaggl
 and being the [first team to score above 10% in the challenge](https://x.com/guille_bar/status/1910307180093354427).
 
 To achieve this, I simply took the solution for ARC24 from the Architects and made
-a few small modifications.
+a few small modifications:
 
-- Apply test-time training to each task individually, instead of training for a group of tasks together
-- Modify it to work efficiently on 4 GPUs
-- Hyperparameter tuning
+- Apply test-time training to each task individually, instead of training for a group of tasks together.
+- Modify it to work efficiently on 4 GPUs.
+- Hyperparameter tuning.
 
 These results showed the power of test-time training, being able to beat the mighty o3 and establishing a strong baseline for the rest of the challenge.
 
@@ -245,7 +245,7 @@ As expected, when we tested the model with out-of-distribution tasks (tasks with
 Then I started doing the first experiments with hindsight relabeling. I manually created tasks that
 were so far from the training distribution that the model was unable to solve them. For example,
 below you can see a task with 25 squares of different colors. The first visualization shows the
-best prediction for each epoch, the second shows how the accuracy distribution evolved during the epochs.
+best prediction for each epoch, and the second shows how the accuracy distribution evolved during the epochs.
 Notice how on the first epoch the prediction is very poor, and the accuracy distribution shows that no
 matter how many predictions are generated with the base model, it will be impossible to solve the task.
 
@@ -255,13 +255,13 @@ matter how many predictions are generated with the base model, it will be imposs
 
 The initial algorithm used was very simple:
 
-1. Given the inputs and outputs the model generates n predictions (for example n=256)
+1. Given the inputs and outputs, the model generates n predictions (for example, n=256).
 2. The predictions are run to generate output images.
-3. Remove duplicates: keep only one prediction per output
-4. Validate the predicted code (remove lines of the code that do not affect the output)
-5. Create new tasks using hindsight relabeling. We use the original output, the output generated when running the code and the predicted code. The model will be trained to predict the code that generated the output.
-6. Sort the tasks by ascending order using the pixel accuracy of the prediction. Worst predictions come first.
-7. Fine-tune the model on these new hindsight relabeled tasks
+3. Remove duplicates: keep only one prediction per output.
+4. Validate the predicted code (remove lines of the code that do not affect the output).
+5. Create new tasks using hindsight relabeling. We use the original output, the output generated when running the code, and the predicted code. The model will be trained to predict the code that generated the output.
+6. Sort the tasks in ascending order using the pixel accuracy of the prediction. The worst predictions come first.
+7. Fine-tune the model on these new hindsight relabeled tasks.
 8. Repeat all the steps above until a perfect solution is achieved or the maximum number of epochs is reached.
 
 One interesting thing is that this method still works even if we don't sort the tasks by accuracy. This implies that no reward function is needed.
@@ -292,8 +292,8 @@ how to use the primitive functions.
 
 However, the models trained on those synthetic tasks were unable to solve any of the real ARC tasks.
 Despite being able to generate an infinite number of synthetic tasks, the diversity of those tasks
-was limited. I implemented 32 tasks generators, but they likely had bias and the model
-was unable to learn something that generalize from that data distribution. Furthermore, the diversity
+was limited. I implemented 32 task generators, but they likely had bias, and the model
+was unable to learn something that generalized from that data distribution. Furthermore, the diversity
 of the predictions from the model was very small, so the search space of solutions was not fully explored.
 
 !!! tip "Learning"
@@ -305,40 +305,40 @@ For more information go to iterations [10](modeling/Iteration_10_solve_arc_tasks
 #### 3.2 Experiment with base models
 
 After learning that creating synthetic tasks to teach a model to learn a DSL was very hard, I decided
-to try open-weight models. The idea was to prompt the models with a list of the available DSL functions and their signatures so the model could use them to generate a solution. I decided to use the [BARC DSL](https://github.com/xu3kev/BARC) on these experiments.
+to try open-weight models. The idea was to prompt the models with a list of the available DSL functions and their signatures so the model could use them to generate a solution. I decided to use the [BARC DSL](https://github.com/xu3kev/BARC) in these experiments.
 
 I decided to try the Qwen2.5-Coder family of models because there were many different model sizes. The plot below
-shows that bigger models generate valid outputs more frequently and use the dsl more frequently as well. The results are for the ARC-AGI-1 training set.
+shows that bigger models generate valid outputs more frequently and use the DSL more frequently as well. The results are for the ARC-AGI-1 training set.
 
 ![alt text](modeling/res/1753292348173_image.png)
 
-The plot below shows how the solved tasks rate changes with number of predictions for the 7B Qwen2.5-Coder model. However, it also shows that the number of unique outputs decreases very fast, showing a lack of diversity in the predictions.
+The plot below shows how the solved task rate changes with the number of predictions for the 7B Qwen2.5-Coder model. However, it also shows that the number of unique outputs decreases very fast, showing a lack of diversity in the predictions.
 
 ![alt text](modeling/res/1761318484651_image.png)
 
 A surprising finding was that I tried different prompting techniques to increase the output diversity, but
 all my attempts produced worse results than simply asking the model to solve the task. For example, I
-tried giving already generated solutions by the model in the prompt and requesting to do something new and different, but the obtained effect was the opposite. In many cases, instead of doing something new the model
+tried giving already generated solutions by the model in the prompt and requesting it to do something new and different, but the obtained effect was the opposite. In many cases, instead of doing something new, the model
 simply copied the code given in the prompt. It seems that "small" LLMs lack some capabilities that
 frontier models have.
 
 !!! tip "Learning"
 
-    Small open-weights models with access to a DSL can solve some ARC tasks by writing python code
+    Small open-weight models with access to a DSL can solve some ARC tasks by writing python code.
 
 For more information go to iterations [16](modeling/Iteration_16_search_with_base_models.md) and [17](modeling/Iteration_17_increase_search_diversity.md).
 
 #### 3.3 Experiment with BARC induction model
 
 After seeing that open-weights models with access to the [BARC DSL](https://github.com/xu3kev/BARC) were able to solve ARC tasks, I decided
-to use the BARC induction model directly. This model already knew to use the DSL, so I didn't have to
-provide the signature of the DSL functions in the prompt. One brilliant aspect of the [BARC paper](https://arxiv.org/abs/2411.02272) is that they implement generators and solvers for 162 ARC-AGI-1 training tasks and they use
-that code as seed for LLMs to generate new tasks. By doing that they move the problem domain from the ARC grids to code, and they can leverage the code capabilities of LLMs to generate new tasks. Asking an LLM to generate
-new tasks in the grid domain will very likely yield poor results. They train the BARC induction model on hundreds of thousands LLM-generated tasks and this overcomes the problems I saw on the previous [3.1 section](#31-try-to-train-my-own-models) where I could not generate training data with enough diversity to train my own models.
+to use the BARC induction model directly. This model already knew how to use the DSL, so I didn't have to
+provide the signature of the DSL functions in the prompt. One brilliant aspect of the [BARC paper](https://arxiv.org/abs/2411.02272) is that they implement generators and solvers for 162 ARC-AGI-1 training tasks, and they use
+that code as a seed for LLMs to generate new tasks. By doing that they move the problem domain from the ARC grids to code, and they can leverage the code capabilities of LLMs to generate new tasks. Asking an LLM to generate
+new tasks in the grid domain will very likely yield poor results. They train the BARC induction model on hundreds of thousands of LLM-generated tasks, and this overcomes the problems I saw in the previous [3.1 section](#31-try-to-train-my-own-models) where I could not generate training data with enough diversity to train my own models.
 
 ##### 3.3.1 Replicate results from BARC paper
 
-As a first step, I validated that I could get similar results to the numbers reported in the paper. Direct comparison is not possible because their last numbers are obtained doing 20k predictions per task and I only did around 500 predictions due to the constraints imposed by the Kaggle submission (with the current hardware I don't think is possible to make much more than 512 predictions per task with a 7B model).
+As a first step, I validated that I could get similar results to the numbers reported in the paper. A direct comparison is not possible because their last numbers are obtained doing 20k predictions per task, and I only did around 500 predictions due to the constraints imposed by the Kaggle submission (with the current hardware I don't think it is possible to make much more than 512 predictions per task with a 7B model).
 
 In the paper, there is a plot that shows a solve rate slightly below 15% for 500 submissions, and I got around 22% for the same number of submissions. The differences are probably explained because the plot in the paper is
 very likely obtained with a model trained with less data (not the final model) and also maybe due to using
@@ -512,9 +512,9 @@ of 512 predictions. The only differences between experiments are whether test-ti
 
 ![alt text](modeling/res/1758805734469_image.png)
 
-- Orange lines are the baseline, I repeated the experiment 3 times to measure the variability.
-- Green line does 256 predictions, learns and does other 256 predictions. Notice how the green line starts to deviate from the orange lines only after prediction 256.
-- Blue line learns every 128 predictions. Notice how the blue line deviates from the orange line after
+- Orange lines are the baseline. I repeated the experiment 3 times to measure the variability.
+- The green line does 256 predictions, learns, and does another 256 predictions. Notice how the green line starts to deviate from the orange lines only after prediction 256.
+- The blue line learns every 128 predictions. Notice how the blue line deviates from the orange line after
   prediction 128.
 
 The table below summarizes the experiment and the results.
@@ -531,7 +531,7 @@ observed on ARC24 with transduction and test-time training where I was able to [
 I would argue that the effect will be bigger if we had an inference budget bigger than 512 predictions,
 but we are constrained by the Kaggle submission hardware and time.
 
-On this initial implementation, the model is fine-tuned independently for each task, and all the predictions
+In this initial implementation, the model is fine-tuned independently for each task, and all the predictions
 that generated valid outputs are used for training. A more compute-efficient implementation would only
 use the best predictions for training.
 
@@ -550,8 +550,8 @@ base model to be able to beat ARC-AGI-2. The BARC induction model only solves 22
 evaluation tasks of ARC-AGI-1 and ARC-AGI-2 respectively.
 
 I thought that giving a try to reinforcement learning could be a good idea. As an outsider, it seems
-that all the advances in math and coding abilities of the LLMs from the last year come from using RL.
-I had experience with RL in different competitions ([Animal AI Olympics](https://www.goodai.com/animal-ai-olympics-results/), [Lux AI](https://www.kaggle.com/competitions/lux-ai-2021) and [Hungry Geese](https://www.kaggle.com/competitions/hungry-geese)), but not with LLMs so I thought it was a good
+that all the advances in math and coding abilities of the LLMs from the last year have come from using RL.
+I had experience with RL in different competitions ([Animal AI Olympics](https://www.goodai.com/animal-ai-olympics-results/), [Lux AI](https://www.kaggle.com/competitions/lux-ai-2021) and [Hungry Geese](https://www.kaggle.com/competitions/hungry-geese)), but not with LLMs, so I thought it was a good
 idea to give it a try.
 
 TODO: ONGOING RL works, but training collapses and I still haven't found the cause.
@@ -567,19 +567,19 @@ For more information go to iterations [24](modeling/Iteration_24_RL_BARC.md), [2
 #### 5.1 Can the BARC induction model refine its predictions?
 
 Currently, I am doing independent predictions with the BARC induction model. Each prediction
-is independent of the other predictions. This is very different from how humans solve tasks, we have
+is independent of the other predictions. This is very different from how humans solve tasks; we have
 in our memory the history of the search: what have we tried, how well it worked...
 
 One way to achieve this with LLMs is by asking to refine some incorrect solution. Given some prediction
-from the model, we can execute the code, add the outputs to the prompt along some metrics and request
-the model to analyze the problems of the generated code and created a refined version of it. Public approaches
+from the model, we can execute the code, add the outputs to the prompt along with some metrics, and request
+the model to analyze the problems of the generated code and create a refined version of it. Public approaches
 with frontier LLMs by [Ryan Greenblatt](https://redwoodresearch.substack.com/p/getting-50-sota-on-arc-agi-with-gpt)
-and [Jeremy Berman](https://jeremyberman.substack.com/p/how-i-got-a-record-536-on-arc-agi) rely in this ability of frontier models
+and [Jeremy Berman](https://jeremyberman.substack.com/p/how-i-got-a-record-536-on-arc-agi) rely on this ability of frontier models
 to refine code given feedback from execution.
 
-However, when I tried to refine predictions with the BARC induction model I found that the model
+However, when I tried to refine predictions with the BARC induction model, I found that the model
 didn't have that ability. I made a comparison of a run doing 128 independent predictions per task,
-versus doing 64 independent predictions, selecting the best 8 predictions and trying to refine those.
+versus doing 64 independent predictions, selecting the best 8 predictions, and trying to refine those.
 I didn't find any significant difference in accuracy.
 
 !!! tip "Learning"

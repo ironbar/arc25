@@ -10,7 +10,10 @@ TODO: read and check everything
 
 ## Abstract
 
-TODO: This is a technical report of the work done for ARC25. Some ideas are clearly missing. baseline + vision
+This is a technical report of the work and research done by Guillermo Barbadillo for the ARC25 challenge.
+Most of the research was oriented towards a deep-learning-guided program synthesis system that searches program space and adapts at test time with test-time training via hindsight relabeling, in a tight search-and-learn loop. Evidence was obtained that search and learn outperforms pure search approaches for the same number of predictions per task. However that effort is not yet complete and clearly pieces and ideas are
+missing because it does not solve any of the private test tasks from ARC-AGI-2. The best result in
+the leaderboard was obtained with minor adaptations of last year's test-time training with transduction approach.
 
 ## Table of contents
 

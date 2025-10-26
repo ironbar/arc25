@@ -6,10 +6,6 @@ https://www.kaggle.com/solution-write-up-documentation
 <center><img src="modeling/res/1752753996905_arc25.png" width="50%"></center>
 --->
 
-<!-- @import "[TOC]" {cmd="toc" depthFrom=1 depthTo=6 orderedList=false} -->
-
-<!-- code_chunk_output -->
-
 TODO: read and check everything
 
 ## Abstract
@@ -47,10 +43,6 @@ TODO: This is a technical report of the work done for ARC25. Some ideas are clea
     - [5.1 Can the BARC induction model refine its predictions?](#51-can-the-barc-induction-model-refine-its-predictions)
     - [5.1 Can the BARC induction model learn to refine its predictions using RL?](#51-can-the-barc-induction-model-learn-to-refine-its-predictions-using-rl)
 - [Acknowledgements](#acknowledgements)
-
-<!-- /code_chunk_output -->
-
-
 
 ## Introduction
 

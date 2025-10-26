@@ -203,7 +203,7 @@ I hypothesize that search and learn will beat a pure search approach.
 ### 1. How does test-time training compare against o3?
 
 At the start of the ARC25 challenge, I was curious to see how well test-time training
-compared against o3. A custom version of o3 was presented in December 2023 and reported to have solved 87.5% of the semi-private test set of ARC-AGI-1. However, with the release
+compared against o3. A custom version of o3 was presented in December 2024 and reported to have solved 87.5% of the semi-private test set of ARC-AGI-1. However, with the release
 of ARC-AGI-2, o3 was solving less than 5% of the semi-private test set. It was not
 the exact same version of o3, but the change was so dramatic.
 

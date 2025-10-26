@@ -144,16 +144,22 @@ well in that setting. When rewards are very sparse we need to add some tricks li
 ARC can be solved (and will be solved) with many different approaches, but in this section I will
 argue why search and learn will be the first approach to solve it.
 
-TODO: why code is better than transduction and natural language
-
 #### Transduction and test-time training
 
-TODO: programming is better suited for ARC-AGI-2 tasks with multiple interacting rules
-TODO: dominant approach on ARC24 and probably ARC25
+Although it was the dominant approach in the ARC24 prize and very likely one of the dominant approaches
+in ARC25, I don't believe it is the best bet to solve ARC-AGI-2 because:
+
+- Transduction does not seem to be the way to solve the complex tasks from [ARC-AGI-2](https://arcprize.org/arc-agi/2/) that have multiple interacting rules. In the other hand code allows to express any combination of rules.
+- Predictions generated with transduction do not have any guarantee to be correct. In the other hand code can be tested with the training samples of each task, and this allows to reject incorrect programs.
+- The models used for transduction are black boxes, in the other hand when doing program synthesis we can interpret the generated code and make a better diagnose of the failures.
+
+The advantage of transduction is that the signal when doing test-time training is much better and direct than the one that can be obtained when doing test-time training with hindsight relabeling.
+Transduction can solve ARC, but I don't believe is the easiest way to do it. Using more data for pretraining, an architecture with better inductive priors(that will better represent the logic of the tasks) and improvements in the test-time training setup, it would be possible to solve ARC-AGI-2.
 
 #### Natural language program search (o3)
 
 TODO: python interpreter is perfect, models fail, specially out of distribution
+TODO: why code is better than natural language
 
 #### Evolutionary program search
 

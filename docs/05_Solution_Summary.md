@@ -13,19 +13,18 @@ https://www.kaggle.com/solution-write-up-documentation
 - [Solution Summary](#solution-summary)
   - [Abstract](#abstract)
   - [Introduction](#introduction)
-  - [Vision](#vision)
-    - [Four ways to arrive at that vision](#four-ways-to-arrive-at-that-vision)
-      - [Search and learn](#search-and-learn)
-      - [Combine the best approaches from ARC24: test-time training and program synthesis](#combine-the-best-approaches-from-arc24-test-time-training-and-program-synthesis)
-      - [Imitate how humans solve ARC](#imitate-how-humans-solve-arc)
+  - [Vision: Search and learn](#vision-search-and-learn)
+    - [Four paths to arrive at that vision](#four-paths-to-arrive-at-that-vision)
+      - [Path 1. Search and learn](#path-1-search-and-learn)
+      - [Path 2. Combine the best approaches from ARC24: test-time training and program synthesis](#path-2-combine-the-best-approaches-from-arc24-test-time-training-and-program-synthesis)
+      - [Path 3. Imitate how humans solve ARC](#path-3-imitate-how-humans-solve-arc)
         - [How humans solve ARC](#how-humans-solve-arc)
         - [How AI might solve ARC](#how-ai-might-solve-arc)
-      - [Frame ARC as a game and solve it with RL](#frame-arc-as-a-game-and-solve-it-with-rl)
+      - [Path 4. Frame ARC as a game and solve it with RL](#path-4-frame-arc-as-a-game-and-solve-it-with-rl)
     - [Why it will beat the other approaches](#why-it-will-beat-the-other-approaches)
       - [Transduction and test-time training](#transduction-and-test-time-training)
       - [Natural language program search (o3)](#natural-language-program-search-o3)
       - [Evolutionary program search](#evolutionary-program-search)
-  - [Brief story of my work for ARC25](#brief-story-of-my-work-for-arc25)
   - [Content](#content)
     - [1. How does test-time training compares against o3?](#1-how-does-test-time-training-compares-against-o3)
     - [2. Does hindsight relabeling works for program synthesis on toy tasks?](#2-does-hindsight-relabeling-works-for-program-synthesis-on-toy-tasks)
@@ -37,26 +36,32 @@ https://www.kaggle.com/solution-write-up-documentation
         - [3.3.2 Hindsight relabeling and BARC induction model](#332-hindsight-relabeling-and-barc-induction-model)
     - [4. Can we get a stronger base model with reinforcement learning?](#4-can-we-get-a-stronger-base-model-with-reinforcement-learning)
     - [5. Can we improve the search accuracy by doing prediction refinement?](#5-can-we-improve-the-search-accuracy-by-doing-prediction-refinement)
+      - [5.1 Can the BARC induction model refine its predictions?](#51-can-the-barc-induction-model-refine-its-predictions)
+      - [5.1 Can the BARC induction model learn to refine its predictions using RL?](#51-can-the-barc-induction-model-learn-to-refine-its-predictions-using-rl)
   - [Acknowledgements](#acknowledgements)
 
 <!-- /code_chunk_output -->
 
+TODO: read and check everything
+
 ## Abstract
+
+TODO: This is a technical report of the work done for ARC25. Some ideas are clearly missing. baseline + vision
 
 ## Introduction
 
 TODO: very brief description of ARC, what is intelligence and why it is important. Ability is not intelligence.
 Requirements of a good intelligence test. Intelligence is all about adaptation to novelty.
 
-## Vision
+## Vision: Search and learn
 
 **ARC will be solved first by deep-learning-guided program synthesis that searches program space and adapts at test time with test-time training via hindsight relabeling, in a tight search-and-learn loop.**
 
-### Four ways to arrive at that vision
+### Four paths to arrive at that vision
 
-TODO: read and rewrite this paths
+There are at least four different paths to arrive at that vision.
 
-#### Search and learn
+#### Path 1. Search and learn
 
 There are only two methods to adapt to novelty: search and learn.
 
@@ -78,7 +83,7 @@ work during the ARC25 challenge has gone in that direction.
 
 <center><img src="../modeling/res/1752753996905_arc25.png" width="50%"></center>
 
-#### Combine the best approaches from ARC24: test-time training and program synthesis
+#### Path 2. Combine the best approaches from ARC24: test-time training and program synthesis
 
 Last year's competition showed that test-time training allowed the models to adapt to the novel tasks. At the same time in the semi-private dataset we saw that frontier models could generate code to solve more than half of the tasks.
 
@@ -98,11 +103,11 @@ We already know that HER enables faster learning, specially in very sparse rewar
 Additionally we could define a continuous metric such as the number of correct pixels and use it with reinforcement learning to modify the model towards solutions
 that score higher.
 
-#### Imitate how humans solve ARC
+#### Path 3. Imitate how humans solve ARC
 
 ##### How humans solve ARC
 
-![](res/how-humans-solve-arc.png)
+![how-humans-solve-arc](res/how-humans-solve-arc.png)
 
 When humans try to solve ARC tasks we draw some hypothesis and test it in our heads, if it is not correct we update our beliefs and refine the hypothesis. What modules are needed to do this process?
 
@@ -117,7 +122,7 @@ Reasoning is an iterative process, as shown in the loop diagram in the image.
 
 Focusing on efficiency the best configuration for ARC might be the following:
 
-![](res/how-ai-might-solve-arc.png)
+![how-ai-might-solve-arc](res/how-ai-might-solve-arc.png)
 
 - **Policy**: a Large Reasoning Model.
 - **World model**: python interpreter
@@ -126,15 +131,16 @@ Focusing on efficiency the best configuration for ARC might be the following:
 
 That way we only have to learn the policy and parametrize the learning, all the other modules are guaranteed to work perfectly.
 
-
-#### Frame ARC as a game and solve it with RL
+#### Path 4. Frame ARC as a game and solve it with RL
 
 The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to learn it as efficiently as possible. It is like playing a game, but instead of hitting the buttons it has to write code to play.
 The code generates an output that is evaluated against the ground truth and returns an score.
 
-Finding the right program is equivalent to finding the right trajectory to solve a game. Instead of actions we write code, but the problem is exactly the same. When we want to solve a new task in ARC is the same as wanting to solve a new game. We can frame the problem as a Reinforcement learning game, with a very sparse reward.
+Finding the right program is equivalent to finding the right trajectory to solve a game.
+Instead of actions we write code, but the problem is exactly the same. When we want to solve a new task in ARC is the same as wanting to solve a new game. We can frame the problem as a Reinforcement learning game, with a very sparse reward.
 
-TODO: standard RL does not work well with very sparse rewards, HR is needed.
+The challenge of ARC tasks is that the reward is very sparse, and standard RL methods do not work
+well in that setting. When rewards are very sparse we need to add some tricks like: hindsight experience replay, curiosity to promote exploration or having access to human demonstrations.
 
 ### Why it will beat the other approaches
 

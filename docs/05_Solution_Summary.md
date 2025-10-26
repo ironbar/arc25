@@ -53,16 +53,16 @@ François Chollet defined intelligence as **skill-acquisition intelligence** in 
 
 <!-- intelligence vs skill --->
 Humans (and that includes many AI researchers) tend to confuse skill with intelligence. This happens because
-when a person shows a great level of skill, for example at chess, we can be very certain that the person is intelligent. Skill and intelligence are very correlated in humans because humans do not know chess at birth, they have to learn how to play it. Thus if a person is able to achieve a great level of skill at chess, it's because
-it has been able to acquire that skill more efficiently than other people.
-However, in the case of machines that correlation is totally broken. Given some task like playing chess, it is possible
-to achieve an arbitrary level of skill by using unlimited priors, training data and compute. But that machine
+when a person shows a great level of skill, for example at chess, we can be very certain that that person is intelligent. Skill and intelligence are very correlated in humans because humans do not know chess at birth; they have to learn how to play it. Thus if a person is able to achieve a great level of skill at chess, it's because
+they have been able to acquire that skill more efficiently than other people.
+However, in the case of machines, that correlation is totally broken. Given some task like playing chess, it is possible
+to achieve an arbitrary level of skill by using unlimited priors, training data, and compute. But that machine
 would only be capable of playing chess and nothing more, its adaptation capacity is very limited and thus its intelligence is very limited as well.
 
 <!-- ARC --->
 > The intelligence of a system is a measure of its skill-acquisition efficiency over a scope of tasks, with respect to priors, experience, and generalization difficulty.
 
-Based on this definition Chollet created the Abstraction and Reasoning Corpus (ARC). ARC is a collection of visual intelligence tasks that only require core knowledge priors, each task has only a few examples to understand it, and all the evaluation tasks are novel and different to the training tasks. The image below shows a sample of the images used in the ARC tasks.
+Based on this definition, Chollet created the Abstraction and Reasoning Corpus (ARC). ARC is a collection of visual intelligence tasks that only require core knowledge priors, each task has only a few examples to understand the task, and all the evaluation tasks are novel and different from the training tasks. The image below shows a sample of the images used in the ARC tasks.
 
 ![alt text](res/1761473956486_image.png)
 
@@ -88,11 +88,11 @@ On the other hand, the solutions for the semi-private evaluation relied on searc
 models search the space of natural language programs to find solutions for novel tasks. Other methods
 pioneered by Greenblatt searched the space of Python programs.
 
-Humans use both methods, when we approach a new task we try different approaches to try to solve it and
+Humans use both methods. When we approach a new task, we try different approaches to try to solve it and
 we learn from the failures. When trying subsequent approaches we do not repeat the mistakes, we try
-new approaches that take into account the information obtained with the failing trials. So we search,
-learn from our mistakes and start the cycle again until we eventually find the solution. For the
-harder problems (like solving ARC) this cycle can take many years.
+new approaches that take into account the information obtained from the failing trials. So we search,
+learn from our mistakes, and start the cycle again until we eventually find the solution. For the
+harder problems (like solving ARC), this cycle can take many years.
 
 I believe that a system that will solve ARC will very likely combine search and learn as well. All my
 work during the ARC25 challenge has gone in that direction.
@@ -108,9 +108,9 @@ Using code is a more promising approach because:
 1. It is verifiable
 2. It enables to iteratively refine the solution by comparing the outputs with the ground truth. I would argue that this is similar to reasoning.
 
-My hypothesis is that we can use [hindsight experience replay (HER)](https://arxiv.org/abs/1707.01495) at test time to update the beliefs of the model and find the right solution more efficiently. Instead of sampling thousands of programs, sample a few and learn from the mistakes. **That is the way to combine induction and test-time training.**
+My hypothesis is that we can use [hindsight experience replay (HER)](https://arxiv.org/abs/1707.01495) at test time to update the beliefs of the model and find the right solution more efficiently. Instead of sampling thousands of programs, we can sample a few and learn from the mistakes. **That is the way to combine induction and test-time training.**
 
-We can treat the failed code attempts that run as new tasks, and train the model on those tasks. Those tasks will be in the neighborhood of the task that we want to solve.
+We can treat the failed code attempts that run as new tasks and train the model on those tasks. Those tasks will be in the neighborhood of the task that we want to solve.
 
 We already know that HER enables faster learning, especially in very sparse reward environments.
 
@@ -125,11 +125,11 @@ that score higher.
 
 ![how-humans-solve-arc](res/how-humans-solve-arc.png)
 
-When humans try to solve ARC tasks we draw some hypothesis and test it in our heads, if it is not correct we update our beliefs and refine the hypothesis. What modules are needed to do this process?
+When humans try to solve ARC tasks, we draw some hypotheses and test them in our heads. If a hypothesis is not correct, we update our beliefs and refine the hypothesis. What modules are needed to do this process?
 
-- **Policy.** What action do I have to take to achieve the goal? Learned with hindsight
-- **World model.** What happens if I do this action? Learned with past experiences
-- **Judgment.** Is the solution correct? Learned with human feedback or by comparison
+- **Policy.** What action do I have to take to achieve the goal? Learned with hindsight.
+- **World model.** What happens if I do this action? Learned with past experiences.
+- **Judgment.** Is the solution correct? Learned with human feedback or by comparison.
 - **Learning.** In difficult problems, we are able to learn from our errors and modify our initial beliefs about the problem.
 
 Reasoning is an iterative process, as shown in the loop diagram in the image.
@@ -168,25 +168,25 @@ argue why search and learn will be the first approach to solve it.
 Although it was the dominant approach in the ARC24 prize and very likely one of the dominant approaches
 in ARC25, I don't believe it is the best bet to solve ARC-AGI-2 because:
 
-- Transduction does not seem to be the best way to solve the complex tasks from [ARC-AGI-2](https://arcprize.org/arc-agi/2/) that have multiple interacting rules. On the other hand, code allows to express any combination of rules.
-- Predictions generated with transduction do not have any guarantee to be correct. On the other hand, code can be tested with the training samples of each task, and this allows to reject incorrect programs.
-- The models used for transduction are black boxes. On the other hand, when doing program synthesis we can interpret the generated code and make a better diagnose of the failures.
+- Transduction does not seem to be the best way to solve the complex tasks from [ARC-AGI-2](https://arcprize.org/arc-agi/2/) that have multiple interacting rules. On the other hand, code allows expressing any combination of rules.
+- Predictions generated with transduction do not have any guarantee of being correct. On the other hand, code can be tested with the training samples of each task, and this allows rejecting incorrect programs.
+- The models used for transduction are black boxes. On the other hand, when doing program synthesis, we can interpret the generated code and make a better diagnosis of the failures.
 
-The advantage of transduction is that the signal when doing test-time training is much better and direct than the one that can be obtained when doing test-time training with hindsight relabeling.
-Transduction can solve ARC, but I don't believe it is the easiest way to do it. Using more data for pretraining, an architecture with better inductive priors (that will better represent the logic of the tasks) and improvements in the test-time training setup, it would be possible to solve ARC-AGI-2 (but it is easier to do it with induction).
+The advantage of transduction is that the signal when doing test-time training is much better and more direct than the one that can be obtained when doing test-time training with hindsight relabeling.
+Transduction can solve ARC, but I don't believe it is the easiest way to do it. Using more data for pretraining, an architecture with better inductive priors (that will better represent the logic of the tasks), and improvements in the test-time training setup, it would be possible to solve ARC-AGI-2, but it is easier to do it with induction.
 
 #### Natural language program search (o3)
 
 Although OpenAI did not share any details of how a fine-tuned version of o3 was able to solve ARC-AGI-1,
 it is believed that it used natural language program search. For each task, o3 described the task using
-natural language, then transformed the grids conditioned on that description and analyzed the outputs
+natural language, then transformed the grids conditioned on that description, and analyzed the outputs
 to find errors and refine the description of the task. However:
 
-- Any natural language description of a task can be implemented using python code. And it could be expressed
-  in a short program if a good domain specific language (DSL) is available. Thus I don't see a clear
-  advantage of using natural language over python code.
+- Any natural language description of a task can be implemented using Python code. And it could be expressed
+  in a short program if a good domain-specific language (DSL) is available. Thus I don't see a clear
+  advantage of using natural language over Python code.
 - All deep learning models are fallible. Even if the model finds the correct description of the task,
-  it might fail to transform the grids accordingly. On the other hand, the python interpreter is a deterministic executor: once a correct program is found, it will always produce the correct output.
+  it might fail to transform the grids accordingly. On the other hand, the Python interpreter is a deterministic executor: once a correct program is found, it will always produce the correct output.
 
 #### Program search with frontier models
 
@@ -253,7 +253,7 @@ matter how many predictions are generated with the base model, it will be imposs
 
 ![distribution evolution](modeling/res/2025-05-07-15-01-52.png)
 
-The initial algorithm used was very simple:
+The initial algorithm was very simple:
 
 1. Given the inputs and outputs, the model generates n predictions (for example, n=256).
 2. The predictions are run to generate output images.
@@ -292,7 +292,7 @@ how to use the primitive functions.
 
 However, the models trained on those synthetic tasks were unable to solve any of the real ARC tasks.
 Despite being able to generate an infinite number of synthetic tasks, the diversity of those tasks
-was limited. I implemented 32 task generators, but they likely had bias, and the model
+was limited. I implemented 32 task generators, but they likely had biases, and the model
 was unable to learn something that generalized from that data distribution. Furthermore, the diversity
 of the predictions from the model was very small, so the search space of solutions was not fully explored.
 
@@ -332,13 +332,13 @@ For more information go to iterations [16](modeling/Iteration_16_search_with_bas
 
 After seeing that open-weights models with access to the [BARC DSL](https://github.com/xu3kev/BARC) were able to solve ARC tasks, I decided
 to use the BARC induction model directly. This model already knew how to use the DSL, so I didn't have to
-provide the signature of the DSL functions in the prompt. One brilliant aspect of the [BARC paper](https://arxiv.org/abs/2411.02272) is that they implement generators and solvers for 162 ARC-AGI-1 training tasks, and they use
-that code as a seed for LLMs to generate new tasks. By doing that they move the problem domain from the ARC grids to code, and they can leverage the code capabilities of LLMs to generate new tasks. Asking an LLM to generate
+provide the signature of the DSL functions in the prompt. One brilliant aspect of the [BARC paper](https://arxiv.org/abs/2411.02272) is that they implemented generators and solvers for 162 ARC-AGI-1 training tasks, and they use
+that code as a seed for LLMs to generate new tasks. By doing that, they move the problem domain from the ARC grids to code, and they can leverage the code capabilities of LLMs to generate new tasks. Asking an LLM to generate
 new tasks in the grid domain will very likely yield poor results. They train the BARC induction model on hundreds of thousands of LLM-generated tasks, and this overcomes the problems I saw in the previous [3.1 section](#31-try-to-train-my-own-models) where I could not generate training data with enough diversity to train my own models.
 
 ##### 3.3.1 Replicate results from BARC paper
 
-As a first step, I validated that I could get similar results to the numbers reported in the paper. A direct comparison is not possible because their last numbers are obtained doing 20k predictions per task, and I only did around 500 predictions due to the constraints imposed by the Kaggle submission (with the current hardware I don't think it is possible to make much more than 512 predictions per task with a 7B model).
+As a first step, I validated that I could get similar results to the numbers reported in the paper. A direct comparison is not possible because their last numbers are obtained doing 20k predictions per task, and I only did around 500 predictions due to the constraints imposed by the Kaggle submission (with the current hardware, I don't think it is possible to make much more than 512 predictions per task with a 7B model).
 
 In the paper, there is a plot that shows a solve rate slightly below 15% for 500 submissions, and I got around 22% for the same number of submissions. The differences are probably explained because the plot in the paper is
 very likely obtained with a model trained with less data (not the final model) and also maybe due to using
@@ -550,11 +550,11 @@ base model to be able to beat ARC-AGI-2. The BARC induction model only solves 22
 evaluation tasks of ARC-AGI-1 and ARC-AGI-2 respectively.
 
 I thought that giving a try to reinforcement learning could be a good idea. As an outsider, it seems
-that all the advances in math and coding abilities of the LLMs from the last year have come from using RL.
+that all the advances in math and coding abilities of LLMs from the last year have come from using RL.
 I had experience with RL in different competitions ([Animal AI Olympics](https://www.goodai.com/animal-ai-olympics-results/), [Lux AI](https://www.kaggle.com/competitions/lux-ai-2021) and [Hungry Geese](https://www.kaggle.com/competitions/hungry-geese)), but not with LLMs, so I thought it was a good
 idea to give it a try.
 
-TODO: ONGOING RL works, but training collapses and I still haven't found the cause.
+TODO: ONGOING RL works, but training collapses, and I still haven't found the cause.
 
 !!! tip "Learning"
 
@@ -575,7 +575,7 @@ from the model, we can execute the code, add the outputs to the prompt along wit
 the model to analyze the problems of the generated code and create a refined version of it. Public approaches
 with frontier LLMs by [Ryan Greenblatt](https://redwoodresearch.substack.com/p/getting-50-sota-on-arc-agi-with-gpt)
 and [Jeremy Berman](https://jeremyberman.substack.com/p/how-i-got-a-record-536-on-arc-agi) rely on this ability of frontier models
-to refine code given feedback from execution.
+to refine code, given feedback from execution.
 
 However, when I tried to refine predictions with the BARC induction model, I found that the model
 didn't have that ability. I made a comparison of a run doing 128 independent predictions per task,
@@ -606,6 +606,6 @@ TODO: ONGOING
 
 ## Acknowledgements
 
-- Thanks to my wife for taking care of our children many times so I could do research without small AGIs disturbing my attention.
-- Thanks to [Veridas](https://veridas.com/en/) for allowing me to do research on ARC during part of my job time and providing me access to its compute cluster.
+- Thanks to my wife for taking care of our children many times so I could do research without small AGIs disturbing me.
+- Thanks to [Veridas](https://veridas.com/en/) for allowing me to do research on ARC during part of my job time and for providing me access to its compute cluster.
 - Thanks to [Strong Compute](https://strongcompute.com/) for providing compute for some of the RL experiments.

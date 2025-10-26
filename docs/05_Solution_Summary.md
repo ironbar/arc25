@@ -28,7 +28,7 @@ TODO: This is a technical report of the work done for ARC25. Some ideas are clea
   - [Why it will beat the other approaches](#why-it-will-beat-the-other-approaches)
     - [Transduction and test-time training](#transduction-and-test-time-training)
     - [Natural language program search (o3)](#natural-language-program-search-o3)
-    - [Evolutionary program search](#evolutionary-program-search)
+    - [Program search with frontier models](#program-search-with-frontier-models)
 - [Content](#content)
   - [1. How does test-time training compares against o3?](#1-how-does-test-time-training-compares-against-o3)
   - [2. Does hindsight relabeling works for program synthesis on toy tasks?](#2-does-hindsight-relabeling-works-for-program-synthesis-on-toy-tasks)
@@ -169,9 +169,15 @@ to find errors and refine the description of the task. However:
 - All deep learning models are fallible. Even if the model finds the correct description of the task,
   it might fail to transform the grids accordingly. In the other hand, the python interpreter is a deterministic executor: once a correct program is found, it will always produce the correct output.
 
-#### Evolutionary program search
+#### Program search with frontier models
 
-TODO: a frozen model won't be able to generalize when the generalization jump is big
+Public approaches with frontier LLMs like the ones by [Ryan Greenblatt](https://redwoodresearch.substack.com/p/getting-50-sota-on-arc-agi-with-gpt)
+and [Jeremy Berman](https://jeremyberman.substack.com/p/how-i-got-a-record-536-on-arc-agi) achieve
+state of the art accuracy on ARC by generating python code and refining the code using feedback from
+execution.
+
+My guess is that a frozen model, no matter how big, won't be able to generalize when the generalization jump is big.
+I hypothesize that search and learn will beat a pure search approach.
 
 ## Content
 

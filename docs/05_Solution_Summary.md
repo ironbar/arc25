@@ -30,7 +30,7 @@ leaderboard was achieved with minor adaptations of last year's transduction with
     - [Transduction and test-time training](#transduction-and-test-time-training)
     - [Natural language program search (o3)](#natural-language-program-search-o3)
     - [Program search with frontier models](#program-search-with-frontier-models)
-- [Content](#content)
+- [Research Journey](#research-journey)
   - [1. How does test-time training compare against o3?](#1-how-does-test-time-training-compare-against-o3)
   - [2. Does hindsight relabeling work for program synthesis on toy tasks?](#2-does-hindsight-relabeling-work-for-program-synthesis-on-toy-tasks)
   - [3. Does hindsight relabeling work for program synthesis on ARC tasks?](#3-does-hindsight-relabeling-work-for-program-synthesis-on-arc-tasks)
@@ -70,7 +70,7 @@ Based on this definition, Chollet created the Abstraction and Reasoning Corpus (
 ![alt text](res/1761473956486_image.png)
 
 <!-- Why ARC is important --->
-ARC is important because it is currently the only benchmark that measures intelligence. All the other benchmarks just measure skill (math skills, coding skills, general knowledge). If we want to make progress towards AGI, ARC is the north star metric that we should follow.
+ARC is important because it is currently the only benchmark that measures intelligence. All the other benchmarks just measure skill (math skills, coding skills, general knowledge...). If we want to make progress towards AGI, ARC is the north star metric that we should follow.
 
 ## Vision: Search and learn
 
@@ -94,8 +94,7 @@ pioneered by Greenblatt searched the space of Python programs.
 Humans use both methods. When we approach a new task, we try different approaches to solve it and
 we learn from the failures. When trying subsequent approaches we do not repeat the mistakes. We try
 new approaches that take into account the information obtained from the failing trials. So we search,
-learn from our mistakes, and start the cycle again until we eventually find the solution. For the
-harder problems (like solving ARC), this cycle can take many years.
+learn from our mistakes, and start the cycle again until we eventually find the solution. For simple problems (like solving an ARC task), this cycle can take seconds or minutes. For harder problems (like building a system that solves ARC), this cycle can take many years.
 
 I believe that a system that will solve ARC will very likely combine search and learn as well. All my
 work during the ARC25 challenge has moved in that direction.
@@ -152,11 +151,11 @@ That way we only have to learn the policy and parametrize the learning. All the 
 
 #### Path 4. Frame ARC as a game and solve it with RL
 
-The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to learn it as efficiently as possible. It is like playing a game, but instead of hitting buttons, it has to write code.
+The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to solve it as efficiently as possible. It is like playing a game, but instead of hitting buttons, it has to write code.
 The code generates an output that is evaluated against the ground truth and returns a score.
 
 Finding the right program is equivalent to finding the right trajectory to solve a game.
-Instead of actions, we write code, but the problem is the same. Wanting to solve a new task in ARC is the same as wanting to solve a new game. We can frame the problem as a reinforcement learning game with a very sparse reward.
+Instead of actions, we write code, but the problem is the same. We can frame the problem as a reinforcement learning game with a very sparse reward.
 
 The challenge of ARC tasks is that the reward is very sparse, and standard RL methods do not work
 well in that setting. When rewards are very sparse we need to add tricks like hindsight experience replay, curiosity to promote exploration or access to human demonstrations.
@@ -166,14 +165,16 @@ well in that setting. When rewards are very sparse we need to add tricks like hi
 ARC can be solved (and will be solved) with many different approaches, but in this section, I will
 argue why search and learn will be the first approach to solve it.
 
+In the following subsections I will argue why I believe search and learn has advantages over the other approaches.
+
 #### Transduction and test-time training
 
 Although it was the dominant approach in the ARC24 prize and very likely one of the dominant approaches
 in ARC25, I do not believe it is the best bet to solve ARC-AGI-2 because:
 
-- Transduction does not seem to be the best way to solve the complex tasks from [ARC-AGI-2](https://arcprize.org/arc-agi/2/) that have multiple interacting rules. Code allows expressing any combination of rules.
-- Predictions generated with transduction do not have any guarantee of being correct. Code can be tested with the training samples of each task, allowing rejection of incorrect programs.
-- The models used for transduction are black boxes. When doing program synthesis, we can interpret the generated code and make a better diagnosis of failures.
+- Transduction does not seem to be the best way to solve the complex tasks from [ARC-AGI-2](https://arcprize.org/arc-agi/2/) that have multiple interacting rules. On the other hand, code allows expressing any combination of rules.
+- Predictions generated with transduction do not have any guarantee of being correct. On the other hand, code can be tested with the training samples of each task, allowing rejection of incorrect programs.
+- The models used for transduction are black boxes. On the other hand, when doing program synthesis, we can interpret the generated code and make a better diagnosis of failures.
 
 The advantage of transduction is that the signal when doing test-time training is much better and more direct than the one that can be obtained when doing test-time training with hindsight relabeling.
 Transduction can solve ARC, but I do not believe it is the easiest way to do it. Using more data for pretraining, an architecture with better inductive priors (that better represents the logic of the tasks), and improvements in the test-time training setup, it would be possible to solve ARC-AGI-2. But it is easier to do it with induction.
@@ -198,10 +199,10 @@ and [Jeremy Berman](https://jeremyberman.substack.com/p/how-i-got-a-record-536-o
 state-of-the-art accuracy on ARC by generating Python code and refining the code using feedback from
 execution.
 
-My guess is that a frozen model, no matter how big, will not be able to generalize when the generalization jump is large.
+My guess is that a frozen model, no matter how big, will not be able to generalize when the generalization jump is large (at least for a constrained inference budget).
 I hypothesize that search and learn will beat a pure search approach.
 
-## Content
+## Research Journey
 
 ### 1. How does test-time training compare against o3?
 
@@ -211,7 +212,7 @@ of ARC-AGI-2, o3 solved less than 5% of the semi-private test set. It was not
 the exact same version of o3, but the change was dramatic.
 
 To my surprise, I was able to score [11.94 on the leaderboard](https://www.kaggle.com/code/ironbar/the-architects-single-task-ttt?scriptVersionId=234515350), doubling the score of o3
-and being the [first team to score above 10% in the challenge](https://x.com/guille_bar/status/1910307180093354427).
+and being the [first team to score above 10% in the challenge](https://x.com/guille_bar/status/1910307180093354427) using transduction and test-time training. Sadly, this was in April, and I was unable to improve on this baseline during the six long months that remained of the challenge.
 
 To achieve this, I simply took the solution for ARC24 from the Architects and made
 a few small modifications:
@@ -233,7 +234,7 @@ Please go to iterations [1](modeling/Iteration_01_architects_baseline.md), [2](m
 Before starting to work with ARC tasks, I wanted to validate that hindsight relabeling was helpful
 for program synthesis on toy tasks. Instead of training a model to learn to use dozens of primitive functions, I decided to train a model to learn to draw. Thus the model only had access to a minimal DSL (Domain Specific Language) with just a few primitives like `draw_pixel`, `draw_line` and `draw_rectangle`.
 
-The training data was generated by doing random drawings with up to 5 function calls on each drawing. Each task started from an initial grid (that could be blank or randomly initialized) and up to 5 new elements were added (points, lines or rectangles). When training, the model was shown the input and output grid and
+The training data was generated by doing random drawings with up to 5 function calls on each drawing. Each task started from an initial grid (that could be a random solid color or randomly initialized pixels) and up to 5 new elements were added (points, lines or rectangles). When training, the model was shown the input and output grid and
 taught to answer with the code that created the drawing. See some training examples below:
 
 <center>
@@ -247,16 +248,18 @@ As expected, when we tested the model with out-of-distribution tasks (tasks with
 
 Then I started experiments with hindsight relabeling. I manually created tasks that
 were so far from the training distribution that the model was unable to solve them. For example,
-below you can see a task with 25 squares of different colors. The first visualization shows the
-best prediction for each epoch, and the second shows how the accuracy distribution evolved during the epochs.
-Notice how on the first epoch the prediction is very poor, and the accuracy distribution shows that no
-matter how many predictions are generated with the base model, it will be impossible to solve the task.
+below you can see a task with 25 squares of different colors.
+The image below shows the best prediction for each epoch. The final prediction is perfect, and it can be seen
+how the best prediction improves over the epochs.
 
 ![best prediction evolution](modeling/res/1746622789551_image.png)
 
+This second image shows how the accuracy distribution evolved during the epochs. Notice how on the first epoch the prediction is very poor, and the accuracy distribution shows that no
+matter how many predictions are generated with the base model, it will be impossible to solve the task.
+
 ![distribution evolution](modeling/res/2025-05-07-15-01-52.png)
 
-The initial algorithm was simple:
+The initial algorithm was the following:
 
 1. Given the inputs and outputs, the model generates n predictions (for example n=256).
 2. The predictions are run to generate output images.
@@ -267,9 +270,9 @@ The initial algorithm was simple:
 7. Fine-tune the model on these new hindsight relabeled tasks.
 8. Repeat until a perfect solution is achieved or the maximum number of epochs is reached.
 
-One interesting thing is that this method still works even if we do not sort the tasks by accuracy. This implies that no reward function is needed.
+One interesting thing is that this method still works even if we do not sort the tasks by accuracy. This implies that the reward function is not necessary.
 
-After a few tweaks and hyperparameter tuning, I demonstrated that the model was capable of learning to draw anything using test-time training on hindsight relabeling tasks. It was able to solve tasks with 100 squares and complex drawings with multiple elements like the chick below.
+After a few tweaks and hyperparameter tuning, I demonstrated that the model was capable of learning to draw anything using test-time training on hindsight relabeling tasks. It was able to solve tasks with 100 squares and complex drawings with multiple elements like the chick image below.
 
 ![solving the chick task](modeling/res/1747143038868_image.png)
 
@@ -318,7 +321,7 @@ The plot below shows how the solved task rate changes with the number of predict
 
 ![alt text](modeling/res/1761318484651_image.png)
 
-A surprising finding was that different prompting techniques to increase output diversity produced worse results than simply asking the model to solve the task. For example, I
+A surprising finding was that trying different prompting techniques to increase output diversity produced worse results than simply asking the model to solve the task. For example, I
 gave already generated solutions by the model in the prompt and requested something new and different, but the effect was the opposite. In many cases, instead of doing something new, the model
 simply copied the code given in the prompt. It seems that small LLMs lack capabilities that
 frontier models have.
@@ -350,7 +353,7 @@ data augmentation during inference.
 <details>
   <summary>Click to see examples of solved tasks</summary>
 
-![alt text](modeling/res/1756096296254_image.png)
+<center><img src="../modeling/res/1756096296254_image.png" width="70%"></center>
 
 ```python
 from common import *
@@ -398,7 +401,7 @@ def transform(input_grid):
 
 ---
 
-![alt text](modeling/res/1756096371982_image.png)
+<center><img src="../modeling/res/1756096371982_image.png" width="70%"></center>
 
 ```python
 from common import *
@@ -447,7 +450,7 @@ def transform(input_grid):
 
 ---
 
-![alt text](modeling/res/1756096418602_image.png)
+<center><img src="../modeling/res/1756096418602_image.png" width="70%"></center>
 
 ```python
 from common import *
@@ -525,8 +528,8 @@ The table below summarizes the experiment and the results.
 We obtain an improvement of 5% with the best configuration. It is not a huge improvement like the one
 observed on ARC24 with transduction and test-time training where I improved from 11% to 33%. But it validates the idea of **search and learn**.
 
-I would argue that the effect will be bigger if we had an inference budget larger than 512 predictions,
-but we are constrained by the Kaggle submission hardware and time.
+I would argue that the improvement will be bigger if we had an inference budget larger than 512 predictions,
+but we are constrained by the Kaggle submission hardware and time (I already know that the improvement is smaller if we use a smaller number of predictions).
 
 In this initial implementation, the model is fine-tuned independently for each task and all the predictions
 that generated valid outputs are used for training. A more compute efficient implementation would only

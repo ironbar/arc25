@@ -11,7 +11,7 @@ https://www.kaggle.com/solution-write-up-documentation
 This is a technical report of the work and research done by Guillermo Barbadillo for the ARC25 challenge.
 Most of the research was oriented towards a deep-learning-guided program synthesis system that searches program space and adapts at test time with test-time training via hindsight relabeling, in a tight search-and-learn loop. Evidence was obtained that search and learn outperforms pure search approaches for the same number of predictions per task. However, that effort is not yet complete, and pieces and ideas are
 missing because it does not solve any of the private test tasks from ARC-AGI-2. The best result on the
-leaderboard was achieved with minor adaptations of last year's test-time training with transduction approach.
+leaderboard was achieved with minor adaptations of last year's transduction with test-time training approach.
 
 ## Table of contents
 
@@ -52,8 +52,11 @@ leaderboard was achieved with minor adaptations of last year's test-time trainin
 François Chollet defined intelligence as **skill-acquisition intelligence** in the paper [On the Measure of Intelligence](https://arxiv.org/abs/1911.01547) back in 2019.
 
 <!-- intelligence vs skill --->
-Humans (and that includes many AI researchers) tend to confuse skill with intelligence. This happens because
-when a person shows a great level of skill, for example at chess, we can be certain that that person is intelligent. Skill and intelligence are correlated in humans because humans do not know chess at birth and they have to learn how to play it. Thus if a person is able to achieve a great level of skill at chess, it is because
+Humans (and that includes many AI researchers) tend to confuse skill with intelligence.
+However, skill is the product of intelligence. Intelligence is the rate at which a learner turns
+its experience and priors into new skills. This confusion between intelligence and skill happens
+because when a person shows a great level of skill, for example at chess, that person is very likely to be intelligent.
+Skill and intelligence are correlated in humans because humans do not know chess at birth and they have to learn how to play it. Thus if a person is able to achieve a great level of skill at chess, it is because
 they have been able to acquire that skill more efficiently than other people.
 However, in the case of machines, that correlation is completely broken. Given some task like playing chess, it is possible
 to achieve an arbitrary level of skill by using unlimited priors, training data, and compute. But that machine
@@ -62,7 +65,7 @@ would only be capable of playing chess and nothing more. Its adaptation capacity
 <!-- ARC --->
 > The intelligence of a system is a measure of its skill-acquisition efficiency over a scope of tasks, with respect to priors, experience, and generalization difficulty.
 
-Based on this definition, Chollet created the Abstraction and Reasoning Corpus (ARC). ARC is a collection of visual intelligence tasks that only require core knowledge priors. Each task has only a few examples to understand the task, and all the evaluation tasks are novel and different from the training tasks. The image below shows a sample of the images used in the ARC tasks.
+Based on this definition, Chollet created the Abstraction and Reasoning Corpus (ARC). ARC is a collection of visual intelligence tasks that only require core knowledge priors. Each task has only a few examples to understand the task, and all the evaluation tasks are novel and different from the training tasks. Notice how ARC has been designed to control for priors, experience and generalization difficulty. The image below shows a sample of the images used in the ARC tasks.
 
 ![alt text](res/1761473956486_image.png)
 

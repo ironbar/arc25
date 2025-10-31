@@ -117,6 +117,8 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/multi-turn_rl_code_fin
 --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/barc/refine_dataset.json.gz \
 --output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${EXPERIMENT_NAME}" -append request_gpus=1 -append request_cpus=${N_CPUS} -append request_memory=128G --append 'requirements = (TARGET.Machine == "calculon21.das-nano.com")'
 # 245114.0
+
+rsync -aPv -m  --include='*/'  --exclude *.pt --include='checkpoint-19699/***' --exclude='*'  calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-10-19-multi-turn-rl   /mnt/data/MEGA/TEMP/
 ```
 
 ## Results

@@ -70,9 +70,11 @@ However I have made submissions with the new configuration, and on the test set 
 
 | configuration                       | mean test score | n_experiments |
 |-------------------------------------|-----------------|---------------|
-| epochs=10, n=1, min_prob=0.17, r=16 | 9.9 ± 1.7       | 5             |
-| epochs=10, n=1, min_prob=0.17, r=32 | 10.5 ± 1.3      | 5             |
-| epochs=10, n=1, min_prob=0.17, r=4, | 10.3 ± 1.3      | 5             |
+| epochs=10, n=1, lr=1e-4, min_prob=0.17, r=32 | 10.5 ± 1.3      | 5             |
+| epochs=10, n=1, lr=1e-4,  min_prob=0.17, r=16 | 9.9 ± 1.7       | 5             |
+| epochs=10, n=1, lr=2e-4, min_prob=0.17, r=4, | 10.3 ± 1.3      | 5             |
+
+[Link to Google Sheet](https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&range=A290)
 
 ## Conclusion
 

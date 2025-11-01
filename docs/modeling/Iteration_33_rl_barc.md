@@ -819,6 +819,10 @@ Training on a bigger dataset does not prevent the collapse. Neither does using a
 I have also tried increasing the KL penalty and decreasing the max gradient norm without success. All the trainings
 eventually collapse.
 
+Models fine-tuned with RL on BARC dataset improve on ARC-AGI-1 evaluation dataset.
+In the best scenario the solved tasks was improved from 8.75% to 13.5% when doing
+32 predictions per task. However the tendency during training is not clear.
+
 ## Next steps
 
 ## TODO

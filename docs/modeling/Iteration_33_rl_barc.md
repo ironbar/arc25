@@ -39,6 +39,9 @@ Works perfectly.
 
 ### Train and evaluate on cluster
 
+<details>
+  <summary>Click to expand/collapse this section</summary>
+
 ```bash
 export BETA=0.01
 export REPETITION_PENALTY=1.02
@@ -365,6 +368,8 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py
 --output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/${EXPERIMENT}/checkpoint-${CHECKPOINT}/evaluation" -append request_gpus=1 -append request_cpus=12 --append 'requirements = (TARGET.Machine == "calculon19.das-nano.com")' -append request_memory=32G
 ```
 
+</details>
+
 ### New memory limit when doing code execution
 
 ```bash
@@ -431,6 +436,9 @@ done
 I'm going to try to train directly in the workstation as a workaround because all the normal trainings
 abruptly ended in 1 day. Maybe the workstation lasts more than one day. Another advantage is that I 
 can use machines with just one GPU.
+
+<details>
+  <summary>Click to expand/collapse this section</summary>
 
 ```bash
 # arc25
@@ -707,6 +715,8 @@ python /root/arc25/scripts/rl_code_finetuning.py \
 --output-dir /root/trainings/${FOLDER}/${EXPERIMENT_NAME}
 ```
 
+</details>
+
 ### Dataset from generator
 
 When I increased the number of generations to 64 I had to increase the RAM memory in the cluster. Maybe
@@ -767,6 +777,9 @@ The problem is that training for longer will likely make the improvements bigger
 And the challenge ending is approaching.
 
 ## Conclusion
+
+I haven't been able to find a training configuration that does not collapses. The reward improves during some steps
+and suddenly collapses.
 
 ## Next steps
 

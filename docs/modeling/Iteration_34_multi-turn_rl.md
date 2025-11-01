@@ -123,7 +123,29 @@ rsync -aPv -m  --include='*/'  --exclude *.pt --include='checkpoint-19699/***' -
 
 ## Results
 
+If we compare the base model doing 128 independent predictions against doing 64 predictions and refining the best ones that do not solve the task with the fine-tuned model, we see a small improvement in the metrics when evaluating on ARC-AGI-1 evaluation set.
+
+| initial predictions | refinement predictions | valid code | valid outputs | unique outputs | train_pixel_score | train_correct_grids | train_pass_rate | train_is_correct | test_pixel_score | test_correct_grids | test_pass_rate | test_is_correct | is_correct |
+|---------------------|------------------------|------------|---------------|----------------|-------------------|---------------------|-----------------|------------------|------------------|--------------------|----------------|-----------------|------------|
+| 128                 | 0                      | **99.9%**  | 71.7%         | **49.8%**      | 42.1%             | 2.4%                | 1.6%            | 16.3%            | 40.9%            | 2.0%               | 2.0%           | 23.0%           | 16.3%      |
+| 64                  | 64                     | 93.7%      | **76.5%**     | 42.5%          | **48.7%**         | **3.1%**            | 1.6%            | **18.5%**        | **47.2%**        | **2.5%**           | **2.4%**       | **24.5%**       | **17.8%**  |
+
+The improvement is more clear if we compare against the previous refinement experiment.
+
+| fine-tuned model | valid code | valid outputs | unique outputs | train_pixel_score | train_correct_grids | train_pass_rate | train_is_correct | test_pixel_score | test_correct_grids | test_pass_rate | test_is_correct | is_correct |
+|------------------|------------|---------------|----------------|-------------------|---------------------|-----------------|------------------|------------------|--------------------|----------------|-----------------|------------|
+| no               | **99.7%**  | 74.0%         | **43.7%**      | 45.8%             | 2.1%                | 1.1%            | 16.5%            | 44.4%            | 1.7%               | 1.6%           | 21.5%           | 16.0%      |
+| yes              | 93.7%      | **76.5%**     | 42.5%          | **48.7%**         | **3.1%**            | **1.6%**        | **18.5%**        | **47.2%**        | **2.5%**           | **2.4%**       | **24.5%**       | **17.8%**  |
+
+The fine-tuning metrics look healthy, although we see at the end of the training that the model starts doing long predictions.
+
+![alt text](res/1761973653869_image.png)
+
 ## Conclusion
+
+We have observed a small improvement (16.3% -> 17.8% pass-rate) when doing prediction refinement with
+a model fine-tuned with RL to do prediction refinement.
+If we had an stable RL training and enough time and compute, maybe this small improvement could be make bigger.
 
 ## Next steps
 
@@ -133,8 +155,8 @@ rsync -aPv -m  --include='*/'  --exclude *.pt --include='checkpoint-19699/***' -
 ## TODO
 
 - [x] On a first step I have to modify the current RL script to train on a generator
-- [ ] Create two datasets of 10k tasks from BARC
-- [ ] Generate predictions to create a 2nd turn dataset for RL
-- [ ] Prepare the dataset for training
-- [ ] Train 2nd turn RL
-- [ ] Evaluate using the same setup from Iteration 28
+- [x] Create two datasets of 10k tasks from BARC
+- [x] Generate predictions to create a 2nd turn dataset for RL
+- [x] Prepare the dataset for training
+- [x] Train 2nd turn RL
+- [x] Evaluate using the same setup from Iteration 28

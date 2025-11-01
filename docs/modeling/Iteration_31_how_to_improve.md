@@ -33,7 +33,7 @@ abstract representation of the image. We can describe the grid with natural lang
 what the input grids have in common, what the outputs have in common...
 In summary, **abstraction** allows us to see not just a collection of pixels, but to build high level
 abstractions that represent the images and allow to compare them and see what the differences are and
-what do they have in common. 
+what do they have in common.
 
 Those abstractions help to reduce the search space when we try to solve a task. We describe the tasks
 using natural language, describing the transformation between the inputs and the outputs. When we **reason**
@@ -49,7 +49,7 @@ Observe, hypothesize, test, learn, repeat. Solving ARC requires to use the scien
 ### How my current system compares against a human?
 
 I'm pretty sure my model does not have abstractions as powerful and general as humans. One way to enhance
-the representations of the model would be teh omni-arc approach from last year ARC24 challenge.
+the representations of the model would be the omni-arc approach from last year ARC24 challenge.
 
 Humans have **memory**. Memory allows to explore the search space without repeating previous errors.
 My system does many predictions independently, and this produces repeated predictions.

@@ -792,6 +792,24 @@ I have tried:
 
 But so far without any success. The training reaches a point where the model starts to predict garbage.
 
+### Do the models improve when doing RL training on BARC dataset?
+
+The following plots show results for doing 32 predictions on the ARC-AGI-1 evaluation dataset.
+
+![alt text](res/1761994282369_image.png)
+
+![alt text](res/1761994286663_image.png)
+
+![alt text](res/1761994292801_image.png)
+
+Metrics such as the ratio of correct grids, or the pass rate improve over the training. However the
+number of solved tasks does not show the same tendency, it seems to peak after 1000 steps of training.
+However we must take into account that it is the metric with the highest uncertainty.
+
+Ideally we would like to see a smooth improvement in all the metrics throughout the training. Currently that is not the case. But maybe we have to solve the problem of collapsing first.
+
+In the best experiment we were able to improve the solved tasks from 8.75% to 13.5%.
+
 ## Conclusion
 
 I haven't been able to find a training configuration that does not collapses. The reward improves during some steps

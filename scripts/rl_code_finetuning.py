@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from datasets import Dataset
 from tqdm.auto import tqdm
 from functools import partial, update_wrapper
+from typing import Optional
 
 from trl import GRPOConfig, GRPOTrainer
 
@@ -35,6 +36,7 @@ class Config:
     model_path: str = "/home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B"
     load_in_4bit: bool = True
     gpu_memory_utilization: float = 0.7
+    dtype: Optional[str] = None  # 'float16', 'bfloat16', 'float32', None (If None it uses bfloat16 if possible)
     # max_seq_length: int = 8400+1024  # longest prompt is 8635 tokens, so with 1000 tokens generation it is 9635
     max_seq_length: int = 2048
     max_completion_length: int = 1024

@@ -591,11 +591,15 @@ For more information go to iteration [28](modeling/Iteration_28_refine_predictio
 
 #### 5.2 Can the BARC induction model learn to refine its predictions using RL?
 
-TODO: Ongoing
+I have fine-tuned the BARC induction model with the BARC dataset to refine its own predictions. On a first
+step I generated predictions for the dataset, and selected the best ones that did not solve the task. Those
+were given in the training along feedback from execution. The model was trained for 17k steps.
+
+When evaluating the model we observed a small improvement in the solved tasks from 16.3% to 17.8%. If we had an stable RL training and enough time and compute, maybe this small improvement could be make bigger.
 
 !!! tip "Learning"
 
-    TODO
+    Fine-tuning a model with RL to refine its predictions yields small improvements.
 
 For more information go to iteration [34](modeling/Iteration_34_multi-turn_rl.md).
 

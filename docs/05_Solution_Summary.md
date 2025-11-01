@@ -547,7 +547,7 @@ For more information go to iterations [22](modeling/Iteration_22_ttt_BARC.md) an
 
 After validating that the search and learn approach could work, I realized that I need a stronger
 base model to be able to beat ARC-AGI-2. The BARC induction model only solves 22% and 0.8% of the
-evaluation tasks of ARC-AGI-1 and ARC-AGI-2 respectively.
+evaluation tasks of ARC-AGI-1 and ARC-AGI-2 respectively when doing 512 predictions.
 
 I thought that trying reinforcement learning could be a good idea. As an outsider, it seems
 that recent advances in math and coding abilities of LLMs have come from using RL.

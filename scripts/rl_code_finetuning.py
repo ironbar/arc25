@@ -77,7 +77,8 @@ def main():
     llm, tokenizer = FastLanguageModel.from_pretrained(
         cfg.model_path, load_in_4bit=cfg.load_in_4bit,
         fast_inference=True, max_seq_length=cfg.max_seq_length,
-        gpu_memory_utilization=cfg.gpu_memory_utilization)
+        gpu_memory_utilization=cfg.gpu_memory_utilization,
+        dtype=cfg.dtype)
     grid_encoder = create_grid_encoder(cfg.grid_encoder)
 
     dataset = load_arc_dataset_with_solutions(cfg.dataset_path)

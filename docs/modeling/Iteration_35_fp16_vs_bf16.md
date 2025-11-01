@@ -115,6 +115,97 @@ python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/rl_code_finetuning.py 
 
 </details>
 
+### Strong compute experiments
+
+Calculon21 is full, so let's try to do the same experiments in StrongCompute.
+
+
+<details>
+  <summary>Click to expand/collapse this section</summary>
+
+```bash
+# arc25
+source /root/arc25_env/bin/activate
+source /root/secrets.sh
+export PYTHONPATH=$PYTHONPATH:/root/arc25
+export DTYPE=bfloat16
+export FOLDER=2025-11-01-rl-fp16
+export BETA=0.001
+export REPETITION_PENALTY=1.00
+export LEARNING_RATE=4e-6
+export NUM_GENERATIONS=8
+export ACUM_STEPS=1
+export N_CPUS=20
+export LORA_R=1
+export EPOCHS=1
+export REWARD_NAME=arc-v2-no-pixel-score
+export EXPERIMENT_NAME=${DTYPE}_${LORA_R}lora_lr${LEARNING_RATE}_${REWARD_NAME}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_repetition-penalty-${REPETITION_PENALTY}_masked-truncate_unquantized_beta${BETA}
+python /root/arc25/scripts/rl_code_finetuning.py \
+--dtype ${DTYPE} \
+--beta ${BETA} \
+--no-load-in-4bit \
+--reward-name ${REWARD_NAME} \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.001 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--save-steps 200 \
+--model-path /data/uds-fourth-five-hunter-250929 \
+--dataset-path /root/data/barc/dataset_100k.json.gz \
+--output-dir /root/trainings/${FOLDER}/${EXPERIMENT_NAME}
+
+# arc25_1
+source /root/arc25_env/bin/activate
+source /root/secrets.sh
+export PYTHONPATH=$PYTHONPATH:/root/arc25
+export DTYPE=float16
+export FOLDER=2025-11-01-rl-fp16
+export BETA=0.001
+export REPETITION_PENALTY=1.00
+export LEARNING_RATE=4e-6
+export NUM_GENERATIONS=8
+export ACUM_STEPS=1
+export N_CPUS=20
+export LORA_R=1
+export EPOCHS=1
+export REWARD_NAME=arc-v2-no-pixel-score
+export EXPERIMENT_NAME=${DTYPE}_${LORA_R}lora_lr${LEARNING_RATE}_${REWARD_NAME}_epochs${EPOCHS}_${NUM_GENERATIONS}gen_${ACUM_STEPS}accum-steps_repetition-penalty-${REPETITION_PENALTY}_masked-truncate_unquantized_beta${BETA}
+python /root/arc25/scripts/rl_code_finetuning.py \
+--dtype ${DTYPE} \
+--beta ${BETA} \
+--no-load-in-4bit \
+--reward-name ${REWARD_NAME} \
+--num-generations ${NUM_GENERATIONS} \
+--gradient-accumulation-steps ${ACUM_STEPS} \
+--learning-rate ${LEARNING_RATE} \
+--lora_r ${LORA_R} \
+--repetition-penalty ${REPETITION_PENALTY} \
+--epochs ${EPOCHS} \
+--mask-truncated-completions \
+--scale-rewards batch \
+--gpu_memory_utilization 0.3 \
+--warmup-ratio 0.001 \
+--max-seq-length 9700 \
+--max-completion-length 1024 \
+--n-jobs ${N_CPUS} \
+--save-steps 200 \
+--model-path /data/uds-fourth-five-hunter-250929 \
+--dataset-path /root/data/barc/dataset_100k.json.gz \
+--output-dir /root/trainings/${FOLDER}/${EXPERIMENT_NAME}
+```
+
+</details>
+
+
 ## Results
 
 ## Conclusion

@@ -833,3 +833,4 @@ In the best scenario the solved tasks was improved from 8.75% to 13.5% when doin
 - [x] Can I find a training configuration that allows me to train on the whole datasets without collapsing?
   I have launched multiple experiments with different configurations of kl loss and max_grad_norm to see
   if any works and which one break.
+- [ ] 512 predictions with the best configuration

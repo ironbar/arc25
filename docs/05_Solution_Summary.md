@@ -602,10 +602,15 @@ For more information go to iteration [34](modeling/Iteration_34_multi-turn_rl.md
 ## Conclusions
 
 TODO: Ongoing
-<!-- I believe this is the right approach, but clearly something is missing, learn from the other teams and prepare for ARC26  --->
+<!-- I believe this is the right approach, but clearly something is missing, learn from the other teams and prepare for ARC26 --->
+
+Ok, so if search and learn is the right approach, why haven't I been capable to beat the transduction
+test-time training approach?
+
+What are the flaws of my implementation?
 
 ## Acknowledgements
 
-- Thanks to my wife for taking care of our children many times so I could do research without small AGIs disturbing me.
+- Thanks to my wife and my family for taking care of our children many times so I could do research without small AGIs disturbing me.
 - Thanks to [Veridas](https://veridas.com/en/) for allowing me to do research on ARC during part of my job time and for providing me access to its compute cluster.
 - Thanks to [Strong Compute](https://strongcompute.com/) for providing compute for some of the RL experiments.

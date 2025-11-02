@@ -810,6 +810,16 @@ Ideally we would like to see a smooth improvement in all the metrics throughout 
 
 In the best experiment we were able to improve the solved tasks from 8.75% to 13.5%.
 
+### Compare against previous fine-tuned model
+
+| RL dataset         | RL steps | n_preds | valid code | valid outputs | unique outputs | train_pixel_score | train_correct_grids | train_pass_rate | train_is_correct | test_pixel_score | test_correct_grids | test_pass_rate | test_is_correct | is_correct |
+|--------------------|----------|---------|------------|---------------|----------------|-------------------|---------------------|-----------------|------------------|------------------|--------------------|----------------|-----------------|------------|
+| -                  | -        | 480     | **100.0%** | 70.9%         | **43.8%**      | 41.3%             | 2.1%                | 1.3%            | 22.5%            | 40.2%            | 1.7%               | 1.7%           | 28.5%           | 22.3%      |
+| ARC-AGI-1 training | 8400     | 480     | 96.2%      | **81.9%**     | 36.0%          | **56.2%**         | **6.8%**            | **4.6%**        | **27.8%**        | **54.9%**        | **5.9%**           | **5.8%**       | **35.3%**       | **27.0%**  |
+| BARC               | 1000     | 480     | **100.0%** | 80.5%         | 42.4%          | 49.2%             | 3.3%                | 2.0%            | 25.8%            | 48.0%            | 2.8%               | 2.7%           | 32.3%           | 25.0%      |
+
+TODO: evaluate model trained for 10k steps
+
 ## Conclusion
 
 I haven't been able to find a training configuration that does not collapses. The reward improves during some steps

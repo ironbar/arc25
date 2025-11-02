@@ -554,11 +554,31 @@ that recent advances in math and coding abilities of LLMs have come from using R
 I had experience with RL in different competitions ([Animal AI Olympics](https://www.goodai.com/animal-ai-olympics-results/), [Lux AI](https://www.kaggle.com/competitions/lux-ai-2021) and [Hungry Geese](https://www.kaggle.com/competitions/hungry-geese)), but not with LLMs, so I thought it was a good
 idea to give it a try.
 
+I verified that RL fine-tuning improved the solving rate of the base model, but I could not train
+for long because all the trainings eventually collapsed. The reward improved during the training
+until suddenly it collapsed. On the first experiments the model entered a loop in the predictions,
+repeating the same tokens over and over. When adding repetition penalty to avoid this behaviour,
+the model simply predicted gibberish.
+
+I have tried many things but so far I haven't solved the problem with training collapse:
+
+- Using a bigger training dataset (from ARC-AGI-1 400 training samples to BARC 100k samples)
+- Using a bigger number of generations per step (from 8 to 128)
+- Increasing the KL penalty
+- Decreasing the max grad norm
+- Simplifying or changing the reward function
+- Adding repetition penalty
+- Disabling 4bit quantization for training
+- Changing the LoRA rank
+
+![alt text](modeling/res/1761992341269_image.png)
+
 TODO: Ongoing. RL works, but training collapses and I still have not found the cause.
 
 !!! tip "Learning"
 
-    TODO
+    Reinforcement learning improves the solving rate of the model, but I have been unable to train for long
+    due to training collapse.
 
 For more information go to iterations [24](modeling/Iteration_24_RL_BARC.md), [25](modeling/Iteration_25_debug_parallel_code_execution.md), [29](modeling/Iteration_29_multi-gpu-rl.md), [30](modeling/Iteration_30_solve_RL_collapse.md), [33](modeling/Iteration_33_rl_barc.md)
 

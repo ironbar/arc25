@@ -6,6 +6,8 @@ https://www.kaggle.com/solution-write-up-documentation
 <center><img src="modeling/res/1752753996905_arc25.png" width="50%"></center>
 --->
 
+_Guillermo Barbadillo, November 3 2025_
+
 ## Abstract
 
 This is a technical report of the work and research done by Guillermo Barbadillo for the ARC25 challenge.
@@ -17,7 +19,7 @@ leaderboard was achieved with minor adaptations of last year's transduction with
 
 - [Abstract](#abstract)
 - [Table of contents](#table-of-contents)
-- [Introduction](#introduction)
+- [Introduction. What is ARC and why is it relevant?](#introduction-what-is-arc-and-why-is-it-relevant)
 - [Vision: Search and learn](#vision-search-and-learn)
   - [Four paths to arrive at that vision](#four-paths-to-arrive-at-that-vision)
     - [Path 1. Search and learn](#path-1-search-and-learn)
@@ -46,7 +48,7 @@ leaderboard was achieved with minor adaptations of last year's transduction with
 - [Conclusions](#conclusions)
 - [Acknowledgements](#acknowledgements)
 
-## Introduction
+## Introduction. What is ARC and why is it relevant?
 
 <!-- what is intelligence --->
 François Chollet defined intelligence as **skill-acquisition intelligence** in the paper [On the Measure of Intelligence](https://arxiv.org/abs/1911.01547) back in 2019.
@@ -56,9 +58,9 @@ Humans (and that includes many AI researchers) tend to confuse skill with intell
 However, skill is the product of intelligence. Intelligence is the rate at which a learner turns
 its experience and priors into new skills. This confusion between intelligence and skill happens
 because when a person shows a great level of skill, for example at chess, that person is very likely to be intelligent.
-Skill and intelligence are correlated in humans because humans do not know chess at birth and they have to learn how to play it. Thus if a person is able to achieve a great level of skill at chess, it is because
+**Skill and intelligence are correlated in humans** because humans do not know chess at birth and they have to learn how to play it. Thus if a person is able to achieve a great level of skill at chess, it is because
 they have been able to acquire that skill more efficiently than other people.
-However, in the case of machines, that correlation is completely broken. Given some task like playing chess, it is possible
+**However, in the case of machines, that correlation is completely broken**. Given some task like playing chess, it is possible
 to achieve an arbitrary level of skill by using unlimited priors, training data, and compute. But that machine
 would only be capable of playing chess and nothing more. Its adaptation capacity is very limited and thus its intelligence is very limited as well.
 
@@ -118,9 +120,6 @@ We already know that HER enables faster learning, especially in very sparse rewa
 
 ![](res/2025-03-25-16-38-36.png)
 
-Additionally, we could define a continuous metric such as the number of correct pixels and use it with reinforcement learning to modify the model towards solutions
-that score higher.
-
 #### Path 3. Imitate how humans solve ARC
 
 ##### How humans solve ARC
@@ -168,6 +167,8 @@ argue why search and learn will be the first approach to solve it.
 In the following subsections I will argue why I believe search and learn has advantages over the other approaches.
 
 #### Transduction and test-time training
+
+> [Transduction](https://en.wikipedia.org/wiki/Transduction_(machine_learning)) is the process of directly drawing conclusions about new data from previous data, without constructing a model
 
 Although it was the dominant approach in the ARC24 prize and very likely one of the dominant approaches
 in ARC25, I do not believe it is the best bet to solve ARC-AGI-2 because:
@@ -582,7 +583,7 @@ to train for longer if I'm able to avoid training collapse.
     Reinforcement learning improves the solving rate of the model (22% -> 27%), but I have been unable to train for long
     due to training collapse.
 
-For more information go to iterations [24](modeling/Iteration_24_RL_BARC.md), [25](modeling/Iteration_25_debug_parallel_code_execution.md), [29](modeling/Iteration_29_multi-gpu-rl.md), [30](modeling/Iteration_30_solve_RL_collapse.md), [33](modeling/Iteration_33_rl_barc.md)
+For more information go to iterations [24](modeling/Iteration_24_RL_BARC.md), [25](modeling/Iteration_25_debug_parallel_code_execution.md), [29](modeling/Iteration_29_multi-gpu-rl.md), [30](modeling/Iteration_30_solve_RL_collapse.md), [33](modeling/Iteration_33_rl_barc.md) and [35](modeling/Iteration_35_fp16_vs_bf16.md).
 
 ### 5. Can we improve the search accuracy by doing prediction refinement?
 

@@ -122,7 +122,7 @@ We already know that HER enables faster learning, especially in very sparse rewa
 
 ![](res/2025-03-25-16-38-36.png)
 
-In the rest of the report I will use Hindsight Experience Replay or Hindsight Relabeling indistinctly. I believe Hindsight relabeling is more correct because we relabel the tasks and use them for training, we don't replay the
+In the rest of the report I will use Hindsight Experience Replay or Hindsight Relabeling interchangeably. I believe Hindsight relabeling is more correct because we relabel the tasks and use them for training, we don't replay the
 tasks many times.
 
 #### Path 3. Imitate how humans solve ARC
@@ -151,7 +151,7 @@ Focusing on efficiency the best configuration for ARC might be the following:
 - **Judgment**: metric function.
 - **Learning**: reinforcement learning and hindsight experience replay.
 
-That way we only have to learn the policy and parametrize the learning. All the other modules are guaranteed to work correctly.
+That way we only have to learn the policy and parametrize the learning process. All the other modules are guaranteed to work correctly.
 
 #### Path 4. Frame ARC as a game and solve it with RL
 
@@ -169,7 +169,7 @@ well in that setting. When rewards are very sparse we need to add tricks like hi
 ARC can be solved (and will be solved) with many different approaches, but in this section, I will
 argue why search and learn will be the first approach to solve it.
 
-In the following subsections I will argue why I believe search and learn has advantages over the other approaches.
+In the following subsections i will argue why I believe search and learn has advantages over the other approaches.
 
 #### Transduction and test-time training
 
@@ -623,7 +623,7 @@ I have fine-tuned the BARC induction model with the BARC dataset to refine its o
 step I generated predictions for the dataset, and selected the best ones that did not solve the task. Those
 were given in the training along feedback from execution. The model was trained for 17k steps.
 
-When evaluating the model we observed a small improvement in the solved tasks from 16.3% to 17.8%. If we had an stable RL training and enough time and compute, maybe this small improvement could be make bigger.
+When evaluating the model we observed a small improvement in the solved tasks from 16.3% to 17.8%. If we had a stable RL training and enough time and compute, maybe this small improvement could be made bigger.
 
 !!! tip "Learning"
 

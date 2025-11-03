@@ -573,11 +573,13 @@ I have tried many things but so far I haven't solved the problem with training c
 
 ![alt text](modeling/res/1761992341269_image.png)
 
-TODO: Ongoing. RL works, but training collapses and I still have not found the cause.
+In the best experiment the solve rate for the ARC-AGI-1 evaluation set improved from 22.3% of the base
+model to 27% for the model fine-tuned with RL when doing 480 predictions. It would be interesting
+to train for longer if I'm able to avoid training collapse.
 
 !!! tip "Learning"
 
-    Reinforcement learning improves the solving rate of the model, but I have been unable to train for long
+    Reinforcement learning improves the solving rate of the model (22% -> 27%), but I have been unable to train for long
     due to training collapse.
 
 For more information go to iterations [24](modeling/Iteration_24_RL_BARC.md), [25](modeling/Iteration_25_debug_parallel_code_execution.md), [29](modeling/Iteration_29_multi-gpu-rl.md), [30](modeling/Iteration_30_solve_RL_collapse.md), [33](modeling/Iteration_33_rl_barc.md)

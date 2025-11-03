@@ -6,6 +6,8 @@ https://www.kaggle.com/solution-write-up-documentation
 <center><img src="modeling/res/1752753996905_arc25.png" width="50%"></center>
 --->
 
+<center><img src="../modeling/res/1752753996905_arc25.png" width="50%" alt="Diagram illustrating search-and-learn loop for ARC25"/></center>
+
 _Guillermo Barbadillo, November 3 2025_
 
 ## Abstract

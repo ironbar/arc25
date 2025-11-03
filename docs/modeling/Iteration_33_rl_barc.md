@@ -812,13 +812,14 @@ In the best experiment we were able to improve the solved tasks from 8.75% to 13
 
 ### Compare against previous fine-tuned model
 
-| RL dataset         | RL steps | n_preds | valid code | valid outputs | unique outputs | train_pixel_score | train_correct_grids | train_pass_rate | train_is_correct | test_pixel_score | test_correct_grids | test_pass_rate | test_is_correct | is_correct |
-|--------------------|----------|---------|------------|---------------|----------------|-------------------|---------------------|-----------------|------------------|------------------|--------------------|----------------|-----------------|------------|
-| -                  | -        | 480     | **100.0%** | 70.9%         | **43.8%**      | 41.3%             | 2.1%                | 1.3%            | 22.5%            | 40.2%            | 1.7%               | 1.7%           | 28.5%           | 22.3%      |
-| ARC-AGI-1 training | 8400     | 480     | 96.2%      | **81.9%**     | 36.0%          | **56.2%**         | **6.8%**            | **4.6%**        | **27.8%**        | **54.9%**        | **5.9%**           | **5.8%**       | **35.3%**       | **27.0%**  |
-| BARC               | 1000     | 480     | **100.0%** | 80.5%         | 42.4%          | 49.2%             | 3.3%                | 2.0%            | 25.8%            | 48.0%            | 2.8%               | 2.7%           | 32.3%           | 25.0%      |
+| dataset     | RL dataset         | RL steps | n_preds | valid code | valid outputs | unique outputs | train_pixel_score | train_correct_grids | train_pass_rate | train_is_correct | test_pixel_score | test_correct_grids | test_pass_rate | test_is_correct | is_correct |
+|-------------|--------------------|----------|---------|------------|---------------|----------------|-------------------|---------------------|-----------------|------------------|------------------|--------------------|----------------|-----------------|------------|
+| evaluation  | -                  | -        | 480     | **100.0%** | 70.9%         | 43.8%          | 41.3%             | 2.1%                | 1.3%            | 22.5%            | 40.2%            | 1.7%               | 1.7%           | 28.5%           | 22.3%      |
+| evaluation  | ARC-AGI-1 training | 8400     | 480     | 96.2%      | 81.9%         | 36.0%          | **56.2%**         | **6.8%**            | **4.6%**        | **27.8%**        | **54.9%**        | **5.9%**           | **5.8%**       | **35.3%**       | **27.0%**  |
+| evaluation  | BARC               | 1000     | 480     | **100.0%** | 80.5%         | 42.4%          | 49.2%             | 3.3%                | 2.0%            | 25.8%            | 48.0%            | 2.8%               | 2.7%           | 32.3%           | 25.0%      |
+| evaluation  | BARC               | 10000    | 480     | **100.0%** | **89.1%**     | **44.8%**      | 55.9%             | 4.3%                | 2.6%            | 24.3%            | 54.2%            | 3.5%               | 3.5%           | 32.3%           | 23.3%      |
 
-TODO: evaluate model trained for 10k steps
+Results do not improve over doing RL on the ARC-AGI-1 training tasks, but they improve over the baseline model.
 
 ## Conclusion
 
@@ -843,4 +844,4 @@ In the best scenario the solved tasks was improved from 8.75% to 13.5% when doin
 - [x] Can I find a training configuration that allows me to train on the whole datasets without collapsing?
   I have launched multiple experiments with different configurations of kl loss and max_grad_norm to see
   if any works and which one break.
-- [ ] 512 predictions with the best configuration
+- [x] 512 predictions with the best configuration

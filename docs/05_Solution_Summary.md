@@ -8,13 +8,13 @@ https://www.kaggle.com/solution-write-up-documentation
 
 <center><img src="../modeling/res/1752753996905_arc25.png" width="50%" alt="Diagram illustrating search-and-learn loop for ARC25"/></center>
 
-_Guillermo Barbadillo, November 3 2025_
+_Guillermo Barbadillo, November 3, 2025_
 
 ## Abstract
 
 This is a technical report of the work and research done by Guillermo Barbadillo for the ARC25 challenge.
 Most of the research was oriented towards a deep-learning-guided program synthesis system that searches program space and adapts at test time with test-time training via hindsight relabeling, in a tight search-and-learn loop. Evidence was obtained that search and learn outperforms pure search approaches for the same number of predictions per task. However, that effort is not yet complete, and pieces and ideas are
-missing because it does not solve any of the private test tasks from ARC-AGI-2. The best result on the
+missing, as it does not yet solve any of the private test tasks from ARC-AGI-2. The best result on the
 leaderboard was achieved with minor adaptations of last year's transduction with test-time training approach.
 
 ## Table of contents
@@ -144,7 +144,7 @@ Reasoning is an iterative process as shown in the loop diagram in the image.
 
 ##### How AI might solve ARC
 
-Focusing on efficiency the best configuration for ARC might be the following:
+Focusing on efficiency, the best configuration for ARC might be the following:
 
 ![how-ai-might-solve-arc](res/how-ai-might-solve-arc.png)
 
@@ -171,7 +171,7 @@ well in that setting. When rewards are very sparse we need to add tricks like hi
 ARC can be solved (and will be solved) with many different approaches, but in this section, I will
 argue why search and learn will be the first approach to solve it.
 
-In the following subsections i will argue why I believe search and learn has advantages over the other approaches.
+In the following subsections I will argue why I believe search and learn has advantages over the other approaches.
 
 #### Transduction and test-time training
 
@@ -207,7 +207,7 @@ and [Jeremy Berman](https://jeremyberman.substack.com/p/how-i-got-a-record-536-o
 state-of-the-art accuracy on ARC by generating Python code and refining the code using feedback from
 execution.
 
-My guess is that a frozen model, no matter how big, will not be able to generalize when the generalization jump is large (at least for a constrained inference budget).
+My guess is that a frozen model, no matter how big, will not be able to generalize when the generalization gap is large (at least for a constrained inference budget).
 I hypothesize that search and learn will beat a pure search approach.
 
 ## Research Journey
@@ -568,7 +568,7 @@ until suddenly it collapsed. On the first experiments the model entered a loop i
 repeating the same tokens over and over. When adding repetition penalty to avoid this behaviour,
 the model simply predicted gibberish.
 
-I have tried many things but so far I haven't solved the problem with training collapse:
+I have tried many things, but so far I haven't solved the problem of training collapse:
 
 - Using a bigger training dataset (from ARC-AGI-1 400 training samples to BARC 100k samples)
 - Using a bigger number of generations per step (from 8 to 128)

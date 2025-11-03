@@ -122,7 +122,7 @@ We already know that HER enables faster learning, especially in very sparse rewa
 
 ![](res/2025-03-25-16-38-36.png)
 
-In the rest of the report I will use Hindsight Experience Replay or Hindsight Relabeling indistinctly. I believe Hindisight relabeling is more correct because we relabel the tasks and use them for training, we don't replay the
+In the rest of the report I will use Hindsight Experience Replay or Hindsight Relabeling indistinctly. I believe Hindsight relabeling is more correct because we relabel the tasks and use them for training, we don't replay the
 tasks many times.
 
 #### Path 3. Imitate how humans solve ARC

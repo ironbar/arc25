@@ -112,13 +112,18 @@ Using code is a more promising approach because:
 1. It is verifiable.
 2. It enables iterative refinement of the solution by comparing outputs with the ground truth. This is similar to reasoning.
 
-My hypothesis is that we can use [hindsight experience replay (HER)](https://arxiv.org/abs/1707.01495) at test time to update the beliefs of the model and find the right solution more efficiently. Instead of sampling thousands of programs, we can sample a few and learn from the mistakes. **That is the way to combine induction and test-time training.**
+My hypothesis is that we can use [hindsight experience replay (HER)](https://arxiv.org/abs/1707.01495) at test time to update the beliefs of the model and find the right solution more efficiently. Hindsight Experience Replay is a reinforcement learning technique where the agent learns from failures by relabeling unsuccessful episodes as if they were successful for a different goal. For example we want to go from A to B, but instead we end up in C. We can use that trajectory to teach the model how to go from A to C.
+
+Instead of sampling thousands of programs, we can sample a few and learn from the mistakes. **That is the way to combine induction and test-time training.**
 
 We can treat failed code attempts that run as new tasks and train the model on those tasks. Those tasks will be in the neighborhood of the task that we want to solve.
 
 We already know that HER enables faster learning, especially in very sparse reward environments.
 
 ![](res/2025-03-25-16-38-36.png)
+
+In the rest of the report I will use Hindsight Experience Replay or Hindsight Relabeling indistinctly. I believe Hindisight relabeling is more correct because we relabel the tasks and use them for training, we don't replay the
+tasks many times.
 
 #### Path 3. Imitate how humans solve ARC
 

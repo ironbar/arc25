@@ -49,6 +49,7 @@ leaderboard was achieved with minor adaptations of last year's transduction with
     - [5.2 Can the BARC induction model learn to refine its predictions using RL?](#52-can-the-barc-induction-model-learn-to-refine-its-predictions-using-rl)
 - [Conclusions and next steps](#conclusions-and-next-steps)
 - [Acknowledgements](#acknowledgements)
+- [Links](#links)
 
 ## Introduction. What is ARC and why is it relevant?
 
@@ -662,3 +663,10 @@ for the next ARC challenge edition. I have some vague ideas in my head that I wa
 - Thanks to my wife and my family for taking care of our children many times so I could do research without small AGIs disturbing me.
 - Thanks to [Veridas](https://veridas.com/en/) for allowing me to do research on ARC during part of my job time and for providing me access to its compute cluster.
 - Thanks to [Strong Compute](https://strongcompute.com/) for providing compute for some of the RL experiments.
+
+## Links
+
+- [Github repo](https://github.com/ironbar/arc25)
+- [Github documentation](https://ironbar.github.io/arc24/)
+- [Notebook 1]()
+- [Notebook 2]()

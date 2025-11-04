@@ -47,7 +47,7 @@ leaderboard was achieved with minor adaptations of last year's transduction with
   - [5. Can we improve the search accuracy by doing prediction refinement?](#5-can-we-improve-the-search-accuracy-by-doing-prediction-refinement)
     - [5.1 Can the BARC induction model refine its predictions?](#51-can-the-barc-induction-model-refine-its-predictions)
     - [5.2 Can the BARC induction model learn to refine its predictions using RL?](#52-can-the-barc-induction-model-learn-to-refine-its-predictions-using-rl)
-- [Conclusions](#conclusions)
+- [Conclusions and next steps](#conclusions-and-next-steps)
 - [Acknowledgements](#acknowledgements)
 
 ## Introduction. What is ARC and why is it relevant?
@@ -640,17 +640,22 @@ When evaluating the model we observed a small improvement in the solved tasks fr
 
 For more information go to iteration [34](modeling/Iteration_34_multi-turn_rl.md).
 
-## Conclusions
+## Conclusions and next steps
 
-TODO: Ongoing
-<!-- I believe this is the right approach, but clearly something is missing, learn from the other teams and prepare for ARC26 --->
+ARC25 challenge is over and despite not being able to improve over the test-time training baseline
+with the search-and-learn approach I have enjoyed all these months of research and learning. The top
+teams in the public leaderboard scored around 27%, so there is a long run until the 85% goal and I
+hope to keep enjoying this research journey.
 
-Ok, so if search and learn is the right approach, why haven't I been capable to beat the transduction
-test-time training approach?
+If search and learn is the right approach, why haven't I been capable to beat the transduction
+test-time training approach? There are many reasons, but let's point to the main ones:
 
-What are the flaws of my implementation?
+- A stronger induction model is needed to beat ARC. How to craft that model is an open question.
+- My search method was very basic, just doing independent predictions. That would only work on trivial
+  tasks, to solve complex tasks refining is needed.
 
-Do humans have a continous model of the world? Or do we have a discrete always-growing model of the world where we apply targeted edits when evidence contradicts our beliefs?
+In the coming days I will read thoroughly all the work done by the other teams and rethink my approach
+for the next ARC challenge edition. I have some vague ideas in my head that I want to meditate: Do humans have a continuous model of the world? Or do we have a discrete always-growing model of the world where we apply targeted edits when evidence contradicts our beliefs? Is deep learning and gradient descent the best learning method? Or there could be more sample efficient alternatives?
 
 ## Acknowledgements
 

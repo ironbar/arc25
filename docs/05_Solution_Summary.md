@@ -653,6 +653,8 @@ If search and learn is the right approach, why haven’t I been able to beat the
 
 In the coming days, I will thoroughly review all the work done by other teams and rethink my approach for the next ARC challenge edition. I have some vague ideas in mind that I want to reflect on: Do humans have a continuous model of the world, or do we have a discrete, ever-growing model where we apply targeted edits when evidence contradicts our beliefs? Is deep learning and gradient descent the best learning method, or could there be more sample-efficient alternatives?
 
+See you on ARC26!
+
 ## Acknowledgements
 
 - Thanks to my wife and my family for taking care of our children many times so I could do research without small AGIs disturbing me.

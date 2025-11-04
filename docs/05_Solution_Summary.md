@@ -23,13 +23,12 @@ leaderboard was achieved with minor adaptations of last year's transduction with
 - [Table of contents](#table-of-contents)
 - [Introduction. What is ARC and why is it relevant?](#introduction-what-is-arc-and-why-is-it-relevant)
 - [Vision: Search and learn](#vision-search-and-learn)
-  - [Four paths to arrive at that vision](#four-paths-to-arrive-at-that-vision)
-    - [Path 1. Search and learn](#path-1-search-and-learn)
-    - [Path 2. Combine the best approaches from ARC24: test-time training and program synthesis](#path-2-combine-the-best-approaches-from-arc24-test-time-training-and-program-synthesis)
-    - [Path 3. Imitate how humans solve ARC](#path-3-imitate-how-humans-solve-arc)
-      - [How humans solve ARC](#how-humans-solve-arc)
-      - [How AI might solve ARC](#how-ai-might-solve-arc)
-    - [Path 4. Frame ARC as a game and solve it with RL](#path-4-frame-arc-as-a-game-and-solve-it-with-rl)
+  - [Path 1. Search and learn](#path-1-search-and-learn)
+  - [Path 2. Combine the best approaches from ARC24: test-time training and program synthesis](#path-2-combine-the-best-approaches-from-arc24-test-time-training-and-program-synthesis)
+  - [Path 3. Imitate how humans solve ARC](#path-3-imitate-how-humans-solve-arc)
+    - [How humans solve ARC](#how-humans-solve-arc)
+    - [How AI might solve ARC](#how-ai-might-solve-arc)
+  - [Path 4. Frame ARC as a game and solve it with RL](#path-4-frame-arc-as-a-game-and-solve-it-with-rl)
   - [Why it will beat the other approaches](#why-it-will-beat-the-other-approaches)
     - [Transduction and test-time training](#transduction-and-test-time-training)
     - [Natural language program search (o3)](#natural-language-program-search-o3)
@@ -78,13 +77,20 @@ ARC is important because it is currently the only benchmark that measures intell
 
 ## Vision: Search and learn
 
-**ARC will be solved first by deep-learning-guided program synthesis that searches program space and adapts at test time with test-time training via hindsight relabeling in a tight search-and-learn loop.**
+!!! tip "Vision"
 
-### Four paths to arrive at that vision
+    I believe ARC will be solved first by deep-learning-guided program synthesis that searches program space and adapts at test time with test-time training via hindsight relabeling in a tight search-and-learn loop.
 
-There are at least four different paths to arrive at that vision.
+There are at least four different paths to arrive at that vision:
 
-#### Path 1. Search and learn
+1. Search and learn
+2. Combine the best approaches from ARC24: test-time training and program synthesis
+3. Imitate how humans solve ARC
+4. Frame ARC as a game and solve it with RL
+
+In the following sections I describe the different paths in more detail.
+
+### Path 1. Search and learn
 
 There are only two methods to adapt to novelty: search and learn.
 
@@ -105,7 +111,7 @@ work during the ARC25 challenge has moved in that direction.
 
 <center><img src="../modeling/res/1752753996905_arc25.png" width="50%"></center>
 
-#### Path 2. Combine the best approaches from ARC24: test-time training and program synthesis
+### Path 2. Combine the best approaches from ARC24: test-time training and program synthesis
 
 Last year's competition showed that test-time training allowed the models to adapt to the novel tasks. At the same time in the semi-private dataset, we saw that frontier models could generate code to solve more than half of the tasks.
 
@@ -127,9 +133,9 @@ We already know that HER enables faster learning, especially in very sparse rewa
 In the rest of the report I will use Hindsight Experience Replay or Hindsight Relabeling interchangeably. I believe Hindsight relabeling is more correct because we relabel the tasks and use them for training, we don't replay the
 tasks many times.
 
-#### Path 3. Imitate how humans solve ARC
+### Path 3. Imitate how humans solve ARC
 
-##### How humans solve ARC
+#### How humans solve ARC
 
 ![how-humans-solve-arc](res/how-humans-solve-arc.png)
 
@@ -142,7 +148,7 @@ When humans try to solve ARC tasks, we draw some hypotheses and test them in our
 
 Reasoning is an iterative process as shown in the loop diagram in the image.
 
-##### How AI might solve ARC
+#### How AI might solve ARC
 
 Focusing on efficiency, the best configuration for ARC might be the following:
 
@@ -155,7 +161,7 @@ Focusing on efficiency, the best configuration for ARC might be the following:
 
 That way we only have to learn the policy and parametrize the learning process. All the other modules are guaranteed to work correctly.
 
-#### Path 4. Frame ARC as a game and solve it with RL
+### Path 4. Frame ARC as a game and solve it with RL
 
 The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to solve it as efficiently as possible. It is like playing a game, but instead of hitting buttons, it has to write code.
 The code generates an output that is evaluated against the ground truth and returns a score.
@@ -642,6 +648,8 @@ Ok, so if search and learn is the right approach, why haven't I been capable to 
 test-time training approach?
 
 What are the flaws of my implementation?
+
+Do humans have a continous model of the world? Or do we have a discrete always-growing model of the world where we apply targeted edits when evidence contradicts our beliefs?
 
 ## Acknowledgements
 

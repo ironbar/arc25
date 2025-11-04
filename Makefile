@@ -1,4 +1,3 @@
-
 help:
 	@echo "test - run tests quickly with the default Python"
 	@echo "clean-pyc - remove Python file artifacts"
@@ -32,3 +31,4 @@ serve-docs:
 deploy-docs:
 	git push
 	mkdocs gh-deploy
+	$(MAKE) clean

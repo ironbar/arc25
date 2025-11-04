@@ -665,5 +665,5 @@ See you on ARC26!
 
 - [Github repo](https://github.com/ironbar/arc25)
 - [Github documentation](https://ironbar.github.io/arc24/)
-- [Notebook 1]()
-- [Notebook 2]()
+- [Notebook: The architects single task TTT](https://www.kaggle.com/code/ironbar/the-architects-single-task-ttt)
+- [Notebook: Search and learn](https://www.kaggle.com/code/ironbar/search-and-learn)

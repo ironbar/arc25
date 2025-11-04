@@ -13,3 +13,4 @@ notebooks/temp.json
 notebooks/unsloth_compiled_cache/*.py
 unsloth_compiled_cache/*
 notebooks/grpo_trainer_lora_model/adapter_config.json
+scripts/kaggle.md

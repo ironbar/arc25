@@ -1,0 +1,2668 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ironbar.github.io/arc25/modeling/Iteration_25_debug_parallel_code_execution/">
+      
+      
+        <link rel="prev" href="../Iteration_24_RL_BARC/">
+      
+      
+        <link rel="next" href="../Iteration_26_more_compute/">
+      
+      
+      <link rel="icon" href="../../res/arc_icon.jpg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.40">
+    
+    
+      
+        <title>Iteration 25. Debug parallel code execution - arc25</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#iteration-25-debug-parallel-code-execution" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="arc25" class="md-header__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            arc25
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Iteration 25. Debug parallel code execution
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../01_Business_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Business Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../02_Data_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Data Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../03_State_of_the_art/" class="md-tabs__link">
+        
+  
+    
+  
+  State of the art
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../04_Initial_Plan/" class="md-tabs__link">
+        
+  
+    
+  
+  Initial Plan
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../Iteration_01_architects_baseline/" class="md-tabs__link">
+          
+  
+    
+  
+  Modeling
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../utils/00_Challenge_Workflow/" class="md-tabs__link">
+          
+  
+    
+  
+  Utils
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../05_Solution_Summary/" class="md-tabs__link">
+        
+  
+    
+  
+  Solution summary
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="arc25" class="md-nav__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    arc25
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Business_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Business Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_Data_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_State_of_the_art/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    State of the art
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_Initial_Plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Initial Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Modeling
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Modeling
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_01_architects_baseline/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 1. Architects baseline
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_02_8_fold/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 2. Architects solution with 8 data splits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_03_ideal_test_time_training/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 3. Ideal test-time training setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_04_first_steps_with_code/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 4. First steps with code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_05_test_time_training_with_code_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 5. Test-time training with code. Hindsight Experience Replay (HER)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_06_reinforcement_learning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 6. Reinforcement learning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_07_optimize_ttt_on_evaluation_set/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 7. Optimize TTT on the evaluation set
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_08_improve_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 8. Improve HER
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_09_improve_training_script/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 9. Improve training script
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_10_solve_arc_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 10. Try to solve real ARC tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_11_pretrain_lora_on_new_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 11. Pretrain LoRA on new tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_12_solve_a_few_arc_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 12. Solve a few ARC tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_13_reflections/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 13. Reflections
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_14_optimize_inference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 14. Optimize inference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_15_the_path_forward/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 15. The path forward: Search &amp; Learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_16_search_with_base_models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 16. Search with base models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_17_increase_search_diversity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 17. Increase search diversity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_19_search_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 19. Search with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_20_data_augmentation_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 20. Data augmentation with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_21_fix_bug_with_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 21. Fix bug with data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_22_ttt_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 22. Test-time Training with BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_23_ttt_BARC_v2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 23. All in with test-time training with BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_24_RL_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 24. Using RL to improve BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Iteration 25. Debug parallel code execution
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 25. Debug parallel code execution
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#execution-is-slow-on-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Execution is slow on cluster
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution is slow on cluster">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reverting-to-old-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reverting to old code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simpler-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simpler script
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doing-the-experiment-with-docker-on-my-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Doing the experiment with docker on my machine
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiments-on-laptop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experiments on laptop
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiments-on-cluster-without-condor-or-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experiments on cluster without condor or docker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiments-on-cluster-with-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experiments on cluster with docker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-problem-seems-to-be-related-to-the-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      The problem seems to be related to the environment!
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The problem seems to be related to the environment!">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#experiments-on-cluster-with-different-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experiments on cluster with different environments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recreate-environment-at-home-pc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recreate environment at home PC
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simplying-the-code-to-diagnose-the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simplying the code to diagnose the problem
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trying-to-understand-the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trying to understand the problem
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explanation-of-the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Explanation of the problem
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terrible-news-the-problem-is-still-not-solved" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terrible news: The problem is still not solved
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_26_more_compute/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 26. Acquire more compute
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_27_improve_search_and_learn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 27. Improve search and learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_28_refine_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 28. Refine predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_29_multi-gpu-rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 29. Multi-gpu RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_30_solve_RL_collapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 30. Solve RL Collapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_31_how_to_improve/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 31. How to improve from 20% to 100%?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_32_analyze_model_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 32. Analyze model predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_33_rl_barc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 33. RL with BARC data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_34_multi-turn_rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 34. Multi-turn RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_35_fp16_vs_bf16/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 35. FP16 vs BF16
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_n/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration n. Iteration_title
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Utils
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Utils
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/00_Challenge_Workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Challenge workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/markdown_cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Markdown cheatsheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/methodology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Methodology
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05_Solution_Summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Solution summary
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#execution-is-slow-on-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Execution is slow on cluster
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Execution is slow on cluster">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reverting-to-old-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reverting to old code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simpler-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simpler script
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doing-the-experiment-with-docker-on-my-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Doing the experiment with docker on my machine
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiments-on-laptop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experiments on laptop
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiments-on-cluster-without-condor-or-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experiments on cluster without condor or docker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiments-on-cluster-with-docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experiments on cluster with docker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-problem-seems-to-be-related-to-the-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      The problem seems to be related to the environment!
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The problem seems to be related to the environment!">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#experiments-on-cluster-with-different-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experiments on cluster with different environments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recreate-environment-at-home-pc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recreate environment at home PC
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simplying-the-code-to-diagnose-the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simplying the code to diagnose the problem
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trying-to-understand-the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trying to understand the problem
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explanation-of-the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Explanation of the problem
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#terrible-news-the-problem-is-still-not-solved" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terrible news: The problem is still not solved
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="iteration-25-debug-parallel-code-execution">Iteration 25. Debug parallel code execution</h1>
+<p><em>16-09-2025</em></p>
+<h2 id="goal">Goal</h2>
+<p>Solve the problems of slow parallel code execution in the cluster.</p>
+<h2 id="motivation">Motivation</h2>
+<p>I have a method that executes code in parallel and works very fast on my computer and on Kaggle, but
+weirdly it is slow on the cluster. I need to solve this issue to be able to do experiments
+to validate my approach.</p>
+<h2 id="development">Development</h2>
+<h3 id="execution-is-slow-on-cluster">Execution is slow on cluster</h3>
+<p>On my pc it executes very fast <code>400/400 [00:02&lt;00:00, 152.92pred/s]</code> and so it is on Kaggle <code>960/960 [00:03&lt;00:00, 265.18pred/s]</code>.</p>
+<p>But in the cluster I'm seeing very slow executions:</p>
+<ul>
+<li><code>12800/12800 [50:22&lt;00:00,  4.24pred/s]</code>  <a href="https://wandb.ai/guillermobarbadillo/2025-09-12-search-and-learn/runs/19gni2he/logs">Experiment</a></li>
+<li><code>51200/51200 [03:28&lt;00:00, 245.29runs/s]</code> <a href="https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/zdkkfzdv/logs">Older experiment with good speed</a></li>
+</ul>
+<h4 id="reverting-to-old-code">Reverting to old code</h4>
+<p>I have tried reverting back to commit <code>1557726a0e184d1a4e0b0490eec44bde7dde304e</code>, from 8 september when I logged fast execution times. However the problem persisted:</p>
+<ul>
+<li>4 cpus -&gt; 41.67runs/s</li>
+<li>8 cpus -&gt; 61.31runs/s</li>
+<li>20 cpus -&gt; 56.75runs/s</li>
+<li>64 cpus -&gt; 9.51runs/s</li>
+<li>128 cpus -&gt; 9.41 runs/s</li>
+</ul>
+<p>I have also tried running on other machine (calculon19 instead of calculon21) but did not get better results:</p>
+<ul>
+<li>8 -&gt; 74.22runs/s</li>
+<li>16 -&gt; 86.01runs/s</li>
+</ul>
+<h4 id="simpler-script">Simpler script</h4>
+<p>Iterations have been slow because I'm doing inference with the model first. That makes that each
+execution takes around 30 minutes. I need to create a script that allows me to see results much faster.
+That way I will run the same script with the same data in the different settings and get more information
+about the problem faster.</p>
+<p>I have prepared the script and I cannot understand the problem. Could it be a problem with the environment?</p>
+<pre><code class="language-bash">python scripts/debug_parallel_execution.py
+Loaded 400 tasks with 8 predictions each.
+Executing predictions for batch 0 with exec: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3200/3200 [00:09&lt;00:00, 347.91run/s]
+Most common errors:
+NonDeterministicCode    222
+ValueError              214
+IndexError              203
+AssertionError          181
+TimeoutException         49
+AttributeError           21
+TypeError                17
+UnboundLocalError         7
+UnsafeCode                5
+KeyError                  4
+SyntaxError               4
+StopIteration             4
+NameError                 4
+ZeroDivisionError         2
+RecursionError            1
+Name: count, dtype: int64
+      n_preds  valid code  valid outputs  unique outputs  train_pixel_score  train_correct_grids  train_pass_rate  train_is_correct  test_pixel_score  test_correct_grids  test_pass_rate  test_is_correct  is_correct
+MEAN      8.0         1.0       0.706875        0.629062           0.415273             0.022264          0.01375            0.0425          0.404596            0.016719        0.016563             0.06        0.04
+
+
+export N_CPUS=8; condor_submit train.condor command=" python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/debug_parallel_execution.py \ --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \ --prediction-path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json" -append request_cpus=${N_CPUS} -append request_gpus=0
+</code></pre>
+<p>Notice that I get fast execution on my PC also if I disable memmapping: <code>max_nbytes=None, mmap_mode=None)</code>.
+The speed seems to be the same, so probably wasn't using previously because arrays are very small.</p>
+<h3 id="doing-the-experiment-with-docker-on-my-machine">Doing the experiment with docker on my machine</h3>
+<pre><code class="language-bash">docker run -ti -v /mnt/hdd0:/mnt/hdd0 gbarbadillo/cuda-python:python3.10-cuda14.1
+cd /mnt/hdd0/MEGA/AI/22_Kaggle/arc25
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml scipy
+export PYTHONPATH=/mnt/hdd0/MEGA/AI/22_Kaggle/arc25
+python3 scripts/debug_parallel_execution.py
+
+Loaded 400 tasks with 8 predictions each.
+Executing predictions for batch 0 with exec: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3200/3200 [00:09&lt;00:00, 354.43run/s]
+Most common errors:
+NonDeterministicCode    222
+ValueError              214
+IndexError              202
+AssertionError          181
+TimeoutException         49
+AttributeError           21
+TypeError                17
+UnboundLocalError         7
+UnsafeCode                5
+KeyError                  4
+SyntaxError               4
+StopIteration             4
+NameError                 4
+ZeroDivisionError         2
+RecursionError            1
+Name: count, dtype: int64
+      n_preds  valid code  valid outputs  unique outputs  train_pixel_score  train_correct_grids  train_pass_rate  train_is_correct  test_pixel_score  test_correct_grids  test_pass_rate  test_is_correct  is_correct
+MEAN      8.0         1.0       0.707187        0.629375           0.415056             0.022014          0.01375            0.0425          0.404481            0.016719        0.016563             0.06        0.04
+
+# I can restrict shm size and speed is not affected
+docker run -ti --shm-size=64M -v /mnt/hdd0:/mnt/hdd0 gbarbadillo/cuda-python:python3.10-cuda14.1
+353.00run/s
+</code></pre>
+<p>Runs as fast as without docker when using my machine.</p>
+<h3 id="experiments-on-laptop">Experiments on laptop</h3>
+<pre><code class="language-bash">export PYTHONPATH=/mnt/data/other/code/arc25
+python scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json
+
+Loaded 400 tasks with 8 predictions each.
+Executing predictions for batch 0 with exec: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 3200/3200 [00:12&lt;00:00, 258.22run/s]
+Most common errors:
+ModuleNotFoundError     1671
+NonDeterministicCode     204
+ValueError               107
+IndexError                77
+AssertionError            39
+TimeoutException          34
+TypeError                 14
+AttributeError            12
+UnboundLocalError          4
+SyntaxError                4
+UnsafeCode                 3
+KeyError                   3
+NameError                  1
+ZeroDivisionError          1
+Name: count, dtype: int64
+      n_preds  valid code  valid outputs  unique outputs  train_pixel_score  train_correct_grids  train_pass_rate  train_is_correct  test_pixel_score  test_correct_grids  test_pass_rate  test_is_correct  is_correct
+MEAN      8.0         1.0       0.320625        0.285938           0.184007             0.016169         0.010937            0.0475          0.180193            0.013281        0.012812           0.0525      0.0475
+</code></pre>
+<p>Again, this is very fast.</p>
+<h3 id="experiments-on-cluster-without-condor-or-docker">Experiments on cluster without condor or docker</h3>
+<pre><code class="language-bash"># create environment
+python3 -m venv cached-environments/debug
+source cached-environments/debug/bin/activate
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml scipy
+
+# launch script
+source cached-environments/debug/bin/activate
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+
+# calculon01, 12 cores
+Loaded 400 tasks with 8 predictions each.
+Executing predictions for batch 0 with exec: 100%|████████████████████████████████████| 3200/3200 [00:36&lt;00:00, 86.68run/s]
+Most common errors:
+NonDeterministicCode    204
+ValueError              204
+IndexError              184
+AssertionError          168
+TimeoutException         89
+TypeError                27
+AttributeError           25
+UnboundLocalError         9
+KeyError                  5
+SyntaxError               4
+ZeroDivisionError         4
+UnsafeCode                3
+NameError                 3
+StopIteration             2
+Name: count, dtype: int64
+      n_preds  valid code  valid outputs  unique outputs  ...  test_correct_grids  test_pass_rate  test_is_correct  is_correct
+MEAN      8.0         1.0       0.709063            0.63  ...            0.019375         0.01875             0.07      0.0
+# not bad, considering that it had other workloads at the same time
+
+## calculon18, 64 cores
+n_jobs=-1, 114.21run/s]
+n_jobs=2, 82.98run/s
+n_jobs=5, 153.94run/s
+n_jobs=10, 171.64run/s
+n_jobs=20, 151.97run/s
+n_jobs=60, 140.57run/s
+n_jobs=-1, 140.47run/s
+# there is like a big startup time that does not happen on my machine
+
+## calculon13, 20 cores
+n_jobs=-1, 222.78run/s
+n_jobs=5, 175.63run/s
+n_jobs=10, 206.38run/s
+n_jobs=20, 238.54run/s
+# there is a weird startup time, and sometimes ending time
+
+## calculon21, 252cores
+Loaded 400 tasks with 8 predictions each.
+Executing predictions for batch 0 with exec: 100%|████████████████████████████████████| 3200/3200 [00:36&lt;00:00, 87.61run/s]
+# It might be the problem of the machine. Need to try on different machines with different number of cores
+# Notice that Kaggle machines have 48 cores. https://cloud.google.com/compute/docs/gpus#l4-gpus
+
+n_jobs=-1, 138.33run/s
+n_jobs=5, 162.16run/s
+n_jobs=10, 172.60run/s
+n_jobs=20, 180.29run/s
+</code></pre>
+<h3 id="experiments-on-cluster-with-docker">Experiments on cluster with docker</h3>
+<pre><code class="language-bash">
+sudo sudo docker run -ti -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+cd /mnt/scratch/users/gbarbadillo/arc25
+source cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/activate
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+
+## calculon21, 252cores
+Executing predictions for batch 0 with exec:  13%|████▋                                | 401/3200 [04:26&lt;30:57,  1.51run/s]
+n_jobs=20, 1.51run/s
+
+# try increasing shm
+sudo sudo docker run -ti --shm-size=2g -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+
+## calculon21, 252cores
+n_jobs=2, 1.25run/s
+n_jobs=5, 1.48run/s
+n_jobs=20, 1.55run/s
+
+
+# try using /dev/shm
+sudo docker run -ti --ipc=host --shm-size=2g \
+  -e TMPDIR=/dev/shm -e JOBLIB_TEMP_FOLDER=/dev/shm -e LOKY_TEMP=/dev/shm \
+  -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 \
+  gbarbadillo/cuda-python:python3.10-cuda14.1
+n_jobs=20, 1.39run/s
+
+### confirm cpu limits inside the docker
+sudo sudo docker run -ti -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+# cgroup v2 (common on modern kernels)
+$ cat /sys/fs/cgroup/cpu.max 2&gt;/dev/null || true
+$ # cgroup v1 (older)
+$ cat /sys/fs/cgroup/cpu/cpu.cfs_quota_us 2&gt;/dev/null || true
+-1
+$ cat /sys/fs/cgroup/cpu/cpu.cfs_period_us 2&gt;/dev/null || true
+100000
+$ 
+$ # Are we being throttled?
+$ cat /sys/fs/cgroup/cpu.stat 2&gt;/dev/null || cat /sys/fs/cgroup/cpu/cpu.stat 2&gt;/dev/null || true
+nr_periods 0
+nr_throttled 0
+throttled_time 0
+$ 
+$ # How many CPUs are we actually allowed to run on?
+$ grep Cpus_allowed_list /proc/self/status
+Cpus_allowed_list:  0-255
+$ nproc
+256
+
+## I have also tried setting environment flags without success
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+       NUMEXPR_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 BLIS_NUM_THREADS=1
+export TMPDIR=/dev/shm JOBLIB_TEMP_FOLDER=/dev/shm LOKY_TEMP=/dev/shm
+</code></pre>
+<p>This shows that the problem only happens when using docker on the cluster. Docker has access to all the cpus, 
+we can set a big enough shm size, we can disable memmapping, but the execution is still slow.</p>
+<h3 id="the-problem-seems-to-be-related-to-the-environment">The problem seems to be related to the environment!</h3>
+<h4 id="experiments-on-cluster-with-different-environments">Experiments on cluster with different environments</h4>
+<pre><code class="language-bash">sudo sudo docker run -ti -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+cd /mnt/scratch/users/gbarbadillo/arc25
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml scipy
+
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+# 307.04run/s
+
+Executing predictions for batch 0 with exec: 100%|███████████████████████████████████| 3200/3200 [00:10&lt;00:00, 307.04run/s]
+Most common errors:
+ValueError              211
+NonDeterministicCode    204
+IndexError              186
+AssertionError          172
+TimeoutException         42
+TypeError                28
+AttributeError           25
+UnboundLocalError         9
+KeyError                  5
+SyntaxError               4
+ZeroDivisionError         4
+UnsafeCode                3
+NameError                 3
+StopIteration             2
+Name: count, dtype: int64
+      n_preds  valid code  valid outputs  unique outputs  ...  test_correct_grids  test_pass_rate  test_is_correct  is_correct
+MEAN      8.0         1.0       0.719375         0.63875  ...            0.020313        0.019688           0.0725      0.0575
+
+# however if I activate the environment
+source cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/activate
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+# 1.11s/run
+
+# create a new environment
+deactivate
+python3 -m venv cached-environments/debug-2
+source cached-environments/debug-2/bin/activate
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas pynvml scipy
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+# 127.53run/s
+</code></pre>
+<p>These results show that there is something wrong with <code>venv_0e8c9c65f4e428eaa5db41171ac52335</code> that makes execution very slow. Notice that the filesystem doesn't seem to be the problem because we have created a new environment
+on the same folder and it is much faster.</p>
+<p>One weird thing is that they all have the same versions of the python libraries:</p>
+<pre><code class="language-bash">python3 - &lt;&lt;'PY'
+import joblib, numpy, scipy, pandas
+
+print("joblib:", joblib.__version__)
+print("numpy:", numpy.__version__)
+print("scipy:", scipy.__version__)
+print("pandas:", pandas.__version__)
+from joblib.externals import loky
+print("loky version:", getattr(loky, "__version__", "vendored"))
+PY
+
+
+joblib: 1.5.2
+numpy: 2.2.6
+scipy: 1.15.3
+pandas: 2.3.2
+loky version: 3.5.6
+</code></pre>
+<p>Other tests suggested by GPT5 also show the same outputs:</p>
+<pre><code class="language-bash">python3 - &lt;&lt;'PY'
+import os, tempfile, glob, time, joblib, numpy as np
+print("which python:", os.popen("which python").read().strip())
+print("TMPDIR:", os.getenv("TMPDIR"))
+print("JOBLIB_TEMP_FOLDER:", os.getenv("JOBLIB_TEMP_FOLDER"))
+print("LOKY_TEMP:", os.getenv("LOKY_TEMP"))
+print("loky dirs now:", glob.glob("/dev/shm/loky-*")[:3])
+
+from joblib import Parallel, delayed
+def f(x): return x*x
+
+start=time.time()
+Parallel(n_jobs=20, backend="loky", batch_size="auto")(delayed(f)(i) for i in range(20000))
+print("Parallel microbench elapsed:", round(time.time()-start,3), "s")
+PY
+
+which python: 
+TMPDIR: None
+JOBLIB_TEMP_FOLDER: None
+LOKY_TEMP: None
+loky dirs now: []
+Parallel microbench elapsed: 2.437 s
+
+which python: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/debug-2/bin/python
+TMPDIR: None
+JOBLIB_TEMP_FOLDER: None
+LOKY_TEMP: None
+loky dirs now: []
+Parallel microbench elapsed: 4.954 s
+
+which python: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/python
+TMPDIR: None
+JOBLIB_TEMP_FOLDER: None
+LOKY_TEMP: None
+loky dirs now: []
+Parallel microbench elapsed: 80.421 s
+</code></pre>
+<pre><code class="language-bash">python3 - &lt;&lt;'PY'
+import os, multiprocessing as mp, joblib
+print("python:", os.popen("which python").read().strip())
+print("mp start method:", mp.get_start_method(allow_none=True))
+# joblib/loky usually uses 'loky' context internally, but this reveals if something forced 'spawn'
+import joblib.externals.loky.backend.context as lctx
+print("loky default context:", lctx.get_context().get_start_method())
+PY
+
+They are all equal:
+
+python: 
+mp start method: None
+loky default context: loky
+
+python: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/debug-2/bin/python
+mp start method: None
+loky default context: loky
+
+python: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/python
+mp start method: None
+loky default context: loky
+</code></pre>
+<p>However one weird thing is that launching the python terminal is much slower in
+the slow environment.</p>
+<pre><code class="language-bash">time python -c "pass"
+# The slow environment takes 4s to start, the fast environment 0.5s
+</code></pre>
+<p>Let's try to find the root of the problem</p>
+<pre><code class="language-bash">sudo sudo docker run -ti -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+cd /mnt/scratch/users/gbarbadillo/arc25
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+source cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/activate
+source cached-environments/debug-2/bin/activate
+
+</code></pre>
+<p>What if I create a big environment? Could the problem be size-related?</p>
+<pre><code class="language-bash">python3 -m venv cached-environments/debug-big
+source cached-environments/debug-big/bin/activate
+pip install -r arc25/requirements.txt
+export PYTHONPATH=/mnt/scratch/users/gbarbadillo/arc25/arc25
+python3 arc25/scripts/debug_parallel_execution.py --dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json --prediction_path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json --n_jobs 20
+# ~1 run/s
+</code></pre>
+<h4 id="recreate-environment-at-home-pc">Recreate environment at home PC</h4>
+<p>Let's see if recreating the environment at home results on slow execution.</p>
+<pre><code class="language-bash">docker run -ti -v /mnt/hdd0:/mnt/hdd0 gbarbadillo/cuda-python:python3.10-cuda14.1
+python3 -m venv /mnt/hdd0/TEMP/cached-environment-from-requirements
+source /mnt/hdd0/TEMP/cached-environment-from-requirements/bin/activate
+cd /mnt/hdd0/MEGA/AI/22_Kaggle/arc25
+pip install -r requirements.txt
+export PYTHONPATH=/mnt/hdd0/MEGA/AI/22_Kaggle/arc25
+python3 scripts/debug_parallel_execution.py
+#267-350 run/s
+
+python3 -m venv /mnt/hdd0/TEMP/cached-environment-simple
+source /mnt/hdd0/TEMP/cached-environment-simple/bin/activate
+pip install tqdm numpy tqdm_joblib joblib jinja2 termcolor pandas nvidia-ml-py scipy
+export PYTHONPATH=/mnt/hdd0/MEGA/AI/22_Kaggle/arc25
+python3 scripts/debug_parallel_execution.py
+# 331-350 run/s
+</code></pre>
+<p>On my PC I can't replicate the problem, at least with the latest version of the requirements execution
+time is fast in both cases.</p>
+<h3 id="simplying-the-code-to-diagnose-the-problem">Simplying the code to diagnose the problem</h3>
+<p>This could be a minimal code snippet to reproduce the problem.</p>
+<pre><code class="language-bash">python3 - &lt;&lt;'PY'
+import time
+import sys
+from tqdm_joblib import tqdm_joblib
+from joblib import Parallel, delayed
+print('Starting parallel microbench...')
+def f(x): return x*x
+start = time.time()
+n = 20000
+with tqdm_joblib(total=n):
+    Parallel(n_jobs=20, backend="loky", batch_size="auto")(delayed(f)(i) for i in range(n))
+execution_time = time.time() - start
+print(f"Parallel microbench elapsed {round(execution_time,3)}s for python path: {sys.executable}")
+PY
+time python -c "pass"
+</code></pre>
+<p>The following lines are useful to run the tests in different environments</p>
+<pre><code class="language-bash">sudo sudo docker run -ti -v /mnt/scratch/users/gbarbadillo/arc25:/mnt/scratch/users/gbarbadillo/arc25 gbarbadillo/cuda-python:python3.10-cuda14.1
+source /mnt/scratch/users/gbarbadillo/arc25/cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/activate
+source /mnt/scratch/users/gbarbadillo/arc25/cached-environments/debug/bin/activate
+source /mnt/scratch/users/gbarbadillo/arc25/cached-environments/debug-2/bin/activate
+source /mnt/scratch/users/gbarbadillo/arc25/cached-environments/debug-big/bin/activate
+</code></pre>
+<p>The more the workers the higher the benchmark time. Maybe one work around would be to adjust the number
+of workers to the number of predictions. For example use a single worker when the number of tasks is small.</p>
+<pre><code># calculon21
+njobs, benchmark time
+1, 0.105
+2, 15.763
+4, 21.011
+8, 33,5
+20, 80.97
+</code></pre>
+<p>Let's rewrite the code.</p>
+<pre><code class="language-bash">python3 - &lt;&lt;'PY'
+import time
+import sys
+from tqdm_joblib import tqdm_joblib
+from joblib import Parallel, delayed
+start = time.time()
+parallel = Parallel(n_jobs=20, backend="loky", batch_size="auto")
+execution_time = time.time() - start
+print(f"Creating the parallel object took {round(execution_time,3)}s")
+print('Starting parallel microbench...')
+def f(x): return x*x
+start = time.time()
+n = 20000
+with tqdm_joblib(total=n):
+    parallel(delayed(f)(i) for i in range(n))
+execution_time = time.time() - start
+print(f"Parallel microbench elapsed {round(execution_time,3)}s for python path: {sys.executable}")
+start = time.time()
+n = 20000
+with tqdm_joblib(total=n):
+    parallel(delayed(f)(i) for i in range(n))
+execution_time = time.time() - start
+print(f"Parallel microbench second round elapsed {round(execution_time,3)}s for python path: {sys.executable}")
+PY
+
+Creating the parallel object took 0.0s
+Starting parallel microbench...
+100%|███████████████████████████████████████████████████████████████████████████████| 20000/20000 [00:59&lt;00:00, 337.62it/s]
+Parallel microbench elapsed 59.242s for python path: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/venv_0e8c9c65f4e428eaa5db41171ac52335/bin/python3
+100%|█████████████████████████████████████████████████████████████████████████████| 20000/20000 [00:00&lt;00:00, 37853.86it/s]
+Parallel microbench second round elapsed 0.529s for python path: /mnt/scratch/users/gbarbadillo/arc25/cached-environments/ven
+</code></pre>
+<p>This shows that if we reuse the parallel object the second run is really fast. That is the solution to our problem.
+And that explains why runs where fast when I was not using batches in the cluster. </p>
+<h3 id="trying-to-understand-the-problem">Trying to understand the problem</h3>
+<p>https://joblib.readthedocs.io/en/latest/developing.html</p>
+<blockquote>
+<p>The automatic array memory mapping feature of Parallel does no longer use /dev/shm if it is too small (less than 2 GB). In particular in docker containers /dev/shm is only 64 MB by default which would cause frequent failures when running joblib in Docker containers.</p>
+</blockquote>
+<p>https://joblib.readthedocs.io/en/latest/parallel.html</p>
+<p>Here there is a description of the Parallel method from joblib and all its parameters.</p>
+<p>This <a href="https://chatgpt.com/share/68cabe24-e734-8012-a409-f9e14dfa9b32">conversation</a> with GPT5 suggests
+that signal+joblib+loky seems to be the best option.</p>
+<h3 id="explanation-of-the-problem">Explanation of the problem</h3>
+<p>When we use joblib and loky to parallelize python execution, it creates n workers. 
+I don't know the reason, but in the cluster when we use a big python environment, the creation of a python environment is slow. It can take 3-5 seconds or even more.</p>
+<p>Thus if we span 20 workers, it will take 60 seconds (3*20) to create those workers. The more the workers the bigger the startup time. That does not happen on my machine or Kaggle, it is almost instantenous to span workers. It is probably related to using a slow distributed filesystem.</p>
+<p>On my first implementation I run all the jobs at once, and for tasks that took
+around 10-20 minutes to execute the startup time was not important. </p>
+<p>But my second implementation used smaller batches, that could take 10-15 seconds to run. In that case the startup time dominates.</p>
+<p>What is the solution? I have to reuse the parallel object between different runs. That way I only pay the startup time once (If there are execution errors I might have to regenerate the object, but that's a separate issue). Thus I have to encapsulate the execution function inside an object, that stores the parallel object.</p>
+<p>Why solving this problem was so difficult? Because there could be a lot of possible causes:</p>
+<ul>
+<li>Changes in the environment</li>
+<li>Changes in the code</li>
+<li>Changes in the cluster</li>
+<li>Problems with cluster disk </li>
+<li>At the beginning iteration was very slow because it was coupled with inference</li>
+<li>The problem happened only on the cluster, making testing more difficult</li>
+<li>Different joblib parameters</li>
+</ul>
+<h3 id="terrible-news-the-problem-is-still-not-solved">Terrible news: The problem is still not solved</h3>
+<p>These logs from RL fine-tuning show that the problem is not solved. Executing the reward function
+should be almost instantaneous:</p>
+<pre><code>2025-09-19 09:14:29,893 - arc25.logging - INFO - wrapper - Executed arc_reward in 98.5315 seconds
+  0%|          | 1/40000 [02:20&lt;1557:46:20, 140.20s/it]2025-09-19 09:15:09,095 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 09:15:29,255 - __main__ - INFO - arc_reward - Completions length: [379, 268, 290, 261, 258, 426, 529, 230, 321, 411, 315, 416, 369, 215, 222, 293, 269, 407, 430, 274, 603, 277, 303, 269, 329, 425, 528, 460, 287, 347, 383, 430]
+2025-09-19 09:15:29,256 - __main__ - INFO - arc_reward - Rewards: [1.0171387073347857, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.194082455235095, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.3031590413943355, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+2025-09-19 09:15:29,257 - arc25.logging - INFO - wrapper - Executed arc_reward in 20.1615 seconds
+  0%|          | 2/40000 [03:27&lt;1079:56:44, 97.20s/it]2025-09-19 09:16:11,448 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 09:16:12,491 - __main__ - INFO - arc_reward - Completions length: [321, 317, 292, 372, 312, 309, 265, 290, 310, 363, 289, 324, 333, 248, 359, 223, 334, 393, 305, 307, 356, 451, 288, 308, 350, 284, 363, 318, 318, 269, 401, 313]
+2025-09-19 09:16:12,492 - __main__ - INFO - arc_reward - Rewards: [0.0, 1.540509259259259, 1.2694444444444444, 1.5388888888888888, 0.0, 10.0, 1.25, 1.25, 1.2694444444444444, 1.5447089947089947, 1.5849074074074072, 1.3285069444444444, 0.0, 1.413287037037037, 0.0, 4.4944444444444445, 1.6450396825396827, 1.2327548912075497, 1.4410404410404412, 0.0, 1.413287037037037, 0.0, 0.0, 1.8173611111111114, 1.381875, 0.0, 1.5, 1.4372685185185186, 1.0869675925925926, 1.1830555555555555, 1.5, 1.8173611111111114]
+2025-09-19 09:16:12,493 - arc25.logging - INFO - wrapper - Executed arc_reward in 1.0444 seconds
+  0%|          | 3/40000 [03:48&lt;694:53:10, 62.54s/it]2025-09-19 09:16:40,261 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 09:17:09,099 - __main__ - INFO - arc_reward - Completions length: [459, 472, 536, 394, 502, 450, 371, 762, 368, 380, 525, 482, 339, 439, 379, 353, 415, 528, 317, 469, 541, 425, 326, 488, 424, 447, 421, 443, 391, 419, 422, 482]
+2025-09-19 09:17:09,101 - __main__ - INFO - arc_reward - Rewards: [1.6681249999999999, 0.0, 0.0, 1.65875, 0.0, 0.0, 0.0, 0.0, 0.0, 1.9325, 0.0, 0.0, 1.92, 0.0, 0.0, 1.758125, 1.7893750000000002, 0.0, 1.9325, 0.0, 1.788125, 0.0, 1.930625, 0.0, 0.0, 1.67625, 0.0, 0.0, 0.0, 1.87625, 0.0, 0.0]
+2025-09-19 09:17:09,103 - arc25.logging - INFO - wrapper - Executed arc_reward in 28.8413 seconds
+  0%|          | 4/40000 [05:04&lt;752:27:40, 67.73s/it]2025-09-19 09:17:47,714 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 09:18:36,878 - __main__ - INFO - arc_reward - Completions length: [220, 353, 217, 287, 244, 333, 245, 221, 229, 227, 283, 226, 221, 220, 222, 260, 222, 196, 237, 311, 230, 231, 259, 325, 409, 210, 257, 268, 397, 224, 304, 278]
+2025-09-19 09:18:36,879 - __main__ - INFO - arc_reward - Rewards: [0.0, 0.0, 0.0, 0.0, 0.0, 1.79, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.79, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.79, 0.0]
+2025-09-19 09:18:36,881 - arc25.logging - INFO - wrapper - Executed arc_reward in 49.1656 seconds
+</code></pre>
+<p>However the solution has come by copying the python environment to the local memory:</p>
+<pre><code>2025-09-19 16:41:05,047 - arc25.logging - INFO - wrapper - Executed arc_reward in 1.3339 seconds
+  0%|          | 1/40000 [01:30&lt;1007:33:16, 90.68s/it]2025-09-19 16:42:34,549 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 16:42:35,040 - __main__ - INFO - arc_reward - Completions length: [426, 248, 479, 467, 441, 497, 526, 464, 434, 378, 426, 478, 326, 128, 491, 341]
+2025-09-19 16:42:35,041 - __main__ - INFO - arc_reward - Rewards: [0.0, 1.2416666666666667, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+2025-09-19 16:42:35,041 - arc25.logging - INFO - wrapper - Executed arc_reward in 0.4920 seconds
+  0%|          | 2/40000 [02:18&lt;726:45:39, 65.41s/it]2025-09-19 16:43:23,442 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 16:43:23,650 - __main__ - INFO - arc_reward - Completions length: [515, 438, 525, 485, 294, 231, 429, 261, 434, 501, 403, 270, 355, 452, 429, 428]
+2025-09-19 16:43:23,651 - __main__ - INFO - arc_reward - Rewards: [1.4316666666666666, 0.0, -1.0, 0.0, 0.0, 1.6901851851851852, 0.0, 1.4316666666666666, 0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 1.2349999999999999]
+2025-09-19 16:43:23,652 - arc25.logging - INFO - wrapper - Executed arc_reward in 0.2098 seconds
+  0%|          | 3/40000 [03:05&lt;632:14:33, 56.91s/it]2025-09-19 16:43:54,525 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 16:43:54,917 - __main__ - INFO - arc_reward - Completions length: [272, 253, 250, 220, 262, 267, 237, 294, 272, 224, 262, 248, 236, 257, 232, 224]
+2025-09-19 16:43:54,918 - __main__ - INFO - arc_reward - Rewards: [3.9299999999999997, 1.8, 3.9275, 3.9299999999999997, 1.9075, 1.77, 1.9075, 5.945, 1.8, 3.9299999999999997, 1.8425, 1.8399999999999999, 1.8900000000000001, 3.8875, 1.9075, 1.8]
+2025-09-19 16:43:54,919 - arc25.logging - INFO - wrapper - Executed arc_reward in 0.3941 seconds
+  0%|          | 4/40000 [03:38&lt;527:49:57, 47.51s/it]2025-09-19 16:44:42,267 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 16:44:42,485 - __main__ - INFO - arc_reward - Completions length: [404, 377, 280, 465, 268, 499, 458, 393, 497, 484, 325, 413, 375, 357, 433, 414]
+2025-09-19 16:44:42,486 - __main__ - INFO - arc_reward - Rewards: [1.6831275720164611, 0.0, 1.954732510288066, 0.0, 1.954732510288066, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+2025-09-19 16:44:42,487 - arc25.logging - INFO - wrapper - Executed arc_reward in 0.2192 seconds
+  0%|          | 5/40000 [04:24&lt;523:05:03, 47.08s/it]2025-09-19 16:45:49,305 - arc25.logging - INFO - wrapper - Executing arc_reward...
+2025-09-19 16:45:49,373 - __main__ - INFO - arc_reward - Completions length: [884, 646, 704, 758, 655, 645, 732, 349, 599, 371, 729, 604, 454, 567, 494, 689]
+2025-09-19 16:45:49,374 - __main__ - INFO - arc_reward - Rewards: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+2025-09-19 16:45:49,375 - arc25.logging - INFO - wrapper - Executed arc_reward in 0.0698 seconds
+</code></pre>
+<p>Now code execution is blazingly fast, and runtimes are shorter despite being run on A6000 compared to H100 from the previous snippet.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Execution of code is fast again in the cluster after a lot of pain. I did two things to solve the problem:</p>
+<ol>
+<li>Create a code runner object that stores the Parallel object (and avoids the penalty of creating it over and over)</li>
+<li>Move the python environment to local memory</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<h2 id="todo">TODO</h2>
+<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Can I simplify the problem so I can easily debug on the different environments?</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Maybe it could be as simple as changing the method that parallelizes the work, no because I use signal for timeouts.</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Experiments I would like to do:<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Try on laptop</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Try on Docker</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Try on a cluster machine without using condor</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Try on a cluster machine with docker but without condor</li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+    </span>
+    2025-09-19
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../Iteration_24_RL_BARC/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Iteration 24. Using RL to improve BARC induction model">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Iteration 24. Using RL to improve BARC induction model
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Iteration_26_more_compute/" class="md-footer__link md-footer__link--next" aria-label="Next: Iteration 26. Acquire more compute">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Iteration 26. Acquire more compute
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2025. Guillermo Barbadillo
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/guillermobarbadillo/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/guille_bar" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/channel/UCOHmUwHnd2hmUpiDzaQ1Isg" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305m-317.51 213.508V175.185l142.739 81.205z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.kaggle.com/ironbar" target="_blank" rel="noopener" title="www.kaggle.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M304.2 501.5 158.4 320.3 298.2 185c2.6-2.7 1.7-10.5-5.3-10.5h-69.2c-3.5 0-7 1.8-10.5 5.3L80.9 313.5V7.5q0-7.5-7.5-7.5H21.5Q14 0 14 7.5v497q0 7.5 7.5 7.5h51.9q7.5 0 7.5-7.5v-109l30.8-29.3 110.5 140.6c3 3.5 6.5 5.3 10.5 5.3h66.9q5.25 0 6-3z"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "navigation.footer"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+        <script src="../../javascript/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

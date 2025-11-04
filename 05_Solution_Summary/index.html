@@ -1,0 +1,2900 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ironbar.github.io/arc25/05_Solution_Summary/">
+      
+      
+        <link rel="prev" href="../utils/methodology/">
+      
+      
+      
+      <link rel="icon" href="../res/arc_icon.jpg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.40">
+    
+    
+      
+        <title>Solution summary - arc25</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#exploring-the-combination-of-search-and-learn-for-the-arc25-challenge" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="arc25" class="md-header__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            arc25
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Solution summary
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../01_Business_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Business Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../02_Data_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Data Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../03_State_of_the_art/" class="md-tabs__link">
+        
+  
+    
+  
+  State of the art
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../04_Initial_Plan/" class="md-tabs__link">
+        
+  
+    
+  
+  Initial Plan
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../modeling/Iteration_01_architects_baseline/" class="md-tabs__link">
+          
+  
+    
+  
+  Modeling
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../utils/00_Challenge_Workflow/" class="md-tabs__link">
+          
+  
+    
+  
+  Utils
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  Solution summary
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="arc25" class="md-nav__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    arc25
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01_Business_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Business Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02_Data_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03_State_of_the_art/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    State of the art
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04_Initial_Plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Initial Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5">
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Modeling
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Modeling
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_01_architects_baseline/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 1. Architects baseline
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_02_8_fold/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 2. Architects solution with 8 data splits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_03_ideal_test_time_training/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 3. Ideal test-time training setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_04_first_steps_with_code/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 4. First steps with code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_05_test_time_training_with_code_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 5. Test-time training with code. Hindsight Experience Replay (HER)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_06_reinforcement_learning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 6. Reinforcement learning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_07_optimize_ttt_on_evaluation_set/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 7. Optimize TTT on the evaluation set
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_08_improve_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 8. Improve HER
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_09_improve_training_script/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 9. Improve training script
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_10_solve_arc_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 10. Try to solve real ARC tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_11_pretrain_lora_on_new_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 11. Pretrain LoRA on new tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_12_solve_a_few_arc_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 12. Solve a few ARC tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_13_reflections/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 13. Reflections
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_14_optimize_inference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 14. Optimize inference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_15_the_path_forward/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 15. The path forward: Search &amp; Learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_16_search_with_base_models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 16. Search with base models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_17_increase_search_diversity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 17. Increase search diversity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_19_search_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 19. Search with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_20_data_augmentation_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 20. Data augmentation with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_21_fix_bug_with_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 21. Fix bug with data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_22_ttt_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 22. Test-time Training with BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_23_ttt_BARC_v2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 23. All in with test-time training with BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_24_RL_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 24. Using RL to improve BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_25_debug_parallel_code_execution/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 25. Debug parallel code execution
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_26_more_compute/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 26. Acquire more compute
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_27_improve_search_and_learn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 27. Improve search and learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_28_refine_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 28. Refine predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_29_multi-gpu-rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 29. Multi-gpu RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_30_solve_RL_collapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 30. Solve RL Collapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_31_how_to_improve/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 31. How to improve from 20% to 100%?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_32_analyze_model_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 32. Analyze model predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_33_rl_barc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 33. RL with BARC data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_34_multi-turn_rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 34. Multi-turn RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_35_fp16_vs_bf16/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 35. FP16 vs BF16
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../modeling/Iteration_n/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration n. Iteration_title
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Utils
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Utils
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/00_Challenge_Workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Challenge workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/markdown_cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Markdown cheatsheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/methodology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Methodology
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Solution summary
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Solution summary
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#abstract" class="md-nav__link">
+    <span class="md-ellipsis">
+      Abstract
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#introduction-what-is-arc-and-why-is-it-relevant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction. What is ARC and why is it relevant?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vision-search-and-learn" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vision: Search and learn
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Vision: Search and learn">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#path-1-search-and-learn" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path 1. Search and learn
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path-2-combine-the-best-approaches-from-arc24-test-time-training-and-program-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path 2. Combine the best approaches from ARC24: test-time training and program synthesis
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path-3-imitate-how-humans-solve-arc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path 3. Imitate how humans solve ARC
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Path 3. Imitate how humans solve ARC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-humans-solve-arc" class="md-nav__link">
+    <span class="md-ellipsis">
+      How humans solve ARC
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-ai-might-solve-arc" class="md-nav__link">
+    <span class="md-ellipsis">
+      How AI might solve ARC
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path-4-frame-arc-as-a-game-and-solve-it-with-rl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path 4. Frame ARC as a game and solve it with RL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-search-and-learn-will-beat-the-other-approaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why search and learn will beat the other approaches
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Why search and learn will beat the other approaches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transduction-and-test-time-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transduction and test-time training
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#natural-language-program-search-o3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Natural language program search (o3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#program-search-with-frontier-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Program search with frontier models
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#research-journey" class="md-nav__link">
+    <span class="md-ellipsis">
+      Research Journey
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Research Journey">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-how-does-test-time-training-compare-against-o3" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. How does test-time training compare against o3?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-does-hindsight-relabeling-work-for-program-synthesis-on-toy-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Does hindsight relabeling work for program synthesis on toy tasks?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-does-hindsight-relabeling-work-for-program-synthesis-on-arc-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Does hindsight relabeling work for program synthesis on ARC tasks?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Does hindsight relabeling work for program synthesis on ARC tasks?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-try-to-train-my-own-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Try to train my own models
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-experiment-with-base-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Experiment with base models
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-experiment-with-barc-induction-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Experiment with BARC induction model
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 Experiment with BARC induction model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#331-replicate-results-from-barc-paper" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.1 Replicate results from BARC paper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#332-hindsight-relabeling-and-barc-induction-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.2 Hindsight relabeling and BARC induction model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-can-we-get-a-stronger-base-model-with-reinforcement-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Can we get a stronger base model with reinforcement learning?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-can-we-improve-the-search-accuracy-by-doing-prediction-refinement" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Can we improve the search accuracy by doing prediction refinement?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Can we improve the search accuracy by doing prediction refinement?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-can-the-barc-induction-model-refine-its-predictions" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Can the BARC induction model refine its predictions?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-can-the-barc-induction-model-learn-to-refine-its-predictions-using-rl" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Can the BARC induction model learn to refine its predictions using RL?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusions-and-next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusions and next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acknowledgements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Acknowledgements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Links
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#abstract" class="md-nav__link">
+    <span class="md-ellipsis">
+      Abstract
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#introduction-what-is-arc-and-why-is-it-relevant" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction. What is ARC and why is it relevant?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#vision-search-and-learn" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vision: Search and learn
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Vision: Search and learn">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#path-1-search-and-learn" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path 1. Search and learn
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path-2-combine-the-best-approaches-from-arc24-test-time-training-and-program-synthesis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path 2. Combine the best approaches from ARC24: test-time training and program synthesis
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path-3-imitate-how-humans-solve-arc" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path 3. Imitate how humans solve ARC
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Path 3. Imitate how humans solve ARC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-humans-solve-arc" class="md-nav__link">
+    <span class="md-ellipsis">
+      How humans solve ARC
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-ai-might-solve-arc" class="md-nav__link">
+    <span class="md-ellipsis">
+      How AI might solve ARC
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#path-4-frame-arc-as-a-game-and-solve-it-with-rl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Path 4. Frame ARC as a game and solve it with RL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-search-and-learn-will-beat-the-other-approaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why search and learn will beat the other approaches
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Why search and learn will beat the other approaches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transduction-and-test-time-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transduction and test-time training
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#natural-language-program-search-o3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Natural language program search (o3)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#program-search-with-frontier-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Program search with frontier models
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#research-journey" class="md-nav__link">
+    <span class="md-ellipsis">
+      Research Journey
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Research Journey">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-how-does-test-time-training-compare-against-o3" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. How does test-time training compare against o3?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-does-hindsight-relabeling-work-for-program-synthesis-on-toy-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Does hindsight relabeling work for program synthesis on toy tasks?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-does-hindsight-relabeling-work-for-program-synthesis-on-arc-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Does hindsight relabeling work for program synthesis on ARC tasks?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Does hindsight relabeling work for program synthesis on ARC tasks?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-try-to-train-my-own-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Try to train my own models
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-experiment-with-base-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Experiment with base models
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-experiment-with-barc-induction-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Experiment with BARC induction model
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 Experiment with BARC induction model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#331-replicate-results-from-barc-paper" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.1 Replicate results from BARC paper
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#332-hindsight-relabeling-and-barc-induction-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3.2 Hindsight relabeling and BARC induction model
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-can-we-get-a-stronger-base-model-with-reinforcement-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Can we get a stronger base model with reinforcement learning?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-can-we-improve-the-search-accuracy-by-doing-prediction-refinement" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Can we improve the search accuracy by doing prediction refinement?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Can we improve the search accuracy by doing prediction refinement?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-can-the-barc-induction-model-refine-its-predictions" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Can the BARC induction model refine its predictions?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-can-the-barc-induction-model-learn-to-refine-its-predictions-using-rl" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Can the BARC induction model learn to refine its predictions using RL?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusions-and-next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusions and next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#acknowledgements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Acknowledgements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Links
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="exploring-the-combination-of-search-and-learn-for-the-arc25-challenge">Exploring the combination of search and learn for the ARC25 challenge</h1>
+<!--
+https://www.kaggle.com/wiki/WinningModelDocumentationTemplate
+https://www.kaggle.com/solution-write-up-documentation
+
+<center><img src="modeling/res/1752753996905_arc25.png" width="50%"></center>
+--->
+
+<p></p><center><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1752753996905_arc25.png" data-desc-position="bottom"><img src="../modeling/res/1752753996905_arc25.png" width="50%" alt="Diagram illustrating search-and-learn loop for ARC25"></a></center><p></p>
+<p><em>Guillermo Barbadillo, November 3, 2025</em></p>
+<h2 id="abstract">Abstract</h2>
+<p>This is a technical report of the work and research done by Guillermo Barbadillo for the ARC25 challenge.
+Most of the research was oriented towards a deep-learning-guided program synthesis system that searches program space and adapts at test time with test-time training via hindsight relabeling, in a tight search-and-learn loop. Evidence was obtained that search and learn outperforms pure search approaches for the same number of predictions per task. However, that effort is not yet complete, and pieces and ideas are
+missing, as it does not yet solve any of the private test tasks from ARC-AGI-2. The best result on the
+leaderboard was achieved with minor adaptations of last year's transduction with test-time training approach.</p>
+<h2 id="table-of-contents">Table of contents</h2>
+<ul>
+<li><a href="#abstract">Abstract</a></li>
+<li><a href="#table-of-contents">Table of contents</a></li>
+<li><a href="#introduction-what-is-arc-and-why-is-it-relevant">Introduction. What is ARC and why is it relevant?</a></li>
+<li><a href="#vision-search-and-learn">Vision: Search and learn</a><ul>
+<li><a href="#path-1-search-and-learn">Path 1. Search and learn</a></li>
+<li><a href="#path-2-combine-the-best-approaches-from-arc24-test-time-training-and-program-synthesis">Path 2. Combine the best approaches from ARC24: test-time training and program synthesis</a></li>
+<li><a href="#path-3-imitate-how-humans-solve-arc">Path 3. Imitate how humans solve ARC</a><ul>
+<li><a href="#how-humans-solve-arc">How humans solve ARC</a></li>
+<li><a href="#how-ai-might-solve-arc">How AI might solve ARC</a></li>
+</ul>
+</li>
+<li><a href="#path-4-frame-arc-as-a-game-and-solve-it-with-rl">Path 4. Frame ARC as a game and solve it with RL</a></li>
+<li><a href="#why-search-and-learn-will-beat-the-other-approaches">Why search and learn will beat the other approaches</a><ul>
+<li><a href="#transduction-and-test-time-training">Transduction and test-time training</a></li>
+<li><a href="#natural-language-program-search-o3">Natural language program search (o3)</a></li>
+<li><a href="#program-search-with-frontier-models">Program search with frontier models</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#research-journey">Research Journey</a><ul>
+<li><a href="#1-how-does-test-time-training-compare-against-o3">1. How does test-time training compare against o3?</a></li>
+<li><a href="#2-does-hindsight-relabeling-work-for-program-synthesis-on-toy-tasks">2. Does hindsight relabeling work for program synthesis on toy tasks?</a></li>
+<li><a href="#3-does-hindsight-relabeling-work-for-program-synthesis-on-arc-tasks">3. Does hindsight relabeling work for program synthesis on ARC tasks?</a><ul>
+<li><a href="#31-try-to-train-my-own-models">3.1 Try to train my own models</a></li>
+<li><a href="#32-experiment-with-base-models">3.2 Experiment with base models</a></li>
+<li><a href="#33-experiment-with-barc-induction-model">3.3 Experiment with BARC induction model</a><ul>
+<li><a href="#331-replicate-results-from-barc-paper">3.3.1 Replicate results from BARC paper</a></li>
+<li><a href="#332-hindsight-relabeling-and-barc-induction-model">3.3.2 Hindsight relabeling and BARC induction model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#4-can-we-get-a-stronger-base-model-with-reinforcement-learning">4. Can we get a stronger base model with reinforcement learning?</a></li>
+<li><a href="#5-can-we-improve-the-search-accuracy-by-doing-prediction-refinement">5. Can we improve the search accuracy by doing prediction refinement?</a><ul>
+<li><a href="#51-can-the-barc-induction-model-refine-its-predictions">5.1 Can the BARC induction model refine its predictions?</a></li>
+<li><a href="#52-can-the-barc-induction-model-learn-to-refine-its-predictions-using-rl">5.2 Can the BARC induction model learn to refine its predictions using RL?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#conclusions-and-next-steps">Conclusions and next steps</a></li>
+<li><a href="#acknowledgements">Acknowledgements</a></li>
+<li><a href="#links">Links</a></li>
+</ul>
+<h2 id="introduction-what-is-arc-and-why-is-it-relevant">Introduction. What is ARC and why is it relevant?</h2>
+<!-- what is intelligence --->
+<p>François Chollet defined intelligence as <strong>skill-acquisition intelligence</strong> in the paper <a href="https://arxiv.org/abs/1911.01547">On the Measure of Intelligence</a> back in 2019.</p>
+<!-- intelligence vs skill --->
+<p>Humans (and that includes many AI researchers) tend to confuse skill with intelligence.
+However, skill is the product of intelligence. Intelligence is the rate at which a learner turns
+its experience and priors into new skills. This confusion between intelligence and skill happens
+because when a person shows a great level of skill, for example at chess, that person is very likely to be intelligent.
+<strong>Skill and intelligence are correlated in humans</strong> because humans do not know chess at birth and they have to learn how to play it. Thus if a person is able to achieve a great level of skill at chess, it is because
+they have been able to acquire that skill more efficiently than other people.
+<strong>However, in the case of machines, that correlation is completely broken</strong>. Given some task like playing chess, it is possible
+to achieve an arbitrary level of skill by using unlimited priors, training data, and compute. But that machine
+would only be capable of playing chess and nothing more. Its adaptation capacity is very limited and thus its intelligence is very limited as well.</p>
+<!-- ARC --->
+<blockquote>
+<p>The intelligence of a system is a measure of its skill-acquisition efficiency over a scope of tasks, with respect to priors, experience, and generalization difficulty.</p>
+</blockquote>
+<p>Based on this definition, Chollet created the Abstraction and Reasoning Corpus (ARC). ARC is a collection of visual intelligence tasks that only require core knowledge priors. Each task has only a few examples to understand the task, and all the evaluation tasks are novel and different from the training tasks. Notice how ARC has been designed to control for priors, experience and generalization difficulty. The image below shows a sample of the images used in the ARC tasks.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/1761473956486_image.png" data-desc-position="bottom"><img alt="alt text" src="../res/1761473956486_image.png"></a></p>
+<!-- Why ARC is important --->
+<p>ARC is important because it is currently the only benchmark that measures intelligence. All the other benchmarks just measure skill (math skills, coding skills, general knowledge...). If we want to make progress towards AGI, ARC is the north star metric that we should follow.</p>
+<h2 id="vision-search-and-learn">Vision: Search and learn</h2>
+<div class="admonition tip">
+<p class="admonition-title">Vision</p>
+<p>I believe ARC will be solved first by deep-learning-guided program synthesis that searches program space and adapts at test time with test-time training via hindsight relabeling in a tight search-and-learn loop.</p>
+</div>
+<p>There are at least four different paths to arrive at that vision:</p>
+<ol>
+<li>Search and learn</li>
+<li>Combine the best approaches from ARC24: test-time training and program synthesis</li>
+<li>Imitate how humans solve ARC</li>
+<li>Frame ARC as a game and solve it with RL</li>
+</ol>
+<p>In the following sections I describe the different paths in more detail.</p>
+<h3 id="path-1-search-and-learn">Path 1. Search and learn</h3>
+<p>There are only two methods to adapt to novelty: search and learn.</p>
+<p>All the top scoring solutions from ARC24 relied on learning: they used test-time training to adapt the
+model to the new tasks.</p>
+<p>On the other hand, the solutions for the semi-private evaluation relied on search. o3 and other reasoning
+models search the space of natural language programs to find solutions for novel tasks. Other methods
+pioneered by Greenblatt searched the space of Python programs.</p>
+<p>Humans use both methods. When we approach a new task, we try different approaches to solve it and
+we learn from the failures. When trying subsequent approaches we do not repeat the mistakes. We try
+new approaches that take into account the information obtained from the failing trials. So we search,
+learn from our mistakes, and start the cycle again until we eventually find the solution. For simple problems (like solving an ARC task), this cycle can take seconds or minutes. For harder problems (like building a system that solves ARC), this cycle can take many years.</p>
+<p>I believe that a system that will solve ARC will very likely combine search and learn as well. All my
+work during the ARC25 challenge has moved in that direction.</p>
+<p></p><center><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1752753996905_arc25.png" data-desc-position="bottom"><img src="../modeling/res/1752753996905_arc25.png" width="50%"></a></center><p></p>
+<h3 id="path-2-combine-the-best-approaches-from-arc24-test-time-training-and-program-synthesis">Path 2. Combine the best approaches from ARC24: test-time training and program synthesis</h3>
+<p>Last year's competition showed that test-time training allowed the models to adapt to the novel tasks. At the same time in the semi-private dataset, we saw that frontier models could generate code to solve more than half of the tasks.</p>
+<p>Using code is a more promising approach because:</p>
+<ol>
+<li>It is verifiable.</li>
+<li>It enables iterative refinement of the solution by comparing outputs with the ground truth. This is similar to reasoning.</li>
+</ol>
+<p>My hypothesis is that we can use <a href="https://arxiv.org/abs/1707.01495">hindsight experience replay (HER)</a> at test time to update the beliefs of the model and find the right solution more efficiently. Hindsight Experience Replay is a reinforcement learning technique where the agent learns from failures by relabeling unsuccessful episodes as if they were successful for a different goal. For example we want to go from A to B, but instead we end up in C. We can use that trajectory to teach the model how to go from A to C.</p>
+<p>Instead of sampling thousands of programs, we can sample a few and learn from the mistakes. <strong>That is the way to combine induction and test-time training.</strong></p>
+<p>We can treat failed code attempts that run as new tasks and train the model on those tasks. Those tasks will be in the neighborhood of the task that we want to solve.</p>
+<p>We already know that HER enables faster learning, especially in very sparse reward environments.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/2025-03-25-16-38-36.png" data-desc-position="bottom"><img alt="" src="../res/2025-03-25-16-38-36.png"></a></p>
+<p>In the rest of the report I will use Hindsight Experience Replay or Hindsight Relabeling interchangeably. I believe Hindsight relabeling is more correct because we relabel the tasks and use them for training, we don't replay the
+tasks many times.</p>
+<h3 id="path-3-imitate-how-humans-solve-arc">Path 3. Imitate how humans solve ARC</h3>
+<h4 id="how-humans-solve-arc">How humans solve ARC</h4>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/how-humans-solve-arc.png" data-desc-position="bottom"><img alt="how-humans-solve-arc" src="../res/how-humans-solve-arc.png"></a></p>
+<p>When humans try to solve ARC tasks, we draw some hypotheses and test them in our heads. If a hypothesis is not correct, we update our beliefs and refine the hypothesis. What modules are needed to do this process?</p>
+<ul>
+<li><strong>Policy.</strong> What action do I have to take to achieve the goal? Learned with hindsight.</li>
+<li><strong>World model.</strong> What happens if I do this action? Learned with past experiences.</li>
+<li><strong>Judgment.</strong> Is the solution correct? Learned with human feedback or by comparison.</li>
+<li><strong>Learning.</strong> In difficult problems, we learn from errors and modify our initial beliefs about the problem.</li>
+</ul>
+<p>Reasoning is an iterative process as shown in the loop diagram in the image.</p>
+<h4 id="how-ai-might-solve-arc">How AI might solve ARC</h4>
+<p>Focusing on efficiency, the best configuration for ARC might be the following:</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/how-ai-might-solve-arc.png" data-desc-position="bottom"><img alt="how-ai-might-solve-arc" src="../res/how-ai-might-solve-arc.png"></a></p>
+<ul>
+<li><strong>Policy</strong>: a Large Reasoning Model.</li>
+<li><strong>World model</strong>: Python interpreter.</li>
+<li><strong>Judgment</strong>: metric function.</li>
+<li><strong>Learning</strong>: reinforcement learning and hindsight experience replay.</li>
+</ul>
+<p>That way we only have to learn the policy and parametrize the learning process. All the other modules are guaranteed to work correctly.</p>
+<h3 id="path-4-frame-arc-as-a-game-and-solve-it-with-rl">Path 4. Frame ARC as a game and solve it with RL</h3>
+<p>The idea is to frame ARC as a reinforcement learning problem. The system is given a new task and it needs to solve it as efficiently as possible. It is like playing a game, but instead of hitting buttons, it has to write code.
+The code generates an output that is evaluated against the ground truth and returns a score.</p>
+<p>Finding the right program is equivalent to finding the right trajectory to solve a game.
+Instead of actions, we write code, but the problem is the same. We can frame the problem as a reinforcement learning game with a very sparse reward.</p>
+<p>The challenge of ARC tasks is that the reward is very sparse, and standard RL methods do not work
+well in that setting. When rewards are very sparse we need to add tricks like hindsight experience replay, curiosity to promote exploration or access to human demonstrations.</p>
+<h3 id="why-search-and-learn-will-beat-the-other-approaches">Why search and learn will beat the other approaches</h3>
+<p>ARC can be solved (and will be solved) with many different approaches, but in this section, I will
+argue why search and learn will be the first approach to solve it.</p>
+<p>In the following subsections I will argue why I believe search and learn has advantages over the other approaches.</p>
+<h4 id="transduction-and-test-time-training">Transduction and test-time training</h4>
+<blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Transduction_(machine_learning)">Transduction</a> is the process of directly drawing conclusions about new data from previous data, without constructing a model</p>
+</blockquote>
+<p>Although it was the dominant approach in the ARC24 prize and very likely one of the dominant approaches
+in ARC25, I do not believe it is the best bet to solve ARC-AGI-2 because:</p>
+<ul>
+<li>Transduction does not seem to be the best way to solve the complex tasks from <a href="https://arcprize.org/arc-agi/2/">ARC-AGI-2</a> that have multiple interacting rules. On the other hand, code allows expressing any combination of rules.</li>
+<li>Predictions generated with transduction do not have any guarantee of being correct. On the other hand, code can be tested with the training samples of each task, allowing rejection of incorrect programs.</li>
+<li>The models used for transduction are black boxes. On the other hand, when doing program synthesis, we can interpret the generated code and make a better diagnosis of failures.</li>
+</ul>
+<p>The advantage of transduction is that the signal when doing test-time training is much better and more direct than the one that can be obtained when doing test-time training with hindsight relabeling.
+Transduction can solve ARC, but I do not believe it is the easiest way to do it. Using more data for pretraining, an architecture with better inductive priors (that better represents the logic of the tasks), and improvements in the test-time training setup, it would be possible to solve ARC-AGI-2. But it is easier to do it with induction.</p>
+<h4 id="natural-language-program-search-o3">Natural language program search (o3)</h4>
+<p>Although OpenAI did not share any details of how a fine-tuned version of o3 was able to solve ARC-AGI-1,
+it is believed that it used natural language program search. For each task, o3 described the task using
+natural language, then transformed the grids conditioned on that description, and analyzed the outputs
+to find errors and refine the description of the task. However:</p>
+<ul>
+<li>Any natural language description of a task can be implemented using Python code and could be expressed
+  in a short program if a good domain-specific language (DSL) is available. Thus I do not see a clear
+  advantage of using natural language over Python code.</li>
+<li>All deep learning models are fallible. Even if the model finds the correct description of the task,
+  it might fail to transform the grids accordingly. The Python interpreter is a deterministic executor: once a correct program is found, it will always produce the correct output.</li>
+</ul>
+<h4 id="program-search-with-frontier-models">Program search with frontier models</h4>
+<p>Public approaches with frontier LLMs like the ones by <a href="https://redwoodresearch.substack.com/p/getting-50-sota-on-arc-agi-with-gpt">Ryan Greenblatt</a>
+and <a href="https://jeremyberman.substack.com/p/how-i-got-a-record-536-on-arc-agi">Jeremy Berman</a> achieve
+state-of-the-art accuracy on ARC by generating Python code and refining the code using feedback from
+execution.</p>
+<p>My guess is that a frozen model, no matter how big, will not be able to generalize when the generalization gap is large (at least for a constrained inference budget).
+I hypothesize that search and learn will beat a pure search approach.</p>
+<h2 id="research-journey">Research Journey</h2>
+<h3 id="1-how-does-test-time-training-compare-against-o3">1. How does test-time training compare against o3?</h3>
+<p>At the start of the ARC25 challenge, I was curious to see how well test-time training
+compared against o3. A custom version of o3 was presented in December 2024 and reported to have solved 87.5% of the semi-private test set of ARC-AGI-1. However, with the release
+of ARC-AGI-2, o3 solved less than 5% of the semi-private test set. It was not
+the exact same version of o3, but the change was dramatic.</p>
+<p>To my surprise, I was able to score <a href="https://www.kaggle.com/code/ironbar/the-architects-single-task-ttt?scriptVersionId=234515350">11.94 on the leaderboard</a>, doubling the score of o3
+and being the <a href="https://x.com/guille_bar/status/1910307180093354427">first team to score above 10% in the challenge</a> using transduction and test-time training. Sadly, this was in April, and I was unable to improve on this baseline during the six long months that remained of the challenge.</p>
+<p>To achieve this, I simply took the solution for ARC24 from the Architects and made
+a few small modifications:</p>
+<ul>
+<li>Apply test-time training to each task individually instead of training for a group of tasks together.</li>
+<li>Modify it to work efficiently on 4 GPUs.</li>
+<li>Hyperparameter tuning.</li>
+</ul>
+<p>These results demonstrated the power of test-time training, beating o3 and establishing a strong baseline for the rest of the challenge.</p>
+<div class="admonition tip">
+<p class="admonition-title">Learning</p>
+<p>Test-time training with the model for ARC24 from the Architects was able to score 11.94% on the leaderboard while o3 scored less than 5%.</p>
+</div>
+<p>Please go to iterations <a href="../modeling/Iteration_01_architects_baseline/">1</a>, <a href="../modeling/Iteration_02_8_fold/">2</a> and <a href="../modeling/Iteration_03_ideal_test_time_training/">3</a> for more information.</p>
+<h3 id="2-does-hindsight-relabeling-work-for-program-synthesis-on-toy-tasks">2. Does hindsight relabeling work for program synthesis on toy tasks?</h3>
+<p>Before starting to work with ARC tasks, I wanted to validate that hindsight relabeling was helpful
+for program synthesis on toy tasks. Instead of training a model to learn to use dozens of primitive functions, I decided to train a model to learn to draw. Thus the model only had access to a minimal DSL (Domain Specific Language) with just a few primitives like <code>draw_pixel</code>, <code>draw_line</code> and <code>draw_rectangle</code>.</p>
+<p>The training data was generated by doing random drawings with up to 5 function calls on each drawing. Each task started from an initial grid (that could be a random solid color or randomly initialized pixels) and up to 5 new elements were added (points, lines or rectangles). When training, the model was shown the input and output grid and
+taught to answer with the code that created the drawing. See some training examples below:</p>
+<p></p><center>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1746256464651_image.png" data-desc-position="bottom"><img src="../modeling/res/1746256464651_image.png" width="40%"></a>
+<a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1746256565439_image.png" data-desc-position="bottom"><img src="../modeling/res/1746256565439_image.png" width="40%"></a>
+</center><p></p>
+<p>As expected, when we tested the model with out-of-distribution tasks (tasks with more than 5 drawings), the performance dropped drastically.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1746196996841_image.png" data-desc-position="bottom"><img alt="number of drawings" src="../modeling/res/1746196996841_image.png"></a></p>
+<p>Then I started experiments with hindsight relabeling. I manually created tasks that
+were so far from the training distribution that the model was unable to solve them. For example,
+below you can see a task with 25 squares of different colors.
+The image below shows the best prediction for each epoch. The final prediction is perfect, and it can be seen
+how the best prediction improves over the epochs.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1746622789551_image.png" data-desc-position="bottom"><img alt="best prediction evolution" src="../modeling/res/1746622789551_image.png"></a></p>
+<p>This second image shows how the accuracy distribution evolved during the epochs. Notice how on the first epoch the prediction is very poor, and the accuracy distribution shows that no
+matter how many predictions are generated with the base model, it will be impossible to solve the task.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/2025-05-07-15-01-52.png" data-desc-position="bottom"><img alt="distribution evolution" src="../modeling/res/2025-05-07-15-01-52.png"></a></p>
+<p>The initial algorithm was the following:</p>
+<ol>
+<li>Given the inputs and outputs, the model generates n predictions (for example n=256).</li>
+<li>The predictions are run to generate output images.</li>
+<li>Remove duplicates: keep only one prediction per output.</li>
+<li>Validate the predicted code (remove lines that do not affect the output).</li>
+<li>Create new tasks using hindsight relabeling. Use the original output, the output generated when running the code, and the predicted code. The model is trained to predict the code that generated the output.</li>
+<li>Sort the tasks in ascending order using the pixel accuracy of the prediction. The worst predictions come first.</li>
+<li>Fine-tune the model on these new hindsight relabeled tasks.</li>
+<li>Repeat until a perfect solution is achieved or the maximum number of epochs is reached.</li>
+</ol>
+<p>One interesting thing is that this method still works even if we do not sort the tasks by accuracy. This implies that the reward function is not necessary.</p>
+<p>After a few tweaks and hyperparameter tuning, I demonstrated that the model was capable of learning to draw anything using test-time training on hindsight relabeling tasks. It was able to solve tasks with 100 squares and complex drawings with multiple elements like the chick image below.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1747143038868_image.png" data-desc-position="bottom"><img alt="solving the chick task" src="../modeling/res/1747143038868_image.png"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1747143056873_image.png" data-desc-position="bottom"><img alt="alt text" src="../modeling/res/1747143056873_image.png"></a></p>
+<div class="admonition tip">
+<p class="admonition-title">Learning</p>
+<p>Hindsight relabeling allowed a model trained to draw to generalize outside its training distribution.
+The model was trained to draw up to 5 elements and by doing test-time training with hindsight relabeling
+it was able to solve tasks with more than 100 drawn elements.</p>
+</div>
+<p>For more information go to iterations <a href="../modeling/Iteration_04_first_steps_with_code/">4</a>, <a href="../modeling/Iteration_05_test_time_training_with_code_HER/">5</a>, <a href="../modeling/Iteration_06_reinforcement_learning/">6</a>, <a href="../modeling/Iteration_08_improve_HER/">8</a> and <a href="../modeling/Iteration_09_improve_training_script/">9</a>.</p>
+<h3 id="3-does-hindsight-relabeling-work-for-program-synthesis-on-arc-tasks">3. Does hindsight relabeling work for program synthesis on ARC tasks?</h3>
+<p>After validating that test-time training on hindsight relabeled tasks allowed solving toy tasks, it was time to see if we could validate the approach on ARC tasks that were much more complex.</p>
+<h4 id="31-try-to-train-my-own-models">3.1 Try to train my own models</h4>
+<p>As a first step, I tried to continue the approach taken for the toy drawing tasks. I defined a small
+set of primitive functions (~40), and I implemented task generators that created random tasks to teach
+how to use them.</p>
+<p>However, the models trained on those synthetic tasks were unable to solve any of the real ARC tasks.
+Despite being able to generate an infinite number of synthetic tasks, the diversity was limited. I implemented 32 task generators, but they likely had biases, and the model
+was unable to learn something that generalized from that data distribution. Furthermore, the diversity
+of model predictions was very small, so the search space of solutions was not fully explored.</p>
+<div class="admonition tip">
+<p class="admonition-title">Learning</p>
+<p>Infinite synthetic data is not enough if the diversity of the data is low.</p>
+</div>
+<p>For more information go to iterations <a href="../modeling/Iteration_10_solve_arc_tasks/">10</a>, <a href="../modeling/Iteration_12_solve_a_few_arc_tasks/">12</a>, <a href="../modeling/Iteration_13_reflections/">13</a>, <a href="../modeling/Iteration_14_optimize_inference/">14</a> and <a href="../modeling/Iteration_15_the_path_forward/">15</a>.</p>
+<h4 id="32-experiment-with-base-models">3.2 Experiment with base models</h4>
+<p>After learning that creating synthetic tasks to teach a model to learn a DSL was very hard, I decided
+to try open-weight models. The idea was to prompt the models with a list of the available DSL functions and their signatures so the model could use them to generate a solution. I decided to use the <a href="https://github.com/xu3kev/BARC">BARC DSL</a> in these experiments.</p>
+<p>I tried the Qwen2.5-Coder family of models because there were many different model sizes. The plot below
+shows that bigger models generate valid outputs more frequently and use the DSL more frequently as well. The results are for the ARC-AGI-1 training set.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1753292348173_image.png" data-desc-position="bottom"><img alt="alt text" src="../modeling/res/1753292348173_image.png"></a></p>
+<p>The plot below shows how the solved task rate changes with the number of predictions for the 7B Qwen2.5-Coder model. However, it also shows that the number of unique outputs decreases very fast showing a lack of diversity in the predictions.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1761318484651_image.png" data-desc-position="bottom"><img alt="alt text" src="../modeling/res/1761318484651_image.png"></a></p>
+<p>A surprising finding was that trying different prompting techniques to increase output diversity produced worse results than simply asking the model to solve the task. For example, I
+gave already generated solutions by the model in the prompt and requested something new and different, but the effect was the opposite. In many cases, instead of doing something new, the model
+simply copied the code given in the prompt. It seems that small LLMs lack capabilities that
+frontier models have.</p>
+<div class="admonition tip">
+<p class="admonition-title">Learning</p>
+<p>Small open-weight models with access to a DSL can solve some ARC tasks by writing Python code.</p>
+</div>
+<p>For more information go to iterations <a href="../modeling/Iteration_16_search_with_base_models/">16</a> and <a href="../modeling/Iteration_17_increase_search_diversity/">17</a>.</p>
+<h4 id="33-experiment-with-barc-induction-model">3.3 Experiment with BARC induction model</h4>
+<p>After seeing that open-weight models with access to the <a href="https://github.com/xu3kev/BARC">BARC DSL</a> were able to solve ARC tasks, I decided
+to use the BARC induction model directly. This model already knew how to use the DSL so I did not have to
+provide the signature of the DSL functions in the prompt. One brilliant aspect of the <a href="https://arxiv.org/abs/2411.02272">BARC paper</a> is that they implemented generators and solvers for 162 ARC-AGI-1 training tasks and they use
+that code as a seed for LLMs to generate new tasks. By doing that, they move the problem domain from the ARC grids to code and leverage the code capabilities of LLMs to generate new tasks. Asking an LLM to generate
+new tasks in the grid domain will likely yield poor results. They train the BARC induction model on hundreds of thousands of LLM-generated tasks and this overcomes the problems described in the previous <a href="#31-try-to-train-my-own-models">3.1 section</a> where I could not generate training data with enough diversity to train my own models.</p>
+<h5 id="331-replicate-results-from-barc-paper">3.3.1 Replicate results from BARC paper</h5>
+<p>As a first step, I validated that I could get similar results to the numbers reported in the paper. A direct comparison is not possible because their last numbers are obtained doing 20k predictions per task and I only did around 500 predictions due to the constraints imposed by the Kaggle submission (with the current hardware, I do not think it is possible to make much more than 512 predictions per task with a 7B model).</p>
+<p>In the paper there is a plot that shows a solve rate slightly below 15% for 500 submissions and I got around 22% for the same number of submissions. The differences are probably explained because the plot in the paper is
+likely obtained with a model trained on less data (not the final model) and possibly due to using
+data augmentation during inference.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1756053829174_image.png" data-desc-position="bottom"><img alt="alt text" src="../modeling/res/1756053829174_image.png"></a></p>
+<details>
+  <summary>Click to see examples of solved tasks</summary>
+
+<center><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1756096296254_image.png" data-desc-position="bottom"><img src="../modeling/res/1756096296254_image.png" width="70%"></a></center>
+
+
+<pre><code class="language-python">from common import *
+
+import numpy as np
+from typing import *
+
+# concepts:
+# scaling, color transformation
+
+# description:
+# In the input, you will see a 3x3 sprite with gray pixels scattered randomly. 
+# To create the output grid, you should first scale the sprite by a factor of 2, 
+# then replace all gray pixels with a pattern of alternating colors (blue and red).
+# The scaled sprite should maintain the original size, and the pattern should cover the gray pixels only.
+
+def transform(input_grid):
+    # Step 1: Detect the gray pixels in the input grid
+    gray_positions = np.argwhere(input_grid == Color.GRAY)
+
+    # Step 2: Create a new output grid with the same size as the scaled sprite
+    scale_factor = 2
+    output_height = input_grid.shape[0] * scale_factor
+    output_width = input_grid.shape[1] * scale_factor
+    output_grid = np.full((output_height, output_width), Color.BLACK)
+
+    # Step 3: Scale the input grid by the scale factor and place it in the output grid
+    for i in range(input_grid.shape[0]):
+        for j in range(input_grid.shape[1]):
+            if input_grid[i, j] != Color.BLACK:
+                # Blit the original color in the scaled position
+                blit_sprite(output_grid, np.full((scale_factor, scale_factor), input_grid[i, j]), 
+                            x=i*scale_factor, y=j*scale_factor)
+
+    # Step 4: Replace gray pixels in the scaled grid with the alternating pattern
+    for x, y in gray_positions:
+        scaled_x, scaled_y = x * scale_factor, y * scale_factor
+        # Create a 2x2 alternating pattern of blue and red
+        pattern = np.array([[Color.BLUE, Color.RED],
+                            [Color.RED, Color.BLUE]])
+        blit_sprite(output_grid, pattern, scaled_x, scaled_y)
+
+    return output_grid
+</code></pre>
+
+
+---
+
+<center><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1756096371982_image.png" data-desc-position="bottom"><img src="../modeling/res/1756096371982_image.png" width="70%"></a></center>
+
+
+<pre><code class="language-python">from common import *
+
+import numpy as np
+from typing import *
+
+# concepts:
+# pattern generation, lines
+
+# description:
+# In the input you will see two red pixels. 
+# To make the output, you should create a pattern of blue squares and red lines that connect the two red pixels.
+# The pattern consists of blue squares filling the area between the two red pixels, 
+# and the red lines should extend vertically and horizontally from the red pixels to the edges of the canvas.
+
+def transform(input_grid):
+    # Find the positions of the two red pixels
+    red_positions = np.argwhere(input_grid == Color.RED)
+    if len(red_positions) != 2:
+        raise ValueError("Input grid must contain exactly two red pixels.")
+
+    (x1, y1), (x2, y2) = red_positions
+
+    # Determine the bounding box for the blue squares
+    min_x, max_x = min(x1, x2), max(x1, x2)
+    min_y, max_y = min(y1, y2), max(y1, y2)
+
+    # Create blue squares in the bounding box
+    output_grid = np.zeros_like(input_grid)
+    output_grid[min_x:max_x + 1, min_y:max_y + 1] = Color.BLUE
+
+    # Draw red lines from the red pixels to the edges of the canvas
+    draw_line(output_grid, x1, y1, color=Color.RED, direction=(1, 0))  # Right from first red pixel
+    draw_line(output_grid, x1, y1, color=Color.RED, direction=(-1, 0)) # Left from first red pixel
+    draw_line(output_grid, x1, y1, color=Color.RED, direction=(0, 1))  # Down from first red pixel
+    draw_line(output_grid, x1, y1, color=Color.RED, direction=(0, -1)) # Up from first red pixel
+
+    draw_line(output_grid, x2, y2, color=Color.RED, direction=(1, 0))  # Right from second red pixel
+    draw_line(output_grid, x2, y2, color=Color.RED, direction=(-1, 0)) # Left from second red pixel
+    draw_line(output_grid, x2, y2, color=Color.RED, direction=(0, 1))  # Down from second red pixel
+    draw_line(output_grid, x2, y2, color=Color.RED, direction=(0, -1)) # Up from second red pixel
+
+    return output_grid
+</code></pre>
+
+
+---
+
+<center><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1756096418602_image.png" data-desc-position="bottom"><img src="../modeling/res/1756096418602_image.png" width="70%"></a></center>
+
+
+<pre><code class="language-python">from common import *
+
+import numpy as np
+from typing import *
+
+# concepts:
+# circle detection, color transformation
+
+# description:
+# In the input, you will see a grid with random colored pixels on it. 
+# To make the output, you should find all circular shapes (of any color) 
+# with a diameter greater than or equal to 3 pixels and change their color to yellow.
+
+def transform(input_grid: np.ndarray) -&gt; np.ndarray:
+    # Plan:
+    # 1. Detect circular shapes in the grid
+    # 2. Change their color to yellow if they meet the size criteria
+
+    output_grid = np.copy(input_grid)
+
+    # Iterate over the grid to find circular shapes
+    for x in range(len(input_grid)):
+        for y in range(len(input_grid[0])):
+            # Check if the pixel is not background
+            if input_grid[x, y] != Color.BLACK:
+                # Check for circle shape using a simple heuristic
+                diameter = 1
+                while True:
+                    # Check the pixels in the current diameter
+                    if (x + diameter &lt; len(input_grid) and
+                        y + diameter &lt; len(input_grid[0]) and
+                        np.all(input_grid[x:x + diameter + 1, y:y + diameter + 1] == input_grid[x, y])):
+                        diameter += 1
+                    else:
+                        diameter -= 1
+                        break
+                if diameter &gt;= 3:
+                    output_grid[x:x + diameter + 1, y:y + diameter + 1] = Color.YELLOW
+
+    return output_grid
+</code></pre>
+
+
+</details>
+
+<div class="admonition tip">
+<p class="admonition-title">Learning</p>
+<p>The BARC induction model is able to solve around 22% of the ARC-AGI-1 evaluation tasks with a budget
+of 512 predictions. However, it only solves 0.8% of the ARC-AGI-2 evaluation tasks.</p>
+</div>
+<p>For more information go to iterations <a href="../modeling/Iteration_19_search_with_BARC/">19</a>, <a href="../modeling/Iteration_20_data_augmentation_with_BARC/">20</a> and <a href="../modeling/Iteration_21_fix_bug_with_data/">21</a>.</p>
+<h5 id="332-hindsight-relabeling-and-barc-induction-model">3.3.2 Hindsight relabeling and BARC induction model</h5>
+<p>To verify if it was possible to do test-time training on hindsight relabeling tasks for program synthesis
+on ARC tasks I designed the following experiments: all the experiments have the same inference budget
+of 512 predictions. The only differences between experiments are whether test-time training with hindsight relabeling is used and its configuration.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1758805734469_image.png" data-desc-position="bottom"><img alt="alt text" src="../modeling/res/1758805734469_image.png"></a></p>
+<ul>
+<li>Orange lines are the baseline. I repeated the experiment 3 times to measure variability.</li>
+<li>The green line does 256 predictions, learns, and does another 256 predictions. Notice how the green line starts to deviate from the orange lines only after prediction 256.</li>
+<li>The blue line learns every 128 predictions. Notice how the blue line deviates from the orange line after
+  prediction 128.</li>
+</ul>
+<p>The table below summarizes the experiment and the results.</p>
+<table>
+<thead>
+<tr>
+<th>initial predictions</th>
+<th>epochs</th>
+<th>predictions per epoch</th>
+<th>pass@n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>512</td>
+<td>0</td>
+<td>0</td>
+<td>23.3%</td>
+</tr>
+<tr>
+<td>256</td>
+<td>1</td>
+<td>256</td>
+<td>26.0%</td>
+</tr>
+<tr>
+<td>128</td>
+<td>3</td>
+<td>128</td>
+<td><strong>28.3%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>We obtain an improvement of 5% with the best configuration. It is not a huge improvement like the one
+observed on ARC24 with transduction and test-time training where I improved from 11% to 33%. But it validates the idea of <strong>search and learn</strong>.</p>
+<p>I would argue that the improvement will be bigger if we had an inference budget larger than 512 predictions,
+but we are constrained by the Kaggle submission hardware and time (I already know that the improvement is smaller if we use a smaller number of predictions).</p>
+<p>In this initial implementation, the model is fine-tuned independently for each task and all the predictions
+that generated valid outputs are used for training. A more compute efficient implementation would only
+use the best predictions for training.</p>
+<div class="admonition tip">
+<p class="admonition-title">Learning</p>
+<p>We have validated that the search and learn approach works. By doing test-time training with hindsight
+relabeling on the BARC induction model we were able to solve 28.3% of the ARC-AGI-1 evaluation tasks
+compared to the 23.3% of the baseline model without test-time training.</p>
+</div>
+<p>For more information go to iterations <a href="../modeling/Iteration_22_ttt_BARC/">22</a> and <a href="../modeling/Iteration_23_ttt_BARC_v2/">23</a>.</p>
+<h3 id="4-can-we-get-a-stronger-base-model-with-reinforcement-learning">4. Can we get a stronger base model with reinforcement learning?</h3>
+<p>After validating that the search and learn approach could work, I realized that I need a stronger
+base model to be able to beat ARC-AGI-2. The BARC induction model only solves 22% and 0.8% of the
+evaluation tasks of ARC-AGI-1 and ARC-AGI-2 respectively when doing 512 predictions.</p>
+<p>I thought that trying reinforcement learning could be a good idea. As an outsider, it seems
+that recent advances in math and coding abilities of LLMs have come from using RL.
+I had experience with RL in different competitions (<a href="https://www.goodai.com/animal-ai-olympics-results/">Animal AI Olympics</a>, <a href="https://www.kaggle.com/competitions/lux-ai-2021">Lux AI</a> and <a href="https://www.kaggle.com/competitions/hungry-geese">Hungry Geese</a>), but not with LLMs, so I thought it was a good
+idea to give it a try.</p>
+<p>I verified that RL fine-tuning improved the solving rate of the base model, but I could not train
+for long because all the trainings eventually collapsed. The reward improved during the training
+until suddenly it collapsed. On the first experiments the model entered a loop in the predictions,
+repeating the same tokens over and over. When adding repetition penalty to avoid this behaviour,
+the model simply predicted gibberish.</p>
+<p>I have tried many things, but so far I haven't solved the problem of training collapse:</p>
+<ul>
+<li>Using a bigger training dataset (from ARC-AGI-1 400 training samples to BARC 100k samples)</li>
+<li>Using a bigger number of generations per step (from 8 to 128)</li>
+<li>Increasing the KL penalty</li>
+<li>Decreasing the max grad norm</li>
+<li>Simplifying or changing the reward function</li>
+<li>Adding repetition penalty</li>
+<li>Disabling 4bit quantization for training</li>
+<li>Changing the LoRA rank</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../modeling/res/1761992341269_image.png" data-desc-position="bottom"><img alt="alt text" src="../modeling/res/1761992341269_image.png"></a></p>
+<p>In the best experiment the solve rate for the ARC-AGI-1 evaluation set improved from 22.3% of the base
+model to 27% for the model fine-tuned with RL when doing 480 predictions. It would be interesting
+to train for longer if I'm able to avoid training collapse.</p>
+<div class="admonition tip">
+<p class="admonition-title">Learning</p>
+<p>Reinforcement learning improves the solving rate of the model (22% -&gt; 27%), but I have been unable to train for long
+due to training collapse.</p>
+</div>
+<p>For more information go to iterations <a href="../modeling/Iteration_24_RL_BARC/">24</a>, <a href="../modeling/Iteration_25_debug_parallel_code_execution/">25</a>, <a href="../modeling/Iteration_29_multi-gpu-rl/">29</a>, <a href="../modeling/Iteration_30_solve_RL_collapse/">30</a>, <a href="../modeling/Iteration_33_rl_barc/">33</a> and <a href="../modeling/Iteration_35_fp16_vs_bf16/">35</a>.</p>
+<h3 id="5-can-we-improve-the-search-accuracy-by-doing-prediction-refinement">5. Can we improve the search accuracy by doing prediction refinement?</h3>
+<h4 id="51-can-the-barc-induction-model-refine-its-predictions">5.1 Can the BARC induction model refine its predictions?</h4>
+<p>Currently, I am doing independent predictions with the BARC induction model. Each prediction
+is independent of the others. This is different from how humans solve tasks. We have
+in memory the history of the search: what we tried, how well it worked...</p>
+<p>One way to achieve this with LLMs is by asking to refine some incorrect solution. Given some prediction
+from the model, we can execute the code, add the outputs to the prompt along with some metrics, and request
+the model to analyze the problems of the generated code and create a refined version of it. Public approaches
+with frontier LLMs by <a href="https://redwoodresearch.substack.com/p/getting-50-sota-on-arc-agi-with-gpt">Ryan Greenblatt</a>
+and <a href="https://jeremyberman.substack.com/p/how-i-got-a-record-536-on-arc-agi">Jeremy Berman</a> rely on this ability of frontier models
+to refine code given feedback from execution.</p>
+<p>However, when I tried to refine predictions with the BARC induction model, I found that the model
+did not have that ability. I compared a run doing 128 independent predictions per task
+versus doing 64 independent predictions, selecting the best 8 predictions, and trying to refine those.
+I did not find any significant difference in accuracy.</p>
+<div class="admonition tip">
+<p class="admonition-title">Learning</p>
+<p>Frontier models have the ability to refine their predictions given feedback from execution, but
+this 8B Llama model fine-tuned on ARC tasks does not have that ability.</p>
+</div>
+<p>For more information go to iteration <a href="../modeling/Iteration_28_refine_predictions/">28</a>.</p>
+<h4 id="52-can-the-barc-induction-model-learn-to-refine-its-predictions-using-rl">5.2 Can the BARC induction model learn to refine its predictions using RL?</h4>
+<p>I have fine-tuned the BARC induction model with the BARC dataset to refine its own predictions. On a first
+step I generated predictions for the dataset, and selected the best ones that did not solve the task. Those
+were given in the training along feedback from execution. The model was trained for 17k steps.</p>
+<p>When evaluating the model we observed a small improvement in the solved tasks from 16.3% to 17.8%. If we had a stable RL training and enough time and compute, maybe this small improvement could be made bigger.</p>
+<div class="admonition tip">
+<p class="admonition-title">Learning</p>
+<p>Fine-tuning a model with RL to refine its predictions yields small improvements.</p>
+</div>
+<p>For more information go to iteration <a href="../modeling/Iteration_34_multi-turn_rl/">34</a>.</p>
+<h2 id="conclusions-and-next-steps">Conclusions and next steps</h2>
+<p>The ARC25 challenge is over, and despite not being able to improve on the transduction test-time training baseline with the search-and-learn approach, I have enjoyed all these months of research and learning. In retrospect, I believe I could have achieved a better leaderboard score and position by further optimizing the TTT approach, but I prioritized working on an approach that I believe could ultimately solve ARC. The top teams on the public leaderboard scored around 27%, so there is still a long way to go to reach the 85% goal, and I hope to keep enjoying this research journey.</p>
+<p>If search and learn is the right approach, why haven’t I been able to beat the transduction test-time training approach? There are many reasons, but let’s point out the main ones:</p>
+<ul>
+<li>A stronger induction model is needed to beat ARC. How to craft that model remains an open question.</li>
+<li>My search method was very basic, relying only on independent predictions. That would only work on trivial tasks; to solve complex tasks, refinement is needed.</li>
+<li>More work is also needed to learn as much as possible from the failed attempts.</li>
+</ul>
+<p>In the coming days, I will thoroughly review all the work done by other teams and rethink my approach for the next ARC challenge edition. I have some vague ideas in mind that I want to reflect on: Do humans have a continuous model of the world, or do we have a discrete, ever-growing model where we apply targeted edits when evidence contradicts our beliefs? Is deep learning and gradient descent the best learning method, or could there be more sample-efficient alternatives?</p>
+<p>See you on ARC26!</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<ul>
+<li>Thanks to my wife and my family for taking care of our children many times so I could do research without small AGIs disturbing me.</li>
+<li>Thanks to <a href="https://veridas.com/en/">Veridas</a> for allowing me to do research on ARC during part of my job time and for providing me access to its compute cluster.</li>
+<li>Thanks to <a href="https://strongcompute.com/">Strong Compute</a> for providing compute for some of the RL experiments.</li>
+</ul>
+<h2 id="links">Links</h2>
+<ul>
+<li><a href="https://github.com/ironbar/arc25">Github repo</a></li>
+<li><a href="https://ironbar.github.io/arc24/">Github documentation</a></li>
+<li><a href="">Notebook 1</a></li>
+<li><a href="">Notebook 2</a></li>
+</ul>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+    </span>
+    2025-11-04
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../utils/methodology/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Methodology">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Methodology
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2025. Guillermo Barbadillo
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/guillermobarbadillo/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/guille_bar" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/channel/UCOHmUwHnd2hmUpiDzaQ1Isg" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305m-317.51 213.508V175.185l142.739 81.205z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.kaggle.com/ironbar" target="_blank" rel="noopener" title="www.kaggle.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M304.2 501.5 158.4 320.3 298.2 185c2.6-2.7 1.7-10.5-5.3-10.5h-69.2c-3.5 0-7 1.8-10.5 5.3L80.9 313.5V7.5q0-7.5-7.5-7.5H21.5Q14 0 14 7.5v497q0 7.5 7.5 7.5h51.9q7.5 0 7.5-7.5v-109l30.8-29.3 110.5 140.6c3 3.5 6.5 5.3 10.5 5.3h66.9q5.25 0 6-3z"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "navigation.footer"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+        <script src="../javascript/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

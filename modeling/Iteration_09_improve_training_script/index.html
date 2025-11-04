@@ -1,0 +1,2936 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ironbar.github.io/arc25/modeling/Iteration_09_improve_training_script/">
+      
+      
+        <link rel="prev" href="../Iteration_08_improve_HER/">
+      
+      
+        <link rel="next" href="../Iteration_10_solve_arc_tasks/">
+      
+      
+      <link rel="icon" href="../../res/arc_icon.jpg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.40">
+    
+    
+      
+        <title>Iteration 9. Improve training script - arc25</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#iteration-9-improve-training-script" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="arc25" class="md-header__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            arc25
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Iteration 9. Improve training script
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../01_Business_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Business Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../02_Data_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Data Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../03_State_of_the_art/" class="md-tabs__link">
+        
+  
+    
+  
+  State of the art
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../04_Initial_Plan/" class="md-tabs__link">
+        
+  
+    
+  
+  Initial Plan
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../Iteration_01_architects_baseline/" class="md-tabs__link">
+          
+  
+    
+  
+  Modeling
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../utils/00_Challenge_Workflow/" class="md-tabs__link">
+          
+  
+    
+  
+  Utils
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../05_Solution_Summary/" class="md-tabs__link">
+        
+  
+    
+  
+  Solution summary
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="arc25" class="md-nav__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    arc25
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Business_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Business Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_Data_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_State_of_the_art/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    State of the art
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_Initial_Plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Initial Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Modeling
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Modeling
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_01_architects_baseline/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 1. Architects baseline
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_02_8_fold/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 2. Architects solution with 8 data splits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_03_ideal_test_time_training/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 3. Ideal test-time training setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_04_first_steps_with_code/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 4. First steps with code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_05_test_time_training_with_code_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 5. Test-time training with code. Hindsight Experience Replay (HER)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_06_reinforcement_learning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 6. Reinforcement learning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_07_optimize_ttt_on_evaluation_set/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 7. Optimize TTT on the evaluation set
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_08_improve_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 8. Improve HER
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Iteration 9. Improve training script
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 9. Improve training script
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fix-the-problem-with-repeated-calls-to-training-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fix the problem with repeated calls to training generator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make-the-script-work-with-accelerate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Make the script work with accelerate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-speed-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training speed test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-speed-vs-input-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training speed vs input size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-speed-vs-output-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training speed vs output size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mixed-sizes-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mixed-sizes training
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mixed-sizes training">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#first-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      First experiments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#packing-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Packing experiment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shards-in-iterable-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      Shards in iterable dataset
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-validation-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add validation dataset
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#train-a-model-on-multiple-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Train a model on multiple tasks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#train-on-the-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Train on the cluster
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Train on the cluster">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      Docker image
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#problems-with-pip" class="md-nav__link">
+    <span class="md-ellipsis">
+      Problems with pip
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#problems-with-flash-attn" class="md-nav__link">
+    <span class="md-ellipsis">
+      Problems with flash-attn
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scaling-to-multiple-gpus" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scaling to multiple GPUs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Scaling to multiple GPUs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#naive-accelerate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Naive accelerate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trying-other-parameters-in-accelerate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trying other parameters in accelerate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bigger-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bigger models
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Results
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_10_solve_arc_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 10. Try to solve real ARC tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_11_pretrain_lora_on_new_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 11. Pretrain LoRA on new tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_12_solve_a_few_arc_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 12. Solve a few ARC tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_13_reflections/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 13. Reflections
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_14_optimize_inference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 14. Optimize inference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_15_the_path_forward/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 15. The path forward: Search &amp; Learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_16_search_with_base_models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 16. Search with base models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_17_increase_search_diversity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 17. Increase search diversity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_19_search_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 19. Search with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_20_data_augmentation_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 20. Data augmentation with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_21_fix_bug_with_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 21. Fix bug with data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_22_ttt_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 22. Test-time Training with BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_23_ttt_BARC_v2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 23. All in with test-time training with BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_24_RL_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 24. Using RL to improve BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_25_debug_parallel_code_execution/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 25. Debug parallel code execution
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_26_more_compute/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 26. Acquire more compute
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_27_improve_search_and_learn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 27. Improve search and learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_28_refine_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 28. Refine predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_29_multi-gpu-rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 29. Multi-gpu RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_30_solve_RL_collapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 30. Solve RL Collapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_31_how_to_improve/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 31. How to improve from 20% to 100%?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_32_analyze_model_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 32. Analyze model predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_33_rl_barc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 33. RL with BARC data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_34_multi-turn_rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 34. Multi-turn RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_35_fp16_vs_bf16/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 35. FP16 vs BF16
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_n/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration n. Iteration_title
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Utils
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Utils
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/00_Challenge_Workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Challenge workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/markdown_cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Markdown cheatsheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/methodology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Methodology
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05_Solution_Summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Solution summary
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fix-the-problem-with-repeated-calls-to-training-generator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fix the problem with repeated calls to training generator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make-the-script-work-with-accelerate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Make the script work with accelerate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-speed-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training speed test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-speed-vs-input-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training speed vs input size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-speed-vs-output-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training speed vs output size
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mixed-sizes-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mixed-sizes training
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mixed-sizes training">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#first-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      First experiments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#packing-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Packing experiment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shards-in-iterable-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      Shards in iterable dataset
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-validation-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add validation dataset
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#train-a-model-on-multiple-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Train a model on multiple tasks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#train-on-the-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Train on the cluster
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Train on the cluster">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      Docker image
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#problems-with-pip" class="md-nav__link">
+    <span class="md-ellipsis">
+      Problems with pip
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#problems-with-flash-attn" class="md-nav__link">
+    <span class="md-ellipsis">
+      Problems with flash-attn
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scaling-to-multiple-gpus" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scaling to multiple GPUs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Scaling to multiple GPUs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#naive-accelerate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Naive accelerate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trying-other-parameters-in-accelerate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trying other parameters in accelerate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bigger-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bigger models
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Results
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="iteration-9-improve-training-script">Iteration 9. Improve training script</h1>
+<p><em>14-05-2025</em></p>
+<h2 id="goal">Goal</h2>
+<p>Improve the training script so I can start working towards solving real ARC tasks with code.</p>
+<h2 id="motivation">Motivation</h2>
+<p>I have seen that Hindsight Experience Replay (HER) allows to generalize to novel tasks. Next step is
+to probe that it can solve real ARC tasks, not just toy tasks. But previously I have to make some updates
+to the training script. That will allow me to iterate faster on the next steps.</p>
+<h2 id="development">Development</h2>
+<h3 id="fix-the-problem-with-repeated-calls-to-training-generator">Fix the problem with repeated calls to training generator</h3>
+<pre><code class="language-bash">conda activate arc25
+export CUDA_VISIBLE_DEVICES=0
+python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/debug_training_generator --device-map auto --random-seed 5 --max-steps 11 --n-gpus 1 --per-device-train-batch-size 1 --batch-size 16 --max-seq-len 1024 --no-log-to-wandb --no-resume-from-checkpoint
+</code></pre>
+<ul>
+<li><a href="https://huggingface.co/docs/datasets/v3.6.0/en/package_reference/main_classes#datasets.IterableDataset">IterableDataset</a></li>
+<li><a href="https://huggingface.co/docs/trl/en/sft_trainer#trl.SFTTrainer">SFTTrainer</a></li>
+</ul>
+<p>It seems that it is the expected behaviour, however I have modified the generator to just yield samples.
+The setting of the random seed and printing the first sample is now outside.</p>
+<h3 id="make-the-script-work-with-accelerate">Make the script work with accelerate</h3>
+<pre><code class="language-bash">accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/debug_accelerate --device-map None --random-seed 5 --max-steps 40 --n-gpus 2 --per-device-train-batch-size 8 --batch-size 16 --max-seq-len 512 --no-log-to-wandb --no-resume-from-checkpoint
+</code></pre>
+<p>I'm using the latest version of accelerate: <code>1.6.0</code>, the thing is that previously the <code>SFTConfig</code> class
+had a <code>dispatch_batches=False</code> parameter that now is missing.</p>
+<ul>
+<li>https://huggingface.co/docs/accelerate/en/package_reference/accelerator</li>
+<li>https://huggingface.co/docs/accelerate/v1.6.0/en/package_reference/utilities#accelerate.DataLoaderConfiguration</li>
+<li>https://github.com/huggingface/transformers/issues/34699</li>
+<li>https://huggingface.co/docs/transformers/v4.51.3/en/main_classes/trainer#transformers.TrainingArguments</li>
+</ul>
+<p>The solution was easy, but difficult to find: <code>accelerator_config=dict(dispatch_batches=False</code></p>
+<h3 id="training-speed-test">Training speed test</h3>
+<p>By using 2 GPUs and the right batch size we can improve the training speed by a factor of 5.</p>
+<table>
+<thead>
+<tr>
+<th>Number of GPUs</th>
+<th>Per Device Batch Size</th>
+<th>Train Samples per Second</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>8</td>
+<td>44.25</td>
+</tr>
+<tr>
+<td>1</td>
+<td>8</td>
+<td>25.69</td>
+</tr>
+<tr>
+<td>1</td>
+<td>4</td>
+<td>22.27</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>14.70</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>8.85</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-bash">accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/debug_accelerate --device-map None --random-seed 5 --max-steps 100 --n-gpus 2 --per-device-train-batch-size 8 --batch-size 16 --max-seq-len 512 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# {'train_runtime': 36.1583, 'train_samples_per_second': 44.25, 'train_steps_per_second': 2.766, 'train_loss': 0.2923687481880188, 'epoch': 1.0}
+export CUDA_VISIBLE_DEVICES=0
+accelerate launch --num_processes 1 --num_machines 1 --mixed_precision bf16 \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/debug_accelerate --device-map None --random-seed 5 --max-steps 100 --n-gpus 1 --per-device-train-batch-size 8 --batch-size 16 --max-seq-len 512 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# {'train_runtime': 63.3117, 'train_samples_per_second': 25.272, 'train_steps_per_second': 1.579, 'train_loss': 0.2931043267250061, 'epoch': 1.0}
+python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/debug_accelerate --device-map None --random-seed 5 --max-steps 100 --n-gpus 1 --per-device-train-batch-size 8 --batch-size 16 --max-seq-len 512 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# {'train_runtime': 62.2894, 'train_samples_per_second': 25.687, 'train_steps_per_second': 1.605, 'train_loss': 0.29407034754753114, 'epoch': 1.0}
+python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/debug_accelerate --device-map None --random-seed 5 --max-steps 100 --n-gpus 1 --per-device-train-batch-size 4 --batch-size 16 --max-seq-len 512 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+#{'train_runtime': 71.8484, 'train_samples_per_second': 22.269, 'train_steps_per_second': 1.392, 'train_loss': 0.29404119253158567, 'epoch': 1.0}
+python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/debug_accelerate --device-map None --random-seed 5 --max-steps 100 --n-gpus 1 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 512 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+#{'train_runtime': 108.8354, 'train_samples_per_second': 14.701, 'train_steps_per_second': 0.919, 'train_loss': 0.29236586928367614, 'epoch': 1.0}
+python finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/debug_accelerate --device-map None --random-seed 5 --max-steps 100 --n-gpus 1 --per-device-train-batch-size 1 --batch-size 16 --max-seq-len 512 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# {'train_runtime': 180.7981, 'train_samples_per_second': 8.85, 'train_steps_per_second': 0.553, 'train_loss': 0.29323326468467714, 'epoch': 1.0}
+</code></pre>
+<h3 id="training-speed-vs-input-size">Training speed vs input size</h3>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/1747310963772_image.png" data-desc-position="bottom"><img alt="training speed" src="../res/1747310963772_image.png"></a></p>
+<p>Even after changing the per device batch size between experiments we can see a clear linear relation
+between the input tokens and the training speed.</p>
+<pre><code class="language-bash">accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 100 --n-gpus 2 --per-device-train-batch-size 8 --batch-size 16 --max-seq-len 512 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 1x10x10 5 draws, 'train_samples_per_second': 43.004,
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 50 --n-gpus 2 --per-device-train-batch-size 4 --batch-size 16 --max-seq-len 1024 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 2x10x10 5 draws, 'train_samples_per_second': 23.6
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 50 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 2048 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 4x10x10 5 draws, 'train_samples_per_second': 13.6
+# 1x20x20 5 draws, 'train_samples_per_second': 16.0
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 25 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 4096 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 1x30x30 5 draws, 'train_samples_per_second': 9.607
+# 2x20x20 5 draws, 'train_samples_per_second': 9.815
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 20 --n-gpus 2 --per-device-train-batch-size 1 --batch-size 16 --max-seq-len 8192 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 3x20x20 5 draws,  'train_samples_per_second': 6.323
+# 4x20x20 5 draws, 'train_samples_per_second': 5.014
+# 2x30x30 5 draws, 'train_samples_per_second': 5.178
+# 3x30x30 5 draws, 'train_samples_per_second': 3.234
+# 5x20x20 5 draws, 'train_samples_per_second': 4.045
+# 6x20x20 5 draws, 'train_samples_per_second': 3.293
+# 4x30x30 5 draws, OOM
+# 4x27x27 5 draws, OOM
+# 4x26x26 5 draws, 'train_samples_per_second': 3.101
+</code></pre>
+<h3 id="training-speed-vs-output-size">Training speed vs output size</h3>
+<pre><code class="language-bash">accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 20 --n-gpus 2 --per-device-train-batch-size 1 --batch-size 16 --max-seq-len 8192 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 3x20x20 1 draws, 'train_samples_per_second': 7.024
+# 3x20x20 5 draws,  'train_samples_per_second': 6.323
+# 3x20x20 10 draws,  'train_samples_per_second': 5.503
+# 3x20x20 20 draws,  'train_samples_per_second': 3.885
+</code></pre>
+<p>A function with 20 drawings is around 400 tokens, so the same as a single 20x20 image. ChatGPT says
+that the backpropagation step is 2-3 more expensive than the forward step, and that could explain the
+changes in training speed that we are observing when using a longer output.</p>
+<h3 id="mixed-sizes-training">Mixed-sizes training</h3>
+<h4 id="first-experiments">First experiments</h4>
+<p>Let's see how the speed is affected when we mix different input sizes. I will be using a single sample and 5 draws for this experiment. I will only change the side of the image.</p>
+<pre><code class="language-bash">accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 25 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 4096 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# 30, 'train_samples_per_second': 8.809
+# 5-30, 'train_samples_per_second': 13.018
+# 5, 'train_samples_per_second': 22.967
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 25 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 3072 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100
+# Packing
+# I should probably test this longer and check the loss
+# 5-30, packing=True, 'train_samples_per_second': 6.87
+# 5-30, packing=False, train_samples_per_second': 12.626
+# liger-kernel
+# 5-30, use_liger_kernel=True, 'train_samples_per_second': 9.95, 46% VRAM
+# 5-30, use_liger_kernel=False, 'train_samples_per_second': 13.069, 86% VRAM
+# 5-30, use_liger_kernel=True, x2 batch size, 'train_samples_per_second': 12.786, 63% VRAM
+# 5-30, use_liger_kernel=True, x4 batch size, 'train_samples_per_second': 13.883, 80% VRAM
+</code></pre>
+<p>These initial experiments show that when training with mixed sizes the training is faster. On this 3090 GPU liger kernels do not seem to add speed, although they reduce GPU memory usage and that is something interesting.</p>
+<p>I believe I need to do additional experiments with packing because in the <a href="https://huggingface.co/docs/trl/en/sft_trainer#packing-dataset">documentation</a> says:</p>
+<blockquote>
+<p>Note that if you use a packed dataset and if you pass max_steps in the training arguments you will probably train your models for more than few epochs, depending on the way you have configured the packed dataset and the training protocol.</p>
+</blockquote>
+<p>So maybe packing is slower but it is training with more data.</p>
+<h4 id="packing-experiment">Packing experiment</h4>
+<pre><code class="language-bash">accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 25 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 3072 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100 --no-packing --epochs 1
+# 25 steps, 
+# {'train_runtime': 24.6856, 'train_samples_per_second': 16.204, 'train_steps_per_second': 1.013, 'train_loss': 0.5946265602111817, 'num_tokens': 420352.0, 'mean_token_accuracy': 0.8707410991191864, 'epoch': 1.0}
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/speed_test --device-map None --random-seed 5 --max-steps 25 --n-gpus 2 --per-device-train-batch-size 2 --batch-size 16 --max-seq-len 3072 --no-log-to-wandb --no-resume-from-checkpoint --save-steps 100 --packing --epochs 1
+# 9 steps, there is an error on one sample, the training does not end
+# 20.54s
+</code></pre>
+<p>The training is not ending, the speedup is not that large and it seems to be doing weird thing with the examples, so I won't recommend using packing.</p>
+<h3 id="shards-in-iterable-dataset">Shards in iterable dataset</h3>
+<p>To be able to use multiple workers, I have to add shards to the IterableDataset.</p>
+<pre><code class="language-bash"># Dataset
+{'train_runtime': 198.5722, 'train_samples_per_second': 16.115, 'train_steps_per_second': 1.007, 'train_loss': 0.3144468629360199, 'epoch': 1.0}
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████| 200/200 [03:18&lt;00:00,  1.01it/s]
+2025-05-15 15:54:47,738 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 218.9584 seconds
+2025-05-15 15:54:47,739 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 219.0947 seconds
+
+# IterableDataset
+{'train_runtime': 219.8297, 'train_samples_per_second': 14.557, 'train_steps_per_second': 0.91, 'train_loss': 0.3229031562805176, 'epoch': 1.0}
+100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 200/200 [03:39&lt;00:00,  1.10s/it]
+2025-05-15 15:48:18,818 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 222.6067 seconds
+2025-05-15 15:48:18,818 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 222.9027 seconds
+
+# With workers
+{'train_runtime': 216.0631, 'train_samples_per_second': 14.81, 'train_steps_per_second': 0.926, 'train_loss': 0.31195030570030213, 'epoch': 1.0}
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 200/200 [03:35&lt;00:00,  1.08s/it]
+2025-05-15 16:06:55,624 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 218.7438 seconds
+2025-05-15 16:06:55,626 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 218.7610 seconds
+
+# With shards and 4 workers
+{'train_runtime': 203.6106, 'train_samples_per_second': 15.716, 'train_steps_per_second': 0.982, 'train_loss': 0.31994509100914004, 'epoch': 1.0}
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 200/200 [03:23&lt;00:00,  1.02s/it]
+2025-05-15 17:30:28,515 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 206.2465 seconds
+2025-05-15 17:30:28,526 - arc25.logging - INFO - wrapper - Executed fine_tuning_main in 206.3744 seconds
+</code></pre>
+<h3 id="add-validation-dataset">Add validation dataset</h3>
+<p>I will simply sample from the same training distribution, but do it once at the start of the training and with a different random seed.</p>
+<pre><code class="language-bash">accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu \
+finetuning.py --output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250514/add_validation --device-map None --random-seed 5 --max-steps 500 --n-gpus 2 --per-device-train-batch-size 2 --per-device-eval-batch-size 4 --batch-size 16 --max-seq-len 3072 --no-resume-from-checkpoint --save-steps 200 --no-packing --eval-steps 50 --no-log-to-wandb
+</code></pre>
+<h3 id="train-a-model-on-multiple-tasks">Train a model on multiple tasks</h3>
+<pre><code class="language-bash">export K_STEPS=32
+accelerate launch --num_processes 2 --num_machines 1 --mixed_precision bf16 --multi_gpu finetuning.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/20250515_baseline_painter/${K_STEPS}k_steps \
+--random-seed 5 \
+--device-map None \
+--max-steps ${K_STEPS}000 \
+--n-gpus 2 \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 16 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora
+</code></pre>
+<h3 id="train-on-the-cluster">Train on the cluster</h3>
+<h4 id="docker-image">Docker image</h4>
+<p>I'm going to use the code from ARC24 as a start point.</p>
+<p>References:</p>
+<ul>
+<li><a href="https://ironbar.github.io/arc24/modeling/Iteration_08_code_improvements/#scale-compute">https://ironbar.github.io/arc24/modeling/Iteration_08_code_improvements/#scale-compute</a></li>
+<li><a href="https://github.com/ironbar/arc24/tree/main/docker">https://github.com/ironbar/arc24/tree/main/docker</a></li>
+</ul>
+<pre><code># relevant packages
+# Name                    Version                   Build  Channel
+cupy-cuda12x              13.4.1                   pypi_0    pypi
+flash-attn                2.6.3                    pypi_0    pypi
+liger-kernel              0.5.9                    pypi_0    pypi
+llguidance                0.7.19                   pypi_0    pypi
+llvmlite                  0.44.0                   pypi_0    pypi
+numba                     0.61.2                   pypi_0    pypi
+numpy                     2.2.5                    pypi_0    pypi
+nvidia-cublas-cu12        12.4.5.8                 pypi_0    pypi
+nvidia-cuda-cupti-cu12    12.4.127                 pypi_0    pypi
+nvidia-cuda-nvrtc-cu12    12.4.127                 pypi_0    pypi
+nvidia-cuda-runtime-cu12  12.4.127                 pypi_0    pypi
+nvidia-cudnn-cu12         9.1.0.70                 pypi_0    pypi
+nvidia-cufft-cu12         11.2.1.3                 pypi_0    pypi
+nvidia-curand-cu12        10.3.5.147               pypi_0    pypi
+nvidia-cusolver-cu12      11.6.1.9                 pypi_0    pypi
+nvidia-cusparse-cu12      12.3.1.170               pypi_0    pypi
+nvidia-cusparselt-cu12    0.6.2                    pypi_0    pypi
+nvidia-ml-py3             7.352.0                  pypi_0    pypi
+nvidia-nccl-cu12          2.21.5                   pypi_0    pypi
+nvidia-nvjitlink-cu12     12.4.127                 pypi_0    pypi
+nvidia-nvtx-cu12          12.4.127                 pypi_0    pypi
+python                    3.10.16              he870216_1  
+torch                     2.6.0                    pypi_0    pypi
+torchaudio                2.6.0                    pypi_0    pypi
+torchvision               0.21.0                   pypi_0    pypi
+transformers              4.51.3                   pypi_0    pypi
+triton                    3.2.0                    pypi_0    pypi
+trl                       0.18.0.dev0              pypi_0    pypi
+vllm                      0.8.5                    pypi_0    pypi
+xformers                  0.0.29.post2             pypi_0    pypi
+</code></pre>
+<p>I'm going to create a new docker image with a more recent cuda version.</p>
+<pre><code class="language-bash">cd docker
+docker build -t cuda-python:python3.10-cuda14.1 .
+docker tag cuda-python:python3.10-cuda14.1 gbarbadillo/cuda-python:python3.10-cuda14.1
+docker push gbarbadillo/cuda-python:python3.10-cuda14.1
+</code></pre>
+<h4 id="problems-with-pip">Problems with pip</h4>
+<pre><code class="language-bash">export BATCH_SIZE=4
+condor_submit train.condor command="
+accelerate launch --num_processes 1 --num_machines 1 --mixed_precision bf16 \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-0.5B-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-20-batch-size/batch-size-${BATCH_SIZE} \
+--random-seed 5 \
+--device-map None \
+--max-steps 1000 \
+--n-gpus 1 \
+--per-device-train-batch-size ${BATCH_SIZE} \
+--per-device-eval-batch-size 4 \
+--batch-size 16 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora"
+
+export N_GPUS=2
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-0.5B-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-20-batch-size/batch-size-4-GPUS${N_GPUS} \
+--random-seed 5 \
+--device-map None \
+--max-steps 1000 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 4 \
+--per-device-eval-batch-size 8 \
+--batch-size 16 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS}
+
+export N_GPUS=8
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-0.5B-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-20-batch-size/batch-size-4-GPUS${N_GPUS} \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 4 \
+--per-device-eval-batch-size 8 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 50 \
+--eval-steps 50 \
+--save-steps 500 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+</code></pre>
+<ul>
+<li>I'm getting this error when running the training</li>
+</ul>
+<pre><code>ERROR: Can not perform a '--user' install. User site-packages are not visible in this virtualenv.
+</code></pre>
+<ul>
+<li>Weirdly I have tried with last year's script and gives the same error</li>
+<li>Trying to create the environment inside the docker, but does not work.</li>
+<li>It seems that the --user flag is being used, I don't understand why.</li>
+<li>Maybe it is related to write permissions? https://stackoverflow.com/questions/79608713/getting-could-not-install-packages-due-to-an-oserror-when-installing-python-pa</li>
+</ul>
+<p>Running the docker locally I have been able to reproduce the error by giving the <code>--user</code> flag. The weird
+thing is that I'm not using that flag when running the training.</p>
+<pre><code>docker run -ti -u 1000:1000 gbarbadillo/cuda-python:python3.10-cuda14.1
+python3 -m venv debug
+source debug/bin/activate
+pip3 install --upgrade pip --user
+ERROR: Can not perform a '--user' install. User site-packages are not visible in this virtualenv.
+
+[notice] A new release of pip is available: 23.0.1 -&gt; 25.1.1
+[notice] To update, run: pip install --upgrade pip
+# this works
+pip3 install --upgrade pip
+</code></pre>
+<p>After deleting <code>rm -r /mnt/scratch/users/gbarbadillo/.config/pip</code> problems with pip where solved. I found
+that configuration running the command <code>pip config debug</code>, suggested on this <a href="https://github.com/pypa/pip/issues/11982">Github issue</a></p>
+<h4 id="problems-with-flash-attn">Problems with flash-attn</h4>
+<p>It seems that it requires more than 64GB to create the environment and install flash-attn. The problem seems to be related to flash-attn installation. I'm trying to reproduce myself the problem locally.</p>
+<p>I'm seeing that it takes around one hour to install flash-attn on my PC inside the docker and requires 60% of the CPU (20 cores) and between 20 and 30 GB of RAM. So it might be possible that in a more powerful machine in the cluster uses more threads and even more RAM.</p>
+<blockquote>
+<p>If your machine has less than 96GB of RAM and lots of CPU cores, ninja might run too many parallel compilation jobs that could exhaust the amount of RAM.</p>
+</blockquote>
+<p>https://github.com/Dao-AILab/flash-attention</p>
+<pre><code class="language-bash">docker run -ti -u 1000:1000 gbarbadillo/cuda-python:python3.10-cuda14.1
+python3 -m venv debug
+source debug/bin/activate
+pip3 install --upgrade pip
+cat &gt; requirements.txt &lt;&lt;EOF
+...
+EOF
+pip3 install -r requirements.txt
+MAX_JOBS=40 pip install flash-attn==2.6.3 --no-build-isolation
+</code></pre>
+<p>This required more than 128GB of RAM.</p>
+<p>I have set <code>MAX_JOBS=2</code> on the cluster, and installation took around 5 hours. Seems that required less than 32GB of RAM.</p>
+<h3 id="scaling-to-multiple-gpus">Scaling to multiple GPUs</h3>
+<h4 id="naive-accelerate">Naive accelerate</h4>
+<table>
+<thead>
+<tr>
+<th>GPU</th>
+<th>n GPUs</th>
+<th>batch size</th>
+<th>training time</th>
+<th>steps per second</th>
+<th>speedup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A6000</td>
+<td>1</td>
+<td>1</td>
+<td>62.7</td>
+<td>0.27</td>
+<td>0.47</td>
+</tr>
+<tr>
+<td>A6000</td>
+<td>1</td>
+<td>2</td>
+<td>40.7</td>
+<td>0.41</td>
+<td>0.73</td>
+</tr>
+<tr>
+<td>A6000</td>
+<td>1</td>
+<td>4</td>
+<td>29.6</td>
+<td>0.56</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>A6000</td>
+<td>2</td>
+<td>4</td>
+<td>17.9</td>
+<td>0.93</td>
+<td>1.65</td>
+</tr>
+<tr>
+<td>RTX 3090</td>
+<td>2</td>
+<td>2</td>
+<td>17.9</td>
+<td>0.93</td>
+<td>1.65</td>
+</tr>
+<tr>
+<td>A6000</td>
+<td>4</td>
+<td>4</td>
+<td>13.6</td>
+<td>1.23</td>
+<td>2.18</td>
+</tr>
+<tr>
+<td>A6000</td>
+<td>8</td>
+<td>4</td>
+<td>7.6</td>
+<td>2.19</td>
+<td>3.89</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>A6000 and 3090 seem to have identical speed, the main difference is that A6000 has double VRAM (48GB vs 24GB). <a href="https://lambda.ai/blog/nvidia-rtx-a6000-vs-rtx-3090-benchmarks">More detailed benchmark</a></li>
+<li>Speedup is not perfect, I would like to see something closer to the number of GPUs</li>
+</ul>
+<h4 id="trying-other-parameters-in-accelerate">Trying other parameters in accelerate</h4>
+<p><a href="https://chatgpt.com/share/682d7223-1ce4-8012-8b2f-e1144c3fbab2">o4-mini-high suggestions</a></p>
+<table>
+<thead>
+<tr>
+<th>n GPUs</th>
+<th>baseline training time (m)</th>
+<th>deepspeed training time (m)</th>
+<th>speedup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>17.4</td>
+<td>15.3</td>
+<td>14%</td>
+</tr>
+<tr>
+<td>4</td>
+<td>13.6</td>
+<td>11.7</td>
+<td>16%</td>
+</tr>
+<tr>
+<td>8</td>
+<td>8</td>
+<td>6.5</td>
+<td>23%</td>
+</tr>
+</tbody>
+</table>
+<p>Using deepspeed improves the training speed, but the improvement is small. I have not been able
+to find a configuration for deepspeed or accelerate that is better.</p>
+<pre><code class="language-bash">export N_GPUS=2
+# deepspeed
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --use_deepspeed \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-0.5B-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-accelerate/A6000-GPUS${N_GPUS}-deepspeed \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 4 \
+--per-device-eval-batch-size 8 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+# baseline
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-0.5B-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-accelerate/A6000-GPUS${N_GPUS}-baseline \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 4 \
+--per-device-eval-batch-size 8 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+# config
+export N_GPUS=2
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --use_deepspeed \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-0.5B-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-accelerate/A6000-GPUS${N_GPUS}-deepspeed-config \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 4 \
+--per-device-eval-batch-size 8 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 100 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+</code></pre>
+<p>I have tried running <code>accelerate config default</code> and it only has created a file <code>/mnt/scratch/users/gbarbadillo/.cache/huggingface/accelerate/default_config.yaml</code> with this information:</p>
+<pre><code class="language-json">{
+  "compute_environment": "LOCAL_MACHINE",
+  "debug": false,
+  "distributed_type": "MULTI_GPU",
+  "downcast_bf16": false,
+  "enable_cpu_affinity": false,
+  "machine_rank": 0,
+  "main_training_function": "main",
+  "mixed_precision": "no",
+  "num_machines": 1,
+  "num_processes": 2,
+  "rdzv_backend": "static",
+  "same_network": false,
+  "tpu_use_cluster": false,
+  "tpu_use_sudo": false,
+  "use_cpu": false
+}
+</code></pre>
+<p>I cannot run  <code>accelerate config</code> inside the job because I get <code>termios.error: (25, 'Inappropriate ioctl for device')</code></p>
+<h4 id="bigger-models">Bigger models</h4>
+<pre><code class="language-bash">export N_GPUS=8
+export PARAMETERS=0.5B
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-model-size/A6000-GPUS${N_GPUS}-${PARAMETERS} \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 4 \
+--per-device-eval-batch-size 8 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+export PARAMETERS=1.5B
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-model-size/A6000-GPUS${N_GPUS}-${PARAMETERS} \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+export PARAMETERS=7B
+condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-05-21-model-size/A6000-GPUS${N_GPUS}-${PARAMETERS} \
+--random-seed 5 \
+--device-map None \
+--max-steps 500 \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len 3072 \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+</code></pre>
+<p>I don't have a single number, but it seems that GPU utilization is higher for bigger models. So maybe I should
+not worry about GPU utilization when using small LLMs.</p>
+<h2 id="results">Results</h2>
+<p>I have trained a new model on a few drawing task for 32k steps (512k samples) in around 9 hours. This model
+has been trained on images up to 30x30 pixels, the previous models were trained on up to 10x10 pixels.
+This opens the door to test tasks with a larger number of elements.</p>
+<p>Although the model has been trained with up to 5 drawings, with Hindsight Experience Replay (HER) it has
+been able to solve task up to 100 drawings.</p>
+<table>
+<thead>
+<tr>
+<th>number of squares</th>
+<th>epochs</th>
+<th>solution lines</th>
+<th>solution tokens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16</td>
+<td>5</td>
+<td>15</td>
+<td>382</td>
+</tr>
+<tr>
+<td>25</td>
+<td>8</td>
+<td>23</td>
+<td>528</td>
+</tr>
+<tr>
+<td>36</td>
+<td>11</td>
+<td>29</td>
+<td>732</td>
+</tr>
+<tr>
+<td>49</td>
+<td>14</td>
+<td>43</td>
+<td>1082</td>
+</tr>
+<tr>
+<td>64</td>
+<td>21</td>
+<td>55</td>
+<td>1382</td>
+</tr>
+<tr>
+<td>81</td>
+<td>19</td>
+<td>70</td>
+<td>1757</td>
+</tr>
+<tr>
+<td>100</td>
+<td>28</td>
+<td>81</td>
+<td>2032</td>
+</tr>
+</tbody>
+</table>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/1747462545247_image.png" data-desc-position="bottom"><img alt="score evolution" src="../res/1747462545247_image.png"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/1747462564462_image.png" data-desc-position="bottom"><img alt="best prediction evolution" src="../res/1747462564462_image.png"></a></p>
+<p>It seems that there is no ceiling, and as long as predictions can get closer to the
+result the model could be able to solve the task. We only need with a model with an
+initial intuition of how to do the task and which functions to call.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>I have been able to train with multiple GPUs and on the cluster. Probably for small models such as 0.5B parameters it does not have sense to a lot of GPUs because speedup is not perfect.</p>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li>Solve the training set, then the evaluation set, then the new tasks from ARC25.</li>
+<li>Should I upgrade to 5090? <a href="https://www.reddit.com/r/LocalLLaMA/comments/1hviw58/simple_table_to_compare_3090_4090_and_5090/">Improvement seems relevant</a></li>
+</ul>
+<h2 id="todo">TODO</h2>
+<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Fix the problem with repeated calls to the train dataset generator</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Make the script work with accelerate</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Measure training speed vs batch size and number of gpus</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Measure training speed vs input size</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Does it have sense to use packing?</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Measure data sampling speed to verify is fast enough</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Add validation</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Enable multi-task training, currently only trains on a single task</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Bonus: Now that I have trained a model on bigger images, can it solve tasks with more than 25 squares?</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Train on the cluster</li>
+</ul>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+    </span>
+    2025-05-22
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../Iteration_08_improve_HER/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Iteration 8. Improve HER">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Iteration 8. Improve HER
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Iteration_10_solve_arc_tasks/" class="md-footer__link md-footer__link--next" aria-label="Next: Iteration 10. Try to solve real ARC tasks">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Iteration 10. Try to solve real ARC tasks
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2025. Guillermo Barbadillo
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/guillermobarbadillo/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/guille_bar" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/channel/UCOHmUwHnd2hmUpiDzaQ1Isg" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305m-317.51 213.508V175.185l142.739 81.205z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.kaggle.com/ironbar" target="_blank" rel="noopener" title="www.kaggle.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M304.2 501.5 158.4 320.3 298.2 185c2.6-2.7 1.7-10.5-5.3-10.5h-69.2c-3.5 0-7 1.8-10.5 5.3L80.9 313.5V7.5q0-7.5-7.5-7.5H21.5Q14 0 14 7.5v497q0 7.5 7.5 7.5h51.9q7.5 0 7.5-7.5v-109l30.8-29.3 110.5 140.6c3 3.5 6.5 5.3 10.5 5.3h66.9q5.25 0 6-3z"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "navigation.footer"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+        <script src="../../javascript/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

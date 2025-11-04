@@ -1,0 +1,2488 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ironbar.github.io/arc25/modeling/Iteration_10_solve_arc_tasks/">
+      
+      
+        <link rel="prev" href="../Iteration_09_improve_training_script/">
+      
+      
+        <link rel="next" href="../Iteration_11_pretrain_lora_on_new_tasks/">
+      
+      
+      <link rel="icon" href="../../res/arc_icon.jpg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.40">
+    
+    
+      
+        <title>Iteration 10. Try to solve real ARC tasks - arc25</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#iteration-10-try-to-solve-real-arc-tasks" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="arc25" class="md-header__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            arc25
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Iteration 10. Try to solve real ARC tasks
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../01_Business_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Business Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../02_Data_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Data Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../03_State_of_the_art/" class="md-tabs__link">
+        
+  
+    
+  
+  State of the art
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../04_Initial_Plan/" class="md-tabs__link">
+        
+  
+    
+  
+  Initial Plan
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../Iteration_01_architects_baseline/" class="md-tabs__link">
+          
+  
+    
+  
+  Modeling
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../utils/00_Challenge_Workflow/" class="md-tabs__link">
+          
+  
+    
+  
+  Utils
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../05_Solution_Summary/" class="md-tabs__link">
+        
+  
+    
+  
+  Solution summary
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="arc25" class="md-nav__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    arc25
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Business_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Business Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_Data_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_State_of_the_art/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    State of the art
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_Initial_Plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Initial Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Modeling
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Modeling
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_01_architects_baseline/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 1. Architects baseline
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_02_8_fold/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 2. Architects solution with 8 data splits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_03_ideal_test_time_training/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 3. Ideal test-time training setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_04_first_steps_with_code/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 4. First steps with code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_05_test_time_training_with_code_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 5. Test-time training with code. Hindsight Experience Replay (HER)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_06_reinforcement_learning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 6. Reinforcement learning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_07_optimize_ttt_on_evaluation_set/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 7. Optimize TTT on the evaluation set
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_08_improve_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 8. Improve HER
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_09_improve_training_script/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 9. Improve training script
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Iteration 10. Try to solve real ARC tasks
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 10. Try to solve real ARC tasks
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-safety-and-determinism-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add safety and determinism checks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generation-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generation functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stats-about-current-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stats about current implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Training">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local experiments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cluster
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Results
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#training-hyperparameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training Hyperparameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fine-tuning-model-capacity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fine-tuning model capacity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trying-to-solve-real-arc-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trying to solve real ARC tasks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_11_pretrain_lora_on_new_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 11. Pretrain LoRA on new tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_12_solve_a_few_arc_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 12. Solve a few ARC tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_13_reflections/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 13. Reflections
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_14_optimize_inference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 14. Optimize inference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_15_the_path_forward/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 15. The path forward: Search &amp; Learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_16_search_with_base_models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 16. Search with base models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_17_increase_search_diversity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 17. Increase search diversity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_19_search_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 19. Search with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_20_data_augmentation_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 20. Data augmentation with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_21_fix_bug_with_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 21. Fix bug with data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_22_ttt_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 22. Test-time Training with BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_23_ttt_BARC_v2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 23. All in with test-time training with BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_24_RL_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 24. Using RL to improve BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_25_debug_parallel_code_execution/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 25. Debug parallel code execution
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_26_more_compute/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 26. Acquire more compute
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_27_improve_search_and_learn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 27. Improve search and learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_28_refine_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 28. Refine predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_29_multi-gpu-rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 29. Multi-gpu RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_30_solve_RL_collapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 30. Solve RL Collapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_31_how_to_improve/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 31. How to improve from 20% to 100%?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_32_analyze_model_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 32. Analyze model predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_33_rl_barc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 33. RL with BARC data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_34_multi-turn_rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 34. Multi-turn RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_35_fp16_vs_bf16/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 35. FP16 vs BF16
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_n/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration n. Iteration_title
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Utils
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Utils
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/00_Challenge_Workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Challenge workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/markdown_cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Markdown cheatsheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/methodology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Methodology
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05_Solution_Summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Solution summary
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add-safety-and-determinism-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add safety and determinism checks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generation-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generation functions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stats-about-current-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stats about current implementation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Training">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local experiments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cluster
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Results
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#training-hyperparameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training Hyperparameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fine-tuning-model-capacity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fine-tuning model capacity
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trying-to-solve-real-arc-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trying to solve real ARC tasks
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="iteration-10-try-to-solve-real-arc-tasks">Iteration 10. Try to solve real ARC tasks</h1>
+<p><em>22-05-2025</em></p>
+<h2 id="goal">Goal</h2>
+<p>Can I solve real ARC tasks with code and HER?</p>
+<h2 id="motivation">Motivation</h2>
+<p>I have already seen that HER allows to generalize to novel toy tasks, I need to check if it can solve
+real ARC tasks.</p>
+<p>I know that my primitive functions defined on ARC24 solved 285 training tasks. So probably the easiest
+path is to review those transformations add them and modify if needed.</p>
+<h2 id="development">Development</h2>
+<h3 id="add-safety-and-determinism-checks">Add safety and determinism checks</h3>
+<p>Inspired by <a href="https://arxiv.org/abs/2505.03335">Absolute Zero Reinforced Self-play Reasoning with Zero Data</a> I'm going
+add safety and determinism checks.</p>
+<h3 id="generation-functions">Generation functions</h3>
+<p>LLM are incredible useful to write generation functions. For example I have asked o3
+to write a function to create ARC images with random objects and it worked perfectly.</p>
+<h3 id="stats-about-current-implementation">Stats about current implementation</h3>
+<pre><code>Found 23 training tasks
+
+There are 17 DSL functions defined in arc25.dsl:
+    DSL functions used in 1000 tasks:
+detect_objects                   621 times
+draw_object                      425 times
+create_img                       395 times
+crop                             123 times
+draw_rectangle                   122 times
+draw_vertical_line               111 times
+draw_horizontal_line              98 times
+draw_line                         94 times
+draw_pixel                        91 times
+mode                              49 times
+apply_colormap                    46 times
+downscale                         33 times
+rotate_90                         32 times
+flip                              28 times
+upscale                           27 times
+pad                               17 times
+trim                              15 times
+
+There are 13 DSL attributes defined in arc25.dsl:
+    DSL attributes used in 1000 tasks:
+change_color                     380 times (Object)
+area                              89 times (Object)
+height                            72 times (BoundingBox, Object)
+width                             66 times (BoundingBox, Object)
+is_horizontal_line                48 times (Object)
+is_rectangle                      46 times (Object)
+move                              45 times (Object)
+is_square                         42 times (Object)
+is_vertical_line                  40 times (Object)
+center                            38 times (Object)
+is_line                           32 times (Object)
+is_point                          31 times (Object)
+copy                               0 times (Object)
+</code></pre>
+<p>This is clearly not enough, but I want to train a model on these tasks and see if it can solve any
+of the ARC training tasks.</p>
+<h3 id="training">Training</h3>
+<h4 id="local-experiments">Local experiments</h4>
+<details>
+  <summary>Click to see the bash commands</summary>
+
+
+
+<pre><code class="language-bash">export N_GPUS=2
+export PARAMETERS=0.5B
+export STEPS=10
+export MAXSEQLEN=3072
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+scripts/finetuning.py \
+--model_path /home/gbarbadillo/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-06-10-first-real-trainings/3090-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora \
+--no-resume_from_checkpoint
+
+
+export MAXSEQLEN=8192
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+scripts/finetuning.py \
+--model_path /home/gbarbadillo/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-06-10-first-real-trainings/3090-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora
+
+export N_GPUS=1
+export CUDA_VISIBLE_DEVICES=0
+export MAXSEQLEN=8192
+python scripts/finetuning.py \
+--model_path /home/gbarbadillo/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-06-10-first-real-trainings/3090-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora
+</code></pre>
+
+
+</details>
+
+<p>It is training around 2.66s/it, task generation does not seem to be the bottleneck. At the beginning of the training used multiple cores to sample, but then CPU usage was low. Probably
+the queue was filled.</p>
+<pre><code># --max-seq-len 3072
+{'train_runtime': 298.5646, 'train_samples_per_second': 10.718, 'train_steps_per_second': 0.335, 'train_loss': 0.24244340896606445, 'epoch': 1.0}
+# export MAXSEQLEN=6144
+{'train_runtime': 363.6891, 'train_samples_per_second': 8.799, 'train_steps_per_second': 0.275, 'train_loss': 0.23476869583129883, 'epoch': 1.0}
+# export MAXSEQLEN=8192
+2025-06-11 06:32:08,621 - __main__ - INFO - log_prompt_length_percentiles -     train number of prompts: 1000, max number of tokens : 5108, percentiles: {50: 1249, 75: 1567, 90: 1960, 95: 2069, 97: 2139}
+{'train_runtime': 374.4698, 'train_samples_per_second': 8.545, 'train_steps_per_second': 0.267, 'train_loss': 0.23707759857177735, 'epoch': 1.0}
+
+export N_GPUS=1
+export CUDA_VISIBLE_DEVICES=0
+export MAXSEQLEN=8192
+{'train_runtime': 671.3956, 'train_samples_per_second': 4.766, 'train_steps_per_second': 0.149, 'train_loss': 0.23653331756591797, 'epoch': 1.0} 
+</code></pre>
+<p>To be safe I should probably use <code>max-seq-len=8192</code>, otherwise we will be missing some training tasks.</p>
+<h4 id="cluster">Cluster</h4>
+<pre><code class="language-bash">export N_GPUS=2
+export PARAMETERS=0.5B
+export LEARNING_RATE=2e-4
+export STEPS=32000; condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-13-first-real-trainings/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len 8192 \
+--logging-steps 10 \
+--eval-steps 50 \
+--save-steps 200 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+export N_GPUS=2
+export PARAMETERS=0.5B
+export STEPS=32000
+export LEARNING_RATE=4e-5; condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-14-full-fine-tuning/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len 6144 \
+--logging-steps 10 \
+--eval-steps 50 \
+--save-steps 200 \
+--no-use-lora" -append request_gpus=${N_GPUS} -append request_cpus=12
+
+export N_GPUS=1
+export PARAMETERS=0.5B
+export STEPS=1000
+export LEARNING_RATE=4e-5; condor_submit train.condor command="
+python  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning.py \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-13-first-real-trainings/${N_GPUS}xA6000-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${LEARNING_RATE}lr \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 2 \
+--per-device-eval-batch-size 4 \
+--batch-size 32 \
+--max-seq-len 8192 \
+--logging-steps 10 \
+--eval-steps 50 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS}
+
+
+# Copy the results to MEGA
+rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-06-13-first-real-trainings /mnt/data/MEGA/TEMP --exclude wandb/*
+</code></pre>
+<h4 id="debugging">Debugging</h4>
+<details>
+  <summary>Click to expand/collapse this section</summary>
+
+
+<pre><code class="language-bash">
+export N_GPUS=2
+export PARAMETERS=0.5B
+export STEPS=10
+export MAXSEQLEN=8192
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+scripts/finetuning.py \
+--model_path /home/gbarbadillo/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-06-10-first-real-trainings/3090-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora \
+--no-resume_from_checkpoint
+
+export N_GPUS=1
+export PARAMETERS=0.5B
+export STEPS=10
+export MAXSEQLEN=8192
+python \
+scripts/finetuning.py \
+--model_path /home/gbarbadillo/models/Qwen2.5-Coder-${PARAMETERS}-Instruct/ \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-06-10-first-real-trainings/3090-GPUS${N_GPUS}-Qwen2.5-Coder-${PARAMETERS}-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--per-device-eval-batch-size 2 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 100 \
+--eval-steps 0 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora \
+--no-resume_from_checkpoint \
+--dataloader-num-workers 0
+
+# this works --dataloader-num-workers 0
+# this does not: --dataloader-num-workers 1
+# it is unrelated from: os.environ['TOKENIZERS_PARALLELISM'] = 'true'
+</code></pre>
+
+
+I'm seeing a new error on the cluster.
+
+
+<pre><code>AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.&lt;locals&gt;.add_eos'
+
+
+# local libraries
+accelerate                1.6.0                    pypi_0    pypi
+torch                     2.6.0                    pypi_0    pypi
+transformers              4.51.3                   pypi_0    pypi
+datasets                  3.5.1                    pypi_0    pypi
+trl                       0.18.0.dev0
+
+# cluster libraries (experiments run on docker)
+accelerate==1.7.0
+torch==2.6.0
+transformers==4.52.4
+datasets==3.6.0
+trl==0.18.1
+
+# local experiments updating library versions
+trl==0.18.0 -&gt; works
+trl==0.18.1 -&gt; works
+accelerate==1.7.0 -&gt; works
+transformers==4.52.4 -&gt; works
+datasets==3.6.0 -&gt; works
+
+# adding this line at the start of the script reproduces the problem locally
+import multiprocessing as mp
+mp.set_start_method("spawn", force=True)
+&gt; [rank0]: AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.&lt;locals&gt;.add_eos'
+
+# adding this other line to see what it is printed
+import multiprocessing as mp, os
+print("&gt;&gt;&gt; multiprocessing start-method:", mp.get_start_method(), "PID:", os.getpid())
+# local response
+&gt;&gt;&gt; multiprocessing start-method: fork PID: 19840
+&gt;&gt;&gt; multiprocessing start-method: fork PID: 19841
+# cluster response
+&gt;&gt;&gt; multiprocessing start-method: fork PID: 57
+&gt;&gt;&gt; multiprocessing start-method: fork PID: 58
+
+# adding this line at the start does not solve the problem in the cluster
+mp.set_start_method("fork", force=True)
+</code></pre>
+
+
+- https://github.com/pytorch/pytorch/blob/v2.7.0/torch/utils/data/dataloader.py#L173
+- https://docs.pytorch.org/docs/stable/data.html#torch.utils.data.DataLoader
+- https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods
+- https://wandb.ai/guillermobarbadillo/2025-05-21-model-size/runs/3g8opphj/files/requirements.txt, on the last successful training in the cluster I used trl=0.17.0
+
+Trying with trl=0.17.0 on job 204192. No success.
+
+What is the problem? The problem seems to be that pickle cannot work with functions defined inside functions.
+
+<pre><code>AttributeError: Can't pickle local object 'SFTTrainer._prepare_dataset.&lt;locals&gt;.add_eos'
+AttributeError: Can't pickle local object 'truncate_dataset.&lt;locals&gt;.truncate'
+</code></pre>
+
+So I have changed how the dataset is generator to avoid entering in that 'SFTTrainer._prepare_dataset.<locals>.add_eos' place, but then another similar error has arised.
+The biggest question is why hasn't happened this before.
+
+This is the most similar problem found online, but there is no solution: https://github.com/huggingface/trl/issues/2979
+
+This guy says that spawn might be used by default sometimes: https://discuss.pytorch.org/t/the-default-value-of-dataloader-multiprocessing-context-is-spawn-in-a-spawned-process/107494
+
+https://github.com/pytorch/pytorch/issues/44687 Slightly related.
+Setting the DataLoader(..., multiprocessing_context='fork') fixes the issue for me.
+
+This seems to solve the problem, change this line:
+
+
+<pre><code>/home/gbarbadillo/miniconda3/envs/arc25-clone/lib/python3.10/site-packages/torch/utils/data/dataloader.py
+multiprocessing_context=None,
+multiprocessing_context='fork',
+sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multiprocessing_context='fork',/" \
+/home/gbarbadillo/miniconda3/envs/arc25-clone/lib/python3.10/site-packages/torch/utils/data/dataloader.py
+
+sed -i.bak "0,/multiprocessing_context[[:space:]]*=[[:space:]]*None,/s//multiprocessing_context='fork',/" \
+/mnt/scratch/users/gbarbadillo/arc25/cached-environments/venv_07bdecf0b823319f4d2fcbe9cdc354d9/lib/python3.10/site-packages/torch/utils/data/dataloader.py
+</code></pre>
+
+</locals></details>
+
+<h2 id="results">Results</h2>
+<h3 id="training-hyperparameters">Training Hyperparameters</h3>
+<p>For a batch size of 32 and lora rank of 32 a learning rate of 2e-4 seems to be good. 1e-3 is too much, 
+4e-4 also works but for longer trainings 2e-4 might be a better option.</p>
+<p>Since I only have 23 training tasks, I don't expect to see relevant improvements by using a batch size
+bigger than 32. So I'm not going to do experiments with the batch size.</p>
+<p><a href="https://wandb.ai/guillermobarbadillo/2025-06-13-first-real-trainings/workspace?nw=nwuserguillermobarbadillo">Wandb experiment</a>, filter by <code>1000steps</code>.</p>
+<p>For longer trainings 1e-4 might be a better option.</p>
+<h3 id="fine-tuning-model-capacity">Fine-tuning model capacity</h3>
+<p>The following table shows the validation loss for trainings of different length.</p>
+<table>
+<thead>
+<tr>
+<th>steps</th>
+<th>LoRA 32</th>
+<th>full fine-tuning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8k</td>
+<td>0.0198</td>
+<td>0.0178</td>
+</tr>
+<tr>
+<td>16k</td>
+<td>0.0165</td>
+<td>0.0155</td>
+</tr>
+<tr>
+<td>32k</td>
+<td>0.0149</td>
+<td>0.0123</td>
+</tr>
+</tbody>
+</table>
+<p>The full fine-tuning achieves a lower validation loss, while being faster. F.e. training for 32k steps
+took 24h when doing the full fine-tuning and 30h when using LoRA.</p>
+<p>I have seen that at the end of the training learning stops, but there is not a quick fix to this because
+the schedulers don't have a minimum learning rate value.</p>
+<p>Finally the full fine-tuning required a slightly lower learning rate (4e-5 vs 1e-4).</p>
+<h3 id="trying-to-solve-real-arc-tasks">Trying to solve real ARC tasks</h3>
+<ul>
+<li><code>08ed6ac</code>, does not understand that the task is about sorting and changing colors</li>
+<li><code>0b148d6</code>, Understands that the task is about detecting objects and cropping, but does not know to use the color</li>
+<li><code>0ca9ddb</code>, seems to understand that the task is about drawing pixels, but it does not use the center as a reference. Neither it uses the color to select certain objects</li>
+<li><code>0d3d703e</code>, the model does not recognize that the task is about apply_colormap. Create more tasks showing how to change colors, not changing all the colors always.</li>
+<li><code>178fcbfb</code>, does understand that the task is about drawing horizontal and vertical lines, but does not know to use the center as a reference</li>
+<li><code>1bfc4729</code>, understands that it needs to draw some pattern, but does not have a way to make a different drawing for each image</li>
+<li><code>1c786137</code>, does not understand that the task is about selecting the object</li>
+</ul>
+<p>It seems that the main problem is that the model does not have a good intuition of how to solve the tasks.
+It simply does not use the correct primitive function in some cases, in other cases it is missing examples of how
+to use them. If the initial direction is not correct, it is not possible that HER can help to achieve the desired goal.</p>
+<p>I might introduce diversity in the generations by suggesting to use some DSL primitive functions.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>I have run the first experiments to try to solve real ARC tasks. So far <strong>no task has been solved</strong>, but I have evaluated
+just a tiny subset of the training ARC tasks. On the following iteration I would like to solve at least the 7 tasks
+analyzed on this iteration.</p>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li>Hypothesis: If I implement a DSL that covers the whole training and evaluation set, it should generalize to the test set.</li>
+</ul>
+<h2 id="todo">TODO</h2>
+<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Add safety and determinism checks</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Add more primitive functions and training tasks to learn to use them</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> I would like to have a list of all the primitive functions from the DSL, and how many times are they used in the training tasks. A correlation plot would also be nice to see which connections are missing.</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Is the sampling speed enough?</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Stats about the input tokens distribution, what should be the max-seq-len?</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Optimize learning rate and batch size for 2 GPUs.</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Create a notebook to evaluate the trained models on real ARC tasks</li>
+<li class="task-list-item"><input type="checkbox" disabled> I need a way to do evaluation at scale, using multiple GPUs, and saving all the generated tasks when searching for a solution.</li>
+<li class="task-list-item"><input type="checkbox" disabled> If possible I should use Kaggle compute for evaluation. It is almost free and is a good way to store and visualize results.</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> When studying how the method is working on real ARC tasks, I believe I should reuse the DSL analysis from the training tasks.
+  That way I can see if it is using the right abstractions, and if it combining them correctly</li>
+<li class="task-list-item"><input type="checkbox" disabled> Compositionality, can the model solve the task that selects the biggest object, crop and trim? That
+  would be a good example of compositionality because those functions were not used together in the dataset</li>
+<li class="task-list-item"><input type="checkbox" disabled> Sequential solving. Try also solving the tasks in multiple steps, not just once. It could help
+  with compositionality.</li>
+</ul>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+    </span>
+    2025-06-17
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../Iteration_09_improve_training_script/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Iteration 9. Improve training script">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Iteration 9. Improve training script
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Iteration_11_pretrain_lora_on_new_tasks/" class="md-footer__link md-footer__link--next" aria-label="Next: Iteration 11. Pretrain LoRA on new tasks">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Iteration 11. Pretrain LoRA on new tasks
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2025. Guillermo Barbadillo
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/guillermobarbadillo/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/guille_bar" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/channel/UCOHmUwHnd2hmUpiDzaQ1Isg" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305m-317.51 213.508V175.185l142.739 81.205z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.kaggle.com/ironbar" target="_blank" rel="noopener" title="www.kaggle.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M304.2 501.5 158.4 320.3 298.2 185c2.6-2.7 1.7-10.5-5.3-10.5h-69.2c-3.5 0-7 1.8-10.5 5.3L80.9 313.5V7.5q0-7.5-7.5-7.5H21.5Q14 0 14 7.5v497q0 7.5 7.5 7.5h51.9q7.5 0 7.5-7.5v-109l30.8-29.3 110.5 140.6c3 3.5 6.5 5.3 10.5 5.3h66.9q5.25 0 6-3z"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "navigation.footer"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+        <script src="../../javascript/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

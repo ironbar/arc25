@@ -1,0 +1,3209 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ironbar.github.io/arc25/modeling/Iteration_23_ttt_BARC_v2/">
+      
+      
+        <link rel="prev" href="../Iteration_22_ttt_BARC/">
+      
+      
+        <link rel="next" href="../Iteration_24_RL_BARC/">
+      
+      
+      <link rel="icon" href="../../res/arc_icon.jpg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.40">
+    
+    
+      
+        <title>Iteration 23. All in with test-time training with BARC induction model - arc25</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#iteration-23-all-in-with-test-time-training-with-barc-induction-model" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="arc25" class="md-header__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            arc25
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Iteration 23. All in with test-time training with BARC induction model
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../01_Business_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Business Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../02_Data_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Data Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../03_State_of_the_art/" class="md-tabs__link">
+        
+  
+    
+  
+  State of the art
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../04_Initial_Plan/" class="md-tabs__link">
+        
+  
+    
+  
+  Initial Plan
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../Iteration_01_architects_baseline/" class="md-tabs__link">
+          
+  
+    
+  
+  Modeling
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../utils/00_Challenge_Workflow/" class="md-tabs__link">
+          
+  
+    
+  
+  Utils
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../05_Solution_Summary/" class="md-tabs__link">
+        
+  
+    
+  
+  Solution summary
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="arc25" class="md-nav__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    arc25
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Business_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Business Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_Data_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_State_of_the_art/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    State of the art
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_Initial_Plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Initial Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Modeling
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Modeling
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_01_architects_baseline/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 1. Architects baseline
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_02_8_fold/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 2. Architects solution with 8 data splits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_03_ideal_test_time_training/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 3. Ideal test-time training setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_04_first_steps_with_code/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 4. First steps with code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_05_test_time_training_with_code_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 5. Test-time training with code. Hindsight Experience Replay (HER)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_06_reinforcement_learning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 6. Reinforcement learning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_07_optimize_ttt_on_evaluation_set/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 7. Optimize TTT on the evaluation set
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_08_improve_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 8. Improve HER
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_09_improve_training_script/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 9. Improve training script
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_10_solve_arc_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 10. Try to solve real ARC tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_11_pretrain_lora_on_new_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 11. Pretrain LoRA on new tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_12_solve_a_few_arc_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 12. Solve a few ARC tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_13_reflections/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 13. Reflections
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_14_optimize_inference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 14. Optimize inference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_15_the_path_forward/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 15. The path forward: Search &amp; Learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_16_search_with_base_models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 16. Search with base models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_17_increase_search_diversity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 17. Increase search diversity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_19_search_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 19. Search with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_20_data_augmentation_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 20. Data augmentation with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_21_fix_bug_with_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 21. Fix bug with data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_22_ttt_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 22. Test-time Training with BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Iteration 23. All in with test-time training with BARC induction model
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 23. All in with test-time training with BARC induction model
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#implementation-ideas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation ideas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trying-unsloth" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trying unsloth
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-speed-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training speed experiment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inference-speed-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inference speed test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search-and-learn-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Search and Learn algorithm
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Search and Learn algorithm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#validate-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate inference
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#effect-of-4-bit-quantization-at-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Effect of 4 bit quantization at inference
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cluster experiments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cluster experiments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#first-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      First steps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiments-with-512-predictions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experiments with 512 predictions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local experiments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Local experiments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#debugging-degradation-of-scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging degradation of scores
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug runtime
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-trl-grpotrainer-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How trl GRPOTrainer works
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oom-errors-on-kaggle" class="md-nav__link">
+    <span class="md-ellipsis">
+      OOM errors on Kaggle
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#making-code-execution-robust" class="md-nav__link">
+    <span class="md-ellipsis">
+      Making code execution robust
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Making code execution robust">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reverting-to-old-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reverting to old code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simpler-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simpler script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-code-isnt-robust-yet" class="md-nav__link">
+    <span class="md-ellipsis">
+      The code isn't robust yet
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Results
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unslothvllm-inference-throughput" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unsloth/VLLM inference throughput
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#first-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      First experiments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze-inefficiencies-in-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Analyze inefficiencies in approach
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Analyze inefficiencies in approach">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tokenize-before-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tokenize before training
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#l4-is-slower-than-i-thought-half-as-fast-as-the-3090" class="md-nav__link">
+    <span class="md-ellipsis">
+      L4 is slower than I thought, half as fast as the 3090
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is-the-current-implementation-efficient-enough" class="md-nav__link">
+    <span class="md-ellipsis">
+      Is the current implementation efficient enough?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Is the current implementation efficient enough?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kaggle-l4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kaggle L4
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#h100" class="md-nav__link">
+    <span class="md-ellipsis">
+      H100
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do-i-have-clear-evidence-that-the-approach-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      Do I have clear evidence that the approach works?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current-implementation-is-too-slow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Current implementation is too slow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_24_RL_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 24. Using RL to improve BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_25_debug_parallel_code_execution/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 25. Debug parallel code execution
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_26_more_compute/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 26. Acquire more compute
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_27_improve_search_and_learn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 27. Improve search and learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_28_refine_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 28. Refine predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_29_multi-gpu-rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 29. Multi-gpu RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_30_solve_RL_collapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 30. Solve RL Collapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_31_how_to_improve/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 31. How to improve from 20% to 100%?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_32_analyze_model_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 32. Analyze model predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_33_rl_barc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 33. RL with BARC data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_34_multi-turn_rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 34. Multi-turn RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_35_fp16_vs_bf16/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 35. FP16 vs BF16
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_n/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration n. Iteration_title
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Utils
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Utils
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/00_Challenge_Workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Challenge workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/markdown_cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Markdown cheatsheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/methodology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Methodology
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05_Solution_Summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Solution summary
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#implementation-ideas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation ideas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trying-unsloth" class="md-nav__link">
+    <span class="md-ellipsis">
+      Trying unsloth
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-speed-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training speed experiment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inference-speed-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inference speed test
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#search-and-learn-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Search and Learn algorithm
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Search and Learn algorithm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#validate-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate inference
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#effect-of-4-bit-quantization-at-inference" class="md-nav__link">
+    <span class="md-ellipsis">
+      Effect of 4 bit quantization at inference
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cluster experiments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cluster experiments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#first-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      First steps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#experiments-with-512-predictions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Experiments with 512 predictions
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Local experiments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Local experiments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#debugging-degradation-of-scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging degradation of scores
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debug runtime
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-trl-grpotrainer-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How trl GRPOTrainer works
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oom-errors-on-kaggle" class="md-nav__link">
+    <span class="md-ellipsis">
+      OOM errors on Kaggle
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#making-code-execution-robust" class="md-nav__link">
+    <span class="md-ellipsis">
+      Making code execution robust
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Making code execution robust">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reverting-to-old-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Reverting to old code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#simpler-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Simpler script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-code-isnt-robust-yet" class="md-nav__link">
+    <span class="md-ellipsis">
+      The code isn't robust yet
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Results
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unslothvllm-inference-throughput" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unsloth/VLLM inference throughput
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#first-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      First experiments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze-inefficiencies-in-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Analyze inefficiencies in approach
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Analyze inefficiencies in approach">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tokenize-before-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tokenize before training
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#l4-is-slower-than-i-thought-half-as-fast-as-the-3090" class="md-nav__link">
+    <span class="md-ellipsis">
+      L4 is slower than I thought, half as fast as the 3090
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is-the-current-implementation-efficient-enough" class="md-nav__link">
+    <span class="md-ellipsis">
+      Is the current implementation efficient enough?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Is the current implementation efficient enough?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#kaggle-l4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kaggle L4
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#h100" class="md-nav__link">
+    <span class="md-ellipsis">
+      H100
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#do-i-have-clear-evidence-that-the-approach-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      Do I have clear evidence that the approach works?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current-implementation-is-too-slow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Current implementation is too slow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="iteration-23-all-in-with-test-time-training-with-barc-induction-model">Iteration 23. All in with test-time training with BARC induction model</h1>
+<p><em>02/09/2025</em></p>
+<!---
+The work is done using short iterations. Each iteration needs to have a very
+clear goal. This allows to gain greater knowledge of the problem on each iteration.
+
+<details>
+  <summary>Click to expand/collapse this section</summary>
+</details>
+--->
+
+<h2 id="goal">Goal</h2>
+<p>Create an efficient implementation of test-time training with BARC that tries to solve
+each task independently.</p>
+<h2 id="motivation">Motivation</h2>
+<p>On the previous <a href="../Iteration_22_ttt_BARC/">iteration</a> I have seen that TTT is able to improve
+the solving rate of the BARC induction model. That experiment was done using all the
+tasks at once. I already know from the previous competition that is better to solve each task independently,
+I believe that creates a cleaner gradient signal.</p>
+<p>Also I know from my <a href="../Iteration_08_improve_HER/">toy experiments</a> that multiple iterations of search and learn are needed
+to solve tasks that are far from the training distribution. Sometimes requiring in the
+order of tens of epochs.</p>
+<p>Thus in this iteration I want to implement an efficient way to do search and learn
+in multiple epochs. If the implementation is successful it will very likely be part
+of my solution for the 2025 challenge.</p>
+<h2 id="development">Development</h2>
+<h3 id="implementation-ideas">Implementation ideas</h3>
+<ul>
+<li>Inference with VLLM is very efficient, and I can use different LoRAs which is convenient for test-time training.</li>
+<li>trl could be used for training, although I don't know if it is the best option.</li>
+<li>I believe unsloth is integrated with VLLM, which will make inference as fast and maybe is the
+  best way to do inference and training in the same process. Otherwise I would have to have a
+  training service, an inference service and a master service that redirects the traffic between
+  the two.</li>
+</ul>
+<h3 id="trying-unsloth">Trying unsloth</h3>
+<p><a href="https://docs.unsloth.ai/">Documentation</a> is awesome.</p>
+<p>I have verified that I can do fast inference and fast training in the same process with unsloth. Thus
+I'm going to implement the algorithm with unsloth and unless I see performance problems I will stick
+with it until the end of the challenge.</p>
+<h3 id="training-speed-experiment">Training speed experiment</h3>
+<pre><code class="language-bash"># baseline with huggingface and trl
+export CUDA_VISIBLE_DEVICES=0
+export LORA_RANK=32
+export N_GPUS=1
+export STEPS=100
+export MAXSEQLEN=8192
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-03-speed-tests/LoRA${LORA_RANK}_${STEPS}steps_baseline-repeat \
+--train-dataset-path /mnt/hdd0/Kaggle/arc25/data/hindsight_relabeled/2025-08-25_evaluation-no-data-augmentation-77.json \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--learning-rate 1e-5 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers ${N_GPUS} \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora \
+--use-4bit-quantization
+</code></pre>
+<pre><code class="language-bash"># repeat with unsloth
+export CUDA_VISIBLE_DEVICES=0
+export LORA_RANK=32
+export N_GPUS=1
+export STEPS=100
+export MAXSEQLEN=8192
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-03-speed-tests/LoRA${LORA_RANK}_${STEPS}steps_unsloth-remove-dropout \
+--train-dataset-path /mnt/hdd0/Kaggle/arc25/data/hindsight_relabeled/2025-08-25_evaluation-no-data-augmentation-77.json \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--learning-rate 1e-5 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers ${N_GPUS} \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora \
+--use-4bit-quantization \
+--use-unsloth
+</code></pre>
+<ul>
+<li>The baseline trains 0.468 samples per second.</li>
+<li>First run with unsloth train 0.571 samples per second, slightly faster. However it uses just 36% memory instead of 64%</li>
+<li>When loading unsloth at the top of the script, speed improves to 0.615 samples per second</li>
+<li>Removing dropout from LoRA improves the speed to 0.629 samples per second</li>
+<li>Not using liger kernel seems to slow down to 0.618, but change is small3</li>
+<li>Using 8 bit quantization instead of 4 bit gets 0.605 samples per second</li>
+<li>Using an unquantized model improves the speed to 0.672 samples per second, 43% faster than the baseline.</li>
+</ul>
+<p>So far we are seeing an speedup of 34% and a 50% reduction in VRAM usage when using unsloth. It might
+be possible to trade that VRAM reduction for speed.</p>
+<h3 id="inference-speed-test">Inference speed test</h3>
+<p>unsloth has a faster startup of 54s vs 1m51s for VLLM.</p>
+<p>The table below shows the inference speed in tokens/s when generating 100 tokens per prompt.</p>
+<table>
+<thead>
+<tr>
+<th>method \ n predictions</th>
+<th>8</th>
+<th>32</th>
+<th>128</th>
+<th>512</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VLLM</td>
+<td>140</td>
+<td>512</td>
+<td>1476</td>
+<td>1992</td>
+</tr>
+<tr>
+<td>unsloth</td>
+<td>138</td>
+<td>510</td>
+<td>1454</td>
+<td>1464</td>
+</tr>
+</tbody>
+</table>
+<p>They are very similar except from the last column, where I believe VLLM is using more VRAM memory than
+unsloth. This is promising because it opens the door to use unsloth both for training and inference
+in the same process.</p>
+<h3 id="search-and-learn-algorithm">Search and Learn algorithm</h3>
+<p>This is how one epoch of the search and learn algorithm would look like, the algorithm works on a single task:</p>
+<ol>
+<li>Make n predictions with the model. Use data augmentation to increase the diversity of the predictions.</li>
+<li>Parse the code from the predictions and execute the code to get the output grids</li>
+<li>Evaluate the outputs on the training samples of the task</li>
+<li>There could be some stopping criteria, for example if I have two different solutions that solve
+   all the training tasks.</li>
+<li>Prepare the data for training. I could sort them by the number of correct grids or other metrics.
+   I could remove already predicted solutions on previous epochs. Using hindsight relabelling we
+   generate new tasks for training.</li>
+<li>Finetune the model</li>
+<li>Repeat until the stop criteria is met or the number of maximum epochs is reached</li>
+<li>Select the predictions for submission</li>
+</ol>
+<p>Using a smaller number of predictions could be more efficient, according to <a href="../Iteration_08_improve_HER/#number-of-generations">previous experiments with toy tasks</a>. Once the algorithm is implemented I will have
+to tune all the hyperparameters. On Kaggle I will have 12 minutes per task when running the algorithm in parallel on the 4 GPUs.</p>
+<h4 id="validate-inference">Validate inference</h4>
+<p>I have done experiments on the training dataset to validate that the inference is correct and gives
+the same results as in previous iterations.</p>
+<pre><code class="language-bash"># 400 training tasks, 20m49
+n_preds valid code  valid outputs   unique outputs  train_pixel_score   train_correct_grids train_pass_rate train_is_correct    test_pixel_score    test_correct_grids  test_pass_rate  test_is_correct is_correct
+MEAN    8.0 1.0 0.774   0.616   0.484   0.121   0.107   0.26    0.474   0.113   0.112   0.278   0.258
+# this validates the inference pipeline, results are very similar as the shown below
+
+# baseline, runtime around 21 minutes with batch size 8
+    n_preds valid code  valid outputs   unique outputs  pixel similarity    correct grids   train_pass_rate train_pass@n    pass_rate   pass@n
+MEAN    8.0 1.0 0.753125    0.6175  0.594594    0.129178    0.105435    0.2225  0.104452    0.2175
+MEAN    8.0 1.0 0.758125    0.625313    0.602329    0.12629 0.103494    0.2625  0.101396    0.26
+MEAN    8.0 1.0 0.765625    0.615938    0.611174    0.148103    0.12081 0.27    0.11822 0.265
+MEAN    8.0 1.0 0.761875    0.614688    0.595542    0.130861    0.113375    0.2625  0.111104    0.2625
+</code></pre>
+<h4 id="effect-of-4-bit-quantization-at-inference">Effect of 4 bit quantization at inference</h4>
+<pre><code class="language-bash"># training
+# unquantized, 20m49
+# same but with 4 bit quantization, 24m24
+n_preds valid code  valid outputs   unique outputs  train_pixel_score   train_correct_grids train_pass_rate train_is_correct    test_pixel_score    test_correct_grids  test_pass_rate  test_is_correct is_correct
+MEAN    8.0 1.0 0.774   0.616   0.484   0.121   0.107   0.26    0.474   0.113   0.112   0.278   0.258
+MEAN    8.0 1.0 0.771   0.63    0.468   0.103   0.088   0.248   0.457   0.095   0.095   0.285   0.242
+
+# evaluation
+# unquantized 29m15
+# 4bit quantization, 34m36
+    n_preds valid code  valid outputs   unique outputs  train_pixel_score   train_correct_grids train_pass_rate train_is_correct    test_pixel_score    test_correct_grids  test_pass_rate  test_is_correct is_correct
+MEAN    8.0 1.0 0.709   0.633   0.413   0.021   0.013   0.058   0.402   0.016   0.016   0.07    0.058
+MEAN    8.0 1.0 0.708   0.634   0.415   0.022   0.015   0.058   0.404   0.018   0.018   0.068   0.058
+</code></pre>
+<p>It seems that quantization makes inference slower, but accuracy seems to be the same.</p>
+<h3 id="cluster-experiments">Cluster experiments</h3>
+<h4 id="first-steps">First steps</h4>
+<pre><code class="language-bash">export FOLDER=2025-09-07-search-and-learn
+export N_PREDICTIONS=128; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions ${N_PREDICTIONS} \
+--max-epochs 0 \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/baseline_${N_PREDICTIONS}" -append request_gpus=1 -append request_cpus=32
+</code></pre>
+<pre><code class="language-bash">export FOLDER=2025-09-07-search-and-learn
+export N_PREDICTIONS=128
+export LEARNING_RATE=1e-5; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions 64 \
+--predictions-per-epoch 64 \
+--learning-rate ${LEARNING_RATE} \
+--max-epochs 1 \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/2partitions_${N_PREDICTIONS}_lr${LEARNING_RATE}" -append request_gpus=1 -append request_cpus=32
+</code></pre>
+<pre><code class="language-bash">export FOLDER=2025-09-07-search-and-learn
+export N_PREDICTIONS=128
+export LEARNING_RATE=1e-4; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions 32 \
+--predictions-per-epoch 32 \
+--learning-rate ${LEARNING_RATE} \
+--max-epochs 3 \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/4partitions_${N_PREDICTIONS}_lr${LEARNING_RATE}" -append request_gpus=1 -append request_cpus=32
+</code></pre>
+<pre><code class="language-bash">export FOLDER=2025-09-07-search-and-learn
+export N_PREDICTIONS=128
+export LEARNING_RATE=1e-4; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions 16 \
+--predictions-per-epoch 16 \
+--learning-rate ${LEARNING_RATE} \
+--max-epochs 7 \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/8partitions_${N_PREDICTIONS}_lr${LEARNING_RATE}" -append request_gpus=1 -append request_cpus=32
+</code></pre>
+<h4 id="debugging">Debugging</h4>
+<pre><code class="language-bash">export FOLDER=2025-09-07-debug-search
+export BATCH_SIZE=8; export N_PREDICTIONS=128; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions ${N_PREDICTIONS} \
+--max-epochs 0 \
+--inference-batch-size ${BATCH_SIZE} \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/baseline_${N_PREDICTIONS}preds_${BATCH_SIZE}batch" -append request_gpus=1 -append request_cpus=16
+</code></pre>
+<h4 id="experiments-with-512-predictions">Experiments with 512 predictions</h4>
+<pre><code class="language-bash">export FOLDER=2025-09-18-search-and-learn
+export N_PREDICTIONS=512; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions ${N_PREDICTIONS} \
+--max-epochs 0 \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${N_PREDICTIONS}i_baseline" -append request_gpus=1 -append request_cpus=12 -append request_memory=32G --append 'requirements = (TARGET.Machine == "calculon19.das-nano.com")'
+</code></pre>
+<pre><code class="language-bash">export FOLDER=2025-09-18-search-and-learn
+export INITIAL_PREDICTIONS=256
+export EPOCHS=1
+export PREDICTIONS_PER_EPOCH=256
+export LEARNING_RATE=1e-5; condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/search_and_learn_with_unsloth.py \
+--initial-predictions ${INITIAL_PREDICTIONS} \
+--predictions-per-epoch ${PREDICTIONS_PER_EPOCH} \
+--learning-rate ${LEARNING_RATE} \
+--max-epochs ${EPOCHS} \
+--gpu_memory_utilization 0.5 \
+--model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/${INITIAL_PREDICTIONS}i_${EPOCHS}x${PREDICTIONS_PER_EPOCH}_lr${LEARNING_RATE}" -append request_gpus=1 -append request_cpus=12 -append request_memory=16G
+</code></pre>
+<h3 id="local-experiments">Local experiments</h3>
+<h4 id="debugging-degradation-of-scores">Debugging degradation of scores</h4>
+<p>I have observed a degradation in the number of valid outputs when using more than one batch. Let's run
+some experiments to try to better understand the problem.</p>
+<pre><code class="language-bash">python scripts/search_and_learn_with_unsloth.py \
+--initial-predictions 32 \
+--inference-batch-size 8 \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-07-debug-unsloth-local/batch8
+
+python scripts/search_and_learn_with_unsloth.py \
+--initial-predictions 32 \
+--inference-batch-size 8 \
+--no-use-data-augmentation \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-07-debug-unsloth-local/no-data-augmentation-batch8-b
+</code></pre>
+<p>First experiments suggests that it is related to data augmentation.
+I believe I have found and fixed the bug. It seemed that I was applying data augmentation
+over and over on the same task, thus losing the traceability of the applied data augmentation.</p>
+<h4 id="debug-runtime">Debug runtime</h4>
+<pre><code class="language-bash">python scripts/search_and_learn_with_unsloth.py \
+--initial-predictions 32 \
+--inference-batch-size 8 \
+--max-epochs 3 \
+--predictions-per-epoch 32 \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/mini-arc-agi_evaluation_challenges.json \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-09-08-debug-runtime/batch8_32preds_3epochs
+
+</code></pre>
+<h3 id="how-trl-grpotrainer-works">How trl GRPOTrainer works</h3>
+<ul>
+<li>https://huggingface.co/docs/trl/en/vllm_integration</li>
+<li>https://github.com/huggingface/trl/blob/659d2c1284e06862efbbccf64cd4310bcee4f200/trl/trainer/grpo_trainer.py#L54</li>
+<li>https://github.com/huggingface/trl/blob/main/trl/extras/vllm_client.py#L46</li>
+<li>https://github.com/huggingface/trl/blob/main/trl/trainer/grpo_config.py#L22</li>
+<li>https://chatgpt.com/share/68c050f0-2ecc-8012-831d-29f7084ae526</li>
+<li>https://huggingface.co/learn/llm-course/en/chapter12/6</li>
+</ul>
+<blockquote>
+<p>When using vLLM, ensure the GPUs assigned for training and generation are separate to avoid NCCL communication conflicts.</p>
+</blockquote>
+<ul>
+<li>It seems that trl implements a custom VLLM that allows changing the weights.</li>
+<li>Examples using unsloth and GRPO do not enable VLLM, maybe GRPO patches it to use fast_generate.</li>
+<li>Trl code is very long, covering a lot of edge cases and difficult to understand</li>
+</ul>
+<h3 id="oom-errors-on-kaggle">OOM errors on Kaggle</h3>
+<p>When training on the longer tasks I'm getting OOM errors on Kaggle (24GB GPU).</p>
+<pre><code class="language-bash">[rank0]: torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 248.00 MiB. GPU 0 has a total capacity of 22.28 GiB of which 33.38 MiB is free. Process 6314 has 22.23 GiB memory in use. Of the allocated memory 20.60 GiB is allocated by PyTorch, with 199.88 MiB allocated in private pools (e.g., CUDA Graphs), and 171.43 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+</code></pre>
+<h3 id="making-code-execution-robust">Making code execution robust</h3>
+<p>This was the problem. Sometimes execution hangs and no exception is thrown:</p>
+<ul>
+<li>https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/0iswo84s/logs</li>
+<li>https://wandb.ai/guillermobarbadillo/2025-09-11-search-and-learn/runs/xldcleic/logs</li>
+</ul>
+<p>Sometimes raises exception:</p>
+<ul>
+<li>https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/kd4qttau/logs</li>
+</ul>
+<p>Thus I have made many code changes to improve robustness, following suggestions by <a href="https://chatgpt.com/share/68c3ae7d-9cb4-8012-9950-9dd93606283e">ChatGPT</a>.</p>
+<p>On my pc it executes very fast: <code>400/400 [00:02&lt;00:00, 152.92pred/s]</code></p>
+<p>But in the cluster I'm seeing very slow executions:</p>
+<ul>
+<li><code>12800/12800 [50:22&lt;00:00,  4.24pred/s]</code>  <a href="https://wandb.ai/guillermobarbadillo/2025-09-12-search-and-learn/runs/19gni2he/logs">Experiment</a></li>
+<li><code>51200/51200 [03:28&lt;00:00, 245.29runs/s]</code> <a href="https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/zdkkfzdv/logs">Older experiment with good speed</a></li>
+</ul>
+<p>However in Kaggle is also fast: <code>960/960 [00:03&lt;00:00, 265.18pred/s]</code></p>
+<h4 id="reverting-to-old-code">Reverting to old code</h4>
+<p>I have tried reverting back to commit 1557726a0e184d1a4e0b0490eec44bde7dde304e, from 8 september when I logged fast execution times. However the problem persisted:</p>
+<ul>
+<li>4 cpus -&gt; 41.67runs/s</li>
+<li>8 cpus -&gt; 61.31runs/s</li>
+<li>20 cpus -&gt; 56.75runs/s</li>
+<li>64 cpus -&gt; 9.51runs/s</li>
+<li>128 cpus -&gt; 9.41 runs/s</li>
+</ul>
+<p>I have also tried running on other machine (calculon19 instead of calculon21) but did not get better results:</p>
+<ul>
+<li>8 -&gt; 74.22runs/s</li>
+<li>16 -&gt; 86.01runs/s</li>
+</ul>
+<h4 id="simpler-script">Simpler script</h4>
+<p>Iterations have been slow because I'm doing inference with the model first. That makes that each
+execution takes around 30 minutes. I need to create a script that allows me to see results much faster.
+That way I will run the same script with the same data in the different settings and get more information
+about the problem faster.</p>
+<p>I have prepared the script and I cannot understand the problem. Could it be a problem with the environment?
+TODO: repeat experiments when updating the environment</p>
+<pre><code class="language-bash">export N_CPUS=8; condor_submit train.condor command=" python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/debug_parallel_execution.py \ --dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \ --prediction-path /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_02_05_36_40_predictions.json" -append request_cpus=${N_CPUS} -append request_gpus=0
+</code></pre>
+<h4 id="the-code-isnt-robust-yet">The code isn't robust yet</h4>
+<p>I have done a quick test trying to evaluate around ~6000 predictions per task and I have seen that
+the code hangs.</p>
+<p>If the evaluations are done sequentially, file by file, there is no problem except for this two files that produce consistent hangs:</p>
+<ul>
+<li>/mnt/hdd0/Kaggle/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_08_31_09_47_48_predictions.json, 252</li>
+<li>/mnt/hdd0/Kaggle/arc25/predictions/2025-08-28-base-model/evaluation/8preds_2025_09_01_13_46_42_predictions.json, 670</li>
+</ul>
+<p>Each file has 3200 tasks, so I could use that as reference.</p>
+<p>Investigating those tasks I see that both tasks have a general except clause that might be causing
+the problems:</p>
+<pre><code class="language-python">while True:
+    try:
+        expand_star(center_x, center_y, star_color, center_color, distance)
+        distance += 1
+    except:
+        break
+</code></pre>
+<p>After fixing that I have been able to evaluate the 6064 predictions per task in one run without problems.</p>
+<h2 id="results">Results</h2>
+<h3 id="unslothvllm-inference-throughput">Unsloth/VLLM inference throughput</h3>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/1756991831223_image.png" data-desc-position="bottom"><img alt="alt text" src="../res/1756991831223_image.png"></a></p>
+<p>Making more predictions has higher throughput, also using a bigger batch size has higher throughput but at the cost of lowering prompt diversity.
+I would need to tune this hyperparameters.</p>
+<h3 id="first-experiments">First experiments</h3>
+<p>https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn</p>
+<ul>
+<li>Execution time with two partitions is 6x the baseline (5300s vs 31000)</li>
+<li>Each search and learn iteration is taking around 72 seconds. But half of the time seems to go prepare the model for training. I need to log that.</li>
+<li>Training takes around 20s per task</li>
+<li>Inference around 10s per taks, but is twice as slower as when doing the inference of all the tasks together</li>
+<li>Thus I estimate that an efficient implementation could do the same in 12000 
+seconds (<code>30*400</code>).</li>
+</ul>
+<pre><code class="language-bash">#Baseline just inference
+Processed prompts: 100%|██████████| 51200/51200 [1:17:57&lt;00:00, 10.95it/s, est. speed input: 21508.87 toks/s, output: 4414.70 toks/s]
+
+
+https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/xceyyl8q/logs
+#training
+{'train_runtime': 19.3244, 'train_samples_per_second': 2.432, 'train_steps_per_second': 2.432, 'train_loss': 0.2810402642539207, 'epoch': 1.0}
+{'train_runtime': 23.5279, 'train_samples_per_second': 1.488, 'train_steps_per_second': 1.488, 'train_loss': 0.25343174253191264, 'epoch': 1.0}
+{'train_runtime': 18.2541, 'train_samples_per_second': 1.972, 'train_steps_per_second': 1.972, 'train_loss': 0.27254368571771515, 'epoch': 1.0}
+
+#inference
+Processed prompts: 100%|██████████| 64/64 [00:10&lt;00:00,  5.94it/s, est. speed input: 6103.78 toks/s, output: 2366.72 toks/s]
+Processed prompts: 100%|██████████| 64/64 [00:11&lt;00:00,  5.53it/s, est. speed input: 15778.11 toks/s, output: 2169.40 toks/s]
+Processed prompts: 100%|██████████| 64/64 [00:12&lt;00:00,  5.10it/s, est. speed input: 9888.11 toks/s, output: 2197.39 toks/s]
+
+Tasks:  70%|██████▉   | 279/400 [5:23:04&lt;2:25:52, 72.33s/task]2025-09-08 06:15:54,100 - __main__ - INFO - main -
+
+#30 seconds seem to be training startup, half of the time.
+
+# effect of the number of search and learn steps: [1, 3, 7]
+Tasks:  70%|██████▉   | 279/400 [5:23:04&lt;2:25:52, 72.33s/task]2025-09-08 06:15:54,100 - __main__ - INFO - main -
+
+Tasks:   6%|▋         | 26/400 [57:03&lt;13:05:33, 126.02s/task]2025-09-08 13:59:13,056 - __main__ - INFO - main - Search and learn for task 136b0064
+Tasks:   3%|▎         | 12/400 [44:55&lt;24:35:11, 228.12s/task]2025-09-08 13:56:54,181 - __main__ - INFO - main - Search and learn for task 0a2355a6
+
+
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>learning rate</th>
+<th>is_correct</th>
+<th>valid outputs</th>
+<th>unique outputs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>baseline (no finetuning)</td>
+<td>16.90%</td>
+<td>70.80%</td>
+<td>49.50%</td>
+</tr>
+<tr>
+<td>1.00E-03</td>
+<td>14.75%</td>
+<td>35.50%</td>
+<td>28.11%</td>
+</tr>
+<tr>
+<td>1.00E-04</td>
+<td><em>17.50%</em></td>
+<td><strong>74.91%</strong></td>
+<td><strong>51.01%</strong></td>
+</tr>
+<tr>
+<td>1.00E-05</td>
+<td><strong>18.25%</strong></td>
+<td><em>72.42%</em></td>
+<td>49.18%</td>
+</tr>
+<tr>
+<td>1.00E-06</td>
+<td>17.25%</td>
+<td>68.33%</td>
+<td>47.89%</td>
+</tr>
+<tr>
+<td>1.00E-07</td>
+<td>16.00%</td>
+<td>70.98%</td>
+<td><em>49.70%</em></td>
+</tr>
+</tbody>
+</table>
+<p>First experiments show a small but noticeable improvement when doing search and learn. Notice that
+only one iteration of search and learn was done. So the baseline just did 128 predictions, and the
+other experiments did 64 predictions, learned from those and did 64 additional predictions with the
+finetuned model.</p>
+<h3 id="analyze-inefficiencies-in-approach">Analyze inefficiencies in approach</h3>
+<p>The total amount of compute should be independent of the number of search and learn iterations that I
+do per task, but the runtime is being heavily affected:</p>
+<ul>
+<li>1 iteration: 72s/task</li>
+<li>3 iterations: 126s/task</li>
+<li>7 iterations: 228s/task</li>
+</ul>
+<p>Let's analyze why this is happening</p>
+<pre><code class="language-bash"># 3 iterations 0b17323b, Total: 122s
+Reset PEFT weights: 5s
+Prepare training data: 3s
+Training startup: 14s
+Train: 15s
+Inference: 7s
+Prepare training data: 2s
+Training startup: 15s
+Inference: 7s
+Prepare training data: 2s
+Training startup: 16s
+Train: 15s
+Inference: 9s
+Total: 122s
+# 7 iterations 0b17323b, Total 245s
+Reset PEFT weights: 6s
+Prepare training data: 1, 2, 2
+Training startup: 10, 10, 11
+Train: 7, 7, 7
+Inference: 8, 11, 7
+# 1 iteration ff72ca3e, 86s
+Reset PEFT weights: 10
+Prepare training data: 5
+Training startup: 22
+Train: 27
+Inference: 14
+</code></pre>
+<p>Training startup time is not constant, that is weird. Maybe I'm not measuring it correctly and it has
+something to do with the data.</p>
+<p>This is a summary table for the 3 iterations.</p>
+<ul>
+<li><strong>Total time (all entries): 125 s</strong> (2 min 2 s)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th style="text-align: right;">Count</th>
+<th style="text-align: right;">Average time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reset PEFT weights</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5.00 s</td>
+</tr>
+<tr>
+<td>Prepare training data</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2.33 s</td>
+</tr>
+<tr>
+<td>Training startup</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">15.00 s</td>
+</tr>
+<tr>
+<td>Train</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">15.00 s</td>
+</tr>
+<tr>
+<td>Inference</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">7.67 s</td>
+</tr>
+</tbody>
+</table>
+<p>I need to do more experiments and better log the execution time.</p>
+<h4 id="tokenize-before-training">Tokenize before training</h4>
+<p>On a local experiment I have been able to reduce the execution time from 960s to 914s by tokenizing the dataset before training.</p>
+<p>I have the feeling that training startup at H100 is longer than 3090, and also since training and inference on 3090 is around 4 times slower than on the H100, the startup time has a smaller effect.</p>
+<p>It has taken around 228s per task on the 3090 (although I only used 4 tasks.) I was doing 128 predictions, so I could likely be doing 512 predictions on Kaggle.</p>
+<h3 id="l4-is-slower-than-i-thought-half-as-fast-as-the-3090">L4 is slower than I thought, half as fast as the 3090</h3>
+<p>When making inference for the ARC-AGI-2 evaluation set I get around 340 token/s of throughput with Kaggle's L4 GPUs. In comparison I can get around 650 token/s with my 3090 GPUs. So L4 is around half as fast as the 3090.</p>
+<p>Notice that the 3090 was launched in September 2020, and the L4 was launched on March 2023. Quite surprising.</p>
+<p>On average each prediction is taking around 1.26 seconds on Kaggle. That implies that <strong>I won't be able to do more than 512 predictions per task on a submission using the current model.</strong> And that is without considering
+the training time, that would be the time for just making predictions. A more conservative approach
+would be 256 predictions per task, or even less. Thus we need a much stronger model than the BARC one
+to be able to reach 85% accuracy.</p>
+<h3 id="is-the-current-implementation-efficient-enough">Is the current implementation efficient enough?</h3>
+<h4 id="kaggle-l4">Kaggle L4</h4>
+<p>TODO: I'm currently running tests on Kaggle to measure GPU usage and throughput. https://docs.google.com/spreadsheets/d/1NmmCZA7gPOyoBypwvpw_JhYdjcvqNFHibX_WahwTHIM/edit?gid=0#gid=0&amp;range=A783</p>
+<h4 id="h100">H100</h4>
+<p>TODO: 128 preds</p>
+<p>TODO: 512 preds</p>
+<p>32 GB of RAM seem to be enough to do experiments with 512 predictions. Although the limit might be too tight.</p>
+<h3 id="do-i-have-clear-evidence-that-the-approach-works">Do I have clear evidence that the approach works?</h3>
+<p><a href="https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn">https://wandb.ai/guillermobarbadillo/2025-09-18-search-and-learn</a></p>
+<p>Yes, the plot below shows two experiments of search and learn vs 3 baseline experiments that simply do independent predictions.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/1758805734469_image.png" data-desc-position="bottom"><img alt="alt text" src="../res/1758805734469_image.png"></a></p>
+<p>All the experiments do the same number of predictions: 512. The difference is that the blue and green
+line learn from the predictions:</p>
+<ul>
+<li>Green line does 256 predictions, learns and does other 256 predictions.</li>
+<li>Blue line learns every 128 predictions.</li>
+</ul>
+<p>That explains why the blue line separates early from the baseline.</p>
+<table>
+<thead>
+<tr>
+<th>initial predictions</th>
+<th>epochs</th>
+<th>predictions per epoch</th>
+<th>pass@n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>512</td>
+<td>0</td>
+<td>0</td>
+<td>23.3%</td>
+</tr>
+<tr>
+<td>256</td>
+<td>1</td>
+<td>256</td>
+<td>26.0%</td>
+</tr>
+<tr>
+<td>128</td>
+<td>3</td>
+<td>128</td>
+<td><strong>28.3%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>We get an improvement of 5% with the best configuration, but is very likely that we could
+get even better results by using more epochs (a more continuous learning approach).</p>
+<p>On Kaggle I have done experiments with the ARC-AGI-2 evaluation set and didn't observe improvements yet. However the start point is just 0.8% pass@2 so it is a totally different
+level of difficulty.</p>
+<h3 id="current-implementation-is-too-slow">Current implementation is too slow</h3>
+<table>
+<thead>
+<tr>
+<th>initial predictions</th>
+<th>epochs</th>
+<th>predictions per epoch</th>
+<th>runtime (h)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>512</td>
+<td>0</td>
+<td>0</td>
+<td>23</td>
+</tr>
+<tr>
+<td>256</td>
+<td>1</td>
+<td>256</td>
+<td>54</td>
+</tr>
+<tr>
+<td>128</td>
+<td>3</td>
+<td>128</td>
+<td>74</td>
+</tr>
+</tbody>
+</table>
+<p>However the current implementation is slow, and the worst of all is that using more
+epochs results on bigger time. 
+This happens because inference is efficient when we do a a big number of predictions on each run.</p>
+<p>I will deal with it on a future iteration.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>I have made a first implementation of search and learn, it is not very efficient but I have been able to verify that for a fixed prediction budget of 512 predictions, the method is able to improve 5% the pass@n rate over the baseline of 23.3% on the ARC-AGI-1 evaluation dataset.</p>
+<p>It is not a huge improvement, but hopefully is a good start point that I could improve on future
+iterations with a more efficient implementation.</p>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li>After seeing that throughput at inference increases with the number of predictions, I might have to
+  use VLLM as a server and make async calls in parallel.</li>
+</ul>
+<h2 id="todo">TODO</h2>
+<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Try unsloth for both training and inference</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Compare unsloth speed against trl and VLLM</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Create a smaller version of the dataset for faster experimentation</li>
+<li class="task-list-item"><input type="checkbox" disabled> Move code to script<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Move current notebook to script</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Refactor</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Move code to library modules</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Save results to disk</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Log to wandb.<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Tables, runtime...</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Task evolution</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Summary</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> The goal is to be able to compare runs very easily with wandb. And also ideally to diagnose hyperparameter problems.</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> All parameters should be on the configuration</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Log search vs learn time</li>
+<li class="task-list-item"><input type="checkbox" disabled> Only save original outputs for test (that's what I need for the submission)</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Try flashinfer and check if there is any speedup: https://github.com/flashinfer-ai/flashinfer<ul>
+<li><code>pip install flashinfer-python</code></li>
+<li>FileNotFoundError: [Errno 2] No such file or directory: 'nvcc'</li>
+<li>Tried with prebuilt wheel but freezes when starting inference. <code>pip install https://github.com/flashinfer-ai/flashinfer/releases/download/v0.2.5/flashinfer_python-0.2.5+cu124torch2.6-cp38-abi3-linux_x86_64.whl#sha256=43d767b912c0c43a04be99595e0123eab9385fc72530a2874b5fb08e3145c0be
+Collecting flashinfer-python==0.2.5+cu124torch2.6</code></li>
+<li>Should revisit on a future iteration because it could give faster inference for free</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled> Check the lora modules parameters, I'm using them without understanding</li>
+<li class="task-list-item"><input type="checkbox" disabled> Learning rate sweep. Using a small learning rate should be equivalent to just doing search. Using a too big lr should result in degraded metrics. There should be a sweet spot.</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Code execution is not robust.<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Sometimes execution hangs and no exception is thrown
+    - [x] https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/0iswo84s/logs
+    - [x] https://wandb.ai/guillermobarbadillo/2025-09-11-search-and-learn/runs/xldcleic/logs</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Sometimes raises exception<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> https://wandb.ai/guillermobarbadillo/2025-09-07-search-and-learn/runs/kd4qttau/logs</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Made many changes to improve robustness: https://chatgpt.com/share/68c3ae7d-9cb4-8012-9950-9dd93606283e</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled> Investigate the time lost on training startup</li>
+<li class="task-list-item"><input type="checkbox" disabled> Experiment on Kaggle<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Upload the model. https://www.kaggle.com/models/ironbar/barc0llama-3.1-arc-potpourri-induction-8b</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Upload the code. https://www.kaggle.com/datasets/ironbar/arc25-source-code</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Create a notebook with the requirements. https://www.kaggle.com/code/ironbar/search-and-learn</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Split the data in 4, each for a GPU</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Collect the results to make a submission</li>
+<li class="task-list-item"><input type="checkbox" disabled> How efficient is the current implementation?</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Getting OOM cuda errors when training on the longer tasks</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Create python module to do the submission, with tests</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Need a way to evaluate the submission once it's created</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Disable internet</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Implement dry run</li>
+<li class="task-list-item"><input type="checkbox" disabled> Can I leave logs and keep making submissions?</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Speed seems to be lower than 3090, <code>1.26s/it, est. speed input: 2163.11 toks/s, output: 343.46 toks/s</code><ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Speed test on 3090.<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled> 960 preds,  1.23it/s, est. speed input: 3389.69 toks/s, output: 547.71 toks/s</li>
+<li class="task-list-item"><input type="checkbox" disabled> 960 preds unquantized, 1.42it/s, est. speed input: 3943.22 toks/s, output: 652.53 toks/s</li>
+<li class="task-list-item"><input type="checkbox" disabled> 3840 preds, 1.47it/s, est. speed input: 4081.55 toks/s, output: 650.98 toks/s</li>
+<li class="task-list-item"><input type="checkbox" disabled> Yes, seems to be around twice as fast</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> 3x https://technical.city/en/video/GeForce-RTX-3090-vs-L4</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> 2.3x https://chatgpt.com/share/68c1d348-89a4-8012-8135-a58a82bbef4d</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> With current implementation I won't be able to make more than 512 predictions on a submission</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled> Check implementation of RL and how it alternates between training and inference(trl, GRPO)</li>
+<li class="task-list-item"><input type="checkbox" disabled> Analyze clusters results with 128 predictions. <ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled> Learning rate</li>
+<li class="task-list-item"><input type="checkbox" disabled> efficiency</li>
+<li class="task-list-item"><input type="checkbox" disabled> improvements</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled> GPU efficiency and throughtput experiments on Kaggle</li>
+<li class="task-list-item"><input type="checkbox" disabled> Run experiments in the cluster with 512 predictions.</li>
+<li class="task-list-item"><input type="checkbox" disabled> How to improve efficiency? Maybe on a different iteration.<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled> Do not train on all the cases</li>
+<li class="task-list-item"><input type="checkbox" disabled> Remove duplicates</li>
+<li class="task-list-item"><input type="checkbox" disabled> Filter cases with lower scores (as I did)</li>
+<li class="task-list-item"><input type="checkbox" disabled> How fast is inference compared to training?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Train for multiple epochs</li>
+<li class="task-list-item"><input type="checkbox" disabled> LoRA parameters</li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+    </span>
+    2025-10-11
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../Iteration_22_ttt_BARC/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Iteration 22. Test-time Training with BARC induction model">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Iteration 22. Test-time Training with BARC induction model
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Iteration_24_RL_BARC/" class="md-footer__link md-footer__link--next" aria-label="Next: Iteration 24. Using RL to improve BARC induction model">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Iteration 24. Using RL to improve BARC induction model
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2025. Guillermo Barbadillo
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/guillermobarbadillo/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/guille_bar" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/channel/UCOHmUwHnd2hmUpiDzaQ1Isg" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305m-317.51 213.508V175.185l142.739 81.205z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.kaggle.com/ironbar" target="_blank" rel="noopener" title="www.kaggle.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M304.2 501.5 158.4 320.3 298.2 185c2.6-2.7 1.7-10.5-5.3-10.5h-69.2c-3.5 0-7 1.8-10.5 5.3L80.9 313.5V7.5q0-7.5-7.5-7.5H21.5Q14 0 14 7.5v497q0 7.5 7.5 7.5h51.9q7.5 0 7.5-7.5v-109l30.8-29.3 110.5 140.6c3 3.5 6.5 5.3 10.5 5.3h66.9q5.25 0 6-3z"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "navigation.footer"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+        <script src="../../javascript/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

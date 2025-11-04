@@ -1,0 +1,3384 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ironbar.github.io/arc25/modeling/Iteration_22_ttt_BARC/">
+      
+      
+        <link rel="prev" href="../Iteration_21_fix_bug_with_data/">
+      
+      
+        <link rel="next" href="../Iteration_23_ttt_BARC_v2/">
+      
+      
+      <link rel="icon" href="../../res/arc_icon.jpg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.40">
+    
+    
+      
+        <title>Iteration 22. Test-time Training with BARC induction model - arc25</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.8c3ca2c6.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#iteration-22-test-time-training-with-barc-induction-model" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="arc25" class="md-header__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            arc25
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Iteration 22. Test-time Training with BARC induction model
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../01_Business_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Business Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../02_Data_Understanding/" class="md-tabs__link">
+        
+  
+    
+  
+  Data Understanding
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../03_State_of_the_art/" class="md-tabs__link">
+        
+  
+    
+  
+  State of the art
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../04_Initial_Plan/" class="md-tabs__link">
+        
+  
+    
+  
+  Initial Plan
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../Iteration_01_architects_baseline/" class="md-tabs__link">
+          
+  
+    
+  
+  Modeling
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../utils/00_Challenge_Workflow/" class="md-tabs__link">
+          
+  
+    
+  
+  Utils
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../05_Solution_Summary/" class="md-tabs__link">
+        
+  
+    
+  
+  Solution summary
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="arc25" class="md-nav__button md-logo" aria-label="arc25" data-md-component="logo">
+      
+  <img src="../../res/arc_icon.jpg" alt="logo">
+
+    </a>
+    arc25
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ironbar/arc25" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../01_Business_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Business Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../02_Data_Understanding/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Understanding
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../03_State_of_the_art/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    State of the art
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../04_Initial_Plan/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Initial Plan
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Modeling
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Modeling
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_01_architects_baseline/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 1. Architects baseline
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_02_8_fold/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 2. Architects solution with 8 data splits
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_03_ideal_test_time_training/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 3. Ideal test-time training setup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_04_first_steps_with_code/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 4. First steps with code
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_05_test_time_training_with_code_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 5. Test-time training with code. Hindsight Experience Replay (HER)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_06_reinforcement_learning/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 6. Reinforcement learning
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_07_optimize_ttt_on_evaluation_set/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 7. Optimize TTT on the evaluation set
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_08_improve_HER/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 8. Improve HER
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_09_improve_training_script/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 9. Improve training script
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_10_solve_arc_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 10. Try to solve real ARC tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_11_pretrain_lora_on_new_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 11. Pretrain LoRA on new tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_12_solve_a_few_arc_tasks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 12. Solve a few ARC tasks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_13_reflections/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 13. Reflections
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_14_optimize_inference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 14. Optimize inference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_15_the_path_forward/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 15. The path forward: Search &amp; Learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_16_search_with_base_models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 16. Search with base models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_17_increase_search_diversity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 17. Increase search diversity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_19_search_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 19. Search with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_20_data_augmentation_with_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 20. Data augmentation with BARC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_21_fix_bug_with_data/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 21. Fix bug with data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Iteration 22. Test-time Training with BARC induction model
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 22. Test-time Training with BARC induction model
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#first-trainings" class="md-nav__link">
+    <span class="md-ellipsis">
+      First trainings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="First trainings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-collator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data collator
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-again-in-the-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training again in the cluster
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Training again in the cluster">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#first-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      First steps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#speed-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Speed tests
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lora-rank-sweep" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lora rank sweep
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#influence-of-the-number-of-training-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Influence of the number of training steps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#train-on-smaller-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Train on smaller datasets
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qlora-is-saving-the-whole-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      QLoRA is saving the whole model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-which-lora-versions-are-compatible-with-vllm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check which LoRA versions are compatible with VLLM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inference-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inference script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overfit-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overfit experiment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluation-is-not-deterministic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Evaluation is not deterministic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-smaller-training-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a smaller training dataset
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make-code-execution-more-robust-to-crashes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Make code execution more robust to crashes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Results
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#speed-tests_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Speed tests
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-that-i-can-overfit-to-the-training-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify that I can overfit to the training dataset
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lora-rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      LoRA rank
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training steps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-right-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      The right metrics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-on-smaller-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training on smaller datasets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#are-the-improvements-legit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Are the improvements legit?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_23_ttt_BARC_v2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 23. All in with test-time training with BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_24_RL_BARC/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 24. Using RL to improve BARC induction model
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_25_debug_parallel_code_execution/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 25. Debug parallel code execution
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_26_more_compute/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 26. Acquire more compute
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_27_improve_search_and_learn/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 27. Improve search and learn
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_28_refine_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 28. Refine predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_29_multi-gpu-rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 29. Multi-gpu RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_30_solve_RL_collapse/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 30. Solve RL Collapse
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_31_how_to_improve/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 31. How to improve from 20% to 100%?
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_32_analyze_model_predictions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 32. Analyze model predictions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_33_rl_barc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 33. RL with BARC data
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_34_multi-turn_rl/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 34. Multi-turn RL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_35_fp16_vs_bf16/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration 35. FP16 vs BF16
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Iteration_n/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Iteration n. Iteration_title
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6">
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Utils
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            Utils
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/00_Challenge_Workflow/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Challenge workflow
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/markdown_cheatsheet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Markdown cheatsheet
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/methodology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Methodology
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../05_Solution_Summary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Solution summary
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Motivation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#first-trainings" class="md-nav__link">
+    <span class="md-ellipsis">
+      First trainings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="First trainings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-collator" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data collator
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-again-in-the-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training again in the cluster
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Training again in the cluster">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#first-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      First steps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#speed-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Speed tests
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lora-rank-sweep" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lora rank sweep
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#influence-of-the-number-of-training-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Influence of the number of training steps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#train-on-smaller-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Train on smaller datasets
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qlora-is-saving-the-whole-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      QLoRA is saving the whole model
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-which-lora-versions-are-compatible-with-vllm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Check which LoRA versions are compatible with VLLM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inference-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inference script
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overfit-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overfit experiment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluation-is-not-deterministic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Evaluation is not deterministic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-a-smaller-training-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create a smaller training dataset
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#make-code-execution-more-robust-to-crashes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Make code execution more robust to crashes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#results" class="md-nav__link">
+    <span class="md-ellipsis">
+      Results
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Results">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#speed-tests_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Speed tests
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verify-that-i-can-overfit-to-the-training-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verify that I can overfit to the training dataset
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lora-rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      LoRA rank
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training steps
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-right-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      The right metrics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#training-on-smaller-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Training on smaller datasets
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#are-the-improvements-legit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Are the improvements legit?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="iteration-22-test-time-training-with-barc-induction-model">Iteration 22. Test-time Training with BARC induction model</h1>
+<p><em>25-08-2025</em></p>
+<!---
+The work is done using short iterations. Each iteration needs to have a very
+clear goal. This allows to gain greater knowledge of the problem on each iteration.
+
+<details>
+  <summary>Click to expand/collapse this section</summary>
+</details>
+--->
+
+<h2 id="goal">Goal</h2>
+<p>Can I improve the results on ARC-AGI-1 evaluation with the BARC induction model using test-time training?</p>
+<h2 id="motivation">Motivation</h2>
+<p>I have the intuition that we need to combine search and learn to be able to solve novel tasks. Using <a href="../Iteration_08_improve_HER/">toy tasks</a> I probed that a model was able to generalize outside its training distribution by training on hindsight relabeled wrong attempts to solve the task. I need to probe that the same technique is helpful for ARC.</p>
+<h2 id="development">Development</h2>
+<p>My initial idea is to take the predictions from the previous iteration and fine-tune the BARC model on those using hindsight relabel. Then I will do inference again and hopefully
+I will see improvements.</p>
+<p>I believe I should see improvements with just one epoch (train + inference) but that
+doing multiple epochs would yield the best results. I'm not going to worry about efficiency on this iteration, I just want to see if the technique works or it doesn't.</p>
+<h3 id="data-generation">Data generation</h3>
+<p>The first step is generate the data for training. The fastest way could be to generate
+the data directly with the chat template from the BARC model.</p>
+<h3 id="first-trainings">First trainings</h3>
+<pre><code class="language-bash"># better work with a single gpu for debugging
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=10
+export MAXSEQLEN=4096
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-25-hr-trainings/3090-GPUS${N_GPUS}-BARC-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--lora-r 32 \
+--use-dora \
+--use-rslora \
+--no-resume_from_checkpoint
+
+export N_GPUS=2
+export STEPS=1000
+export MAXSEQLEN=8192
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-25-hr-trainings/3090-GPUS${N_GPUS}-BARC-${STEPS}steps-${MAXSEQLEN}msl \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--use-dora \
+--use-rslora
+</code></pre>
+<p>I had to solve a bug of my implementation when using gradient checkpointing, and modify the tokenizer
+from Llama to add the pad token.</p>
+<ul>
+<li>Around 3s per instance when training with batch size 32 and 4096 max sequence length.</li>
+<li>That reduces to 1.6 seconds when using 2 GPUS, so scaling is nice because GPU usage is almost 100% all the time.</li>
+<li>If I increase the max_seq_len to 8192 the training time per sample increases to 2 seconds, but the memory
+  seems to increase just from 13GB to 15GB so there might be room for bigger training sequences.</li>
+<li>Training on 3200 samples would take around 1h40min on my 2x3090 setup. I had to use 4 bit quantization,
+  liger kernels and gradient checkpoint to avoid the OOM errors.</li>
+</ul>
+<h4 id="data-collator">Data collator</h4>
+<p>The data collator adds a new labels field to the batch that allows to skip the user text.</p>
+<pre><code class="language-python">print(tokenizer(text))
+{'input_ids': tensor([[128000, 128000, 128006,  ...,    198,  74694, 128009]]), 'attention_mask': tensor([[1, 1, 1,  ..., 1, 1, 1]])}
+data_collator([tokenizer(text)])
+{'input_ids': tensor([[128000, 128000, 128006,  ...,    198,  74694, 128009]]), 'attention_mask': tensor([[1, 1, 1,  ..., 1, 1, 1]]), 'labels': tensor([[ -100,  -100,  -100,  ...,   198, 74694,  -100]])}
+</code></pre>
+<p>In this case it is ignoring the end of text token because it is the same as the padding token.
+I have solved it by changing the pad token to <code>&lt;|finetune_right_pad_id|&gt;</code>.</p>
+<h3 id="training-again-in-the-cluster">Training again in the cluster</h3>
+<h4 id="first-steps">First steps</h4>
+<p>I have updated the requirements of the environment, so the environment will have to be regenerated
+in the cluster.</p>
+<pre><code class="language-bash">rsync -P /mnt/data/MEGA/TEMP/2025-08-25_evaluation-85640.json calculon01:/mnt/scratch/users/gbarbadillo/arc25/data
+
+export N_GPUS=2
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=1000; condor_submit train.condor command="
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-25-hr-trainings/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-25-hr-trainings/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-no-dora \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+export N_GPUS=2
+export LEARNING_RATE=5e-4
+export MAXSEQLEN=8192
+export STEPS=1000;
+condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-25-hr-trainings/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-plain-lora \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--no-use-dora \
+--no-use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-25-hr-trainings /mnt/data/MEGA/TEMP --exclude wandb/* --exclude *.pt
+</code></pre>
+<p>If I remove the gradient checkpointing I get OOM error when using the A6000 GPUs.</p>
+<p>Training speed comparison (when using plain LoRA):</p>
+<ul>
+<li>2xH100: 15.4s/it</li>
+<li>2xA6000: 40.8s/it</li>
+<li>2x3090: 46.7s/it</li>
+</ul>
+<p>It is possible that we can speedup the H100 training because only 17% of the VRAM memory is being used
+when using the same configuration as the other GPUs.</p>
+<h4 id="speed-tests">Speed tests</h4>
+<pre><code class="language-bash">export N_GPUS=1
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=20;
+export BATCH_SIZE=1
+condor_submit train.condor command=" 
+python \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-speed-tests/${N_GPUS}xA6000-${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-plain-lora-pdbs${BATCH_SIZE} \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size ${BATCH_SIZE} \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+
+export N_GPUS=2
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=20;
+condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-speed-tests/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-plain-lora \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+export N_GPUS=7
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=20;
+condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-speed-tests/${N_GPUS}xA6000--${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-plain-lora \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 56 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r 32 \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=14 -append request_memory=80G
+</code></pre>
+<ul>
+<li>1 GPU: 71.63s/it</li>
+<li>2 GPUS: 42.74s/it</li>
+<li>4 GPUs: 26.82s/it</li>
+<li>7 GPUs: Does not run successfully, probably OOM error but I'm not sure.</li>
+</ul>
+<p>2 GPUs seems to be the sweet spot.</p>
+<table>
+<thead>
+<tr>
+<th>n gpus</th>
+<th>per-device-batch-size</th>
+<th>batch time (s)</th>
+<th>speedup</th>
+<th>efficiency</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>71.6</td>
+<td>1</td>
+<td>100.00%</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1</td>
+<td>42.7</td>
+<td>1.7</td>
+<td>83.84%</td>
+</tr>
+<tr>
+<td>4</td>
+<td>1</td>
+<td>26.8</td>
+<td>2.7</td>
+<td>66.79%</td>
+</tr>
+<tr>
+<td>7</td>
+<td>1</td>
+<td>-</td>
+<td>#VALUE!</td>
+<td>#VALUE!</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>75.2</td>
+<td>1.0</td>
+<td>95.21%</td>
+</tr>
+<tr>
+<td>1</td>
+<td>4</td>
+<td>OOM</td>
+<td>#VALUE!</td>
+<td>#VALUE!</td>
+</tr>
+<tr>
+<td>1</td>
+<td>8</td>
+<td>OOM</td>
+<td>#VALUE!</td>
+<td>#VALUE!</td>
+</tr>
+</tbody>
+</table>
+<h4 id="lora-rank-sweep">Lora rank sweep</h4>
+<pre><code class="language-bash">export LORA_RANK=128
+export N_GPUS=2
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=1000
+condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-lora-rank/${N_GPUS}xA6000-${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-lora${LORA_RANK} \
+--max-steps ${STEPS} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-lora-rank /mnt/data/MEGA/TEMP --exclude *.pt --include checkpoint-*000* --exclude checkpoint* --exclude wandb*
+</code></pre>
+<h4 id="influence-of-the-number-of-training-steps">Influence of the number of training steps</h4>
+<pre><code class="language-bash">export LORA_RANK=32
+export N_GPUS=2
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=4000; condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--max-steps ${STEPS} \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-27-training-steps/${N_GPUS}xA6000-${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-lora${LORA_RANK} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--no-use-4bit-quantization \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+export N_GPUS=2
+export LEARNING_RATE=1e-5
+export MAXSEQLEN=8192
+export STEPS=8000; condor_submit train_h100.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--max-steps ${STEPS} \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-85640.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-27-training-steps/${N_GPUS}xH100-${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-full-finetuning \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 500 \
+--no-use-4bit-quantization \
+--no-use-lora" -append request_gpus=${N_GPUS} -append request_cpus=8
+</code></pre>
+<h4 id="train-on-smaller-datasets">Train on smaller datasets</h4>
+<pre><code class="language-bash">export LORA_RANK=32
+export N_GPUS=2
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=50; condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--max-steps ${STEPS} \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-selected8.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-29-smaller-datasets/${N_GPUS}xA6000-${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-lora${LORA_RANK} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--no-use-4bit-quantization \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+# change optimizer from paged_adamw_8bit to adamw_torch_fused
+# hopefully that will allow to resume from training and doesn't use too much memory
+export LORA_RANK=32
+export N_GPUS=2
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=1000; condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--max-steps ${STEPS} \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-selected8.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-29-smaller-datasets/${N_GPUS}xA6000-${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-lora${LORA_RANK}-adamw-fused \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--no-use-4bit-quantization \
+--optim adamw_torch_fused \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+export LORA_RANK=32
+export N_GPUS=2
+export LEARNING_RATE=1e-4
+export MAXSEQLEN=8192
+export STEPS=200; condor_submit train.condor command=" 
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+/mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/finetuning_hr.py \
+--max-steps ${STEPS} \
+--train_dataset_path /mnt/scratch/users/gbarbadillo/arc25/data/2025-08-25_evaluation-selected8_no-data-augmentation.json \
+--model_path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--output-dir /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-29-smaller-datasets-no-data-augmentation/${N_GPUS}xA6000-${STEPS}steps-${MAXSEQLEN}msl-${LEARNING_RATE}lr-lora${LORA_RANK} \
+--device-map None \
+--n-gpus ${N_GPUS} \
+--learning-rate ${LEARNING_RATE} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers ${N_GPUS} \
+--logging-steps 1 \
+--save-steps 100 \
+--no-use-4bit-quantization \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora" -append request_gpus=${N_GPUS} -append request_cpus=8
+
+
+export STEPS=1000; export FOLDER=2025-08-29-smaller-datasets/2xA6000-${STEPS}steps-8192msl-1e-4lr-lora32; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
+--n-predictions 512 \
+--base-model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--lora-path /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/checkpoint-${STEPS} \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--use-data-augmentation \
+--output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/${FOLDER}/evaluation" -append request_gpus=1 -append request_cpus=4
+
+
+export STEPS=100; export FOLDER=2025-08-29-smaller-datasets-no-data-augmentation/2xA6000-${STEPS}steps-8192msl-1e-4lr-lora32; condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
+--n-predictions 512 \
+--base-model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--lora-path /mnt/scratch/users/gbarbadillo/arc25/trainings/${FOLDER}/checkpoint-${STEPS} \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--no-use-data-augmentation \
+--output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/${FOLDER}/evaluation" -append request_gpus=1 -append request_cpus=4
+</code></pre>
+<h3 id="qlora-is-saving-the-whole-model">QLoRA is saving the whole model</h3>
+<p>It seems that when using QLoRA the whole quantized model is saved instead of just the adapter. I might
+have to save the adapter manually to avoid moving large files.</p>
+<pre><code class="language-bash">export LORA_RANK=8
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=1
+export MAXSEQLEN=1024
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-qlora-issue/LoRA_${LORA_RANK} \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers 1 \
+--lora-r ${LORA_RANK} \
+--use-dora \
+--use-rslora \
+--no-use-4bit-quantization \
+--no-resume_from_checkpoint
+
+export LORA_RANK=8
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=1
+export MAXSEQLEN=1024
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-qlora-issue/qLoRA_${LORA_RANK} \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--max-seq-len ${MAXSEQLEN} \
+--dataloader_num_workers 1 \
+--logging-steps 1 \
+--save-steps 1000 \
+--lora-r ${LORA_RANK} \
+--use-dora \
+--use-rslora \
+--use-4bit-quantization \
+--no-resume_from_checkpoint
+</code></pre>
+<ul>
+<li>The saved adapter weights 4.3GB if I use qLoRA, 2.2 if I use LoRA. The first result makes sense if
+it is saving the whole 4bit quantized model. The second result does not make sense.</li>
+<li>Reducing the rank from 32 to 8 did not have any effect on the saved weight.</li>
+<li>Disabling the gradient checkpoint does not have any effect</li>
+<li>If I save the model manually the cause is clear, it is saving the embeddings layer because the size
+  is changed when loading the model.</li>
+</ul>
+<p>I have solved the issue by reusing the token <code>&lt;|finetune_right_pad_id|&gt;</code> that was already inside
+the tokenizer instead of creating a new one.</p>
+<h3 id="check-which-lora-versions-are-compatible-with-vllm">Check which LoRA versions are compatible with VLLM</h3>
+<p>I'm going to run very short train with the different configurations and see if they are compatible with VLLM.</p>
+<pre><code class="language-bash">export LORA_RANK=8
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=1
+export MAXSEQLEN=8192
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-lora-compatibility/qLoRA_${LORA_RANK}_dora_rslora \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers 1 \
+--lora-r ${LORA_RANK} \
+--use-dora \
+--use-rslora \
+--use-4bit-quantization \
+--no-resume_from_checkpoint
+
+export LORA_RANK=8
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=1
+export MAXSEQLEN=8192
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-lora-compatibility/qLoRA_${LORA_RANK}_rslora \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers 1 \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora \
+--use-4bit-quantization \
+--no-resume_from_checkpoint
+
+export LORA_RANK=8
+export CUDA_VISIBLE_DEVICES=0
+export N_GPUS=1
+export STEPS=1
+export MAXSEQLEN=8192
+python scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-26-lora-compatibility/qLoRA_${LORA_RANK} \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 1 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers 1 \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--no-use-rslora \
+--use-4bit-quantization \
+--no-resume_from_checkpoint
+</code></pre>
+<p>VLLM supports LoRA and RSLoRA, it does not support DoRA. Moreover I can give models on the fly, it seems that the first time is slower but otherwise speed looks to be the same.</p>
+<pre><code>sampling_params = SamplingParams(n=800, temperature=1.0, top_p=0.95, max_tokens=10)
+Base model: 8000 tokens generated in 4.95 seconds (1614.81 tokens/second)
+LoRA model: 8000 tokens generated in 5.78 seconds (1384.20 tokens/second)
+RSLoRA model: 8000 tokens generated in 6.01 seconds (1330.54 tokens/second)
+LoRA model: 8000 tokens generated in 5.26 seconds (1522.17 tokens/second)
+RSLoRA model: 8000 tokens generated in 5.29 seconds (1512.97 tokens/second)
+</code></pre>
+<p>It seems that the first time a model is called it is slightly slower. And the LoRA model by itself is slightly slower than the base model. But manageable.</p>
+<details>
+  <summary>ChatGPT summary of the 3 techniques</summary>
+
+* **LoRA (Low-Rank Adaptation)**
+  Freeze base weights $W$ and learn a low-rank update $\Delta W = \frac{\alpha}{r} BA$ with $A \in \mathbb{R}^{r\times d_\text{in}}$, $B \in \mathbb{R}^{d_\text{out}\times r}$. Cheap to train/serve, drop-in for Q/K/V/O and MLPs.
+
+* **rsLoRA (rank-stabilized / root-scaled LoRA)**
+  Same idea as LoRA, but changes the scaling (and init) so the update norm is \~invariant w\.r.t. rank (often $\alpha/\sqrt{r}$ instead of $\alpha/r$). More stable across different ranks; same runtime cost as LoRA.
+
+* **DoRA (Weight-Decomposed LoRA)**
+  Decomposes a weight into **direction** and **magnitude**; applies a low-rank update to the direction and learns a small per-channel magnitude (scale) too. Tends to boost quality vs plain LoRA, but needs explicit runtime support because of the decomposition step.
+
+</details>
+
+<p>I believe then I should use rsLoRA and don't use DoRA for the following experiments.</p>
+<h3 id="inference-script">Inference script</h3>
+<pre><code class="language-bash">python scripts/inference_with_BARC.py \
+--base-model-path /home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-08-27_first-finetuning-steps \
+--lora-path /mnt/hdd0/MEGA/TEMP/2025-08-26-lora-rank/2xA6000--1000steps-8192msl-1e-4lr-lora32/checkpoint-1000
+
+python scripts/inference_with_BARC.py \
+--n-predictions 1024 \
+--base-model-path /home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-08-28-base-model/evaluation
+
+
+condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
+--base-model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-26-lora-rank/2xA6000--1000steps-8192msl-1e-4lr-lora32 \
+--lora-path /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-26-lora-rank/2xA6000--1000steps-8192msl-1e-4lr-lora32/checkpoint-1000" -append request_gpus=1 -append request_cpus=4
+
+condor_submit train.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
+--n-predictions 1024 \
+--base-model-path /mnt/scratch/users/gbarbadillo/arc25/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-28-base-model/evaluation" -append request_gpus=1 -append request_cpus=4
+
+condor_submit train_h100.condor command=" 
+python /mnt/scratch/users/gbarbadillo/arc25/arc25/scripts/inference_with_BARC.py \
+--n-predictions 512 \
+--base-model-path /mnt/scratch/users/gbarbadillo/arc25/trainings/2025-08-27-training-steps/2xH100-8000steps-8192msl-1e-5lr-full-finetuning-continue/checkpoint-8000 \
+--dataset-path /mnt/scratch/users/gbarbadillo/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/scratch/users/gbarbadillo/arc25/predictions/2025-08-27-training-steps/2xH100-8000steps-8192msl-1e-5lr-full-finetuning-continue/evaluation" -append request_gpus=1 -append request_cpus=4
+
+rsync -P -r calculon01:/mnt/scratch/users/gbarbadillo/arc25/predictions /mnt/data/MEGA/TEMP
+rsync -P -r /mnt/hdd0/MEGA/TEMP/predictions/* /mnt/hdd0/Kaggle/arc25/predictions
+</code></pre>
+<h3 id="overfit-experiment">Overfit experiment</h3>
+<pre><code class="language-bash">export LORA_RANK=32
+export N_GPUS=2
+export STEPS=100
+export MAXSEQLEN=8192
+accelerate launch --num_processes ${N_GPUS} --num_machines 1 --mixed_precision bf16 --multi_gpu  \
+scripts/finetuning_hr.py \
+--output-dir /mnt/hdd0/Kaggle/arc25/trainings/2025-08-27-overfit/LoRA${LORA_RANK}_${STEPS}steps \
+--train-dataset-path /mnt/hdd0/Kaggle/arc25/data/hindsight_relabeled/2025-08-25_evaluation-no-data-augmentation-77.json \
+--device-map None \
+--max-steps ${STEPS} \
+--n-gpus ${N_GPUS} \
+--per-device-train-batch-size 1 \
+--batch-size 32 \
+--max-seq-len ${MAXSEQLEN} \
+--logging-steps 1 \
+--save-steps 1000 \
+--dataloader_num_workers ${N_GPUS} \
+--lora-r ${LORA_RANK} \
+--no-use-dora \
+--use-rslora \
+--use-4bit-quantization
+
+python scripts/inference_with_BARC.py \
+--base-model-path /home/gbarbadillo/models/Llama-3.1-ARC-Potpourri-Induction-8B \
+--dataset-path /mnt/hdd0/Kaggle/arc25/data/arc-prize-2024/arc-agi_evaluation_challenges.json \
+--output-folder /mnt/hdd0/Kaggle/arc25/predictions/2025-08-27_overfit \
+--lora-path /mnt/hdd0/Kaggle/arc25/trainings/2025-08-27-overfit/LoRA32_100steps/checkpoint-100 \
+--no-use-data-augmentation \
+--n-predictions 1
+</code></pre>
+<h3 id="evaluation-is-not-deterministic">Evaluation is not deterministic</h3>
+<p>I have to investigate the sources of variability.</p>
+<ul>
+<li>The timeout exception is one source of variability. However if properly implemented should not be a problem.</li>
+<li>Another source of variability was that the model was using random functions.</li>
+<li>However the problem is that it seems that the order in which I do the predictions affects the result</li>
+</ul>
+<p>After adding more observability it seems that the Color object has been modified.</p>
+<pre><code>00dbd492 AttributeError type object 'Color' has no attribute 'GREEN'
+05a7bcf2 AttributeError type object 'Color' has no attribute 'YELLOW'
+</code></pre>
+<p>I have fixed the execution of the code so on each execution the dsl is imported. This solves the problem
+that the dsl was being modified by some rogue solution.</p>
+<h3 id="create-a-smaller-training-dataset">Create a smaller training dataset</h3>
+<p>Since I have seen that the model is able to overfit to a small dataset, and does not seem to learn
+from a huge dataset, I believe we should try training on a smaller selected samples.</p>
+<h3 id="make-code-execution-more-robust-to-crashes">Make code execution more robust to crashes</h3>
+<p>My current code execution works perfectly most of the time but sometimes it crashes. This is currently
+preventing me from evaluating one of the fine-tuned models so I have to fix it. The crash is not
+deterministic, if I run the evaluation multiple times the crash does not happen at the same moment.</p>
+<p>As far as I understand it seems that I need to use subprocess instead of exec so the code run
+on a separate process that won't affect the main process if it crashes.</p>
+<p><a href="https://chatgpt.com/share/68b587ab-2f08-8012-94a5-f1e7cb790c91">Possible solution proposed by GPT5-thinking</a></p>
+<p>I have to implement tests for the current function, then verify that the same tests run on the new one.</p>
+<h2 id="results">Results</h2>
+<h3 id="speed-tests_1">Speed tests</h3>
+<table>
+<thead>
+<tr>
+<th>GPU</th>
+<th>n GPUs</th>
+<th>4bit quantization</th>
+<th>batch time (s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RTX3090</td>
+<td>2</td>
+<td>TRUE</td>
+<td>46.7</td>
+</tr>
+<tr>
+<td>A6000</td>
+<td>1</td>
+<td>TRUE</td>
+<td>71.6</td>
+</tr>
+<tr>
+<td>A6000</td>
+<td>2</td>
+<td>TRUE</td>
+<td>41.5</td>
+</tr>
+<tr>
+<td>A6000</td>
+<td>4</td>
+<td>TRUE</td>
+<td>26.8</td>
+</tr>
+<tr>
+<td>A6000</td>
+<td>2</td>
+<td>FALSE</td>
+<td>28</td>
+</tr>
+<tr>
+<td>H100</td>
+<td>2</td>
+<td>TRUE</td>
+<td>15.4</td>
+</tr>
+<tr>
+<td>H100</td>
+<td>2</td>
+<td>FALSE</td>
+<td>9.2</td>
+</tr>
+</tbody>
+</table>
+<p>In the cluster is better to use the models unquantized since the GPUs have enough memory and it is
+much faster.</p>
+<p>With the H100 I'm able to fully finetune the model and that takes around 11.5s per batch of 32 samples (slightly slower than LoRA).</p>
+<h3 id="verify-that-i-can-overfit-to-the-training-dataset">Verify that I can overfit to the training dataset</h3>
+<p>I'm going to create a dataset with just the tasks that were solved without data augmentation and finetune the model on those. I should see the loss dropping fast because the training samples should be a few, and on inference the effect should be very visible.</p>
+<p>The model was trained with 77 samples (19.25% of the evaluation set). The training loss clearly shows
+that the model is learning and the evaluation also shows a clear difference, although it does not
+solve all the training samples.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/1756356315709_image.png" data-desc-position="bottom"><img alt="alt text" src="../res/1756356315709_image.png"></a></p>
+<table>
+<thead>
+<tr>
+<th>dataset</th>
+<th>experiment</th>
+<th>n_preds</th>
+<th>valid code</th>
+<th>valid outputs</th>
+<th>unique outputs</th>
+<th>pixel similarity</th>
+<th>correct grids</th>
+<th>train_pass_rate</th>
+<th>train_pass@n</th>
+<th>pass_rate</th>
+<th>pass@n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>evaluation-arg-agi-1</td>
+<td>baseline</td>
+<td>8</td>
+<td>99.47%</td>
+<td>77.81%</td>
+<td>71.28%</td>
+<td>57.48%</td>
+<td>2.82%</td>
+<td>1.74%</td>
+<td>5.75%</td>
+<td>1.70%</td>
+<td>5.50%</td>
+</tr>
+<tr>
+<td>evaluation-arg-agi-1</td>
+<td>overfited model</td>
+<td>8</td>
+<td>100.00%</td>
+<td>75.20%</td>
+<td>49.80%</td>
+<td>63.40%</td>
+<td>13.30%</td>
+<td>12.60%</td>
+<td>16.00%</td>
+<td>12.60%</td>
+<td>16.00%</td>
+</tr>
+</tbody>
+</table>
+<p>This validates that using a small dataset the model is able to overfit to it.</p>
+<p>https://wandb.ai/guillermobarbadillo/2025-08-27-overfit</p>
+<h3 id="lora-rank">LoRA rank</h3>
+<p>First trainings do not show any effect on the training metrics when changing the LoRA rank. Maybe I should
+train for longer?</p>
+<p>https://wandb.ai/guillermobarbadillo/2025-08-26-lora-rank</p>
+<h3 id="training-steps">Training steps</h3>
+<p>Let's fix the lora rank to 32 and use different number of training steps.</p>
+<p>https://wandb.ai/guillermobarbadillo/2025-08-27-training-steps</p>
+<p>Training for longer is giving better results at least in training metrics. This result suggest
+that I'm using a too big dataset for this experiment (I used around 480 predictions from each task).</p>
+<h3 id="the-right-metrics">The right metrics</h3>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/1756453485652_image.png" data-desc-position="bottom"><img alt="mean_pixel_score" src="../res/1756453485652_image.png"></a></p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/1756453501303_image.png" data-desc-position="bottom"><img alt="correct_grids_ratio" src="../res/1756453501303_image.png"></a></p>
+<p>This plots show the distribution of scores for the unique solutions for all the ARC-AGI-1 evaluation set.
+This is evidence that the pixel score is not a good guiding metric, in fact it seems that tasks that
+weren't solved have higher scores.
+In the other hand we can see a clear separation between the two groups when inspecting the correct grids
+ratio. Since the beginning we see that solved tasks have higher scores.</p>
+<p>This has sense because ARC tasks are all or nothing, the metric used in the competition is binary.
+For each grid we need all the pixels to be correct. Thus simply measuring how many pixels are correct
+is not a good metric.</p>
+<p>Thus when selecting samples for training or when doing reinforcement learning we should use the correct
+grid ratio.</p>
+<h3 id="training-on-smaller-datasets">Training on smaller datasets</h3>
+<p>I have created datasets with just 8 task variations (compared to previous experiments with more than 400). Using a batch size of 32 it would take on average 100 steps to see the whole dataset.</p>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/1756814578668_image.png" data-desc-position="bottom"><img alt="alt text" src="../res/1756814578668_image.png"></a></p>
+<p>The plot shows that for this dataset of 8 predictions per task the optimal finetuning steps is 1000. Training
+for longer seems to overfit and does not generalize well. The best finetuned model was able to solve 29.25%
+of the evaluation tasks compared to 22.25% from the baseline. It's quite a nice improvement considering
+that we have done a single iteration of search and learn, we could do many more.</p>
+<table>
+<thead>
+<tr>
+<th>dataset</th>
+<th>training steps</th>
+<th>n_preds</th>
+<th>valid code</th>
+<th>valid outputs</th>
+<th>unique outputs</th>
+<th>pixel similarity</th>
+<th>correct grids</th>
+<th>train_pass_rate</th>
+<th>train_pass@n</th>
+<th>pass_rate</th>
+<th>pass@n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>evaluation</td>
+<td>baseline (0)</td>
+<td>480</td>
+<td>100.00%</td>
+<td>71.15%</td>
+<td>43.93%</td>
+<td>56.57%</td>
+<td>2.94%</td>
+<td>2.03%</td>
+<td>23.00%</td>
+<td>2.00%</td>
+<td>22.25%</td>
+</tr>
+<tr>
+<td>evaluation</td>
+<td>20</td>
+<td>512</td>
+<td>100.00%</td>
+<td>75.31%</td>
+<td>45.52%</td>
+<td>57.90%</td>
+<td>3.60%</td>
+<td>2.39%</td>
+<td>24.75%</td>
+<td>2.36%</td>
+<td>23.75%</td>
+</tr>
+<tr>
+<td>evaluation</td>
+<td>50</td>
+<td>512</td>
+<td>100.00%</td>
+<td>75.40%</td>
+<td>45.83%</td>
+<td>57.90%</td>
+<td>3.45%</td>
+<td>2.30%</td>
+<td>26.75%</td>
+<td>2.27%</td>
+<td>25.00%</td>
+</tr>
+<tr>
+<td>evaluation</td>
+<td>100</td>
+<td>512</td>
+<td>100.00%</td>
+<td>76.02%</td>
+<td>46.12%</td>
+<td>58.53%</td>
+<td>3.63%</td>
+<td>2.42%</td>
+<td>26.50%</td>
+<td>2.38%</td>
+<td>25.75%</td>
+</tr>
+<tr>
+<td>evaluation</td>
+<td>200</td>
+<td>512</td>
+<td>100.00%</td>
+<td>78.08%</td>
+<td><strong>46.67%</strong></td>
+<td>59.41%</td>
+<td>4.06%</td>
+<td>2.71%</td>
+<td>26.00%</td>
+<td>2.64%</td>
+<td>25.25%</td>
+</tr>
+<tr>
+<td>evaluation</td>
+<td>400</td>
+<td>512</td>
+<td>100.00%</td>
+<td>77.93%</td>
+<td>44.89%</td>
+<td>60.80%</td>
+<td>4.89%</td>
+<td>3.27%</td>
+<td>29.25%</td>
+<td>3.12%</td>
+<td>28.00%</td>
+</tr>
+<tr>
+<td>evaluation</td>
+<td>1000</td>
+<td>512</td>
+<td>100.00%</td>
+<td>80.40%</td>
+<td>42.54%</td>
+<td>62.88%</td>
+<td>6.00%</td>
+<td>3.65%</td>
+<td><strong>31.00%</strong></td>
+<td>3.39%</td>
+<td><strong>29.25%</strong></td>
+</tr>
+<tr>
+<td>evaluation</td>
+<td>2000</td>
+<td>512</td>
+<td>100.00%</td>
+<td><strong>82.53%</strong></td>
+<td>40.19%</td>
+<td><strong>64.22%</strong></td>
+<td><strong>6.82%</strong></td>
+<td><strong>3.91%</strong></td>
+<td>28.00%</td>
+<td><strong>3.60%</strong></td>
+<td>27.00%</td>
+</tr>
+</tbody>
+</table>
+<details>
+  <summary>Click to see the same results without data augmentation</summary>
+
+![alt text](res/1756814521219_image.png)
+
+</details>
+
+<h3 id="are-the-improvements-legit">Are the improvements legit?</h3>
+<p>Let's describe the experiment that we have just done:</p>
+<ol>
+<li>Make ~512 predictions with the base BARC model for the 400 evaluation tasks from ARC-AGI-1</li>
+<li>Select 8 unique predictions that have the highest correct grid score</li>
+<li>Finetune the BARC model on those predictions for 1000 steps, using hindsight relabeling</li>
+<li>Make 512 predictions with the finetuned model</li>
+</ol>
+<p>That increased the solved tasks from 22.25% to 29.25%.</p>
+<p>However we could criticise that the finetuned model has done 1024 predictions in total, and that it saw
+already solved tasks during its training. To check if this concerns are real I have made more than 6k
+predictions with the base model. That way I could better characterize the difficulty of each task for the
+base model, that is simply the pass rate for each task.</p>
+<p>This is what I have found:</p>
+<ul>
+<li>117 tasks were solved by the finetuned model, from those 88 were already solved by the base model and
+  were using for training. That is 22% of the tasks, so almost all the solved tasks by the base model (22.25%)
+  were solved again by the finetuned model.</li>
+<li>We are interested in the remaining 29 tasks that were newly solved.</li>
+</ul>
+<p><a class="glightbox" data-type="image" data-width="auto" data-height="auto" href="../res/1756815499666_image.png" data-desc-position="bottom"><img alt="alt text" src="../res/1756815499666_image.png"></a></p>
+<p>The fine-tuned model using TTT was able to solve tasks that on average require more than 1024 predictions to be solved (72% of the newly solved tasks). In fact 17% of the tasks were not solved after doing more than 6000 predictions, they are shown in the plot as requiring more than 10k predictions per task, but that is simply an estimate to represent them.</p>
+<p>Thus I believe that we can say that test-time training increased the inference efficiency of the model, in some tasks by more than 10 times.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Now I have evidence that test-time training using hindsight relabelling can boost the accuracy of a model
+that uses code to solve ARC tasks. This is a huge deal. Starting from a model that solved 22.25% of the evaluation tasks with ~500 predictions we were able to finetune a model that solved 29.25% of the tasks with the same inference budget. For some of the solved tasks the inference efficiency was increased more than 10 times.</p>
+<p>Other learnings:</p>
+<ul>
+<li>Pixel accuracy does not seem to be a good metric, is better to check how many grids are completely correct.</li>
+<li>Changing some parameters of the training such as the save steps does not allow to continue training afterwards.</li>
+<li>I have seen errors when trying to resume the training. They might be caused by the optimizer being <code>paged_adamw_8bit</code> but I'm not sure. I will be using <code>adamw_torch_fused</code> from now on.</li>
+</ul>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li>Do multiple iterations of search and learn</li>
+<li>There is a bug in the estimation of the solve rate probability that overestimates it.</li>
+</ul>
+<h2 id="todo">TODO</h2>
+<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled> Prepare the training data.<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Small toy dataset</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> With and without data augmentation</li>
+<li class="task-list-item"><input type="checkbox" disabled> With and without solved tasks</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Which LoRA parameters are compatible with VLLM? rsLoRA is compatible, DoRA isn't</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Fix issue with qlora model saving the complete model</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Train the model on the cluster</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Verify that I can overfit on a small dataset</li>
+<li class="task-list-item"><input type="checkbox" disabled> Script for inference<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> With support for LoRA</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Add tests for data augmentation</li>
+<li class="task-list-item"><input type="checkbox" disabled> Think if moving the prompt has sense</li>
+<li class="task-list-item"><input type="checkbox" disabled> Including evaluation of the predictions, otherwise I have to do it on my computer.</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Try the script on the cluster</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> There might be a problem with <code>os.environ['CUDA_VISIBLE_DEVICES'] = str(get_least_used_gpu_index())</code> on the cluster or on my computer. Probably it should only do changes if the variable is not set.</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled> Find best training hyperparameters (learning rate, batch size, lora rank, training steps)<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Lora rank</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Training steps</li>
+<li class="task-list-item"><input type="checkbox" disabled> Learning rate/batch size</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Check training data: the order should be random</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Evaluation is not deterministic. Investigate the source of variability.</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Select a small number of samples per training<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Can I unify the evaluation script</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> How to select the samples?</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Train and evaluate</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Error when trying to evaluate a lot of predictions<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled> What is the best and safest way to execute a lot of code in parallel?</li>
+<li class="task-list-item"><input type="checkbox" disabled> Subprocess could be the way</li>
+<li class="task-list-item"><input type="checkbox" disabled> Or maybe there is some way to parallelize that is safe to crashes</li>
+<li class="task-list-item"><input type="checkbox" disabled> Save execution results to disk so I can repeat evaluations faster</li>
+</ul>
+</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Evaluate experiments and close iteration<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Full fine-tuned model</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Models trained on small data</li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+
+
+  
+    
+  
+  
+
+
+  <aside class="md-source-file">
+    
+      
+  <span class="md-source-file__fact">
+    <span class="md-icon" title="Last update">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
+    </span>
+    2025-09-02
+  </span>
+
+    
+    
+    
+    
+  </aside>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../Iteration_21_fix_bug_with_data/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Iteration 21. Fix bug with data">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Iteration 21. Fix bug with data
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../Iteration_23_ttt_BARC_v2/" class="md-footer__link md-footer__link--next" aria-label="Next: Iteration 23. All in with test-time training with BARC induction model">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Iteration 23. All in with test-time training with BARC induction model
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      2025. Guillermo Barbadillo
+    </div>
+  
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/guillermobarbadillo/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/guille_bar" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.youtube.com/channel/UCOHmUwHnd2hmUpiDzaQ1Isg" target="_blank" rel="noopener" title="www.youtube.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305m-317.51 213.508V175.185l142.739 81.205z"></path></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.kaggle.com/ironbar" target="_blank" rel="noopener" title="www.kaggle.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M304.2 501.5 158.4 320.3 298.2 185c2.6-2.7 1.7-10.5-5.3-10.5h-69.2c-3.5 0-7 1.8-10.5 5.3L80.9 313.5V7.5q0-7.5-7.5-7.5H21.5Q14 0 14 7.5v497q0 7.5 7.5 7.5h51.9q7.5 0 7.5-7.5v-109l30.8-29.3 110.5 140.6c3 3.5 6.5 5.3 10.5 5.3h66.9q5.25 0 6-3z"></path></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "navigation.footer"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.525ec568.min.js"></script>
+      
+        <script src="../../javascript/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

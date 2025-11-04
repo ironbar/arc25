@@ -643,8 +643,10 @@ For more information go to iteration [34](modeling/Iteration_34_multi-turn_rl.md
 
 ## Conclusions and next steps
 
-ARC25 challenge is over and despite not being able to improve over the test-time training baseline
-with the search-and-learn approach I have enjoyed all these months of research and learning. The top
+ARC25 challenge is over and despite not being able to improve over the transduction test-time training baseline
+with the search-and-learn approach I have enjoyed all these months of research and learning. In retrospective
+I believe I could have a better leaderboard score and position by optimizing the TTT approach, but I prioritized
+working on an approach that I believed could solve ARC. The top
 teams in the public leaderboard scored around 27%, so there is a long run until the 85% goal and I
 hope to keep enjoying this research journey.
 
@@ -654,6 +656,7 @@ test-time training approach? There are many reasons, but let's point to the main
 - A stronger induction model is needed to beat ARC. How to craft that model is an open question.
 - My search method was very basic, just doing independent predictions. That would only work on trivial
   tasks, to solve complex tasks refining is needed.
+- More work is also needed be able to learn as maximum as possible from the failed attempts
 
 In the coming days I will read thoroughly all the work done by the other teams and rethink my approach
 for the next ARC challenge edition. I have some vague ideas in my head that I want to meditate: Do humans have a continuous model of the world? Or do we have a discrete always-growing model of the world where we apply targeted edits when evidence contradicts our beliefs? Is deep learning and gradient descent the best learning method? Or there could be more sample efficient alternatives?

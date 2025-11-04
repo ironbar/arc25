@@ -29,7 +29,7 @@ leaderboard was achieved with minor adaptations of last year's transduction with
     - [How humans solve ARC](#how-humans-solve-arc)
     - [How AI might solve ARC](#how-ai-might-solve-arc)
   - [Path 4. Frame ARC as a game and solve it with RL](#path-4-frame-arc-as-a-game-and-solve-it-with-rl)
-  - [Why it will beat the other approaches](#why-it-will-beat-the-other-approaches)
+  - [Why search and learn will beat the other approaches](#why-search-and-learn-will-beat-the-other-approaches)
     - [Transduction and test-time training](#transduction-and-test-time-training)
     - [Natural language program search (o3)](#natural-language-program-search-o3)
     - [Program search with frontier models](#program-search-with-frontier-models)
@@ -172,7 +172,7 @@ Instead of actions, we write code, but the problem is the same. We can frame the
 The challenge of ARC tasks is that the reward is very sparse, and standard RL methods do not work
 well in that setting. When rewards are very sparse we need to add tricks like hindsight experience replay, curiosity to promote exploration or access to human demonstrations.
 
-### Why it will beat the other approaches
+### Why search and learn will beat the other approaches
 
 ARC can be solved (and will be solved) with many different approaches, but in this section, I will
 argue why search and learn will be the first approach to solve it.

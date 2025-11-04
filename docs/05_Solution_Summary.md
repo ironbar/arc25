@@ -1,4 +1,5 @@
-# Solution Summary
+# Exploring the combination of search and learn for the ARC25 challenge
+
 <!--
 https://www.kaggle.com/wiki/WinningModelDocumentationTemplate
 https://www.kaggle.com/solution-write-up-documentation

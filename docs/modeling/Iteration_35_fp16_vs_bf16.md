@@ -208,11 +208,17 @@ python /root/arc25/scripts/rl_code_finetuning.py \
 
 ## Results
 
+![alt text](res/1762346434417_image.png)
+
+Both the `float16` and the `bfloat16` collapse.
+
 ## Conclusion
+
+It does not seem that `bfloat16` was the cause of RL training collapse.
 
 ## Next steps
 
 ## TODO
 
-- [ ] Run a fp16 vs bf16 training
+- [x] Run a fp16 vs bf16 training
 - [ ] Do I also have to look the precision used for VLLM?
